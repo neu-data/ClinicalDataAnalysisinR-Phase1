@@ -1,0 +1,221 @@
+---
+title: "Bài 2 — Quản lý Dữ liệu (Làm sạch Dữ liệu Lâm sàng)"
+subtitle: "Phân tích Dữ liệu Lâm sàng bằng R (Giai đoạn I) — Trước khóa học"
+author: "Neudata"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: readable
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+## Mục tiêu của bài học này
+
+Dữ liệu lâm sàng thực tế thường lộn xộn. Trước khi phân tích bất cứ điều gì, chúng
+ta phải **làm sạch** nó. Trong bài học này, bạn sẽ tìm và sửa những vấn đề thường
+gặp — bản ghi trùng lặp, giá trị khuyết, nhãn không nhất quán, và các giá trị bất
+khả thi — bằng một tập nhỏ các động từ (verb) của `dplyr`: `filter()`, `select()`,
+`mutate()`, `case_when()`, `group_by()` và `summarise()`.
+
+Chúng ta sẽ làm việc trên tệp **thô** (`clinical_data_raw.csv`), tệp này chứa các
+vấn đề được cố ý đưa vào, mô tả trong `Data/Data_Quality_Problems.md`.
+
+```{r}
+library(tidyverse)
+
+# Đọc bộ dữ liệu thô lộn xộn
+raw <- read_csv("../Data/clinical_data_raw.csv")
+
+dim(raw)      # lưu ý: nhiều hàng hơn số bệnh nhân, vì có bản ghi trùng lặp
+```
+
+---
+
+## 1. Nhìn trước khi hành động
+
+Luôn luôn kiểm tra một bộ dữ liệu mới trước tiên.
+
+```{r}
+# Có bao nhiêu giá trị khuyết trong mỗi cột?
+colSums(is.na(raw))
+
+# Biến 'sex' được ghi như thế nào? (tìm các nhãn không nhất quán)
+table(raw$sex)
+
+# Tổng quan số nhanh - để ý các giá trị nhỏ nhất/lớn nhất bất khả thi
+summary(select(raw, age, height_cm, weight_kg, BMI, systolic_bp, glucose, cholesterol))
+```
+
+Bạn sẽ thấy: một số giá trị khuyết, biến `sex` được viết theo nhiều cách khác nhau,
+và một số con số bất khả thi (tuổi 219, chiều cao 17 cm, glucose 41).
+
+## 2. Loại bỏ bản ghi trùng lặp
+
+```{r}
+# Có bao nhiêu hàng trùng lặp hoàn toàn?
+sum(duplicated(raw))
+
+# Chỉ giữ các hàng duy nhất
+clean <- raw %>% distinct()
+
+nrow(clean)   # bây giờ phải còn 430 bệnh nhân duy nhất
+```
+
+## 3. Làm cho các danh mục nhất quán bằng `case_when()`
+
+`case_when()` đọc giống như một tập hợp các quy tắc lâm sàng: *nếu điều này, thì điều kia*.
+
+```{r}
+clean <- clean %>%
+  mutate(
+    # Gộp tất cả các cách viết của sex thành hai nhãn sạch
+    sex = case_when(
+      sex %in% c("Female", "female", "F", "f") ~ "Female",
+      sex %in% c("Male", "male", "M", "m")     ~ "Male"
+    ),
+    # Chuẩn hóa các biến Yes/No (chúng bị lẫn với 1/0 và yes/no)
+    hypertension = case_when(
+      hypertension %in% c("Yes", "yes", "1") ~ "Yes",
+      hypertension %in% c("No",  "no",  "0") ~ "No"
+    ),
+    diabetes = case_when(
+      diabetes %in% c("Yes", "yes", "1") ~ "Yes",
+      diabetes %in% c("No",  "no",  "0") ~ "No"
+    ),
+    # Sửa chữ "current" viết thường bị lạc
+    smoking = case_when(
+      smoking %in% c("Current", "current") ~ "Current",
+      TRUE ~ smoking      # giữ nguyên Never / Former
+    )
+  )
+
+table(clean$sex)
+table(clean$hypertension)
+```
+
+## 4. Xử lý các giá trị bất khả thi
+
+Chúng ta không thể biết giá trị thực của một mục nhập bất khả thi, nên ta đặt nó
+thành `NA`. `if_else()` nói rằng: *nếu điều kiện đúng, dùng giá trị thứ nhất, nếu
+không thì dùng giá trị thứ hai.*
+
+```{r}
+clean <- clean %>%
+  mutate(
+    age         = if_else(age < 18 | age > 110, NA_real_, age),
+    height_cm   = if_else(height_cm < 100 | height_cm > 220, NA_real_, height_cm),
+    weight_kg   = if_else(weight_kg < 30 | weight_kg > 250, NA_real_, weight_kg),
+    systolic_bp = if_else(systolic_bp > 260, NA_real_, systolic_bp),
+    glucose     = if_else(glucose > 30, NA_real_, glucose),      # glucose lúc đói bất khả thi
+    cholesterol = if_else(cholesterol < 1, NA_real_, cholesterol) # giá trị xét nghiệm âm
+  )
+
+# Tính lại BMI từ cân nặng và chiều cao đã làm sạch để nó nhất quán
+clean <- clean %>%
+  mutate(BMI = round(weight_kg / (height_cm / 100)^2, 1))
+
+summary(select(clean, age, height_cm, weight_kg, BMI, systolic_bp, glucose))
+```
+
+Các giá trị nhỏ nhất và lớn nhất bất khả thi đã biến mất.
+
+## 5. Sửa sự không nhất quán về ngày tháng
+
+```{r}
+# Ngày tái khám không bao giờ được trước ngày nhập viện
+sum(clean$followup_date < clean$admission_date, na.rm = TRUE)
+
+clean <- clean %>%
+  mutate(followup_date = if_else(followup_date < admission_date,
+                                 as.Date(NA), followup_date))
+```
+
+## 6. Tạo các biến mới (biến dẫn xuất)
+
+Phân tích thường cần các biến được nhóm hoặc được tính toán. Ở đây chúng ta xây
+dựng ba biến.
+
+```{r}
+clean <- clean %>%
+  mutate(
+    # Phân nhóm BMI lâm sàng
+    bmi_group = case_when(
+      BMI < 18.5             ~ "Underweight",
+      BMI < 25               ~ "Normal",
+      BMI < 30               ~ "Overweight",
+      BMI >= 30              ~ "Obese"
+      # lưu ý: bỏ dòng "TRUE ~" nghĩa là BMI khuyết vẫn giữ là NA
+    ),
+    # Nhóm tuổi
+    age_group = case_when(
+      age < 40               ~ "<40",
+      age < 55               ~ "40-54",
+      age < 70               ~ "55-69",
+      age >= 70              ~ "70+"
+    ),
+    # Một chỉ số lâm sàng dẫn xuất: áp lực mạch (pulse pressure)
+    pulse_pressure = systolic_bp - diastolic_bp
+  )
+
+table(clean$bmi_group)
+table(clean$age_group)
+```
+
+## 7. Các động từ cốt lõi của `dplyr`
+
+Sáu động từ này bao quát hầu hết công việc dữ liệu hằng ngày.
+
+```{r}
+# filter(): giữ các hàng thỏa mãn một điều kiện
+hypertensive <- clean %>% filter(hypertension == "Yes")
+nrow(hypertensive)
+
+# select(): chỉ giữ một số cột nhất định
+small <- clean %>% select(patient_id, age, sex, BMI, hypertension)
+head(small)
+
+# group_by() + summarise(): thống kê tóm tắt theo nhóm
+clean %>%
+  group_by(sex) %>%
+  summarise(
+    n           = n(),
+    mean_age    = mean(age, na.rm = TRUE),
+    mean_sbp    = mean(systolic_bp, na.rm = TRUE)
+  )
+```
+
+## 8. Lưu bộ dữ liệu sẵn sàng để phân tích
+
+```{r, eval=FALSE}
+# Ghi dữ liệu đã làm sạch để các bài học sau có thể dùng
+write_csv(clean, "../Data/my_clean_data.csv")
+```
+
+> Một phiên bản tham chiếu làm sẵn đã được cung cấp dưới dạng
+> `Data/clinical_data_clean.csv`. Từ Bài 3 trở đi, chúng ta chỉ đơn giản nạp tệp
+> đó, nên mọi người đều bắt đầu từ đúng cùng một điểm.
+
+---
+
+## Những điểm chính cần ghi nhớ
+
+- Luôn **kiểm tra** trước tiên: `colSums(is.na())`, `table()`, `summary()`.
+- `distinct()` loại bỏ các hàng trùng lặp.
+- `case_when()` chuẩn hóa các danh mục lộn xộn bằng các quy tắc lâm sàng.
+- Đặt **giá trị bất khả thi** thành `NA` — không bao giờ bịa ra một giá trị.
+- Tính lại các biến dẫn xuất (như `BMI`) *sau khi* đã sửa các biến đầu vào của chúng.
+- `filter()`, `select()`, `mutate()`, `group_by()`, `summarise()` là những động từ
+  hằng ngày của việc quản lý dữ liệu.
+
+## Tự thực hành
+
+1. Sau khi làm sạch, có bao nhiêu bệnh nhân **đang hút thuốc**? (`table()`)
+2. Dùng `filter()` để chỉ giữ các bệnh nhân từ 60 tuổi trở lên. Có bao nhiêu người?
+3. Tạo một biến `high_bp` bằng `"High"` khi `systolic_bp >= 140` và `"Normal"`
+   trong các trường hợp còn lại, sử dụng `if_else()`.
+4. Dùng `group_by(hypertension)` và `summarise()` để so sánh BMI trung bình ở nhóm
+   bệnh nhân tăng huyết áp và không tăng huyết áp.

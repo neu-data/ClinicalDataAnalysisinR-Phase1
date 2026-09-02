@@ -1,0 +1,111 @@
+# Bảng Tra cứu Lệnh R
+### Phân tích Dữ liệu Lâm sàng trong R — Giai đoạn I | Neudata · #ClearDataClearImpact
+
+Một "bảng ghi nhớ" tổng hợp các lệnh được sử dụng xuyên suốt năm ngày học. Hãy để bên cạnh bạn trong các buổi thực hành.
+
+---
+
+## 1. Bắt đầu
+| Nhiệm vụ | Lệnh |
+|------|---------|
+| Gán một giá trị cho một đối tượng | `x <- 5` |
+| Gộp các giá trị thành một vector | `c(1, 2, 3)` |
+| Cài đặt một gói (một lần) | `install.packages("tidyverse")` |
+| Nạp một gói (mỗi phiên làm việc) | `library(tidyverse)` |
+| Xem trợ giúp về một hàm | `?mean` hoặc `help(mean)` |
+| Xem thư mục làm việc hiện tại | `getwd()` |
+| Liệt kê các đối tượng trong bộ nhớ | `ls()` |
+
+## 2. Nhập dữ liệu
+| Nhiệm vụ | Lệnh |
+|------|---------|
+| Đọc một tệp CSV | `read_csv("Data/file.csv")` |
+| Đọc CSV, đặt mã khuyết thiếu | `read_csv("f.csv", na = c("", "NA", "999"))` |
+| Đọc một trang tính Excel | `read_excel("Data/file.xlsx", sheet = "data")` |
+| Lưu một đối tượng R (giữ nguyên kiểu dữ liệu) | `saveRDS(df, "Data/df.rds")` |
+| Nạp lại một đối tượng R | `df <- readRDS("Data/df.rds")` |
+| Ghi một tệp CSV | `write_csv(df, "out.csv")` |
+
+## 3. Kiểm tra dữ liệu
+| Nhiệm vụ | Lệnh |
+|------|---------|
+| Kích thước | `dim(df)`, `nrow(df)`, `ncol(df)` |
+| Tên các biến | `names(df)` |
+| Cấu trúc gọn | `glimpse(df)` |
+| Các hàng đầu / cuối | `head(df)`, `tail(df)` |
+| Trình xem dạng bảng tính | `View(df)` |
+| Một cột dưới dạng vector | `df$age` |
+| Tóm tắt số nhanh | `summary(df$age)` |
+
+## 4. Làm sạch & xử lý dữ liệu (dplyr / stringr)
+| Nhiệm vụ | Lệnh |
+|------|---------|
+| Giữ các hàng thỏa điều kiện | `filter(df, age >= 18)` |
+| Giữ/đổi tên các cột | `select(df, age, sex)` |
+| Tạo / thay đổi một cột | `mutate(df, bmi = weight_kg/(height_cm/100)^2)` |
+| Loại bỏ các hàng trùng lặp | `distinct(df)` |
+| Mã hóa lại theo quy tắc | `case_when(x == "M" ~ "Male", TRUE ~ NA_character_)` |
+| Cắt khoảng trắng thừa | `str_trim(x)` |
+| Chuyển chữ thường | `str_to_lower(x)` |
+| Chuyển ô trống thành NA | `na_if(x, "")` |
+| Giá trị có điều kiện | `if_else(age > 110, NA_real_, age)` |
+| Áp dụng trên nhiều cột | `mutate(across(where(is.character), str_trim))` |
+| Chia nhóm một biến số | `cut(bmi, breaks = c(-Inf,18.5,25,30,Inf), labels = ...)` |
+| Tạo một biến hạng mục (factor) | `factor(sex, levels = c("Female","Male"))` |
+| Biến hạng mục có thứ tự | `factor(edu, levels = c(...), ordered = TRUE)` |
+| Phân tích ngày tháng hỗn hợp | `lubridate::parse_date_time(x, c("ymd","dmy"))` |
+| Toán tử pipe | `df |> filter(...) |> mutate(...)` |
+
+## 5. Thống kê mô tả
+| Nhiệm vụ | Lệnh |
+|------|---------|
+| Trung bình / trung vị (bỏ qua NA) | `mean(x, na.rm = TRUE)`, `median(x, na.rm = TRUE)` |
+| SD / IQR | `sd(x, na.rm = TRUE)`, `IQR(x, na.rm = TRUE)` |
+| Phân vị | `quantile(x, na.rm = TRUE)` |
+| Bảng tần suất | `table(df$sex)` |
+| Tỷ lệ | `prop.table(table(df$sex))` |
+| Bảng chéo | `table(df$treatment_uptake, df$diabetes)` |
+| Phần trăm theo hàng/cột | `prop.table(tab, margin = 1)`  (1 = hàng, 2 = cột) |
+| Tóm tắt theo nhóm | `df |> group_by(sex) |> summarise(m = mean(age, na.rm=TRUE))` |
+| Đếm theo nhóm | `count(df, education)` |
+| "Bảng 1" cho công bố | `gtsummary::tbl_summary(df, by = treatment_uptake)` |
+
+## 6. Biểu đồ (ggplot2)
+| Biểu đồ | Khung lệnh |
+|------|------------------|
+| Biểu đồ tần suất (histogram) | `ggplot(df, aes(age)) + geom_histogram()` |
+| Biểu đồ cột | `ggplot(df, aes(education)) + geom_bar()` |
+| Biểu đồ hộp (boxplot) | `ggplot(df, aes(treatment_uptake, sbp_mmhg)) + geom_boxplot()` |
+| Biểu đồ tán xạ + đường làm mượt | `ggplot(df, aes(bmi, sbp_mmhg)) + geom_point() + geom_smooth()` |
+| Thêm nhãn | `+ labs(title = "...", x = "...", y = "...")` |
+| Giao diện gọn gàng | `+ theme_minimal()` |
+| Lưu ở độ phân giải 300 dpi | `ggsave("Resources/fig.png", width = 7, height = 5, dpi = 300)` |
+
+## 7. Kiểm định thống kê
+| Kiểm định | Lệnh |
+|------|---------|
+| Tính chuẩn (trực quan) | `qqnorm(x); qqline(x)` |
+| Tính chuẩn (kiểm định) | `shapiro.test(x)` |
+| Trung bình hai nhóm | `t.test(age ~ treatment_uptake, data = df)` |
+| Hai nhóm (phi tham số) | `wilcox.test(age ~ treatment_uptake, data = df)` |
+| Trên 2 nhóm | `aov(sbp_mmhg ~ bp_category, data = df) |> summary()` |
+| Hậu kiểm (post-hoc) | `TukeyHSD(aov(...))` |
+| Mối liên quan giữa các biến hạng mục | `chisq.test(table(df$a, df$b))` |
+| Tần số kỳ vọng nhỏ | `fisher.test(table(df$a, df$b))` |
+| Tương quan | `cor.test(df$bmi, df$sbp_mmhg)`  (thêm `method = "spearman"`) |
+
+## 8. Hồi quy (logistic)
+| Nhiệm vụ | Lệnh |
+|------|---------|
+| Khớp mô hình logistic | `glm(treatment_uptake ~ age + diabetes, data = df, family = binomial)` |
+| Tóm tắt mô hình | `summary(model)` |
+| Tỷ số chênh (OR) + KTC 95% | `exp(cbind(OR = coef(model), confint(model)))` |
+| Bảng OR gọn gàng | `broom::tidy(model, exponentiate = TRUE, conf.int = TRUE)` |
+| So sánh các mô hình (LRT) | `anova(m1, m2, test = "LRT")` |
+| Đa cộng tuyến | `car::vif(model)` |
+| Khả năng phân biệt (AUC) | `pROC::roc(df$y, fitted(model))` |
+| Bảng cho công bố | `gtsummary::tbl_regression(model, exponentiate = TRUE)` |
+| Dòng chân trang về tính tái lập | `sessionInfo()` |
+
+---
+*Mẹo: hầu như mọi hàm tóm tắt đều có tham số `na.rm = TRUE`. Nếu một giá trị trung bình trả về là `NA`, thì các giá trị khuyết thiếu thường là nguyên nhân.*

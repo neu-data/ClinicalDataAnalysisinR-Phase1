@@ -1,0 +1,148 @@
+---
+title: "Lesson 5 — Regression"
+subtitle: "Clinical Data Analysis in R (Phase I) — Pre-course"
+author: "Neudata"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: readable
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+## What this lesson is for
+
+Regression lets us study several predictors at once and **adjust** for
+confounders. You will fit and interpret the two workhorses of clinical research:
+**linear regression** (for a continuous outcome) and **logistic regression**
+(for a yes/no outcome), and turn the output into a sentence you could put in a
+paper.
+
+We write models plainly, so you can see exactly what is being estimated:
+
+```r
+model <- glm(hypertension ~ age + sex + BMI,
+             data = clinical_data,
+             family = binomial)
+```
+
+```{r}
+library(tidyverse)
+library(broom)       # tidies model output
+library(gtsummary)   # publication-ready model tables
+
+clinical_data <- read_csv("../Data/clinical_data_clean.csv")
+```
+
+---
+
+## 1. Linear regression — a continuous outcome
+
+**Question:** Is **systolic BP** associated with **age** and **BMI**?
+
+**Data:** outcome `systolic_bp` (continuous); predictors `age`, `BMI` (continuous).
+
+```{r}
+# lm() = linear model
+lin_model <- lm(systolic_bp ~ age + BMI, data = clinical_data)
+summary(lin_model)
+```
+
+**Output → Interpretation:** each coefficient is the change in systolic BP per
+one-unit increase in that predictor, holding the other constant.
+
+- `age`: about +0.35 mmHg for each additional year.
+- `BMI`: about +0.6 mmHg for each additional BMI unit.
+- Both p-values are very small, so both associations are statistically
+  significant.
+
+```{r}
+# Tidy estimates with 95% confidence intervals
+tidy(lin_model, conf.int = TRUE)
+```
+
+**Reporting:** *"Each additional year of age was associated with a 0.35 mmHg
+higher systolic BP (95% CI ...), and each BMI unit with a 0.62 mmHg increase,
+after mutual adjustment."*
+
+## 2. Logistic regression — a yes/no outcome
+
+When the outcome is binary (Yes/No), we use **logistic regression**, which gives
+**odds ratios (OR)**.
+
+**Question:** What is associated with **having hypertension**?
+
+**Data:** outcome `hypertension` (Yes/No); predictors `age`, `sex`, `BMI`.
+
+```{r}
+# Make hypertension a factor with "No" as the reference level
+clinical_data <- clinical_data %>%
+  mutate(hypertension = factor(hypertension, levels = c("No", "Yes")))
+
+# glm() with family = binomial fits a logistic regression
+log_model <- glm(hypertension ~ age + sex + BMI,
+                 data = clinical_data,
+                 family = binomial)
+
+summary(log_model)
+```
+
+The `summary()` output is on the **log-odds** scale — hard to read. We convert to
+**odds ratios** by exponentiating.
+
+```{r}
+# exponentiate = TRUE turns log-odds into odds ratios
+tidy(log_model, exponentiate = TRUE, conf.int = TRUE)
+```
+
+**Output → Interpretation (odds ratios):**
+
+- `age`: OR ≈ **1.09** — each extra year raises the odds of hypertension by ~9%.
+- `BMI`: OR ≈ **1.16** — each extra BMI unit raises the odds by ~16%.
+- `sex (Male)`: OR ≈ **1.20**, but the confidence interval crosses 1 and p ≈ 0.43
+  — **no evidence** of a sex difference.
+
+An OR **above 1** means higher odds; **below 1** means lower odds; a CI that
+**includes 1** means "not statistically significant".
+
+## 3. A publication-ready regression table
+
+```{r}
+tbl_regression(log_model, exponentiate = TRUE)
+```
+
+This is the table format journals expect: each predictor with its OR, 95% CI and
+p-value.
+
+## 4. Adjustment and confounding (why regression matters)
+
+Older patients tend to have higher BMI *and* more hypertension. A simple
+comparison could mistake age's effect for BMI's. Putting both in the same model
+**adjusts** each for the other, so each odds ratio is "independent of" the other
+predictors. This is the core reason clinical research uses multivariable models.
+
+---
+
+## Key points to remember
+
+- **Linear regression** (`lm`) — continuous outcome; coefficients are changes in
+  the outcome per unit of predictor.
+- **Logistic regression** (`glm(..., family = binomial)`) — binary outcome;
+  exponentiated coefficients are **odds ratios**.
+- `tidy(model, exponentiate = TRUE, conf.int = TRUE)` gives OR + 95% CI.
+- OR > 1 raises the odds, < 1 lowers it; a CI crossing 1 is non-significant.
+- Multivariable models **adjust** for confounders — the main reason we use them.
+- Report the estimate and its confidence interval in words, never raw output.
+
+## Try it yourself
+
+1. Fit `lm(diastolic_bp ~ age + BMI)`. How much does diastolic BP change per BMI
+   unit?
+2. Fit a logistic model `diabetes ~ age + BMI`. Report the odds ratios.
+3. Add `diabetes` to the hypertension model (`hypertension ~ age + sex + BMI +
+   diabetes`). Does the OR for diabetes suggest an association?
+4. Write one publication-style sentence reporting the age and BMI odds ratios
+   from the hypertension model.

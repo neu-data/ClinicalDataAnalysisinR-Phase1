@@ -1,0 +1,58 @@
+# Data Dictionary
+
+**Study:** Determinants of Hypertension Treatment Uptake among Adults attending Primary Healthcare Facilities
+
+**Design:** Multicentre cross-sectional study, 6 primary healthcare facilities, 1,500 adult attendees.
+
+**Files:** `hypertension_phc_raw.csv` / `.xlsx` (used Days 1-2), `hypertension_phc_clean.csv` (tidy reference).
+
+**Primary outcome:** `treatment_uptake` (currently on antihypertensive therapy), analysed among patients with `htn_diagnosed = Yes`.
+
+| # | Variable | Label | Type | Units / Coding | Role | Notes |
+|---|----------|-------|------|----------------|------|-------|
+| 1 | `patient_id` | Patient identifier | Character | PHC-0001 ... PHC-1500 | ID | Unique per patient. Raw file contains 3 duplicate records to be removed. |
+| 2 | `facility` | Healthcare facility | Categorical | 6 PHC facilities | Cluster/covariate | Multicentre design. Some values have leading/trailing spaces in raw file. |
+| 3 | `enroll_date` | Date of enrolment | Date | Mixed: YYYY-MM-DD, DD/MM/YYYY, DD-Mon-YYYY | Metadata | Mixed formats in raw file; parse on Day 2. |
+| 4 | `age` | Age | Numeric | Years | Predictor | Implausible values (0, 200) present in raw file. |
+| 5 | `sex` | Sex | Categorical | Female / Male | Predictor | Raw file mixes F/f/female and M/m/male spellings. |
+| 6 | `residence` | Place of residence | Categorical | Urban / Rural | Predictor | Determinant of uptake. |
+| 7 | `education` | Highest education | Ordinal | None < Primary < Secondary < Tertiary | Predictor | Set as ordered factor. Some blanks in raw file. |
+| 8 | `occupation` | Occupation | Categorical | Unemployed/Farmer/Trader/Professional/Other | Predictor |  |
+| 9 | `marital_status` | Marital status | Categorical | Single/Married/Divorced/Widowed | Predictor |  |
+| 10 | `health_insurance` | Has health insurance | Binary | Yes / No | Predictor | Raw file mixes Yes/No/Y/N/1/0. Determinant of uptake. |
+| 11 | `height_cm` | Height | Numeric | centimetres | Derived input | Used to compute BMI. One decimal-point error (17). |
+| 12 | `weight_kg` | Weight | Numeric | kilograms | Derived input | Missing sentinels (NA, blank). One impossible value (7). |
+| 13 | `bmi` | Body mass index | Numeric | kg/m^2 | Predictor | Provided but contains errors/missing; recompute from height & weight. |
+| 14 | `smoking` | Smoking status | Categorical | Never / Former / Current | Predictor | Some missing in raw file. |
+| 15 | `alcohol` | Alcohol intake | Categorical | None / Moderate / Heavy | Predictor |  |
+| 16 | `physical_activity` | Physical activity level | Ordinal | Low / Moderate / High | Predictor |  |
+| 17 | `family_history_htn` | Family history of hypertension | Binary | Yes / No | Predictor | Mixed coding in raw file. Determinant of uptake. |
+| 18 | `diabetes` | Diabetes mellitus | Binary | Yes / No | Predictor | Mixed coding in raw file. Strong determinant of uptake. |
+| 19 | `sbp_mmhg` | Systolic blood pressure | Numeric | mmHg | Clinical | Implausible values (0, 700) present in raw file. |
+| 20 | `dbp_mmhg` | Diastolic blood pressure | Numeric | mmHg | Clinical | Implausible value (5) present in raw file. |
+| 21 | `total_chol_mmol_l` | Total cholesterol | Numeric | mmol/L | Lab biomarker | Missing sentinels: NA, blank, -99. |
+| 22 | `hdl_mmol_l` | HDL cholesterol | Numeric | mmol/L | Lab biomarker |  |
+| 23 | `ldl_mmol_l` | LDL cholesterol | Numeric | mmol/L | Lab biomarker | Missing sentinels present. |
+| 24 | `triglycerides_mmol_l` | Triglycerides | Numeric | mmol/L | Lab biomarker |  |
+| 25 | `fasting_glucose_mmol_l` | Fasting glucose | Numeric | mmol/L | Lab biomarker | Missing sentinel 999 present. |
+| 26 | `creatinine_umol_l` | Serum creatinine | Numeric | umol/L | Lab biomarker |  |
+| 27 | `sodium_mmol_l` | Serum sodium | Numeric | mmol/L | Lab biomarker |  |
+| 28 | `potassium_mmol_l` | Serum potassium | Numeric | mmol/L | Lab biomarker |  |
+| 29 | `knowledge_score` | Hypertension knowledge score | Numeric | 0-20 | Predictor | Higher = better knowledge. Determinant of uptake. |
+| 30 | `distance_to_facility_km` | Distance to facility | Numeric | kilometres | Predictor | Access barrier. Some missing. |
+| 31 | `comorbidity_count` | Number of comorbidities | Count | 0+ | Predictor |  |
+| 32 | `htn_diagnosed` | Diagnosed hypertensive | Binary | Yes / No | Filter | Defines analysis population for uptake (Days 4-5). |
+| 33 | `months_since_diagnosis` | Months since HTN diagnosis | Numeric | Months | Predictor | 0 if not diagnosed. |
+| 34 | `treatment_uptake` | On antihypertensive treatment | Binary | Yes / No | PRIMARY OUTCOME | Mixed coding in raw file. Analysed among diagnosed patients. |
+| 35 | `adherence` | Treatment adherence | Categorical | Good / Poor (blank if untreated) | Secondary outcome | Only defined where treatment_uptake = Yes. |
+| 36 | `bp_controlled` | Blood pressure controlled | Binary | Yes / No (blank if untreated) | Secondary outcome | SBP<140 and DBP<90 among treated. |
+
+## Known data-quality issues in the raw file (for the Day 2 cleaning exercise)
+
+- **Inconsistent category spellings:** `sex` coded as Female/F/female/f and Male/M/male/m.
+- **Mixed binary codings:** `diabetes`, `family_history_htn`, `health_insurance`, `htn_diagnosed`, `treatment_uptake` mix Yes/No, Y/N and 1/0.
+- **Missing-value sentinels:** blank, `NA`, `999`, `-99` in several numeric columns.
+- **Implausible values:** `age` 0 and 200; `sbp_mmhg` 0 and 700; `weight_kg` 7; `height_cm` 17; `dbp_mmhg` 5.
+- **Whitespace:** leading/trailing spaces in some `facility`, `residence`, `education`, `occupation` values.
+- **Duplicates:** 3 duplicate patient records (1,503 rows, 1,500 unique IDs).
+- **Mixed date formats** in `enroll_date`.

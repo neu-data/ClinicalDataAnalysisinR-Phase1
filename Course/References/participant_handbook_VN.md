@@ -1,0 +1,1099 @@
+# Sổ tay Học viên
+
+## Phân tích Dữ liệu Lâm sàng trong R - Giai đoạn I: Nhập môn R cho Nghiên cứu Lâm sàng
+
+**Giảng viên:** Bernard Osang'ir (Chuyên gia Thống kê Sinh học cao cấp, giảng viên chính) & My Luong Vuong (Nhà thống kê sinh học và dịch tễ học)
+**Lịch học:** Năm buổi học buổi tối · mỗi Thứ Ba, 20:00 (giờ Việt Nam), 90 phút · 8 tháng 9 – 6 tháng 10 năm 2026
+**Đơn vị tổ chức:** Neudata
+**Hashtag:** #ClearDataClearImpact
+
+---
+
+## Lời chào mừng
+
+Chào mừng bạn đến với hành trình năm buổi học về phân tích dữ liệu lâm sàng bằng R. Khóa học này được xây dựng cho các bác sĩ lâm sàng, điều dưỡng, dược sĩ, cán bộ y tế công cộng và nhà nghiên cứu y học chưa từng viết một dòng mã lệnh nào. Bạn không cần nền tảng toán học hay tin học. Bạn cần sự tò mò, khả năng lập luận lâm sàng của mình, và sự sẵn lòng mắc lỗi rồi học hỏi từ đó. Mọi người trong lớp đều bắt đầu đúng từ vị trí bạn đang đứng.
+
+Đến cuối tuần học, bạn sẽ lấy một bộ dữ liệu lâm sàng thực tế, lộn xộn, làm sạch nó, mô tả nó, kiểm định giả thuyết, xây dựng một mô hình hồi quy logistic, và trình bày kết quả theo cách mà một tạp chí khoa học mong đợi. Đó là một phân tích hoàn chỉnh, từ đầu đến cuối, được thực hiện với khả năng tái lập để bất kỳ ai (kể cả chính bạn trong tương lai) cũng có thể chạy lại và nhận được cùng một đáp án.
+
+Sổ tay này là người bạn đồng hành tự học của bạn. Nó phản ánh các phần trình diễn trực tiếp mà bạn sẽ thấy mỗi ngày, giải thích các khái niệm bằng ngôn ngữ dễ hiểu, và cho bạn thấy kết quả xuất ra của R có ý nghĩa gì. Hãy mở nó bên cạnh khi bạn làm theo trong lớp, và quay lại đọc sau đó để ôn tập.
+
+---
+
+## Cách sử dụng sổ tay này
+
+- **Trong giờ học:** làm theo các khối mã lệnh mẫu cùng với giảng viên. Hãy tự gõ mã lệnh thay vì sao chép và dán. Ghi nhớ bằng thao tác tay rất quan trọng.
+- **Sau giờ học:** đọc lại chương của ngày hôm đó, chạy lại mã lệnh trên máy của riêng bạn, và thử làm bài tập ở cuối chương.
+- **Để tra cứu:** dùng bảng thuật ngữ, mục "Lỗi thường gặp", và tờ tra cứu nhanh riêng `R_command_reference_sheet.md` bất cứ khi nào bạn gặp khó khăn.
+- **Các khối mã lệnh** trông như thế này và được dùng để chạy trong R:
+
+```r
+mean(c(120, 130, 145, 150))   # the average of four systolic readings
+```
+
+- **Các chú thích (comment)** bắt đầu bằng dấu `#`. R bỏ qua mọi thứ sau dấu `#` trên một dòng; chú thích là ghi chú dành cho con người.
+- Một ghi chú ngắn **"Kết quả xuất ra có ý nghĩa gì"** theo sau các đoạn mã lệnh quan trọng để bạn có thể diễn giải những gì mình thấy trong Console.
+
+Một mẹo thực hành được dùng xuyên suốt khóa học: định nghĩa kiểu định dạng và thiết lập một lần rồi tái sử dụng. Ví dụ, tất cả các hình của chúng ta đều dùng một màu thương hiệu teal duy nhất:
+
+```r
+course_teal <- "#0D7377"   # define once, reuse in every plot
+```
+
+---
+
+## Những gì bạn sẽ làm được (13 mục tiêu)
+
+Đến cuối Giai đoạn I, bạn sẽ có thể:
+
+1. Điều hướng R và RStudio một cách tự tin, sử dụng Console, trình soạn thảo Script, và Projects.
+2. Tạo và sử dụng các đối tượng (object), vector, và data frame.
+3. Cài đặt và nạp các gói (package), đặc biệt là tidyverse.
+4. Nhập dữ liệu lâm sàng từ các tệp CSV và Excel.
+5. Kiểm tra một bộ dữ liệu và nhận ra các vấn đề về chất lượng dữ liệu ngay khi nhìn thấy.
+6. Xác định kiểu biến và chuyển đổi giữa chúng (numeric, character, factor, date).
+7. Làm sạch dữ liệu: xử lý giá trị thiếu, loại bỏ bản ghi trùng lặp, sửa các danh mục không nhất quán, và kiểm định các giá trị bất khả thi.
+8. Tạo biến mới (ví dụ BMI và các phân loại lâm sàng) và thiết lập mức tham chiếu của factor.
+9. Tính toán thống kê mô tả một cách chính xác, bao gồm việc xử lý đúng dữ liệu thiếu.
+10. Xây dựng một "Bảng 1" sẵn sàng cho bản thảo và các hình chất lượng xuất bản, rồi xuất chúng ra.
+11. Chọn và chạy đúng kiểm định giả thuyết cho một câu hỏi cụ thể, và diễn giải giá trị p một cách trung thực.
+12. Khớp các mô hình hồi quy logistic đơn biến và đa biến, và diễn giải tỷ số chênh (OR) cùng khoảng tin cậy 95%.
+13. Xây dựng, chẩn đoán, và báo cáo một mô hình cuối cùng theo cách tái lập được, và viết phần Kết quả theo phong cách bản thảo lâm sàng.
+
+---
+
+# Thiết lập ban đầu
+
+## Cài đặt R và RStudio
+
+R là động cơ; RStudio là bảng điều khiển tiện lợi mà bạn dùng để lái nó. Bạn cài đặt cả hai, và bạn cài R trước.
+
+1. **Cài đặt R** từ Comprehensive R Archive Network (CRAN) tại `https://cran.r-project.org`. Chọn phiên bản dành cho hệ điều hành của bạn (Windows, macOS, hoặc Linux).
+2. **Cài đặt RStudio Desktop** (bản miễn phí) từ `https://posit.co/download/rstudio-desktop`.
+3. Mở RStudio. Bạn không bao giờ cần mở trực tiếp chương trình R thuần; RStudio sẽ chạy R giúp bạn.
+
+Để xem hướng dẫn từng bước kèm ảnh chụp màn hình và cách khắc phục sự cố, xem tệp riêng `package_installation_guide.md` được cung cấp cùng với tài liệu khóa học.
+
+## Bốn ô cửa sổ (pane) của RStudio
+
+Khi RStudio mở ra, bạn thấy (tối đa) bốn ô cửa sổ. Biết mỗi ô làm gì sẽ loại bỏ hầu hết bối rối ban đầu.
+
+| Ô cửa sổ | Vị trí (mặc định) | Dùng để làm gì |
+|------|--------------------|----------------|
+| **Source / Trình soạn thảo Script** | Trên bên trái | Nơi bạn viết và lưu mã lệnh. Đây là thứ bạn giữ lại và chạy lại. |
+| **Console** | Dưới bên trái | Nơi mã lệnh chạy và kết quả hiện ra. Bạn cũng có thể gõ ở đây, nhưng nó không được lưu. |
+| **Environment / History** | Trên bên phải | Liệt kê các đối tượng (dữ liệu, biến) hiện có trong bộ nhớ. |
+| **Files / Plots / Packages / Help** | Dưới bên phải | Duyệt tệp, xem hình, quản lý gói, đọc trang trợ giúp. |
+
+Thói quen quan trọng nhất: **viết mã lệnh của bạn trong trình soạn thảo Script, chứ không phải trong Console.** Script là bản ghi vĩnh viễn, tái lập được của bạn. Để chạy dòng hiện tại, nhấn `Ctrl+Enter` (Windows) hoặc `Cmd+Enter` (Mac). Kết quả xuất hiện trong Console.
+
+## Projects và thư mục làm việc
+
+**Thư mục làm việc (working directory)** là thư mục mà R đang "nhìn vào" ngay lúc này. Nếu mã lệnh của bạn viết `read_csv("Data/file.csv")`, R sẽ tìm một thư mục `Data` bên trong thư mục làm việc.
+
+Cách chuyên nghiệp để quản lý điều này là một **RStudio Project**. Vào `File > New Project` và trỏ nó đến thư mục khóa học của bạn (thư mục chứa `Data/`, `Scripts/`, v.v.). Từ đó trở đi, mọi đường dẫn đều tương đối so với gốc project đó, và phân tích của bạn sẽ chạy được trên bất kỳ máy tính nào.
+
+```r
+getwd()   # shows the current working directory
+```
+
+Tránh dùng `setwd("C:/Users/yourname/somewhere")`. Một đường dẫn cứng như vậy sẽ hỏng ngay khi bất kỳ ai khác (hoặc một máy khác) chạy mã lệnh của bạn. Các đường dẫn tương đối bên trong một Project thì có thể chuyển đổi được; các đường dẫn tuyệt đối thì không.
+
+## Cài đặt và nạp các gói
+
+Một **gói (package)** là một tập hợp các hàm bổ sung do ai đó viết và chia sẻ. Bạn **cài đặt** một gói một lần (nó tải về từ internet), và bạn **nạp** nó bằng `library()` trong mỗi phiên làm việc mới.
+
+```r
+# install.packages("tidyverse")   # run ONCE per machine (already done in class)
+library(tidyverse)                 # run EVERY session to make the tools available
+```
+
+Lỗi lớn nhất của người mới bắt đầu ở đây là chạy `install.packages()` mỗi lần. Điều đó chậm và cần internet. Cài một lần; `library()` mỗi phiên. Để xem danh sách đầy đủ các gói mà khóa học này sử dụng và cách cài đặt chúng, xem `package_installation_guide.md`.
+
+---
+
+# Nghiên cứu Trường hợp và Bộ Dữ liệu
+
+Mọi thứ trong khóa học này đều xoay quanh một nghiên cứu thực tế (mô phỏng) duy nhất, để bạn học toàn bộ quy trình trên một bài toán mạch lạc, thống nhất.
+
+## Nghiên cứu
+
+**Tiêu đề:** Các yếu tố quyết định việc Tiếp nhận Điều trị Tăng huyết áp ở Người trưởng thành khám tại các Cơ sở Chăm sóc Sức khỏe Ban đầu.
+
+**Thiết kế:** Một nghiên cứu cắt ngang đa trung tâm trên 1.500 người trưởng thành khám tại sáu cơ sở chăm sóc sức khỏe ban đầu: Bugando PHC, Kisesa HC, Nyamagana PHC, Ilemela HC, Buzuruga PHC, và Igoma HC.
+
+**Câu hỏi nghiên cứu:** Trong số người trưởng thành đã được chẩn đoán tăng huyết áp, những yếu tố nào quyết định việc họ có thực sự đang được điều trị bằng thuốc hạ huyết áp hay không?
+
+**Biến kết cục chính:** `treatment_uptake` (hiện đang điều trị bằng thuốc hạ huyết áp: Yes/No). Biến này chỉ được phân tích trong số khoảng 1.089 bệnh nhân đã được chẩn đoán tăng huyết áp (`htn_diagnosed == "Yes"`). Bạn không thể "tiếp nhận" điều trị cho một bệnh mà bạn chưa được chẩn đoán mắc phải.
+
+Tệp dữ liệu thô cố ý chứa những loại vấn đề mà bạn gặp trong dữ liệu lâm sàng thực tế: nó có **1.503 hàng** (ba bản ghi trùng lặp) thay vì 1.500, cách viết danh mục lẫn lộn, mã hóa nhị phân lẫn lộn, các giá trị đại diện cho dữ liệu thiếu, các giá trị sinh lý bất khả thi, khoảng trắng thừa, và định dạng ngày tháng lẫn lộn. Làm sạch những thứ này là trọng tâm của Buổi 2. Dữ liệu đã được làm sạch, sẵn sàng cho phân tích được lưu dưới dạng `Data/analysis_data.rds`, và mỗi buổi sau đó đều bắt đầu từ tệp sạch duy nhất này.
+
+## Bộ dữ liệu (36 biến, theo nhóm)
+
+Từ điển dữ liệu đầy đủ nằm trong `Data/data_dictionary.md`. Đây là bản đồ theo nhóm.
+
+**Biến nhân khẩu học và xã hội**
+
+| Biến | Ý nghĩa |
+|----------|---------|
+| `patient_id` | Mã định danh duy nhất (PHC-0001 ... PHC-1500) |
+| `facility` | Một trong sáu cơ sở PHC |
+| `enroll_date` | Ngày ghi danh (định dạng lẫn lộn trong tệp thô) |
+| `age` | Tuổi tính bằng năm |
+| `sex` | Female / Male |
+| `residence` | Urban / Rural |
+| `education` | Có thứ tự: None < Primary < Secondary < Tertiary |
+| `occupation`, `marital_status` | Các biến phân loại xã hội |
+| `health_insurance` | Yes / No |
+
+**Biến hành vi**
+
+| Biến | Ý nghĩa |
+|----------|---------|
+| `smoking` | Never / Former / Current |
+| `alcohol` | None / Moderate / Heavy |
+| `physical_activity` | Có thứ tự: Low / Moderate / High |
+
+**Biến lâm sàng**
+
+| Biến | Ý nghĩa |
+|----------|---------|
+| `height_cm`, `weight_kg`, `bmi` | Nhân trắc học; BMI được tính lại từ chiều cao và cân nặng |
+| `family_history_htn` | Tiền sử gia đình tăng huyết áp (Yes/No) |
+| `diabetes` | Đái tháo đường (Yes/No) |
+| `sbp_mmhg`, `dbp_mmhg` | Huyết áp tâm thu và tâm trương |
+| `knowledge_score` | Kiến thức về tăng huyết áp, 0-20 |
+| `distance_to_facility_km` | Khoảng cách đến cơ sở |
+| `comorbidity_count` | Số lượng bệnh đồng mắc |
+| `htn_diagnosed` | Được chẩn đoán tăng huyết áp (xác định quần thể phân tích) |
+| `months_since_diagnosis` | Số tháng kể từ khi chẩn đoán |
+
+**Dấu ấn sinh học xét nghiệm** (tất cả đều là số, theo đơn vị đã nêu)
+
+`total_chol_mmol_l`, `hdl_mmol_l`, `ldl_mmol_l`, `triglycerides_mmol_l`, `fasting_glucose_mmol_l`, `creatinine_umol_l`, `sodium_mmol_l`, `potassium_mmol_l`.
+
+**Biến kết cục**
+
+| Biến | Ý nghĩa |
+|----------|---------|
+| `treatment_uptake` | Biến kết cục CHÍNH: đang điều trị hạ huyết áp (Yes/No) |
+| `adherence` | Good / Poor (chỉ có ý nghĩa trong số người đang điều trị) |
+| `bp_controlled` | SBP<140 và DBP<90 trong số người đang điều trị |
+
+Hãy để từ điển dữ liệu bên cạnh bạn. Biết mỗi biến có ý nghĩa gì là một nửa của một phân tích tốt.
+
+---
+
+# Chương 1 (Buổi 1): Kiến thức cơ bản về R
+
+Buổi 1 là về việc làm quen. Chúng ta coi R như một máy tính bỏ túi, học cách lưu trữ giá trị, xây dựng vector và data frame, nạp gói, nhập dữ liệu lâm sàng, và nhìn nó lần đầu tiên.
+
+## R như một máy tính bỏ túi
+
+Mọi thứ chạy đều xuất hiện trong Console. Gõ phép toán và R trả lời.
+
+```r
+2 + 2
+140 / 90              # a blood-pressure ratio, just to show division
+sqrt(16)
+mean(c(120, 130, 145, 150))   # mean of four systolic readings
+```
+
+**Kết quả xuất ra có ý nghĩa gì:** R in ra `4`, `1.555...`, `4`, và `136.25`. Dòng cuối cùng thể hiện hai ý tưởng cùng lúc: `c()` xây dựng một tập hợp các giá trị, và `mean()` là một hàm tóm tắt chúng.
+
+## Đối tượng: lưu trữ một giá trị
+
+Bạn lưu một giá trị vào một **đối tượng (object)** bằng mũi tên gán `<-`. Hãy đọc nó là "nhận giá trị".
+
+```r
+sbp <- 152            # systolic BP of one patient; sbp "gets" 152
+sbp                   # type the name to print it
+age <- 60
+sbp + 10              # objects behave like the values they hold -> 162
+```
+
+Hai điều cần nhớ ngay từ đầu:
+
+- Dùng `<-` để gán (phím tắt là `Alt+-`). Dùng `=` hầu như cũng được nhưng `<-` là quy ước của R.
+- R **phân biệt chữ hoa chữ thường**: `SBP` là một đối tượng khác với `sbp`. Một số lượng đáng ngạc nhiên các lỗi ban đầu chỉ là một chữ cái viết hoa đặt sai chỗ.
+
+## Vector: nhiều giá trị cùng kiểu
+
+Một **vector** chứa nhiều giá trị, tất cả cùng một kiểu. Hàm `c()` ("combine" - kết hợp) tạo ra một vector.
+
+```r
+sbp_readings <- c(152, 138, 145, 160, 129, 142)
+sbp_readings
+length(sbp_readings)   # how many values?
+mean(sbp_readings)
+sd(sbp_readings)
+max(sbp_readings)
+summary(sbp_readings)  # min, quartiles, median, mean, max
+```
+
+Vector có thể là văn bản (character) hoặc đúng/sai (logical), không chỉ là số:
+
+```r
+sex <- c("Female", "Male", "Female", "Female", "Male", "Female")
+high_bp <- sbp_readings >= 140   # a TRUE/FALSE for each reading
+high_bp
+sum(high_bp)                     # TRUE counts as 1, so this counts the highs
+```
+
+**Kết quả xuất ra có ý nghĩa gì:** `high_bp` là `TRUE FALSE TRUE TRUE FALSE TRUE`, và `sum(high_bp)` là `4` vì có bốn lần đo đạt ít nhất 140. Cộng tổng một vector logical để đếm "có bao nhiêu" là một thủ thuật bạn sẽ dùng liên tục.
+
+## Các gói
+
+```r
+library(tidyverse)   # data import, wrangling, and ggplot2 for figures
+library(readxl)      # read Excel files
+```
+
+tidyverse là bộ công cụ hằng ngày cho khóa học này.
+
+## Data frame và nhập dữ liệu lâm sàng
+
+Một **data frame** là một bảng: hàng là bệnh nhân, cột là biến. Đó là đối tượng trung tâm trong mọi phân tích lâm sàng. Chúng ta nhập của mình từ đĩa.
+
+```r
+# CSV (comma-separated values)
+htn <- read_csv("Data/hypertension_phc_raw.csv")
+
+# The same data as Excel, just to show readxl
+htn_xl <- read_excel("Data/hypertension_phc_raw.xlsx", sheet = "data")
+```
+
+**Kết quả xuất ra có ý nghĩa gì:** `read_csv()` in ra một đặc tả cột và `Rows: 1503 Columns: 36`. Chú ý `1503`, không phải `1500` - ba hàng trùng lặp đã ẩn nấp sẵn ở đó. R đang bảo bạn hãy làm sạch trước khi phân tích.
+
+## Kiểm tra lần đầu
+
+Hãy nhìn dữ liệu trước khi bạn làm bất cứ điều gì với nó.
+
+```r
+htn              # a tibble prints the first 10 rows neatly
+dim(htn)         # rows, columns
+nrow(htn); ncol(htn)
+names(htn)       # variable names
+head(htn, 5)     # first 5 rows
+glimpse(htn)     # compact structure: the type of every column
+# View(htn)      # opens the spreadsheet viewer (run inside RStudio)
+```
+
+Sau đó nhìn vào từng biến riêng lẻ. Dấu `$` kéo một cột ra dưới dạng một vector.
+
+```r
+htn$age
+summary(htn$age)     # NOTE the max of 200 -> an impossible age
+table(htn$sex)       # NOTE Female / F / female / f -> messy spellings
+table(htn$facility)  # the six facilities (some with stray spaces)
+```
+
+**Kết quả xuất ra có ý nghĩa gì:** ngay cả trước bất kỳ thống kê nào, R đang cho bạn thấy rằng dữ liệu cần được làm sạch - một tuổi tối đa bất khả thi là 200, và `sex` được ghi theo bốn cách khác nhau. Đó chính xác là những gì Buổi 2 sẽ sửa. Ở Buổi 1 chúng ta không lưu gì cả; mục tiêu chỉ đơn giản là đưa dữ liệu vào và nhìn nó.
+
+## Những điểm chính rút ra
+
+- Viết mã lệnh trong trình soạn thảo Script; kết quả xuất hiện trong Console.
+- `<-` gán; `c()` kết hợp; R phân biệt chữ hoa chữ thường.
+- Một data frame là một bảng các bệnh nhân (hàng) và các biến (cột).
+- `read_csv()` / `read_excel()` nhập dữ liệu; `glimpse()`, `summary()`, và `table()` kiểm tra nó.
+- Việc kiểm tra thường bộc lộ ngay các vấn đề về chất lượng dữ liệu.
+
+## Bài tập Buổi 1
+
+Mở `Practicals/day1_exercise.R`. Nhập bộ dữ liệu thô, báo cáo kích thước của nó, liệt kê tên các biến, và dùng `summary()` và `table()` trên ít nhất ba biến để xác định hai vấn đề về chất lượng dữ liệu mà bạn có thể thấy bằng chính mắt mình.
+
+---
+
+# Chương 2 (Buổi 2): Hiểu và Làm sạch Dữ liệu Lâm sàng
+
+Buổi 2 biến tệp thô lộn xộn thành một bộ dữ liệu gọn gàng, sẵn sàng cho phân tích và **lưu** nó lại. Tệp đã lưu này là "hợp đồng" cho các Buổi 3, 4 và 5: mỗi buổi sau đó đều bắt đầu từ đúng cùng một dữ liệu sạch, để kết quả nhất quán và tái lập được.
+
+```r
+library(tidyverse)
+```
+
+## Các kiểu biến
+
+Mỗi cột có một **kiểu (type)**, và kiểu quyết định bạn có thể làm gì với nó.
+
+- **numeric** (còn gọi là double): các con số bạn có thể lấy trung bình, như `age` hoặc `sbp_mmhg`.
+- **character**: văn bản tự do, như `patient_id`.
+- **factor**: một biến phân loại với một tập hợp cố định các **mức (level)**, như `sex` (Female, Male). Factor là cách R biểu diễn các danh mục trong bảng và mô hình.
+- **logical**: `TRUE` / `FALSE`.
+- **Date**: các ngày lịch mà R hiểu là thời gian, không phải văn bản.
+
+Đặt đúng kiểu không phải là chuyện câu nệ. Một factor có mức tham chiếu sai sẽ cho bạn một tỷ số chênh ngược; một ngày được lưu dưới dạng văn bản không thể sắp xếp theo thời gian.
+
+## Nhập dữ liệu với các mã giá trị thiếu
+
+Các bộ dữ liệu thực tế giấu "thiếu" bên trong các giá trị đại diện như ô trống, `NA`, `999`, hoặc `-99`. Hãy báo cho `read_csv()` coi tất cả chúng là giá trị thiếu ngay từ đầu.
+
+```r
+raw <- read_csv(
+  "Data/hypertension_phc_raw.csv",
+  na = c("", "NA", "999", "-99")   # all of these become NA
+)
+glimpse(raw)
+nrow(raw)   # 1503 - duplicates still present
+```
+
+## Loại bỏ bản ghi trùng lặp
+
+```r
+sum(duplicated(raw))         # how many fully duplicated rows?
+raw <- distinct(raw)         # drop exact duplicate rows
+n_distinct(raw$patient_id)   # should now equal nrow(raw)
+nrow(raw)                    # 1500
+```
+
+**Kết quả xuất ra có ý nghĩa gì:** `sum(duplicated(raw))` là `3`. Sau `distinct()`, số hàng giảm xuống 1.500 và số lượng ID riêng biệt khớp với số hàng - không bệnh nhân nào bị đếm hai lần.
+
+## Các danh mục không nhất quán và khoảng trắng
+
+Trước tiên loại bỏ khoảng trắng thừa khỏi mọi cột văn bản cùng một lúc, sau đó sửa các biến cụ thể.
+
+```r
+# Trim leading/trailing spaces from ALL character columns
+raw <- raw |> mutate(across(where(is.character), str_trim))
+```
+
+Ký hiệu `|>` là **pipe** (ống dẫn): hãy đọc nó là "rồi thì". Nó chuyển kết quả bên trái vào hàm bên phải, để bạn có thể xâu chuỗi các bước theo thứ tự bạn suy nghĩ về chúng.
+
+Bây giờ mã hóa lại biến `sex` lộn xộn thành hai mức sạch bằng `case_when()`, hàm này kiểm tra các quy tắc từ trên xuống dưới:
+
+```r
+raw <- raw |>
+  mutate(sex = case_when(
+    str_to_lower(sex) %in% c("female", "f") ~ "Female",
+    str_to_lower(sex) %in% c("male", "m")   ~ "Male",
+    TRUE ~ NA_character_                       # anything else -> missing
+  ))
+table(raw$sex, useNA = "ifany")               # now just Female / Male
+```
+
+Một số biến lẫn lộn `Yes/No`, `Y/N`, và `1/0`. Thay vì lặp lại logic, hãy viết một **hàm trợ giúp** nhỏ, có thể tái sử dụng và áp dụng nó cho tất cả chúng bằng `across()`:
+
+```r
+to_yesno <- function(x) {
+  x <- str_to_lower(str_trim(as.character(x)))
+  case_when(
+    x %in% c("yes", "y", "1", "true")  ~ "Yes",
+    x %in% c("no",  "n", "0", "false") ~ "No",
+    TRUE ~ NA_character_
+  )
+}
+
+raw <- raw |>
+  mutate(across(c(diabetes, family_history_htn, health_insurance,
+                  htn_diagnosed, treatment_uptake), to_yesno))
+table(raw$treatment_uptake, useNA = "ifany")
+```
+
+## Kiểm định các giá trị bất khả thi
+
+Xác định các khoảng sinh lý hợp lý; bất cứ thứ gì nằm ngoài sẽ trở thành `NA`. Hàm `if_else()` giữ giá trị nếu điều kiện đúng và thay thế bằng `NA_real_` nếu ngược lại.
+
+```r
+raw <- raw |>
+  mutate(
+    age       = if_else(age >= 18  & age <= 110,  age,       NA_real_),
+    sbp_mmhg  = if_else(sbp_mmhg >= 70 & sbp_mmhg <= 260, sbp_mmhg, NA_real_),
+    dbp_mmhg  = if_else(dbp_mmhg >= 40 & dbp_mmhg <= 150, dbp_mmhg, NA_real_),
+    height_cm = if_else(height_cm >= 120 & height_cm <= 210, height_cm, NA_real_),
+    weight_kg = if_else(weight_kg >= 30 & weight_kg <= 200,  weight_kg, NA_real_)
+  )
+summary(select(raw, age, sbp_mmhg, dbp_mmhg, height_cm, weight_kg))
+```
+
+**Kết quả xuất ra có ý nghĩa gì:** các giá trị bất khả thi được đánh dấu trong từ điển dữ liệu (age 0 và 200, SBP 0 và 700, cân nặng 7 kg, chiều cao 17 cm, DBP là 5) giờ đã là `NA`, và các giá trị lớn nhất và nhỏ nhất từ `summary()` nằm trong giới hạn hợp lý về mặt lâm sàng.
+
+## Mã hóa lại và tạo biến mới
+
+Tính lại BMI từ chiều cao và cân nặng đã được làm sạch (đừng bao giờ tin `bmi` được cung cấp, vốn có lỗi), sau đó tạo các phân loại lâm sàng bằng `cut()` và `case_when()`.
+
+```r
+raw <- raw |>
+  mutate(
+    bmi = round(weight_kg / (height_cm / 100)^2, 1),   # recompute from source
+    bmi_cat = cut(bmi,
+                  breaks = c(-Inf, 18.5, 25, 30, Inf),
+                  labels = c("Underweight", "Normal", "Overweight", "Obese")),
+    bp_category = case_when(
+      is.na(sbp_mmhg) | is.na(dbp_mmhg) ~ NA_character_,
+      sbp_mmhg >= 140 | dbp_mmhg >= 90  ~ "Hypertension",
+      sbp_mmhg >= 130 | dbp_mmhg >= 80  ~ "Elevated",
+      TRUE                              ~ "Normal"
+    )
+  )
+```
+
+## Phân tích cú pháp ngày tháng lẫn lộn
+
+Cột `enroll_date` lẫn lộn các định dạng. `lubridate::parse_date_time()` thử một danh sách các định dạng theo thứ tự.
+
+```r
+library(lubridate)
+raw <- raw |>
+  mutate(enroll_date = parse_date_time(
+    enroll_date,
+    orders = c("ymd", "dmy", "d-b-Y")) |> as_date())
+sum(is.na(raw$enroll_date))   # how many failed to parse?
+```
+
+## Factor và các mức tham chiếu
+
+Đặt đúng kiểu cho mọi biến phân loại, và chọn **mức tham chiếu (reference level)** một cách có chủ đích. Đối với các yếu tố dự báo nhị phân, mức tham chiếu (nhóm so sánh) được liệt kê đầu tiên; chúng ta đặt `"No"` lên trước để mô hình ước lượng khả năng (odds) của "Yes".
+
+```r
+analysis_data <- raw |>
+  mutate(
+    facility          = factor(facility),
+    sex               = factor(sex, levels = c("Female", "Male")),
+    residence         = factor(residence, levels = c("Rural", "Urban")),
+    education         = factor(education,
+                              levels = c("None","Primary","Secondary","Tertiary"),
+                              ordered = TRUE),
+    occupation        = factor(occupation),
+    marital_status    = factor(marital_status),
+    physical_activity = factor(physical_activity,
+                              levels = c("Low","Moderate","High"), ordered = TRUE),
+    smoking           = factor(smoking, levels = c("Never","Former","Current")),
+    alcohol           = factor(alcohol, levels = c("None","Moderate","Heavy")),
+    bp_category       = factor(bp_category,
+                              levels = c("Normal","Elevated","Hypertension")),
+    # Binary predictors/outcomes: reference level "No" comes FIRST
+    health_insurance   = factor(health_insurance, levels = c("No","Yes")),
+    family_history_htn = factor(family_history_htn, levels = c("No","Yes")),
+    diabetes           = factor(diabetes, levels = c("No","Yes")),
+    htn_diagnosed      = factor(htn_diagnosed, levels = c("No","Yes")),
+    treatment_uptake   = factor(treatment_uptake, levels = c("No","Yes")),
+    adherence          = factor(na_if(adherence, ""), levels = c("Poor","Good")),
+    bp_controlled      = factor(na_if(bp_controlled, ""), levels = c("No","Yes"))
+  )
+glimpse(analysis_data)
+```
+
+Các factor **có thứ tự (ordered)** (`education`, `physical_activity`) giữ nguyên thứ hạng tự nhiên của chúng, điều này cho phép một mô hình ước lượng xu hướng qua các mức.
+
+## Kiểm tra dữ liệu thiếu lần cuối, rồi lưu
+
+```r
+colSums(is.na(analysis_data)) |> sort(decreasing = TRUE) |> head(12)
+```
+
+**Kết quả xuất ra có ý nghĩa gì:** đoạn này liệt kê các cột có nhiều giá trị thiếu nhất. `adherence` và `bp_controlled` bị thiếu theo thiết kế (chúng chỉ áp dụng cho bệnh nhân đang điều trị), nên tỷ lệ thiếu cao ở đó là điều được mong đợi, không phải là lỗi.
+
+Cuối cùng, lưu dữ liệu sạch. Tệp `.rds` bảo toàn chính xác các kiểu factor; tệp `.csv` là bản sao lưu mà con người đọc được.
+
+```r
+saveRDS(analysis_data, "Data/analysis_data.rds")    # preserves types
+write_csv(analysis_data, "Data/analysis_data.csv")  # readable backup
+
+# To reload on later days:
+# analysis_data <- readRDS("Data/analysis_data.rds")
+```
+
+## Những điểm chính rút ra
+
+- Khai báo các mã giá trị thiếu khi nhập bằng `na = c(...)`.
+- `distinct()` loại bỏ các hàng trùng lặp; kiểm tra rằng các ID là duy nhất sau đó.
+- `str_trim()`, `case_when()`, và một hàm trợ giúp `to_yesno()` chuẩn hóa các danh mục lộn xộn.
+- Kiểm định các giá trị bất khả thi thành `NA` bằng `if_else()` và các khoảng hợp lý.
+- Tính lại các biến dẫn xuất (BMI) từ các đầu vào sạch; đừng bao giờ tin một cột dẫn xuất được cung cấp sẵn.
+- Đặt các mức factor và danh mục tham chiếu một cách có chủ đích; dùng factor có thứ tự cho các thứ hạng tự nhiên.
+- Lưu dữ liệu sạch một lần và bắt đầu mọi phân tích sau đó từ nó.
+
+## Bài tập Buổi 2
+
+Mở `Practicals/day2_exercise.R`. Bắt đầu từ tệp thô, tái tạo quy trình làm sạch: nhập với các mã giá trị thiếu, loại bỏ trùng lặp, làm sạch `sex` và các biến nhị phân, kiểm định ít nhất ba khoảng số, tạo BMI và `bmi_cat`, đặt factor, kiểm tra dữ liệu thiếu, và lưu tệp `analysis_data.rds` của riêng bạn.
+
+---
+
+# Chương 3 (Buổi 3): Thống kê Mô tả, Bảng biểu và Hình
+
+Buổi 3 mô tả mẫu - bằng số và bằng hình ảnh - và tạo ra một "Bảng 1" cho bản thảo cùng các hình chất lượng tạp chí. Chúng ta luôn bắt đầu từ dữ liệu sạch đã lưu.
+
+```r
+library(tidyverse)
+library(gtsummary)   # the gold standard for "Table 1" in R
+
+course_teal <- "#0D7377"
+if (!dir.exists("Resources")) dir.create("Resources")
+
+analysis_data <- readRDS("Data/analysis_data.rds")
+nrow(analysis_data)   # 1500 patients
+```
+
+## Xu hướng trung tâm và độ phân tán (và cái bẫy na.rm)
+
+Xu hướng trung tâm trả lời "điểm giữa ở đâu?" (trung bình, trung vị). Độ phân tán trả lời "các giá trị phân tán như thế nào?" (độ lệch chuẩn, khoảng tứ phân vị, khoảng biến thiên).
+
+**Cái bẫy phổ biến nhất đối với người mới bắt đầu:** nếu một cột có *bất kỳ* giá trị thiếu nào, `mean()` và `sd()` trả về `NA`. Bạn phải thêm `na.rm = TRUE` để báo cho R bỏ qua các giá trị thiếu.
+
+```r
+mean(analysis_data$sbp_mmhg)                # may be NA if any value is missing
+mean(analysis_data$sbp_mmhg, na.rm = TRUE)  # the CORRECT way
+
+mean(analysis_data$age, na.rm = TRUE)
+median(analysis_data$age, na.rm = TRUE)     # robust to outliers
+sd(analysis_data$age, na.rm = TRUE)
+IQR(analysis_data$age, na.rm = TRUE)        # interquartile range (Q3 - Q1)
+quantile(analysis_data$age,
+         probs = c(0, 0.25, 0.5, 0.75, 1), na.rm = TRUE)
+```
+
+**Diễn giải lâm sàng:** khi trung bình và trung vị gần nhau, phân phối gần như đối xứng và trung bình là một tóm tắt công bằng. Khi trung bình nằm cao hơn hẳn trung vị (thường gặp với huyết áp và BMI), dữ liệu bị lệch phải - một vài giá trị cao kéo trung bình lên - nên hãy báo cáo **trung vị (IQR)** thay vào đó.
+
+## Một tóm tắt số theo nhóm
+
+`across()` áp dụng cùng một bộ hàm cho nhiều cột cùng lúc, không cần sao chép-dán. Đặt tên cho mỗi thống kê giúp kết quả xuất ra tự giải thích.
+
+```r
+numeric_summary <- analysis_data |>
+  group_by(treatment_uptake) |>
+  summarise(
+    n = n(),
+    across(
+      c(age, bmi, sbp_mmhg, dbp_mmhg),
+      list(
+        mean   = ~ mean(.x, na.rm = TRUE),
+        sd     = ~ sd(.x,   na.rm = TRUE),
+        median = ~ median(.x, na.rm = TRUE)
+      ),
+      .names = "{.col}_{.fn}"
+    ),
+    .groups = "drop"
+  )
+print(numeric_summary)
+```
+
+**Diễn giải lâm sàng:** so sánh các hàng. Nếu bệnh nhân đang điều trị có tuổi trung bình và SBP cao hơn, điều đó gợi ý rằng những bệnh nhân lớn tuổi hơn hoặc bệnh nặng hơn là những người được bắt đầu điều trị - một tín hiệu mà chúng ta kiểm định chính thức về sau.
+
+## Bảng tần số và bảng chéo
+
+```r
+table(analysis_data$sex)                            # raw counts
+prop.table(table(analysis_data$sex))                # proportions (sum to 1)
+round(100 * prop.table(table(analysis_data$sex)), 1)  # as percentages
+
+# table() SILENTLY drops NA by default; make missing visible:
+table(analysis_data$education, useNA = "ifany")
+
+# tidyverse equivalent returns a tidy data frame you can pipe onward:
+analysis_data |>
+  count(education) |>
+  mutate(percent = round(100 * n / sum(n), 1))
+```
+
+Một **bảng chéo (cross-tabulation)** đếm hai biến phân loại cùng nhau. Đối số `margin` của `prop.table()` quyết định phần trăm chạy theo hướng nào.
+
+```r
+xtab <- table(analysis_data$treatment_uptake, analysis_data$diabetes)
+xtab
+round(100 * prop.table(xtab, margin = 1), 1)  # ROW %: each row sums to 100
+round(100 * prop.table(xtab, margin = 2), 1)  # COLUMN %: each column sums to 100
+```
+
+**Diễn giải lâm sàng:** chọn phần trăm trả lời câu hỏi của bạn. "Tỷ lệ người đái tháo đường đang được điều trị là bao nhiêu?" là một phần trăm **theo cột** (`margin = 2`). "Tỷ lệ bệnh nhân đang điều trị bị đái tháo đường là bao nhiêu?" là một phần trăm **theo hàng** (`margin = 1`). Báo cáo sai chiều là một trong những lỗi phổ biến nhất trong các bản thảo.
+
+## Xây dựng Bảng 1 cho bản thảo bằng gtsummary
+
+`gtsummary` biến dữ liệu thô thành bảng đặc điểm nền mà mọi bài báo lâm sàng đều mở đầu. Nó tự động chọn các tóm tắt hợp lý (trung bình (SD) hoặc trung vị (IQR) cho biến số, n (%) cho biến phân loại) và ghi nhãn dữ liệu thiếu giúp bạn.
+
+```r
+table1 <- analysis_data |>
+  select(
+    age, sex, residence, education, bmi, bmi_cat,
+    smoking, alcohol, physical_activity,
+    family_history_htn, diabetes,
+    sbp_mmhg, dbp_mmhg, bp_category,
+    total_chol_mmol_l, fasting_glucose_mmol_l,
+    treatment_uptake
+  ) |>
+  tbl_summary(
+    by = treatment_uptake,           # one column per outcome group
+    missing_text = "(Missing)",
+    label = list(
+      age ~ "Age (years)",
+      sex ~ "Sex",
+      bmi ~ "BMI (kg/m^2)",
+      sbp_mmhg ~ "Systolic BP (mmHg)",
+      dbp_mmhg ~ "Diastolic BP (mmHg)"
+    )
+  ) |>
+  add_p() |>          # add a p-value column comparing the groups
+  add_overall() |>    # add a total column
+  bold_labels() |>
+  modify_caption("**Table 1. Baseline characteristics by treatment uptake**")
+
+table1   # prints in the Viewer
+```
+
+Để xuất nó ra (cho một bản thảo):
+
+```r
+# To Word:
+# table1 |> as_flex_table() |>
+#   flextable::save_as_docx(path = "Resources/table1_demo.docx")
+# To HTML:
+# table1 |> as_gt() |> gt::gtsave("Resources/table1_demo.html")
+```
+
+## Chọn và tạo hình
+
+Khớp hình với biến: một biểu đồ tần số (histogram) cho một biến số, một biểu đồ cột cho một biến phân loại, một biểu đồ hộp (boxplot) cho biến số theo danh mục, một biểu đồ tán xạ (scatterplot) cho hai biến số. Mỗi biểu đồ đều có một tiêu đề rõ ràng, nhãn trục **kèm đơn vị**, `theme_minimal()`, và điểm nhấn màu teal. `ggsave()` ghi nó ra đĩa ở độ phân giải 300 dpi.
+
+```r
+# Histogram of age
+p_age <- ggplot(analysis_data, aes(x = age)) +
+  geom_histogram(binwidth = 5, fill = course_teal, colour = "white") +
+  labs(title = "Age distribution of study participants",
+       x = "Age (years)", y = "Number of patients") +
+  theme_minimal(base_size = 13)
+ggsave("Resources/day3_hist_age.png", plot = p_age,
+       width = 7, height = 5, dpi = 300)
+
+# Bar chart of education (geom_bar counts categories for you)
+p_edu <- ggplot(analysis_data, aes(x = education)) +
+  geom_bar(fill = course_teal) +
+  labs(title = "Educational attainment of participants",
+       x = "Education level", y = "Number of patients") +
+  theme_minimal(base_size = 13)
+
+# Boxplot of SBP by treatment uptake
+p_box <- ggplot(analysis_data, aes(x = treatment_uptake, y = sbp_mmhg)) +
+  geom_boxplot(fill = course_teal, alpha = 0.6, na.rm = TRUE) +
+  labs(title = "Systolic BP by treatment uptake",
+       x = "On hypertension treatment?", y = "Systolic BP (mmHg)") +
+  theme_minimal(base_size = 13)
+
+# Scatterplot of SBP vs BMI with a linear trend
+p_scatter <- ggplot(analysis_data, aes(x = bmi, y = sbp_mmhg)) +
+  geom_point(alpha = 0.3, colour = course_teal) +
+  geom_smooth(method = "lm", se = TRUE, colour = "grey20") +
+  labs(title = "Systolic BP vs BMI",
+       x = "BMI (kg/m^2)", y = "Systolic BP (mmHg)") +
+  theme_minimal(base_size = 13)
+```
+
+Một `ggplot` được xây dựng bằng cách thêm các lớp bằng dấu `+`: dữ liệu và ánh xạ thẩm mỹ (`aes()`) trước, rồi đến một hình học (`geom_*`), rồi đến nhãn và theme.
+
+**Diễn giải lâm sàng:** một đường dốc lên trong biểu đồ tán xạ gợi ý rằng BMI cao hơn có xu hướng đi kèm huyết áp tâm thu cao hơn - nhất quán với béo phì là một yếu tố nguy cơ. Hãy nhớ: đây là sự liên quan, không phải bằng chứng của quan hệ nhân quả.
+
+## Xuất một bảng tóm tắt
+
+Chia sẻ các con số với đồng tác giả không dùng R bằng cách viết một tệp CSV đơn giản.
+
+```r
+write_csv(numeric_summary, "Resources/day3_numeric_summary.csv")
+```
+
+## Những điểm chính rút ra
+
+- Luôn truyền `na.rm = TRUE` vào các hàm tóm tắt; một `NA` lạc lõng thường là nguyên nhân của một kết quả `NA`.
+- Ưu tiên trung vị (IQR) hơn trung bình (SD) cho các biến lâm sàng bị lệch.
+- Làm cho các giá trị thiếu hiện rõ trong bảng bằng `useNA = "ifany"`.
+- Chọn đúng chiều `prop.table()` cho câu hỏi bạn đang đặt ra.
+- `gtsummary` xây dựng Bảng 1 trong vài dòng; `ggplot2` + `ggsave()` tạo và lưu các hình xuất bản ở 300 dpi.
+
+## Bài tập Buổi 3
+
+Mở `Practicals/day3_exercise.R`. Tạo một tóm tắt số theo nhóm theo `treatment_uptake`, hai bảng tần số được ghi nhãn đúng, một bảng chéo với chiều thích hợp, một Bảng 1 bằng `gtsummary`, và ít nhất hai hình được lưu vào `Resources/`.
+
+---
+
+# Chương 4 (Buổi 4): Các Kiểm định Thống kê Y học Thường gặp
+
+> **Ghi chú về trình tự.** Bộ slide hiện tại giữ **Buổi 4 chỉ dành cho các kiểm định thống kê**
+> (kiểm định t, kiểm định Wilcoxon, ANOVA, kiểm định chi bình phương, kiểm định Fisher, tương quan) và giới thiệu
+> **hồi quy — tuyến tính rồi logistic — ở Buổi 5**. Chương này vẫn bao gồm một
+> phần nhập môn hồi quy logistic ở cuối; hãy coi phần nhập môn đó là cầu nối của bạn sang Buổi 5.
+
+Buổi 4 chuyển từ mô tả dữ liệu sang đặt câu hỏi cho nó bằng các kiểm định thống kê. Chúng ta làm việc trong quần thể phân tích - những bệnh nhân đã được chẩn đoán tăng huyết áp.
+
+```r
+library(tidyverse)
+library(broom)   # turns model output into a tidy data frame
+
+analysis_data <- readRDS("Data/analysis_data.rds")
+
+dx <- filter(analysis_data, htn_diagnosed == "Yes")
+nrow(dx)                   # ~1089 patients in the analysis
+table(dx$treatment_uptake) # how many took up treatment vs not
+```
+
+**Lỗi thường gặp:** chạy phân tích trên toàn bộ 1.500 bệnh nhân. Điều đó pha trộn cả những người chưa được chẩn đoán, những người mà biến kết cục không được xác định, và làm sai lệch mọi kết quả.
+
+## Giá trị p, gói gọn trong một đoạn
+
+Một **giá trị p** là xác suất quan sát được dữ liệu ít nhất cũng cực đoan như của bạn *nếu giả thuyết không (null hypothesis) là đúng*. Một giá trị p nhỏ (theo quy ước là dưới 0,05) nghĩa là dữ liệu gây ngạc nhiên dưới giả thuyết không, nên chúng ta "bác bỏ" nó. Một giá trị p **không phải** là xác suất giả thuyết không đúng, và nó **không phải** là thước đo cỡ hiệu ứng. Trong các mẫu lớn, ngay cả những khác biệt tầm thường cũng trở nên "có ý nghĩa" - nên hãy luôn ghép giá trị p với cỡ của hiệu ứng.
+
+## Kiểm tra tính chuẩn
+
+Nhiều kiểm định cổ điển ("có tham số") giả định dữ liệu gần chuẩn. Hãy nhìn trước, rồi kiểm định.
+
+```r
+hist(dx$age, breaks = 30, col = course_teal, border = "white",
+     main = "Distribution of Age", xlab = "Age (years)")
+
+qqnorm(dx$age, main = "Q-Q Plot: Age"); qqline(dx$age, col = course_teal, lwd = 2)
+
+shapiro.test(dx$age)       # H0: data ARE normal; small p -> reject normality
+shapiro.test(dx$sbp_mmhg)
+```
+
+**Kết quả xuất ra có ý nghĩa gì:** các điểm bám sát đường Q-Q cho thấy tính chuẩn gần đúng; các điểm cong ra xa ở hai đầu cho thấy độ lệch. **Thận trọng:** với ~1.089 hàng, kiểm định Shapiro-Wilk mạnh đến mức nó gắn cờ những sai lệch tầm thường là "có ý nghĩa". Ở đây hãy tin một biểu đồ Q-Q gần thẳng và một biểu đồ tần số đối xứng hơn là giá trị p của Shapiro. Quy tắc kinh nghiệm: đối xứng và mẫu lớn -> có tham số là ổn; lệch rõ ràng hoặc mẫu nhỏ -> dùng kiểm định phi tham số.
+
+## Hai nhóm, biến kết cục liên tục: kiểm định t / Wilcoxon
+
+```r
+# Parametric: Welch two-sample t-test (does not assume equal variances)
+t.test(age ~ treatment_uptake, data = dx)
+
+# Non-parametric equivalent (compares ranks; robust to skew/outliers)
+wilcox.test(age ~ treatment_uptake, data = dx)
+```
+
+Công thức `age ~ treatment_uptake` đọc là "age được giải thích bởi treatment uptake".
+
+**Kết quả xuất ra có ý nghĩa gì:** đọc ba thứ từ kiểm định t - hai giá trị trung bình nhóm, khoảng tin cậy 95% cho sự khác biệt của chúng, và giá trị p. Nếu cả hai kiểm định đồng thuận (chúng thường đồng thuận với dữ liệu lớn, đối xứng), hãy báo cáo kiểm định t với các trung bình; nếu chúng bất đồng, hãy tin kiểm định phi tham số và báo cáo các trung vị.
+
+## Hơn hai nhóm: ANOVA
+
+Chạy nhiều kiểm định t từng cặp làm tăng tỷ lệ dương tính giả. ANOVA kiểm định tất cả các nhóm cùng lúc với một giá trị p trung thực duy nhất.
+
+```r
+aov_age <- aov(age ~ education, data = dx)
+summary(aov_age)     # the F-statistic and its p-value
+TukeyHSD(aov_age)    # which specific pairs differ (corrected for multiplicity)
+```
+
+**Kết quả xuất ra có ý nghĩa gì:** một giá trị p ANOVA nhỏ nói rằng *một số* nhóm khác nhau nhưng không nói nhóm nào; kiểm định hậu định Tukey xác định các cặp cụ thể. Tương đương phi tham số là `kruskal.test()`.
+
+## Hai biến phân loại: chi bình phương / Fisher
+
+```r
+uptake_diabetes <- table(dx$treatment_uptake, dx$diabetes)
+addmargins(uptake_diabetes)          # table with row/column totals
+
+chisq.test(uptake_diabetes)          # H0: the variables are independent
+chisq.test(uptake_diabetes)$expected # check expected counts are all >= 5
+fisher.test(uptake_diabetes)         # use when expected counts are small
+```
+
+**Kết quả xuất ra có ý nghĩa gì:** một giá trị p nhỏ nghĩa là tiếp nhận điều trị và đái tháo đường có liên quan; bảng cho thấy chiều hướng. Kiểm định chi bình phương chỉ hợp lệ khi các số lượng kỳ vọng đủ lớn (một quy tắc phổ biến: tất cả các ô kỳ vọng ít nhất là 5); nếu không hãy dùng kiểm định chính xác Fisher. Không kiểm định nào cho một cỡ hiệu ứng - tỷ số chênh mới cho.
+
+## Tương quan: hai biến liên tục
+
+```r
+cor.test(dx$sbp_mmhg, dx$bmi, method = "pearson")   # linear; assumes normality
+cor.test(dx$sbp_mmhg, dx$bmi, method = "spearman")  # rank-based; robust
+```
+
+**Kết quả xuất ra có ý nghĩa gì:** hệ số `r` chạy từ -1 đến +1: đại khái 0,0-0,3 yếu, 0,3-0,7 trung bình, 0,7-1,0 mạnh; dấu cho biết chiều hướng. Trong các mẫu lớn, ngay cả một `r` rất nhỏ (chẳng hạn 0,08) cũng có thể "có ý nghĩa" nhưng tầm thường về mặt lâm sàng - hãy đánh giá `r`, không chỉ giá trị p. Tương quan không phải là quan hệ nhân quả.
+
+## Nhập môn hồi quy logistic
+
+Biến kết cục của chúng ta là nhị phân (Yes/No), nên chúng ta dùng **hồi quy logistic**, không phải hồi quy tuyến tính. `family = binomial` báo cho `glm()` rằng biến kết cục là 0/1. Vì `treatment_uptake` có mức tham chiếu "No", mô hình ước lượng khả năng (odds) của "Yes".
+
+```r
+# Single categorical predictor
+m_diab <- glm(treatment_uptake ~ diabetes, data = dx, family = binomial)
+exp(coef(m_diab))      # odds ratios (the raw coefficients are log-odds)
+exp(confint(m_diab))   # their 95% confidence intervals
+```
+
+**Diễn giải một tỷ số chênh (OR):** `OR = 1` nghĩa là không có hiệu ứng; `OR > 1` nghĩa là khả năng tiếp nhận điều trị cao hơn; `OR < 1` nghĩa là khả năng thấp hơn. Một khoảng tin cậy 95% **loại trừ giá trị 1** thì có ý nghĩa thống kê. Cách diễn đạt: "Bệnh nhân đái tháo đường có khả năng tiếp nhận điều trị cao gấp khoảng X lần so với người không đái tháo đường (OR X.X, KTC 95% a-b)."
+
+Đối với một yếu tố dự báo liên tục, OR là "cho mỗi một đơn vị tăng thêm". Một năm tuổi là một bước nhỏ, nên hãy đổi thang đo sang một thứ gì đó có ý nghĩa:
+
+```r
+m_age <- glm(treatment_uptake ~ age, data = dx, family = binomial)
+exp(coef(m_age))
+exp(coef(m_age)["age"] * 10)   # OR per 10-year increase, easier to communicate
+```
+
+## Từ mô hình đơn biến đến mô hình hiệu chỉnh
+
+Bệnh nhân khác nhau về nhiều mặt cùng một lúc. Một mô hình **đa biến** ước lượng hiệu ứng của mỗi yếu tố dự báo trong khi giữ các yếu tố khác không đổi ("hiệu chỉnh" cho chúng).
+
+```r
+m_multi <- glm(treatment_uptake ~ age + sex + diabetes + residence,
+               data = dx, family = binomial)
+exp(cbind(OR = coef(m_multi), confint(m_multi)))   # adjusted ORs with 95% CI
+nobs(m_multi)   # rows actually used: glm() drops rows missing ANY model variable
+```
+
+`broom::tidy()` tạo ra một bảng sạch, sẵn sàng để báo cáo chỉ trong một lệnh:
+
+```r
+tidy(m_multi, exponentiate = TRUE, conf.int = TRUE)
+```
+
+**Kết quả xuất ra có ý nghĩa gì:** đây là các OR **đã hiệu chỉnh** - so sánh giữa các bệnh nhân vốn tương đồng nhau về các biến khác. Một OR có thể co lại, lớn lên, hoặc thậm chí đảo chiều sau khi hiệu chỉnh; sự thay đổi đó là dấu hiệu của nhiễu. Cũng lưu ý rằng `glm()` mặc định dùng các ca đầy đủ (complete cases), nên hãy kiểm tra có bao nhiêu hàng sống sót bằng `nobs()`.
+
+## Khớp câu hỏi với kiểm định
+
+| Câu hỏi | Kiểm định |
+|----------|------|
+| Hai nhóm, liên tục | `t.test()` (hoặc `wilcox.test()` nếu bị lệch) |
+| Hơn hai nhóm, liên tục | `aov()` (hoặc `kruskal.test()` nếu bị lệch) |
+| Hai biến phân loại | `chisq.test()` (hoặc `fisher.test()` nếu thưa thớt) |
+| Hai biến liên tục | `cor.test()` (Pearson hoặc Spearman) |
+| Biến kết cục nhị phân và các yếu tố tác động | `glm(..., family = binomial)` -> tỷ số chênh |
+
+## Những điểm chính rút ra
+
+- Xác định quần thể phân tích một cách tường minh (`htn_diagnosed == "Yes"`) và phân tích nó.
+- Một giá trị p đo lường mức độ ngạc nhiên dưới giả thuyết không, không phải cỡ hiệu ứng hay sự thật.
+- Nhìn phân phối trước khi chọn kiểm định có tham số hay phi tham số.
+- Chọn kiểm định khớp với câu hỏi và các kiểu biến của bạn.
+- Hồi quy logistic cho các tỷ số chênh; một KTC 95% loại trừ giá trị 1 là có ý nghĩa.
+- Các OR đã hiệu chỉnh giữ các biến khác không đổi; `broom::tidy()` định dạng chúng gọn gàng.
+
+## Bài tập Buổi 4
+
+Mở `Practicals/day4_exercise.R`. Trên tập con đã được chẩn đoán, chạy một kiểm định hai nhóm thích hợp, một kiểm định chi bình phương (hoặc Fisher), một tương quan, và ít nhất hai mô hình logistic đơn biến. Sau đó khớp một mô hình hiệu chỉnh nhỏ và tạo ra một bảng OR gọn gàng kèm khoảng tin cậy.
+
+---
+
+# Chương 5 (Buổi 5): Nhập môn Hồi quy & Diễn giải Kết quả (Capstone)
+
+Buổi 5 giới thiệu hồi quy và kết nối mọi thứ lại với nhau: hồi quy tuyến tính cho một biến kết cục liên tục, hồi quy logistic cho một biến kết cục Yes/No, nhiễu và hiệu chỉnh, các OR hiệu chỉnh cuối cùng, và cách viết chúng ra.
+
+```r
+library(dplyr); library(ggplot2); library(broom)
+library(gtsummary); library(car); library(pROC)
+
+set.seed(2025)   # makes any randomness reproducible
+
+analysis_data <- readRDS("Data/analysis_data.rds")
+dx <- filter(analysis_data, htn_diagnosed == "Yes")
+nrow(dx)                      # ~1089 - report this n
+levels(dx$treatment_uptake)  # c("No","Yes") -> "No" is the reference
+```
+
+## Triết lý xây dựng mô hình
+
+Xây dựng mô hình từ **kiến thức lâm sàng, không phải từ các giá trị p.** Quyết định các yếu tố dự báo của bạn trước khi nhìn vào dữ liệu, dựa trên tính hợp lý sinh học, các yếu tố nhiễu đã biết từ y văn (tuổi, giới, học vấn, nơi cư trú), và các yếu tố quyết định đã được nêu của nghiên cứu (khả năng tiếp cận qua khoảng cách, nhận thức qua kiến thức). Sau đó khớp một mô hình đã được định trước duy nhất. Điều này tránh "đào bới dữ liệu" (data dredging) - việc chạy mọi thứ và chỉ báo cáo những gì có ý nghĩa, làm tăng dương tính giả và hiếm khi tái lập được.
+
+```r
+# A crude (unadjusted) model, used to demonstrate confounding
+crude_residence <- glm(treatment_uptake ~ residence,
+                       data = dx, family = binomial(link = "logit"))
+
+# The full, pre-specified multivariable model (our main analysis)
+model_full <- glm(
+  treatment_uptake ~ age + sex + education + residence + diabetes +
+    family_history_htn + health_insurance + knowledge_score +
+    distance_to_facility_km,
+  data = dx, family = binomial(link = "logit")
+)
+summary(model_full)   # coefficients are on the log-odds scale
+```
+
+## Nhiễu: thô so với hiệu chỉnh
+
+Một yếu tố nhiễu làm méo mó một mối liên quan thô. So sánh OR thô và OR hiệu chỉnh cho nơi cư trú.
+
+```r
+crude_or <- exp(coef(crude_residence))["residenceUrban"]
+adj_or   <- exp(coef(model_full))["residenceUrban"]
+cat("Crude OR (Urban vs Rural):   ", round(crude_or, 2), "\n")
+cat("Adjusted OR (Urban vs Rural):", round(adj_or, 2), "\n")
+```
+
+**Diễn giải lâm sàng:** nếu OR thay đổi đáng chú ý (một quy tắc kinh nghiệm là thay đổi hơn 10%) khi các biến khác được thêm vào, thì những biến đó đã gây nhiễu cho hiệu ứng thô của nơi cư trú. OR **đã hiệu chỉnh** là cái bạn báo cáo.
+
+## Tương tác (biến đổi hiệu ứng)
+
+Tương tác đặt câu hỏi "hiệu ứng của A có khác nhau qua các mức của B không?" - ví dụ, hiệu ứng của đái tháo đường có thay đổi theo tuổi không? Thêm số hạng tích và so sánh các mô hình lồng nhau bằng một kiểm định tỷ số hợp lý (likelihood ratio test).
+
+```r
+model_interax <- glm(
+  treatment_uptake ~ age + sex + education + residence + diabetes +
+    family_history_htn + health_insurance + knowledge_score +
+    distance_to_facility_km + diabetes:age,
+  data = dx, family = binomial(link = "logit")
+)
+anova(model_full, model_interax, test = "LRT")
+```
+
+**Diễn giải lâm sàng:** ở đây tương tác được kỳ vọng là không có ý nghĩa (p > 0,05). Khi điều đó xảy ra, hãy giữ mô hình `model_full` đơn giản hơn - nó dễ diễn giải hơn. Đừng đuổi theo các tương tác, và đừng bao giờ diễn giải một hiệu ứng chính một cách độc lập trong khi số hạng tương tác của nó vẫn còn trong mô hình.
+
+## Lựa chọn biến, với sự thận trọng
+
+```r
+model_step <- step(model_full, direction = "both", trace = 0)  # lowest-AIC search
+AIC(model_full, model_step)
+model_final <- model_full   # our decision: keep the pre-specified model
+```
+
+**Thận trọng:** lựa chọn từng bước (stepwise selection) tạo ra các giá trị p và KTC lạc quan (không được hiệu chỉnh cho quá trình tìm kiếm), cho các mô hình "được chọn" khác nhau trên các bộ dữ liệu khác nhau, và có thể loại bỏ một yếu tố nhiễu đã biết chỉ vì p > 0,05 - điều này tái đưa vào thiên lệch. Đối với một nghiên cứu giải thích về các yếu tố quyết định, hãy giữ các biến được chọn về mặt lâm sàng ngay cả khi không có ý nghĩa. Chỉ dành `step()`/AIC chủ yếu cho các bài toán dự đoán.
+
+## Chẩn đoán
+
+```r
+# Multicollinearity: VIF < 5 fine, 5-10 worth a look, > 10 serious.
+car::vif(model_final)
+
+# Influential points via Cook's distance
+aug <- broom::augment(model_final)
+infl_cut <- 4 / nrow(aug)
+sum(aug$.cooksd > infl_cut, na.rm = TRUE)   # how many flagged
+
+# Discrimination: AUC (0.5 = chance, 0.7-0.8 = acceptable, > 0.8 = good)
+roc_obj <- pROC::roc(response = model_final$y,
+                     predictor = fitted(model_final), quiet = TRUE)
+cat("Model AUC:", round(as.numeric(pROC::auc(roc_obj)), 3), "\n")
+```
+
+**Kết quả xuất ra có ý nghĩa gì:** các giá trị VIF gần 1-2 nghĩa là các yếu tố dự báo không dư thừa. Các điểm ảnh hưởng được gắn cờ nên được kiểm tra, không phải xóa - kiểm tra xem chúng là lỗi nhập liệu hay là bệnh nhân cực đoan thực sự, và chạy một phân tích độ nhạy nếu kết quả thay đổi. **AUC khoảng 0,71** cho thấy khả năng phân biệt chấp nhận được: mô hình phân tách những người có và không tiếp nhận điều trị tốt hơn ngẫu nhiên.
+
+## Mô hình cuối cùng: các tỷ số chênh hiệu chỉnh
+
+```r
+or_table <- broom::tidy(model_final, exponentiate = TRUE, conf.int = TRUE)
+print(or_table, n = Inf)
+```
+
+Trên bộ dữ liệu này, các aOR cuối cùng (n = 992 ca đầy đủ; tỷ lệ tiếp nhận chung khoảng 47%) là:
+
+| Yếu tố dự báo | aOR | KTC 95% | Chiều hướng |
+|-----------|-----|--------|-----------|
+| Tuổi (mỗi năm) | 1.03 | 1.02-1.04 | tiếp nhận cao hơn |
+| Giới: Nam (so với Nữ) | 0.74 | 0.56-0.97 | tiếp nhận thấp hơn |
+| Học vấn (xu hướng tuyến tính) | 1.96 | 1.39-2.77 | tiếp nhận cao hơn khi học vấn cao hơn |
+| Nơi cư trú: Thành thị (so với Nông thôn) | 1.87 | 1.41-2.49 | tiếp nhận cao hơn |
+| Đái tháo đường: Có | 3.56 | 1.46-9.61 | tiếp nhận cao hơn |
+| Tiền sử gia đình THA: Có | 1.91 | 1.44-2.54 | tiếp nhận cao hơn |
+| Bảo hiểm y tế: Có | 2.05 | 1.54-2.74 | tiếp nhận cao hơn |
+| Điểm kiến thức (mỗi điểm) | 1.10 | 1.06-1.14 | tiếp nhận cao hơn |
+| Khoảng cách đến cơ sở (mỗi km) | 0.98 | 0.96-1.01 | không có ý nghĩa |
+
+**Đọc bảng:** đái tháo đường cho hiệu ứng lớn nhất (khả năng cao hơn ba lần) nhưng KTC rộng nhất, vì người đái tháo đường là một nhóm nhỏ hơn - một lời nhắc rằng một ước lượng điểm lớn với một khoảng rộng thì kém chính xác hơn. Khoảng cách theo chiều được kỳ vọng (bảo vệ chống lại việc tiếp nhận) nhưng không có ý nghĩa sau khi hiệu chỉnh. Khả năng phân biệt của mô hình là chấp nhận được (AUC ~ 0,71).
+
+Một bảng sẵn sàng cho xuất bản và một biểu đồ rừng (forest plot) tuân theo cùng mô hình:
+
+```r
+tbl <- gtsummary::tbl_regression(model_final, exponentiate = TRUE) |>
+  gtsummary::bold_p() |>
+  gtsummary::modify_caption("**Adjusted odds ratios for treatment uptake**")
+
+plot_df <- or_table |> filter(term != "(Intercept)")
+forest <- ggplot(plot_df, aes(x = estimate, y = reorder(term, estimate))) +
+  geom_vline(xintercept = 1, linetype = "dashed", colour = "grey50") +
+  geom_errorbarh(aes(xmin = conf.low, xmax = conf.high), height = 0.2,
+                 colour = "#0D7377") +
+  geom_point(size = 2.6, colour = "#0D7377") +
+  scale_x_log10() +
+  labs(title = "Adjusted odds ratios for treatment uptake",
+       x = "Adjusted odds ratio (log scale)", y = NULL) +
+  theme_minimal(base_size = 12)
+ggsave("Resources/forest_plot_or.png", plot = forest, width = 8, height = 5, dpi = 300)
+```
+
+## Viết phần Kết quả
+
+Báo cáo n phân tích, tần suất biến kết cục, các OR hiệu chỉnh kèm KTC, các chiều hướng, và khả năng phân biệt của mô hình. Nêu quy tắc ý nghĩa của bạn một lần. Đây là một ví dụ mẫu sử dụng các con số thực:
+
+> Trong số 1.089 người trưởng thành được chẩn đoán tăng huyết áp, 992 người có đủ dữ liệu cho mô hình đa biến, và khoảng 47% báo cáo có tiếp nhận điều trị bằng thuốc hạ huyết áp. Trong mô hình hồi quy logistic hiệu chỉnh, đái tháo đường liên quan đến khả năng tiếp nhận điều trị cao hơn rõ rệt (aOR 3.56, KTC 95% 1.46-9.61), cũng như việc có bảo hiểm y tế (aOR 2.05, KTC 95% 1.54-2.74), tiền sử gia đình tăng huyết áp dương tính (aOR 1.91, KTC 95% 1.44-2.54), và cư trú ở thành thị (so với nông thôn) (aOR 1.87, KTC 95% 1.41-2.49). Mỗi điểm kiến thức tăng thêm về tăng huyết áp (aOR 1.10, KTC 95% 1.06-1.14) và mỗi năm tuổi (aOR 1.03, KTC 95% 1.02-1.04) làm tăng nhẹ khả năng tiếp nhận, và trình độ học vấn cao hơn cho thấy một xu hướng dương tính (aOR mỗi mức 1.96, KTC 95% 1.39-2.77). Giới nam liên quan đến khả năng tiếp nhận thấp hơn so với giới nữ (aOR 0.74, KTC 95% 0.56-0.97). Khoảng cách đến cơ sở lớn hơn theo chiều được kỳ vọng (bảo vệ chống lại việc tiếp nhận) nhưng không có ý nghĩa thống kê sau khi hiệu chỉnh (aOR 0.98, KTC 95% 0.96-1.01). Mô hình cho thấy khả năng phân biệt chấp nhận được (diện tích dưới đường cong ROC 0.71). Các mối liên quan có khoảng tin cậy 95% loại trừ giá trị 1.00 được coi là có ý nghĩa thống kê.
+
+## Khả năng tái lập: thông điệp capstone
+
+- Dùng `set.seed()` bất cứ khi nào có yếu tố ngẫu nhiên.
+- Dùng **đường dẫn tương đối** (hoặc `here::here(...)`); đừng bao giờ mã cứng `C:/Users/yourname/...`.
+- Giữ một cấu trúc thư mục rõ ràng: `Data/`, `Scripts/`, `Resources/`, `References/`.
+- Lưu mọi bảng và hình ra đĩa để báo cáo có thể được xây dựng lại từ mã lệnh.
+- Ghi lại môi trường của bạn bằng `sessionInfo()` cho phần tài liệu bổ sung.
+- Để có một báo cáo một-cú-nhấp, hãy chuyển phân tích vào R Markdown (`.Rmd`) hoặc Quarto (`.qmd`): việc knit sẽ chạy lại mã lệnh và tạo ra một báo cáo Word/PDF/HTML với văn bản, bảng, và hình cùng nhau - tiêu chuẩn vàng cho báo cáo lâm sàng tái lập được.
+
+```r
+sessionInfo()
+# writeLines(capture.output(sessionInfo()), "References/session_info.txt")
+```
+
+## Những điểm chính rút ra
+
+- Định trước mô hình từ kiến thức lâm sàng; khớp nó một lần.
+- So sánh các OR thô và hiệu chỉnh để phát hiện nhiễu.
+- Kiểm định các tương tác bằng một kiểm định tỷ số hợp lý; giữ mô hình đơn giản hơn trừ khi nó vừa được ủng hộ vừa có ý nghĩa.
+- Xử lý lựa chọn biến tự động một cách thận trọng trong các nghiên cứu giải thích.
+- Kiểm tra VIF, các điểm ảnh hưởng, và AUC; hãy diễn giải, đừng chỉ xóa.
+- Báo cáo các OR hiệu chỉnh kèm KTC và chiều hướng, và làm cho toàn bộ phân tích tái lập được.
+
+## Bài tập Buổi 5
+
+Mở `Practicals/day5_exercise.R`. Khớp mô hình đa biến đã được định trước trên tập con đã được chẩn đoán, chứng minh nhiễu cho một biến, kiểm định một tương tác, kiểm tra VIF và AUC, tạo ra một bảng OR gọn gàng và một biểu đồ rừng, và viết một đoạn Kết quả ngắn bằng lời của chính bạn sử dụng các con số bạn đã tính.
+
+---
+
+# Các Lỗi Thường gặp và Cách Khắc phục
+
+| Triệu chứng | Nguyên nhân có thể | Cách khắc phục |
+|---------|--------------|-----|
+| `could not find function "read_csv"` | Gói chưa được nạp | Chạy `library(tidyverse)` (hoặc `library(readxl)` cho Excel) |
+| Một hàm `mean`/`sd`/`median` trả về `NA` | Có giá trị thiếu trong cột | Thêm `na.rm = TRUE` |
+| `object 'sbp' not found` | Gõ sai hoặc sai chữ hoa/thường; đối tượng chưa được tạo | R phân biệt chữ hoa chữ thường; kiểm tra chính tả và chạy dòng tạo ra nó |
+| `Error: '...' does not exist in current working directory` | Sai đường dẫn / sai thư mục làm việc | Dùng một RStudio Project và đường dẫn tương đối; kiểm tra `getwd()` |
+| Nhập vào hiển thị nhiều hàng hơn dự kiến (ví dụ 1503) | Bản ghi trùng lặp | `raw <- distinct(raw)` |
+| Một bảng tần số dường như "làm mất" bệnh nhân | `table()` âm thầm bỏ `NA` | Dùng `table(x, useNA = "ifany")` |
+| Tỷ số chênh trông ngược | Sai mức tham chiếu của factor | Đặt các mức sao cho mức tham chiếu đứng đầu, ví dụ `factor(x, levels = c("No","Yes"))` |
+| Mô hình dùng ít hàng hơn bộ dữ liệu của bạn | `glm()` bỏ các hàng thiếu bất kỳ biến mô hình nào | Kiểm tra `nobs(model)`; kiểm tra dữ liệu thiếu |
+| `non-numeric argument to ...` trên một cột số | Cột được nhập dưới dạng character (văn bản/khoảng trắng thừa) | Cắt bỏ và chuyển đổi: `str_trim()` rồi `as.numeric()` |
+| `install.packages()` chạy mỗi phiên | Nhầm lẫn cài đặt với nạp | Cài **một lần**; `library()` **mỗi** phiên |
+| `=` được dùng để gán, gây nhầm lẫn về sau | `=` so với `<-` | Dùng `<-` để gán (`Alt+-`) |
+| Cột ngày tháng không sắp xếp hoặc tính toán được | Được lưu dưới dạng văn bản | Phân tích với `lubridate::parse_date_time()` rồi `as_date()` |
+
+---
+
+# Bảng Thuật ngữ
+
+- **Object (đối tượng):** một vật chứa có tên cho một giá trị hoặc bộ dữ liệu, được tạo bằng `<-` (ví dụ `age <- 60`).
+- **Vector:** một tập hợp có thứ tự các giá trị cùng kiểu, được tạo bằng `c()`.
+- **Data frame (tibble):** một bảng trong đó các hàng là quan sát (bệnh nhân) và các cột là biến.
+- **Function (hàm):** một phép toán có tên nhận các đầu vào (đối số) và trả về một kết quả, ví dụ `mean(x, na.rm = TRUE)`.
+- **Argument (đối số):** một giá trị bạn truyền vào một hàm, như `na.rm = TRUE`.
+- **Factor:** một biến phân loại với một tập hợp cố định các **mức (level)**; mức đầu tiên là mức **tham chiếu (reference)**.
+- **Reference level (mức tham chiếu):** danh mục mà các danh mục khác được so sánh với trong một mô hình.
+- **Package (gói):** một tập hợp các hàm có thể chia sẻ; cài một lần, nạp mỗi phiên bằng `library()`.
+- **tidyverse:** một họ các gói mạch lạc để nhập, xử lý, và vẽ dữ liệu (bao gồm dplyr, ggplot2, readr).
+- **Pipe (`|>`):** chuyển kết quả bên trái vào hàm bên phải; đọc là "rồi thì".
+- **NA:** dấu hiệu của R cho một giá trị thiếu.
+- **na.rm:** một đối số báo cho một hàm tóm tắt bỏ qua các giá trị thiếu.
+- **Working directory (thư mục làm việc):** thư mục mà R hiện đang nhìn vào để tìm tệp.
+- **Descriptive statistics (thống kê mô tả):** các con số tóm tắt một mẫu (trung bình, trung vị, SD, IQR, số đếm, phần trăm).
+- **Hypothesis test (kiểm định giả thuyết):** một quy trình cân nhắc dữ liệu so với một giả thuyết không (kiểm định t, chi bình phương, v.v.).
+- **p-value (giá trị p):** xác suất của dữ liệu cực đoan như của bạn nếu giả thuyết không đúng; nhỏ nghĩa là gây ngạc nhiên dưới giả thuyết không.
+- **Logistic regression (hồi quy logistic):** một mô hình cho một biến kết cục nhị phân (Yes/No), được khớp bằng `glm(..., family = binomial)`.
+- **Odds ratio (OR) (tỷ số chênh):** sự thay đổi theo cấp số nhân của khả năng (odds) của biến kết cục; OR > 1 làm tăng khả năng, OR < 1 làm giảm khả năng, OR = 1 nghĩa là không có hiệu ứng.
+- **Confidence interval (95% CI) (khoảng tin cậy 95%):** một khoảng mà, với độ tin cậy 95%, chứa giá trị thực; một KTC loại trừ giá trị 1 (đối với một OR) báo hiệu ý nghĩa.
+- **Confounding (nhiễu):** một biến thứ ba làm méo mó mối liên quan giữa một phơi nhiễm và một biến kết cục; được xử lý bằng hiệu chỉnh.
+- **Interaction (effect modification) (tương tác / biến đổi hiệu ứng):** khi hiệu ứng của một biến phụ thuộc vào mức của một biến khác.
+- **AUC:** diện tích dưới đường cong ROC; một thước đo mức độ phân biệt tốt của một mô hình (0,5 = ngẫu nhiên, ~0,7-0,8 = chấp nhận được).
+- **VIF:** hệ số phóng đại phương sai; gắn cờ các yếu tố dự báo quá tương quan với nhau (đa cộng tuyến).
+- **Reproducibility (khả năng tái lập):** tính chất mà bất kỳ ai cũng có thể chạy lại mã lệnh của bạn và nhận được cùng kết quả; được hỗ trợ bởi các script, đường dẫn tương đối, các kết quả đã lưu, và `sessionInfo()`.
+
+---
+
+# Bài tập Cuối khóa và Lời Động viên
+
+## Bài tập cuối khóa
+
+Bài capstone của bạn là một phân tích thu nhỏ hoàn chỉnh, tái lập được trên bộ dữ liệu tăng huyết áp:
+
+1. **Làm sạch** dữ liệu thô thành tệp `analysis_data.rds` của riêng bạn (kỹ năng Buổi 2).
+2. **Mô tả** mẫu đã được chẩn đoán tăng huyết áp với một Bảng 1 bằng `gtsummary` và ít nhất hai hình (Buổi 3).
+3. **Kiểm định** ít nhất hai giả thuyết đã được định trước bằng các kiểm định đúng (Buổi 4).
+4. **Mô hình hóa** việc tiếp nhận điều trị bằng một hồi quy logistic đa biến đã được định trước, báo cáo các OR hiệu chỉnh kèm KTC 95% và AUC, và tạo ra một biểu đồ rừng (Buổi 5).
+5. **Viết** một đoạn Kết quả ngắn theo phong cách bản thảo lâm sàng, sử dụng các con số bạn đã tự tính.
+6. **Làm cho nó tái lập được:** đường dẫn tương đối, các kết quả đã lưu, và `sessionInfo()` được ghi lại.
+
+Bạn sẽ được chấm điểm dựa trên phương pháp đúng và diễn giải hợp lý, không phải dựa trên việc khớp một con số đến chữ số thập phân thứ hai. Các số thập phân chính xác thay đổi một cách tầm thường theo phiên bản R và gói; các khoảng tin cậy và chiều hướng mới là điều quan trọng.
+
+## Hãy tiếp tục thực hành
+
+Bạn vừa làm điều mà nhiều bác sĩ lâm sàng không bao giờ có cơ hội làm: biến dữ liệu thô, không hoàn hảo thành một câu trả lời có căn cứ cho một câu hỏi thực - và làm điều đó một cách minh bạch, để người khác có thể kiểm tra công việc của bạn. Đó chính là toàn bộ mục đích của #ClearDataClearImpact.
+
+Các kỹ năng cộng dồn. Hãy chạy lại các script trình diễn. Thử phân tích trên một biến mà chúng ta chưa đề cập. Cố ý làm hỏng mọi thứ và đọc các thông báo lỗi; chúng là những người thầy, không phải kẻ thù. Hãy giữ tờ tra cứu nhanh (`R_command_reference_sheet.md`) và sổ tay này bên cạnh bạn, và liên hệ khi bạn gặp bế tắc.
+
+Dữ liệu rõ ràng, tác động rõ ràng. Làm tốt lắm, và hãy tiếp tục tiến bước.

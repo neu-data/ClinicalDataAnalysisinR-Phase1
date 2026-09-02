@@ -1,0 +1,111 @@
+# R Command Reference Sheet
+### Clinical Data Analysis in R — Phase I | Neudata · #ClearDataClearImpact
+
+A one-stop "cheat sheet" of the commands used across the five days. Keep it beside you during practicals.
+
+---
+
+## 1. Getting started
+| Task | Command |
+|------|---------|
+| Assign a value to an object | `x <- 5` |
+| Combine values into a vector | `c(1, 2, 3)` |
+| Install a package (once) | `install.packages("tidyverse")` |
+| Load a package (each session) | `library(tidyverse)` |
+| Get help on a function | `?mean` or `help(mean)` |
+| See current working directory | `getwd()` |
+| List objects in memory | `ls()` |
+
+## 2. Importing data
+| Task | Command |
+|------|---------|
+| Read a CSV | `read_csv("Data/file.csv")` |
+| Read CSV, set missing codes | `read_csv("f.csv", na = c("", "NA", "999"))` |
+| Read an Excel sheet | `read_excel("Data/file.xlsx", sheet = "data")` |
+| Save an R object (keeps types) | `saveRDS(df, "Data/df.rds")` |
+| Reload an R object | `df <- readRDS("Data/df.rds")` |
+| Write a CSV | `write_csv(df, "out.csv")` |
+
+## 3. Inspecting data
+| Task | Command |
+|------|---------|
+| Dimensions | `dim(df)`, `nrow(df)`, `ncol(df)` |
+| Variable names | `names(df)` |
+| Compact structure | `glimpse(df)` |
+| First / last rows | `head(df)`, `tail(df)` |
+| Spreadsheet viewer | `View(df)` |
+| One column as a vector | `df$age` |
+| Quick numeric summary | `summary(df$age)` |
+
+## 4. Cleaning & wrangling (dplyr / stringr)
+| Task | Command |
+|------|---------|
+| Keep rows meeting a condition | `filter(df, age >= 18)` |
+| Keep/rename columns | `select(df, age, sex)` |
+| Create / change a column | `mutate(df, bmi = weight_kg/(height_cm/100)^2)` |
+| Remove duplicate rows | `distinct(df)` |
+| Recode by rules | `case_when(x == "M" ~ "Male", TRUE ~ NA_character_)` |
+| Trim whitespace | `str_trim(x)` |
+| Lower case | `str_to_lower(x)` |
+| Blank to NA | `na_if(x, "")` |
+| Conditional value | `if_else(age > 110, NA_real_, age)` |
+| Apply across columns | `mutate(across(where(is.character), str_trim))` |
+| Bin a numeric var | `cut(bmi, breaks = c(-Inf,18.5,25,30,Inf), labels = ...)` |
+| Make a factor | `factor(sex, levels = c("Female","Male"))` |
+| Ordered factor | `factor(edu, levels = c(...), ordered = TRUE)` |
+| Parse mixed dates | `lubridate::parse_date_time(x, c("ymd","dmy"))` |
+| The pipe | `df |> filter(...) |> mutate(...)` |
+
+## 5. Descriptive statistics
+| Task | Command |
+|------|---------|
+| Mean / median (ignore NA) | `mean(x, na.rm = TRUE)`, `median(x, na.rm = TRUE)` |
+| SD / IQR | `sd(x, na.rm = TRUE)`, `IQR(x, na.rm = TRUE)` |
+| Quantiles | `quantile(x, na.rm = TRUE)` |
+| Frequency table | `table(df$sex)` |
+| Proportions | `prop.table(table(df$sex))` |
+| Cross-tabulation | `table(df$treatment_uptake, df$diabetes)` |
+| Row/column percentages | `prop.table(tab, margin = 1)`  (1 = rows, 2 = cols) |
+| Grouped summary | `df |> group_by(sex) |> summarise(m = mean(age, na.rm=TRUE))` |
+| Count by group | `count(df, education)` |
+| Publication "Table 1" | `gtsummary::tbl_summary(df, by = treatment_uptake)` |
+
+## 6. Figures (ggplot2)
+| Plot | Command skeleton |
+|------|------------------|
+| Histogram | `ggplot(df, aes(age)) + geom_histogram()` |
+| Bar chart | `ggplot(df, aes(education)) + geom_bar()` |
+| Boxplot | `ggplot(df, aes(treatment_uptake, sbp_mmhg)) + geom_boxplot()` |
+| Scatter + smoother | `ggplot(df, aes(bmi, sbp_mmhg)) + geom_point() + geom_smooth()` |
+| Add labels | `+ labs(title = "...", x = "...", y = "...")` |
+| Clean theme | `+ theme_minimal()` |
+| Save at 300 dpi | `ggsave("Resources/fig.png", width = 7, height = 5, dpi = 300)` |
+
+## 7. Statistical tests
+| Test | Command |
+|------|---------|
+| Normality (visual) | `qqnorm(x); qqline(x)` |
+| Normality (test) | `shapiro.test(x)` |
+| Two-group means | `t.test(age ~ treatment_uptake, data = df)` |
+| Two-group (non-parametric) | `wilcox.test(age ~ treatment_uptake, data = df)` |
+| >2 groups | `aov(sbp_mmhg ~ bp_category, data = df) |> summary()` |
+| Post-hoc | `TukeyHSD(aov(...))` |
+| Categorical association | `chisq.test(table(df$a, df$b))` |
+| Small expected counts | `fisher.test(table(df$a, df$b))` |
+| Correlation | `cor.test(df$bmi, df$sbp_mmhg)`  (add `method = "spearman"`) |
+
+## 8. Regression (logistic)
+| Task | Command |
+|------|---------|
+| Fit logistic model | `glm(treatment_uptake ~ age + diabetes, data = df, family = binomial)` |
+| Model summary | `summary(model)` |
+| Odds ratios + 95% CI | `exp(cbind(OR = coef(model), confint(model)))` |
+| Tidy OR table | `broom::tidy(model, exponentiate = TRUE, conf.int = TRUE)` |
+| Compare models (LRT) | `anova(m1, m2, test = "LRT")` |
+| Multicollinearity | `car::vif(model)` |
+| Discrimination (AUC) | `pROC::roc(df$y, fitted(model))` |
+| Publication table | `gtsummary::tbl_regression(model, exponentiate = TRUE)` |
+| Reproducibility footer | `sessionInfo()` |
+
+---
+*Tip: almost every summary function has an `na.rm = TRUE` argument. If a mean comes back as `NA`, missing values are the usual cause.*

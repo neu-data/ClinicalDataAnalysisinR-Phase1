@@ -1,0 +1,132 @@
+---
+title: "Lesson 6 — Survival Analysis (optional / advanced)"
+subtitle: "Clinical Data Analysis in R (Phase I) — Pre-course"
+author: "Neudata"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: readable
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,
+                      fig.width = 6.5, fig.height = 4.5)
+```
+
+> **This lesson is optional.** It previews the "time-to-event" analysis we cover
+> later in the course. Skim it if you are curious; you do **not** need to master
+> it before day 1.
+
+## What this lesson is for
+
+Sometimes the outcome is not just *whether* an event happened, but *when*.
+**Survival analysis** handles this, including patients who were followed for
+different lengths of time (**censoring**). You will meet the **Kaplan–Meier
+curve**, the **log-rank test**, and **Cox regression**.
+
+Our outcome uses two variables together:
+
+- `time_to_event` — months of follow-up, and
+- `outcome` — 1 if the event (cardiovascular event or death) occurred, 0 if the
+  patient was event-free at the end (censored).
+
+```{r}
+library(tidyverse)
+library(survival)    # core survival tools
+library(survminer)   # nice survival plots
+
+clinical_data <- read_csv("../Data/clinical_data_clean.csv")
+
+# Put "Untreated" first so the hazard ratio describes the effect of being Treated
+clinical_data <- clinical_data %>%
+  mutate(treatment = factor(treatment, levels = c("Untreated", "Treated")))
+```
+
+## 1. The survival object
+
+`Surv()` bundles the time and the event together.
+
+```{r}
+# Surv(time, event): time followed, and whether the event happened
+surv_obj <- Surv(clinical_data$time_to_event, clinical_data$outcome)
+head(surv_obj)   # a "+" means censored (no event yet)
+```
+
+## 2. Kaplan–Meier curves
+
+**Question:** Do **treated** patients stay event-free longer than **untreated**
+patients?
+
+```{r}
+# Estimate survival separately by treatment group
+km_fit <- survfit(Surv(time_to_event, outcome) ~ treatment, data = clinical_data)
+
+ggsurvplot(km_fit, data = clinical_data,
+           pval = TRUE, risk.table = TRUE,
+           legend.title = "Treatment",
+           xlab = "Months of follow-up", ylab = "Event-free probability",
+           palette = c("#C1440E", "#0D7377"))
+```
+
+**Interpretation:** each curve shows the proportion still event-free over time.
+The treated curve stays higher — treated patients remain event-free longer. The
+p-value (from the log-rank test) tests whether the two curves differ.
+
+## 3. The log-rank test
+
+```{r}
+survdiff(Surv(time_to_event, outcome) ~ treatment, data = clinical_data)
+```
+
+**Interpretation:** a small p-value means the survival experience genuinely
+differs between treated and untreated patients.
+
+## 4. Cox regression — hazard ratios
+
+The **Cox model** gives a **hazard ratio (HR)** and, like logistic regression,
+lets us **adjust** for other variables.
+
+```{r}
+# Crude model: treatment only
+cox_crude <- coxph(Surv(time_to_event, outcome) ~ treatment, data = clinical_data)
+summary(cox_crude)
+```
+
+```{r}
+# Adjusted model: account for age and comorbidity
+cox_adj <- coxph(Surv(time_to_event, outcome) ~ age + diabetes + hypertension + treatment,
+                 data = clinical_data)
+
+library(broom)
+tidy(cox_adj, exponentiate = TRUE, conf.int = TRUE)
+```
+
+**Output → Interpretation (hazard ratios):**
+
+- `treatment (Treated)`: HR ≈ **0.55** — treated patients have about **45% lower**
+  risk of the event at any moment, after adjustment.
+- `age`: HR ≈ 1.05 per year; `diabetes`: HR ≈ 2.2; `hypertension`: HR ≈ 1.6 — all
+  increase risk.
+
+An HR **below 1** means lower risk (protective); **above 1** means higher risk.
+
+**Reporting:** *"After adjustment for age, diabetes and hypertension, treatment
+was associated with a lower hazard of the composite event (HR 0.55, 95% CI
+0.36–0.85)."*
+
+---
+
+## Key points to remember
+
+- Survival data = **time** + **event indicator**; `Surv(time, event)` combines them.
+- **Kaplan–Meier** curves show event-free probability over time; the **log-rank**
+  test compares groups.
+- **Cox regression** gives adjusted **hazard ratios**; HR < 1 is protective.
+- Censoring (incomplete follow-up) is handled automatically — a key advantage.
+
+## Try it yourself (optional)
+
+1. Draw Kaplan–Meier curves of `outcome`/`time_to_event` by `diabetes`.
+2. Run a log-rank test for the diabetes comparison.
+3. Fit a Cox model with `age + treatment` only and report the treatment HR.

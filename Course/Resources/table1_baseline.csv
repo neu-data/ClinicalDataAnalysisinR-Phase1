@@ -1,0 +1,63 @@
+**Characteristic**,"**Overall**  
+N = 1,498","**No**  
+N = 990","**Yes**  
+N = 508",**p-value**
+__Age (years)__,52.3 (14.1),50.2 (13.6),56.3 (14.1),<0.001
+__Sex__,NA,NA,NA,0.11
+Female,884 (59%),570 (58%),314 (62%),NA
+Male,614 (41%),420 (42%),194 (38%),NA
+__Residence__,NA,NA,NA,<0.001
+Rural,702 (47%),507 (51%),195 (38%),NA
+Urban,796 (53%),483 (49%),313 (62%),NA
+__Education level__,NA,NA,NA,0.002
+None,270 (18%),195 (20%),75 (15%),NA
+Primary,607 (41%),415 (43%),192 (39%),NA
+Secondary,424 (29%),269 (28%),155 (31%),NA
+Tertiary,167 (11%),94 (9.7%),73 (15%),NA
+(Missing),30,17,13,NA
+__Occupation__,NA,NA,NA,0.4
+Farmer,441 (29%),294 (30%),147 (29%),NA
+Other,174 (12%),106 (11%),68 (13%),NA
+Professional,203 (14%),134 (14%),69 (14%),NA
+Trader,406 (27%),265 (27%),141 (28%),NA
+Unemployed,274 (18%),191 (19%),83 (16%),NA
+__Health insurance__,511 (34%),309 (31%),202 (40%),<0.001
+__Smoking status__,NA,NA,NA,0.11
+Never,897 (62%),602 (62%),295 (61%),NA
+Former,295 (20%),182 (19%),113 (23%),NA
+Current,261 (18%),182 (19%),79 (16%),NA
+(Missing),45,24,21,NA
+__Alcohol use__,NA,NA,NA,0.12
+None,840 (56%),549 (55%),291 (57%),NA
+Moderate,490 (33%),318 (32%),172 (34%),NA
+Heavy,168 (11%),123 (12%),45 (8.9%),NA
+__Physical activity__,NA,NA,NA,>0.9
+Low,727 (49%),482 (49%),245 (48%),NA
+Moderate,559 (37%),368 (37%),191 (38%),NA
+High,212 (14%),140 (14%),72 (14%),NA
+__BMI (kg/m^2)__,26.3 (4.9),26.1 (4.9),26.9 (4.7),<0.001
+(Missing),47,33,14,NA
+__BMI category__,NA,NA,NA,0.032
+Underweight,84 (5.8%),61 (6.4%),23 (4.7%),NA
+Normal,476 (33%),334 (35%),142 (29%),NA
+Overweight,577 (40%),366 (38%),211 (43%),NA
+Obese,314 (22%),196 (20%),118 (24%),NA
+(Missing),47,33,14,NA
+__Family history of hypertension__,560 (37%),349 (35%),211 (42%),0.017
+__Diabetes__,35 (2.3%),14 (1.4%),21 (4.1%),<0.001
+__Systolic BP (mmHg)__,139.3 (19.7),134.8 (18.9),148.1 (18.3),<0.001
+(Missing),2,1,1,NA
+__Diastolic BP (mmHg)__,86.0 (10.7),84.9 (10.5),88.2 (10.7),<0.001
+(Missing),1,1,0,NA
+__Blood-pressure category__,NA,NA,NA,<0.001
+Normal,144 (9.6%),135 (14%),9 (1.8%),NA
+Elevated,356 (24%),327 (33%),29 (5.7%),NA
+Hypertension,995 (67%),526 (53%),469 (93%),NA
+(Missing),3,2,1,NA
+__Total cholesterol (mmol/L)__,5.1 (1.0),5.1 (1.0),5.1 (1.0),0.5
+(Missing),90,51,39,NA
+__HDL cholesterol (mmol/L)__,1.3 (0.3),1.3 (0.3),1.3 (0.4),0.8
+__LDL cholesterol (mmol/L)__,2.7 (1.0),2.7 (1.0),2.7 (1.0),0.2
+(Missing),105,77,28,NA
+__Fasting glucose (mmol/L)__,5.5 (1.0),5.4 (1.0),5.5 (1.0),0.5
+(Missing),75,52,23,NA

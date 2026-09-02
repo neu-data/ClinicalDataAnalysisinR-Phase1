@@ -1,0 +1,176 @@
+---
+title: "Bài 1 — Kiến thức cơ bản về R"
+subtitle: "Phân tích Dữ liệu Lâm sàng bằng R (Giai đoạn I) — Trước khóa học"
+author: "Neudata"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: readable
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+## Mục tiêu của bài học này
+
+Kết thúc bài học ngắn này, bạn sẽ có thể dùng R như một máy tính, lưu các giá trị
+vào **đối tượng**, hiểu về **vector** và **data frame (khung dữ liệu)**, và đọc bộ
+dữ liệu của khóa học vào R. Bài học không đòi hỏi bất kỳ kinh nghiệm lập trình nào
+trước đó.
+
+> **Cách học qua tệp này:** mở tệp trong RStudio, sau đó chạy từng khối lệnh màu
+> xám bằng cách nhấp vào nó và nhấn **Ctrl+Enter** (Windows) hoặc **Cmd+Enter**
+> (Mac). Hãy quan sát những gì xuất hiện trong Console. Thay đổi một con số, chạy
+> lại, và xem điều gì xảy ra — bạn không thể làm hỏng gì cả.
+
+---
+
+## 1. R là một máy tính
+
+Điều đơn giản nhất mà R làm được là tính toán số học. Nhập một phép cộng và R trả
+về đáp án.
+
+```{r}
+2 + 2
+140 / 90          # ví dụ: một tỷ số huyết áp
+sqrt(16)          # căn bậc hai
+```
+
+Ký hiệu `[1]` đứng trước đáp án chỉ có nghĩa là "đây là kết quả thứ nhất (và duy
+nhất)".
+
+## 2. Đối tượng và mũi tên phép gán `<-`
+
+Chúng ta thường muốn **lưu** một giá trị và tái sử dụng nó. Ta làm điều đó bằng
+mũi tên phép gán `<-` (gõ dấu `<` rồi `-`, hoặc nhấn **Alt+-**).
+
+```{r}
+# Lưu huyết áp tâm thu của một bệnh nhân
+sbp <- 152
+
+# Bây giờ tên 'sbp' đại diện cho 152
+sbp
+sbp - 12          # giá trị sau khi điều trị sẽ là bao nhiêu
+```
+
+Hãy đọc `sbp <- 152` là *"sbp nhận giá trị 152"*. Đối tượng này giờ xuất hiện
+trong khung **Environment** (góc trên bên phải của RStudio).
+
+## 3. Vector — nhiều giá trị cùng lúc
+
+Dữ liệu lâm sàng không phải là một con số, mà là nhiều con số. Một **vector** là
+một dãy các giá trị, được tạo bằng `c()` ("combine" — kết hợp).
+
+```{r}
+# Tuổi của năm bệnh nhân
+ages <- c(54, 61, 47, 73, 58)
+ages
+
+# R xử lý toàn bộ vector cùng một lúc
+ages + 1          # mọi người thêm một tuổi
+mean(ages)        # tuổi trung bình
+sd(ages)          # độ lệch chuẩn
+```
+
+`mean()` và `sd()` là các **hàm**: bạn đưa cho chúng một thứ gì đó trong dấu
+ngoặc, chúng trả lại cho bạn một kết quả.
+
+## 4. Các loại dữ liệu khác nhau
+
+R phân biệt **số** với **văn bản** (gọi là *character*) và với **danh mục** (gọi
+là *biến phân loại (factor)*).
+
+```{r}
+sex <- c("Female", "Male", "Female", "Female", "Male")   # văn bản
+sex
+
+table(sex)        # đếm số lượng của mỗi loại
+```
+
+`table()` là một trong những lệnh hữu ích nhất trong công việc lâm sàng — nó đếm
+các danh mục giúp bạn.
+
+## 5. Giá trị khuyết: `NA`
+
+Dữ liệu thực tế luôn có chỗ trống. R viết một giá trị khuyết là `NA`. Hầu hết các
+hàm cần được yêu cầu bỏ qua chúng bằng `na.rm = TRUE`.
+
+```{r}
+glucose <- c(5.2, 6.1, NA, 8.9, 5.5)
+mean(glucose)                 # NA - vì có một giá trị bị khuyết
+mean(glucose, na.rm = TRUE)   # bỏ qua giá trị khuyết
+```
+
+## 6. Data frame — cả một bộ dữ liệu
+
+Một **data frame (khung dữ liệu)** là một bảng: các hàng là bệnh nhân, các cột là
+biến. Đây chính xác là cách dữ liệu lâm sàng được lưu trữ. Hãy đọc bộ dữ liệu của
+khóa học.
+
+```{r}
+# tidyverse cung cấp cho chúng ta các công cụ thân thiện để làm việc với dữ liệu
+library(tidyverse)
+
+# Đọc bộ dữ liệu sạch của khóa học (một tệp CSV) vào một đối tượng
+clinical_data <- read_csv("../Data/clinical_data_clean.csv")
+```
+
+Bây giờ hãy kiểm tra nó. Năm lệnh sau đây là những lệnh bạn sẽ dùng mỗi khi mở một
+bộ dữ liệu mới.
+
+```{r}
+dim(clinical_data)     # số hàng (bệnh nhân) và số cột (biến)
+names(clinical_data)   # tên các biến
+head(clinical_data)    # vài hàng đầu tiên
+```
+
+```{r}
+# str() cho thấy cấu trúc: từng biến và loại của nó
+str(clinical_data)
+```
+
+```{r}
+# summary() cho một bản tóm tắt số nhanh của mọi biến
+summary(clinical_data)
+```
+
+## 7. Lấy một cột bằng `$`
+
+Dùng dấu đô-la để rút ra một biến duy nhất theo tên.
+
+```{r}
+# Tuổi trung bình trong bộ dữ liệu
+mean(clinical_data$age)
+
+# Đếm bệnh nhân theo giới tính
+table(clinical_data$sex)
+
+# Huyết áp tâm thu trung bình
+mean(clinical_data$systolic_bp)
+```
+
+---
+
+## Những điểm chính cần ghi nhớ
+
+- `<-` lưu một giá trị vào một **đối tượng** có tên.
+- `c()` xây dựng một **vector**; các hàm như `mean()`, `sd()`, `table()` hoạt động trên nó.
+- Một **data frame** là một bảng gồm bệnh nhân (hàng) và biến (cột).
+- `dim()`, `names()`, `head()`, `str()`, `summary()` kiểm tra bất kỳ bộ dữ liệu nào.
+- `data$variable` chọn một cột.
+- Dữ liệu khuyết là `NA`; thêm `na.rm = TRUE` để bỏ qua nó.
+- Chú thích bắt đầu bằng `#` — R bỏ qua chúng, con người thì đọc chúng.
+
+## Tự thực hành
+
+1. Tạo một vector tên là `bp` chứa các giá trị `130, 145, 160, 138, 152` và tính
+   trung bình cùng độ lệch chuẩn của nó.
+2. Đọc lại bộ dữ liệu vào `clinical_data` và dùng `dim()` để cho biết có bao nhiêu
+   bệnh nhân và bao nhiêu biến.
+3. Dùng `table()` trên `clinical_data$smoking` — có bao nhiêu người đang hút thuốc?
+4. Dùng `mean()` với `clinical_data$BMI` — BMI trung bình là bao nhiêu?
+
+*Lời giải chi tiết nằm trong `Exercises/` và `Solutions/`. Đừng lo lắng nếu có gì
+đó không chạy được ngay lần đầu — điều đó hoàn toàn bình thường.*

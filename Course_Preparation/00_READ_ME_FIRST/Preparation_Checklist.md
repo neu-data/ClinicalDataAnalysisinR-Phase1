@@ -1,0 +1,42 @@
+# Preparation checklist
+
+Tick each box as you go. You do **not** need every box ticked to attend — this is just a gentle guide to help you arrive ready and relaxed. Take it at your own pace.
+
+## Before you start
+
+- [ ] I have a laptop (Windows or macOS) available.
+- [ ] I have about 1 GB of free disk space.
+- [ ] I have an internet connection for downloading the software.
+
+## Installation
+
+- [ ] R is installed.
+- [ ] RStudio is installed.
+- [ ] The required packages are installed.
+- [ ] I ran `installation_test.R` and it printed the success message.
+
+## Getting comfortable
+
+- [ ] I opened the project by double-clicking `Clinical_Data_Analysis_PreCourse.Rproj`.
+- [ ] I can find the 4 panes in RStudio (Source, Console, Environment, and Files/Plots/Help).
+- [ ] I ran one line of code in the Console.
+- [ ] I loaded the clinical dataset (`clinical_data`).
+- [ ] I used `View()` to look at the data in a spreadsheet-style tab.
+
+## Practice
+
+- [ ] I worked through R Basics (folder `03`).
+- [ ] I worked through Data Management (folder `04`).
+- [ ] I worked through at least the Exploratory Data Analysis lesson (folder `05`).
+- [ ] I attempted Exercises 1–3 (and peeked at the Solutions to check myself).
+
+## Ready for day 1
+
+- [ ] I know how to open the project in RStudio.
+- [ ] I know how to run a line of code.
+- [ ] I know how to install and load a package.
+- [ ] I know where the data and the cheat sheets live.
+
+---
+
+If most boxes are ticked, you are ready. See you on 8 September.

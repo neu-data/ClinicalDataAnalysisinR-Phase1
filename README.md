@@ -1,0 +1,129 @@
+<div align="center">
+
+# 📊 Clinical Data Analysis in R
+### Phase I — Introduction to R for Clinical Research
+
+**A free, hands-on short course for health professionals and researchers in Vietnam** 🇻🇳
+
+`FREE` · `Beginner-friendly` · `Online` · `No coding experience required`
+
+*Brought to you by **Neudata** · #ClearDataClearImpact*
+
+</div>
+
+---
+
+## 🎯 About this course
+
+Many clinicians and researchers collect valuable data every day — but never get the
+chance to analyse it themselves. **Phase I** changes that. Over five friendly evening
+sessions you will go from *never having opened R* to running a real clinical analysis:
+importing data, cleaning it, describing it, testing hypotheses, and interpreting a
+regression model — the way it is actually done for a thesis, report, or manuscript.
+
+> **You do not need any programming or statistics background.** If you can use a
+> computer and you care about your data, this course is for you.
+
+---
+
+## 💚 It's completely free
+
+This is a **no-cost training** offered to build data-analysis capacity among health
+professionals and researchers in Vietnam. There are no fees, and all course materials,
+the practice dataset, and the software are free to use and keep.
+
+---
+
+## 🗓️ When & where
+
+| | |
+|---|---|
+| **Format** | 5 online evening sessions |
+| **Day & time** | Every **Tuesday, 8:00 PM** (Vietnam time, ICT) |
+| **Duration** | 90 minutes per session |
+| **Dates** | **8 September – 6 October 2026** |
+| **Where** | Online — join from anywhere with a laptop |
+
+---
+
+## 👩‍🏫 Who is leading the course
+
+Your two trainers guide every session and help you hands-on during the exercises:
+
+| Trainer | Role |
+|---------|------|
+| **Bernard Osang'ir** | Senior Biostatistician — *lead trainer* |
+| **My Luong Vuong** | Biostatistician and Epidemiologist |
+
+---
+
+## 🧑‍⚕️ Who should join
+
+Health and research professionals with little or no R experience:
+
+- 👨‍⚕️ Medical doctors and residents
+- 👩‍⚕️ Nurses and hospital research staff
+- 💊 Clinical and hospital pharmacists
+- 🔬 Clinical researchers and trial coordinators
+- 🌍 Public-health professionals
+- 🎓 Master's students and PhD candidates
+
+---
+
+## 📚 What you will learn
+
+Five sessions that build on each other — one real clinical dataset all the way through:
+
+| Session | Theme | You will be able to… |
+|:---:|-------|----------------------|
+| **1** | Introduction to R & RStudio | Import data and find your way around R |
+| **2** | Understanding & Cleaning Clinical Data | Turn messy data into an analysis-ready dataset |
+| **3** | Descriptive Statistics, Tables & Figures | Produce a publication-quality **Table 1** and clear plots |
+| **4** | Common Medical Statistical Tests | Choose and run the right test (t-test, chi-square, non-parametric) |
+| **5** | Introduction to Regression & Interpreting Output | Fit and read a regression, and write a short **Results** section |
+
+By the end you will be able to **analyse a clean clinical dataset from start to finish
+and report it in plain, scientific language.**
+
+---
+
+## 🛠️ What you need (all free)
+
+Everything is free and works on **Windows** or **macOS**. A pre-course pack helps you
+set it up the week before we start.
+
+| Tool | What it's for | Cost |
+|------|---------------|:----:|
+| **R** (version 4.x) | The analysis engine | Free |
+| **RStudio Desktop** | The friendly workspace for R | Free |
+| **A laptop** | Windows or macOS, ~1 GB free space | — |
+| **Internet** | To install the software and join sessions | — |
+
+**R packages used** (installed in one step during setup):
+`tidyverse` · `readxl` · `gtsummary` · `broom` · `survival` · `survminer`
+
+> 📦 **Get ready before Session 1:** a **Course Preparation pack** is sent about one
+> week ahead. It walks you through installing R and RStudio, learning the interface,
+> and practising with the course data — so you arrive ready and confident.
+
+---
+
+## ✍️ How to register
+
+Places are limited — register early to reserve your seat.
+
+- ✉️ **Email:** [myluong1710@gmail.com](mailto:myluong1710@gmail.com) — *My Luong Vuong*
+- 🌐 **Website:** [www.neu-data.com](https://www.neu-data.com/)
+- 📱 **Or scan the QR code** on the course poster to register.
+
+---
+
+<div align="center">
+
+**No prior programming experience required — just curiosity.**
+
+*See you on 8 September!* 🎉
+
+Neudata · **#ClearDataClearImpact**
+
+</div>

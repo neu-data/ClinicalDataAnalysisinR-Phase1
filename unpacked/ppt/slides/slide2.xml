@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
+  <p:cSld>
+    <p:spTree>
+      <p:nvGrpSpPr>
+        <p:cNvPr id="1" name=""/>
+        <p:cNvGrpSpPr/>
+        <p:nvPr/>
+      </p:nvGrpSpPr>
+      <p:grpSpPr>
+        <a:xfrm>
+          <a:off x="0" y="0"/>
+          <a:ext cx="0" cy="0"/>
+          <a:chOff x="0" y="0"/>
+          <a:chExt cx="0" cy="0"/>
+        </a:xfrm>
+      </p:grpSpPr>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="5" name="Text 3"/>
+          <p:cNvSpPr/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="594360" y="1280160"/>
+            <a:ext cx="11597640" cy="2103120"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:noFill/>
+          <a:ln/>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"/>
+          <a:lstStyle/>
+          <a:p>
+            <a:pPr marL="0" indent="0">
+              <a:buNone/>
+            </a:pPr>
+            <a:r>
+              <a:rPr lang="en-US" sz="2800" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="0070C0"/>
+                </a:solidFill>
+                <a:latin typeface="Century Gothic" panose="020B0502020202020204" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Calibri" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Calibri" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t>Plan </a:t>
+            </a:r>
+            <a:endParaRPr lang="en-US" sz="2800" dirty="0">
+              <a:solidFill>
+                <a:srgbClr val="0070C0"/>
+              </a:solidFill>
+              <a:latin typeface="Century Gothic" panose="020B0502020202020204" pitchFamily="34" charset="0"/>
+            </a:endParaRPr>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+      <p:pic>
+        <p:nvPicPr>
+          <p:cNvPr id="22" name="Picture 21" descr="WhatsApp Image 2025-06-14 at 07.39.02.jpeg"/>
+          <p:cNvPicPr>
+            <a:picLocks noChangeAspect="1"/>
+          </p:cNvPicPr>
+          <p:nvPr/>
+        </p:nvPicPr>
+        <p:blipFill>
+          <a:blip r:embed="rId3"/>
+          <a:stretch>
+            <a:fillRect/>
+          </a:stretch>
+        </p:blipFill>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="138853" y="6122125"/>
+            <a:ext cx="716763" cy="683623"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+        </p:spPr>
+      </p:pic>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="24" name="Rectangle 23">
+            <a:extLst>
+              <a:ext uri="{FF2B5EF4-FFF2-40B4-BE49-F238E27FC236}">
+                <a16:creationId xmlns:a16="http://schemas.microsoft.com/office/drawing/2014/main" id="{177B8330-68AC-592C-ACA4-4A637790C48E}"/>
+              </a:ext>
+            </a:extLst>
+          </p:cNvPr>
+          <p:cNvSpPr/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="4599946" y="6458701"/>
+            <a:ext cx="2845651" cy="276999"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr wrap="none">
+            <a:spAutoFit/>
+          </a:bodyPr>
+          <a:lstStyle/>
+          <a:p>
+            <a:r>
+              <a:rPr lang="en-US" sz="1200" dirty="0" err="1">
+                <a:solidFill>
+                  <a:schemeClr val="accent5">
+                    <a:lumMod val="50000"/>
+                  </a:schemeClr>
+                </a:solidFill>
+                <a:latin typeface="Verdana" panose="020B0604030504040204" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Verdana" panose="020B0604030504040204" pitchFamily="34" charset="0"/>
+              </a:rPr>
+              <a:t>Neudata</a:t>
+            </a:r>
+            <a:r>
+              <a:rPr lang="en-US" sz="1200" dirty="0">
+                <a:solidFill>
+                  <a:schemeClr val="accent5">
+                    <a:lumMod val="50000"/>
+                  </a:schemeClr>
+                </a:solidFill>
+                <a:latin typeface="Verdana" panose="020B0604030504040204" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Verdana" panose="020B0604030504040204" pitchFamily="34" charset="0"/>
+              </a:rPr>
+              <a:t> | #</a:t>
+            </a:r>
+            <a:r>
+              <a:rPr lang="en-US" sz="1200" dirty="0" err="1">
+                <a:solidFill>
+                  <a:schemeClr val="accent5">
+                    <a:lumMod val="50000"/>
+                  </a:schemeClr>
+                </a:solidFill>
+                <a:latin typeface="Verdana" panose="020B0604030504040204" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Verdana" panose="020B0604030504040204" pitchFamily="34" charset="0"/>
+              </a:rPr>
+              <a:t>ClearDataClearImpact</a:t>
+            </a:r>
+            <a:endParaRPr lang="en-US" sz="1200" dirty="0">
+              <a:solidFill>
+                <a:schemeClr val="accent5">
+                  <a:lumMod val="50000"/>
+                </a:schemeClr>
+              </a:solidFill>
+              <a:latin typeface="Verdana" panose="020B0604030504040204" pitchFamily="34" charset="0"/>
+              <a:ea typeface="Verdana" panose="020B0604030504040204" pitchFamily="34" charset="0"/>
+            </a:endParaRPr>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="6" name="TextBox 5"/>
+          <p:cNvSpPr txBox="1"/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="457200" y="548640"/>
+            <a:ext cx="11430000" cy="529376"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:noFill/>
+          <a:ln>
+            <a:noFill/>
+          </a:ln>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr wrap="square" lIns="45720" tIns="18288" rIns="45720" bIns="18288" anchor="t">
+            <a:spAutoFit/>
+          </a:bodyPr>
+          <a:lstStyle/>
+          <a:p>
+            <a:pPr algn="l"/>
+            <a:r>
+              <a:rPr lang="en-US" sz="3200" b="1" i="0" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="0D7377"/>
+                </a:solidFill>
+                <a:latin typeface="Century Gothic"/>
+              </a:rPr>
+              <a:t>Day 1:</a:t>
+            </a:r>
+            <a:r>
+              <a:rPr sz="3200" b="1" i="0" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="0D7377"/>
+                </a:solidFill>
+                <a:latin typeface="Century Gothic"/>
+              </a:rPr>
+              <a:t> </a:t>
+            </a:r>
+            <a:r>
+              <a:rPr lang="en-US" sz="3200" b="1" i="0" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="0D7377"/>
+                </a:solidFill>
+                <a:latin typeface="Century Gothic"/>
+              </a:rPr>
+              <a:t>Introductio</a:t>
+            </a:r>
+            <a:r>
+              <a:rPr lang="en-US" sz="3200" b="1" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="0D7377"/>
+                </a:solidFill>
+                <a:latin typeface="Century Gothic"/>
+              </a:rPr>
+              <a:t>n to R &amp; RStudio</a:t>
+            </a:r>
+            <a:endParaRPr sz="3200" b="1" i="0" dirty="0">
+              <a:solidFill>
+                <a:srgbClr val="0D7377"/>
+              </a:solidFill>
+              <a:latin typeface="Century Gothic"/>
+            </a:endParaRPr>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="7" name="Rectangle 6"/>
+          <p:cNvSpPr/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="457200" y="1325880"/>
+            <a:ext cx="11274552" cy="19050"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:solidFill>
+            <a:srgbClr val="0D7377"/>
+          </a:solidFill>
+          <a:ln>
+            <a:noFill/>
+          </a:ln>
+        </p:spPr>
+        <p:style>
+          <a:lnRef idx="1">
+            <a:schemeClr val="accent1"/>
+          </a:lnRef>
+          <a:fillRef idx="3">
+            <a:schemeClr val="accent1"/>
+          </a:fillRef>
+          <a:effectRef idx="2">
+            <a:schemeClr val="accent1"/>
+          </a:effectRef>
+          <a:fontRef idx="minor">
+            <a:schemeClr val="lt1"/>
+          </a:fontRef>
+        </p:style>
+        <p:txBody>
+          <a:bodyPr rtlCol="0" anchor="ctr"/>
+          <a:lstStyle/>
+          <a:p>
+            <a:pPr algn="ctr"/>
+            <a:endParaRPr/>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+    </p:spTree>
+  </p:cSld>
+  <p:clrMapOvr>
+    <a:masterClrMapping/>
+  </p:clrMapOvr>
+</p:sld>

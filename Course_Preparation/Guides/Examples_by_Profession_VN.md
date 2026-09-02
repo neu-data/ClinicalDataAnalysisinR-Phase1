@@ -1,0 +1,70 @@
+# Cùng Những Kỹ Năng, Câu Hỏi Của Riêng Bạn
+
+*Phân tích Dữ liệu Lâm sàng trong R — Phase I (Neudata)*
+
+Khóa học này quy tụ nhiều nền tảng khác nhau — bác sĩ, điều dưỡng, dược sĩ, nhà nghiên cứu y tế công cộng, và các học viên Thạc sĩ và Tiến sĩ. Đó là một thế mạnh, không phải một vấn đề. **Các kỹ năng là như nhau cho tất cả mọi người**: đặt một câu hỏi rõ ràng, biết loại biến của bạn, chọn một phương pháp phù hợp, và báo cáo một ước lượng cùng với độ bất định của nó. Điều khác biệt là *câu hỏi mà bạn quan tâm*.
+
+Khóa học được xây dựng sao cho **người mới bắt đầu có thể theo dõi mạch chính** — một phân tích rõ ràng, được giải thích từng bước — trong khi **các học viên nâng cao đi sâu hơn** bằng cách sử dụng cùng một bộ dữ liệu. Mọi người đều làm việc từ cùng một `clinical_data` (430 bệnh nhân), nên bạn luôn có thể thử câu hỏi của người bên cạnh với những kỹ năng mà bạn đã có.
+
+Dưới đây là một câu hỏi khởi đầu cho mỗi nền tảng. Mỗi câu đều có thể trả lời được với các biến của chúng ta.
+
+---
+
+### Bác sĩ — điều trị có thay đổi kết cục không?
+> **Điều trị có làm giảm tử vong / biến cố tim mạch không?**
+- **Biến kết cục:** `outcome` (biến cố 0/1) cùng với `time_to_event` (tháng) — một biến kết cục thời gian đến biến cố.
+- **Yếu tố dự báo:** `treatment` (Treated / Untreated).
+- **Phương pháp:** các đường cong Kaplan–Meier để mô tả sống còn, hồi quy Cox cho một tỷ số nguy cơ đã hiệu chỉnh.
+```r
+library(survival); library(survminer)
+survfit(Surv(time_to_event, outcome) ~ treatment, data = clinical_data)   # KM
+coxph(Surv(time_to_event, outcome) ~ treatment, data = clinical_data)      # Cox HR
+```
+
+### Điều dưỡng — hai nhóm bệnh nhân có khác nhau về một đại lượng liên tục không?
+> **Thời gian theo dõi (hoặc huyết áp) có khác nhau giữa hai nhóm bệnh nhân không?**
+- **Biến kết cục:** `time_to_event` (hoặc `systolic_bp`) — liên tục.
+- **Yếu tố dự báo:** một nhóm hai mức, ví dụ `sex` hoặc `treatment`.
+- **Phương pháp:** kiểm định t nếu xấp xỉ chuẩn, Wilcoxon rank-sum nếu lệch.
+```r
+t.test(systolic_bp ~ sex, data = clinical_data)
+wilcox.test(time_to_event ~ treatment, data = clinical_data)   # non-parametric
+```
+
+### Nhà nghiên cứu y tế công cộng — điều gì thúc đẩy một tình trạng trong quần thể?
+> **Những yếu tố nào liên quan đến tăng huyết áp?**
+- **Biến kết cục:** `hypertension` (Yes/No) — nhị phân.
+- **Yếu tố dự báo:** `age`, `sex`, `BMI`, `smoking`, `diabetes`, …
+- **Phương pháp:** hồi quy logistic, báo cáo các tỷ số chênh cùng KTC 95%.
+```r
+# Make the Yes/No outcome a factor first (No = reference)
+clinical_data$hypertension <- factor(clinical_data$hypertension, levels = c("No", "Yes"))
+glm(hypertension ~ age + sex + BMI + smoking, data = clinical_data, family = binomial)
+```
+
+### Học viên Thạc sĩ — một liên hệ đã hiệu chỉnh
+> **BMI có liên quan đến huyết áp tâm thu sau khi hiệu chỉnh cho tuổi và giới tính không?**
+- **Biến kết cục:** `systolic_bp` — liên tục.
+- **Yếu tố dự báo:** `BMI` (chính), cùng với `age` và `sex` (hiệu chỉnh).
+- **Phương pháp:** hồi quy tuyến tính đa biến; diễn giải hệ số BMI khi giữ tuổi và giới tính không đổi.
+```r
+lm(systolic_bp ~ BMI + age + sex, data = clinical_data)
+```
+
+### Học viên Tiến sĩ — xây dựng và diễn giải một mô hình đa biến
+> **Những biến đồng ảnh hưởng nào nên đưa vào một mô hình đa biến, và các ước lượng đã hiệu chỉnh được diễn giải như thế nào?**
+- **Trọng tâm:** không phải một lệnh mà là lập luận — **nhiễu**, chọn biến dựa trên kiến thức lâm sàng (không chỉ giá trị p), và ý nghĩa của các ước lượng **đã hiệu chỉnh vs thô**.
+- **Phương pháp:** so sánh một mô hình thô với một mô hình đã hiệu chỉnh và thảo luận tại sao ước lượng thay đổi.
+```r
+clinical_data$hypertension <- factor(clinical_data$hypertension, levels = c("No", "Yes"))
+crude    <- glm(hypertension ~ BMI, data = clinical_data, family = binomial)
+adjusted <- glm(hypertension ~ BMI + age + sex, data = clinical_data, family = binomial)
+# Compare the BMI odds ratio before and after adjustment — how much does it shift, and why?
+```
+Một ước lượng đã hiệu chỉnh trả lời "hiệu ứng của BMI *đối với các bệnh nhân cùng tuổi và cùng giới tính*", vốn thường là câu hỏi có ý nghĩa lâm sàng. Một khoảng cách lớn giữa các ước lượng thô và đã hiệu chỉnh chỉ ra **nhiễu**.
+
+---
+
+## Đi xa hơn
+
+Xuyên suốt các bài học, bạn sẽ thấy các hộp **"Đi xa hơn"** tùy chọn. Người mới bắt đầu có thể yên tâm bỏ qua chúng mà vẫn hoàn thành mọi phân tích từ đầu đến cuối — mạch chính là tự chứa đủ. Các học viên nâng cao có thể sử dụng chúng để đẩy mỗi ví dụ đi xa hơn: thêm các biến đồng ảnh hưởng, kiểm tra các giả định một cách hình thức hơn, thử một phương án phi tham số, hoặc tạo một bảng `gtsummary` sẵn sàng để công bố. Cùng bộ dữ liệu, cùng các kỹ năng cốt lõi — chỉ là bạn muốn đưa chúng đi xa đến đâu.

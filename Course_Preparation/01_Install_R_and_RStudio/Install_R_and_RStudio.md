@@ -1,0 +1,197 @@
+# Installing R and RStudio — Before the Course
+
+**Clinical Data Analysis in R — Phase I** · Neudata
+
+Welcome! Before our first evening session, please set up the free software we'll be using. This short guide walks you through it step by step. You do **not** need any programming experience, and you won't break anything — just follow the steps in order.
+
+Set aside about **20–30 minutes**. A cup of tea helps.
+
+---
+
+## 1. What are we installing, and why?
+
+We use two separate free programmes that work together:
+
+- **R** is the *engine*. It's the software that actually does the statistics and makes the graphs. On its own, R looks rather plain and unfriendly.
+- **RStudio** is the *dashboard* you sit in front of. It's a comfortable, tidy workspace that drives R for you — with clearly laid-out panels for your code, your results, and your plots.
+
+Think of it like a car: **R is the engine under the bonnet**, and **RStudio is the dashboard and steering wheel**. You need the engine to go anywhere, but almost nobody wants to drive without a dashboard. So we install **both** — R first, then RStudio.
+
+Both are **completely free**, widely used in hospitals and universities worldwide, and **safe to install**. There is nothing to buy and no subscription.
+
+> **Important order:** Install **R first**, then **RStudio**. RStudio looks for R on your computer when it starts, so R needs to be there already.
+
+---
+
+## 2. What you'll install (overview)
+
+| Step | What it is | Roughly how long |
+|------|------------|------------------|
+| R | The statistics engine | 5 min |
+| RStudio Desktop | The friendly workspace | 5 min |
+| A set of R packages | Add-ons we'll use in class (tables, plots, survival analysis) | 10–15 min |
+| Quick check | Confirm everything works | 2 min |
+
+**Total: about 20–30 minutes**, most of which is just waiting for downloads.
+
+You'll need a reasonable internet connection and permission to install software on your computer (see the note on **admin rights** below).
+
+---
+
+## 3. Install R
+
+R comes from an official website called **CRAN** (the Comprehensive R Archive Network). The address is:
+
+**https://cran.r-project.org**
+
+Choose the section for your computer below — **Windows** or **macOS**.
+
+> **A note on admin rights:** Installing software sometimes needs "administrator" permission — the computer may pop up a box asking *"Do you want to allow this app to make changes?"*. Click **Yes**. On a personal laptop this is normal. On a **hospital or work computer** you may not have permission; if so, see the Troubleshooting section at the end.
+
+### 3a. Windows
+
+1. Open your web browser and go to **https://cran.r-project.org**
+2. Near the top, under *"Download and Install R"*, click **"Download R for Windows"**.
+3. On the next page, click **"base"** (this is the main version of R — the one everybody starts with).
+4. Click the big link at the top that says **"Download R-4.x.x for Windows"** (the "4.x.x" is just the version number — always take the newest one offered).
+5. Your browser will download a file ending in **`.exe`** (for example `R-4.x.x-win.exe`). When it finishes, **double-click it** to run it. If a security box asks whether to allow it, click **Yes / Run**.
+6. An installer wizard opens. You can simply **accept all the default choices** — click **Next** on each screen, then **Finish**. There is nothing you need to change.
+
+That's R installed. You won't open R directly — RStudio (next step) will use it for you.
+
+### 3b. macOS (Apple Mac)
+
+1. Open your web browser and go to **https://cran.r-project.org**
+2. Near the top, under *"Download and Install R"*, click **"Download R for macOS"**.
+3. On this page you'll see **two** download options. You need to pick the right one for your Mac:
+   - If your Mac has **Apple Silicon** (an **M1, M2, M3 or M4** chip — most Macs from late 2020 onwards), choose the package whose name contains **`-arm64`** (for example `R-4.x.x-arm64.pkg`).
+   - If your Mac has an **older Intel** processor, choose the package **without** `-arm64` (for example `R-4.x.x.pkg`).
+4. **Not sure which Mac you have?** Click the **Apple menu** (the apple logo, top-left of the screen) → **About This Mac**. If it mentions **Apple M1/M2/M3/M4**, you have Apple Silicon; if it mentions **Intel**, you have an Intel Mac.
+5. Click your chosen link. Your browser downloads a file ending in **`.pkg`**. When it finishes, **double-click it** to run it.
+6. An installer opens. **Accept the defaults** — click **Continue** / **Agree** / **Install** through the screens. You may be asked for your Mac password to allow the installation; type it and continue.
+
+That's R installed. You won't open R directly — RStudio (next step) will use it for you.
+
+---
+
+## 4. Install RStudio Desktop
+
+Now install the friendly workspace. It comes from a company called **Posit** (they make RStudio). The address is:
+
+**https://posit.co/download/rstudio-desktop/**
+
+We want the **free, open-source RStudio Desktop** — this is the version shown by default on that page. You do **not** need any paid ("Pro") version.
+
+1. Go to **https://posit.co/download/rstudio-desktop/**
+2. Scroll down to the download button. The website usually **detects your computer automatically** and offers the right file — look for a button such as **"Download RStudio Desktop for Windows"** or **"…for macOS"**. (If it doesn't detect it, scroll a little further to the table of *"All Installers"* and pick the row for your system.)
+3. Click the button to download.
+
+**On Windows:**
+- You'll get a file ending in **`.exe`**. Double-click it, click **Yes** if asked for permission, and **accept the defaults** through the installer (Next → Next → Finish).
+
+**On macOS:**
+- You'll get a file ending in **`.dmg`**. Double-click it to open it. A window appears showing the **RStudio icon** and a shortcut to your **Applications** folder.
+- **Drag the RStudio icon onto the Applications folder** in that same window. That's the installation.
+- The first time you open RStudio (from your Applications folder or Launchpad), macOS may warn you about opening software from the internet — just click **Open** to confirm.
+
+**Open RStudio now** to check it launches. You should see a window divided into panels. The large panel on the **left** (or bottom-left) is called the **Console** — that's where we'll type in the next step.
+
+> If RStudio opens but complains it **can't find R**, it usually means R wasn't installed first. Go back and do Step 3, then reopen RStudio.
+
+---
+
+## 5. Install the required R packages
+
+**What is a package?** A package is simply an **add-on** for R — a bundle of extra tools for a particular job, a bit like installing an app on your phone. R comes with the basics; we add a few packages for the clinical work we'll do in class.
+
+Here's how to install them all at once:
+
+1. Open **RStudio**.
+2. Click once inside the **Console** panel (the large panel, usually bottom-left, showing a **`>`** symbol). This is where R waits for instructions.
+3. **Copy the whole block below**, paste it into the Console, and press **Enter**:
+
+```r
+install.packages(c("tidyverse", "readxl", "gtsummary", "broom", "survival", "survminer"))
+```
+
+4. R will now download and set up the packages. You'll see a lot of text scrolling in the Console — **this is completely normal**, it's just R reporting progress. It can take **several minutes**, so please be patient and let it finish. It's done when the **`>`** symbol reappears on its own line and the scrolling stops.
+
+**What each package does (in plain terms):**
+
+| Package | What we'll use it for |
+|---------|----------------------|
+| **tidyverse** | The core toolkit for handling data and making graphs |
+| **readxl** | Reading data straight from Excel files |
+| **gtsummary** | Making clean, publication-ready summary tables |
+| **broom** | Turning statistical model output into tidy, readable tables |
+| **survival** | Survival analysis (e.g. Kaplan–Meier, Cox models) |
+| **survminer** | Drawing attractive survival curves |
+
+**A couple of things you might be asked along the way:**
+
+- If R asks *"Do you want to install from sources the package which needs compilation? (Yes/no/cancel)"*, it's safest to type **`no`** and press Enter (this uses the ready-made version and avoids extra steps).
+- If R asks whether to **restart R** before installing, answer **Yes**.
+- If you see the word **`Warning`**, don't panic — warnings are usually harmless. Only a message beginning **`Error`** means something actually needs attention (see Troubleshooting).
+
+---
+
+## 6. Confirm it worked
+
+There are two easy checks. Do the quick one first, then run the test script.
+
+### Quick check (type in the Console)
+
+Click in the **Console**, type each of these lines and press **Enter** after each. The expected result is shown after the `#`:
+
+```r
+2 + 2                 # should print: 4
+x <- c(10, 12, 14, 16)  # stores four numbers (nothing prints — that's fine)
+mean(x)               # should print: 13
+library(dplyr)        # loads part of the tidyverse; a few startup messages are fine
+```
+
+If `2 + 2` gives `4` and `mean(x)` gives `13`, R is running. If `library(dplyr)` produces some blue or black startup text but **no `Error`**, your packages are working.
+
+### Full check (the test script)
+
+In this **same folder** you'll find a file called **`installation_test.R`**. This is a small script that checks everything for you.
+
+1. In RStudio, go to **File → Open File…** and open **`installation_test.R`** (from this folder).
+2. It opens in the top-left panel (the editor). To run the whole thing, click the **"Source"** button near the top-right of that panel — or select all the lines (Ctrl+A on Windows, Cmd+A on Mac) and press **Ctrl+Enter** (Windows) / **Cmd+Enter** (Mac).
+3. Watch the Console. If all is well, the last thing it prints will be:
+
+   > **My R and RStudio installation is working.**
+
+If you see that message, you're all set. If instead you see an **`Error`**, note down what it says and check the Troubleshooting section below — or bring it to the first session and we'll sort it out together.
+
+---
+
+## 7. Troubleshooting
+
+Don't worry if something doesn't work first time — these are common and fixable.
+
+| Problem you see | What it means | What to do |
+|-----------------|---------------|------------|
+| **A package "won't install"**, or a message with **"non-zero exit status"** | The install of one package didn't complete | Run the `install.packages(...)` line again — it often works on a second try. Make sure you're online. If asked *"install from sources… which needs compilation?"*, answer **`no`**. |
+| **"there is no package called ..."** | That package didn't get installed | Re-run the install block in Step 5. Then load it again with `library(...)`. |
+| **On a hospital / work computer, downloads fail, time out, or mention a "proxy" or "firewall"** | The network is blocking the download | Try again on a **different network** (e.g. home Wi-Fi or a personal hotspot), or ask your **IT department** to allow access to `cran.r-project.org` and `posit.co`. |
+| **macOS: "cannot be opened because the developer cannot be verified"** | A macOS safety prompt for internet downloads | **Right-click** (or Control-click) the file → choose **Open** → click **Open** again in the box. This only needs doing once. |
+| **"Do you want to allow this app to make changes?" / asks for a password** | The installer needs admin permission | Click **Yes** and enter your password if you have it. On a locked-down work computer, ask **IT** to install it, or use a personal laptop for the course. |
+| **A very old version of R is already installed** | An earlier R from years ago may cause issues | Install the newest R from Step 3 anyway — it installs alongside. In RStudio, go to **Tools → Global Options → General** and make sure the newest R version is selected. |
+| **RStudio opens but says it can't find R** | R wasn't installed, or was installed after RStudio | Make sure you did Step 3, then restart RStudio. If it still can't find it, reinstall R. |
+| **Everything is very slow / the laptop is old** | Downloads and installs just take longer | Be patient and let each step finish before starting the next. Close other heavy programmes. It will still work. |
+| **You run a line and nothing happens** | Your cursor may not be in the Console, or a needed package isn't loaded | Click **inside the Console** first, then type. If a command about data or plots fails, make sure you've run `library(tidyverse)` (or the relevant `library(...)`) in that session. |
+
+If you get stuck, **it's genuinely fine to arrive with it not quite working** — come a few minutes early to the first session, or email us, and we'll help you finish the setup.
+
+---
+
+## 8. You're ready when…
+
+- [ ] **R** is installed (Step 3).
+- [ ] **RStudio Desktop** is installed and **opens** to show its panels (Step 4).
+- [ ] The **six packages** installed without an `Error` (Step 5).
+- [ ] Typing `2 + 2` in the Console gives `4`, and `mean(x)` gives `13` (Step 6).
+- [ ] Running **`installation_test.R`** prints **"My R and RStudio installation is working."** (Step 6).
+
+If all five boxes are ticked, **you're fully set up — well done, and see you in the first session!**

@@ -1,0 +1,220 @@
+---
+title: "Lesson 2 — Data Management (Cleaning Clinical Data)"
+subtitle: "Clinical Data Analysis in R (Phase I) — Pre-course"
+author: "Neudata"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: readable
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+## What this lesson is for
+
+Real clinical data is messy. Before any analysis we must **clean** it. In this
+lesson you will find and fix the common problems — duplicates, missing values,
+inconsistent labels, and impossible values — using a small set of `dplyr` verbs:
+`filter()`, `select()`, `mutate()`, `case_when()`, `group_by()` and
+`summarise()`.
+
+We will work on the **raw** file (`clinical_data_raw.csv`), which contains
+deliberate problems described in `Data/Data_Quality_Problems.md`.
+
+```{r}
+library(tidyverse)
+
+# Read the messy raw dataset
+raw <- read_csv("../Data/clinical_data_raw.csv")
+
+dim(raw)      # note: more rows than patients, because of duplicates
+```
+
+---
+
+## 1. Look before you leap
+
+Always inspect a new dataset first.
+
+```{r}
+# How many missing values in each column?
+colSums(is.na(raw))
+
+# How is 'sex' recorded? (look for inconsistent labels)
+table(raw$sex)
+
+# Quick numeric overview - watch for impossible minimums/maximums
+summary(select(raw, age, height_cm, weight_kg, BMI, systolic_bp, glucose, cholesterol))
+```
+
+You should see: several missing values, `sex` spelled many different ways, and
+some impossible numbers (an age of 219, a height of 17 cm, a glucose of 41).
+
+## 2. Remove duplicate records
+
+```{r}
+# How many exact duplicate rows?
+sum(duplicated(raw))
+
+# Keep only unique rows
+clean <- raw %>% distinct()
+
+nrow(clean)   # should now be 430 unique patients
+```
+
+## 3. Make categories consistent with `case_when()`
+
+`case_when()` reads like a set of clinical rules: *if this, then that*.
+
+```{r}
+clean <- clean %>%
+  mutate(
+    # Collapse all the spellings of sex into two clean labels
+    sex = case_when(
+      sex %in% c("Female", "female", "F", "f") ~ "Female",
+      sex %in% c("Male", "male", "M", "m")     ~ "Male"
+    ),
+    # Standardise Yes/No variables (they were mixed with 1/0 and yes/no)
+    hypertension = case_when(
+      hypertension %in% c("Yes", "yes", "1") ~ "Yes",
+      hypertension %in% c("No",  "no",  "0") ~ "No"
+    ),
+    diabetes = case_when(
+      diabetes %in% c("Yes", "yes", "1") ~ "Yes",
+      diabetes %in% c("No",  "no",  "0") ~ "No"
+    ),
+    # Fix the stray lower-case "current"
+    smoking = case_when(
+      smoking %in% c("Current", "current") ~ "Current",
+      TRUE ~ smoking      # keep Never / Former unchanged
+    )
+  )
+
+table(clean$sex)
+table(clean$hypertension)
+```
+
+## 4. Deal with impossible values
+
+We cannot know the true value of an impossible entry, so we set it to `NA`.
+`if_else()` says: *if the condition is true, use the first value, otherwise the
+second.*
+
+```{r}
+clean <- clean %>%
+  mutate(
+    age         = if_else(age < 18 | age > 110, NA_real_, age),
+    height_cm   = if_else(height_cm < 100 | height_cm > 220, NA_real_, height_cm),
+    weight_kg   = if_else(weight_kg < 30 | weight_kg > 250, NA_real_, weight_kg),
+    systolic_bp = if_else(systolic_bp > 260, NA_real_, systolic_bp),
+    glucose     = if_else(glucose > 30, NA_real_, glucose),      # impossible fasting glucose
+    cholesterol = if_else(cholesterol < 1, NA_real_, cholesterol) # negative lab value
+  )
+
+# Recompute BMI from the cleaned weight and height so it is consistent
+clean <- clean %>%
+  mutate(BMI = round(weight_kg / (height_cm / 100)^2, 1))
+
+summary(select(clean, age, height_cm, weight_kg, BMI, systolic_bp, glucose))
+```
+
+The impossible minimums and maximums are gone.
+
+## 5. Fix the date inconsistency
+
+```{r}
+# A follow-up date should never be before the admission date
+sum(clean$followup_date < clean$admission_date, na.rm = TRUE)
+
+clean <- clean %>%
+  mutate(followup_date = if_else(followup_date < admission_date,
+                                 as.Date(NA), followup_date))
+```
+
+## 6. Create new (derived) variables
+
+Analysis often needs grouped or calculated variables. Here we build three.
+
+```{r}
+clean <- clean %>%
+  mutate(
+    # Clinical BMI categories
+    bmi_group = case_when(
+      BMI < 18.5             ~ "Underweight",
+      BMI < 25               ~ "Normal",
+      BMI < 30               ~ "Overweight",
+      BMI >= 30              ~ "Obese"
+      # note: leaving out a "TRUE ~" line means missing BMI stays NA
+    ),
+    # Age groups
+    age_group = case_when(
+      age < 40               ~ "<40",
+      age < 55               ~ "40-54",
+      age < 70               ~ "55-69",
+      age >= 70              ~ "70+"
+    ),
+    # A derived clinical measure: pulse pressure
+    pulse_pressure = systolic_bp - diastolic_bp
+  )
+
+table(clean$bmi_group)
+table(clean$age_group)
+```
+
+## 7. The core `dplyr` verbs
+
+These six verbs cover most day-to-day data work.
+
+```{r}
+# filter(): keep rows that meet a condition
+hypertensive <- clean %>% filter(hypertension == "Yes")
+nrow(hypertensive)
+
+# select(): keep only certain columns
+small <- clean %>% select(patient_id, age, sex, BMI, hypertension)
+head(small)
+
+# group_by() + summarise(): summary statistics by group
+clean %>%
+  group_by(sex) %>%
+  summarise(
+    n           = n(),
+    mean_age    = mean(age, na.rm = TRUE),
+    mean_sbp    = mean(systolic_bp, na.rm = TRUE)
+  )
+```
+
+## 8. Save the analysis-ready dataset
+
+```{r, eval=FALSE}
+# Write the cleaned data so later lessons can use it
+write_csv(clean, "../Data/my_clean_data.csv")
+```
+
+> A ready-made reference version is already provided as
+> `Data/clinical_data_clean.csv`. From Lesson 3 onward we simply load that file,
+> so everyone starts from exactly the same point.
+
+---
+
+## Key points to remember
+
+- Always **inspect** first: `colSums(is.na())`, `table()`, `summary()`.
+- `distinct()` removes duplicate rows.
+- `case_when()` standardises messy categories using clinical rules.
+- Set **impossible values** to `NA` — never invent a value.
+- Recompute derived variables (like `BMI`) *after* fixing their inputs.
+- `filter()`, `select()`, `mutate()`, `group_by()`, `summarise()` are the
+  everyday verbs of data management.
+
+## Try it yourself
+
+1. After cleaning, how many patients are **current smokers**? (`table()`)
+2. Use `filter()` to keep only patients aged 60 or over. How many are there?
+3. Create a variable `high_bp` that is `"High"` when `systolic_bp >= 140` and
+   `"Normal"` otherwise, using `if_else()`.
+4. Use `group_by(hypertension)` and `summarise()` to compare mean BMI in
+   hypertensive vs non-hypertensive patients.

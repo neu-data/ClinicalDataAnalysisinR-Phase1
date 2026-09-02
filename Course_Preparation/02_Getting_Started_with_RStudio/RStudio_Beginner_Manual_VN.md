@@ -1,0 +1,242 @@
+# Bắt đầu với RStudio — Một chuyến tham quan nhẹ nhàng
+
+**Clinical Data Analysis in R — Giai đoạn I | Neudata**
+
+Chào mừng bạn! Trước khi chúng ta gặp nhau ở khóa học, chúng tôi muốn giới thiệu với bạn công cụ mà bạn sẽ làm việc cùng: **RStudio**. Xin đừng lo lắng về việc phải học hết mọi thứ ngay bây giờ. Tài liệu này chỉ đơn giản là một chuyến đi dạo thân thiện quanh "không gian làm việc" để khi bạn ngồi xuống vào ngày đầu tiên, không có gì trên màn hình cảm thấy xa lạ.
+
+Một lời trấn an nhanh trước khi bắt đầu: bạn **không** cần bất kỳ kinh nghiệm lập trình nào, và bạn **không** cần ghi nhớ bất cứ điều gì ở đây. Hãy nghĩ về việc này giống như cách bạn nghĩ về lần đầu bước vào một phòng khám hoặc khoa phòng mới — bạn chỉ muốn biết bồn rửa ở đâu, hồ sơ được lưu ở đâu, và thùng đựng vật sắc nhọn nằm ở đâu. Một khi bạn biết mọi thứ ở đâu, phần còn lại sẽ đến một cách tự nhiên.
+
+---
+
+## 1. Bức tranh tổng thể: bốn pane trong một lưới 2x2
+
+Khi bạn mở RStudio, cửa sổ được chia thành **bốn vùng hình chữ nhật gọi là "pane"** (khung), sắp xếp thành một lưới 2x2 đơn giản — hai bên trái, hai bên phải. Mỗi pane có một nhiệm vụ. Đó là toàn bộ ý tưởng. Một khi bạn biết mỗi góc làm gì, bạn sẽ luôn biết phải nhìn vào đâu.
+
+Đây là một phác thảo đơn giản của bố cục:
+
+```
++-----------------------------+-----------------------------+
+|                             |                             |
+|   TOP-LEFT                  |   TOP-RIGHT                 |
+|   Source / Editor           |   Environment / History     |
+|   (where you WRITE code      |   (what R currently         |
+|    and open your scripts)   |    remembers)               |
+|                             |                             |
++-----------------------------+-----------------------------+
+|                             |                             |
+|   BOTTOM-LEFT               |   BOTTOM-RIGHT              |
+|   Console                   |   Files / Plots /           |
+|   (where code RUNS)         |   Packages / Help           |
+|                             |                             |
++-----------------------------+-----------------------------+
+```
+
+Một vài lưu ý nhẹ nhàng:
+
+- Các pane ở **bên phải** (trên bên phải và dưới bên phải) mỗi cái chứa nhiều **tab** dọc theo mép trên của nó — những nhãn nhỏ có thể nhấp được như *Environment*, *History*, *Files*, *Plots*, *Packages*, *Help*. Nhấp vào một tab chỉ đơn giản đưa chế độ xem đó lên phía trước, giống hệt các tab trong một cặp hồ sơ giấy.
+- Khi lần đầu mở RStudio, bạn có thể chỉ thấy **ba** pane, vì pane Source ở trên bên trái vẫn ẩn cho đến khi bạn mở một script. Ngay khi bạn mở một tệp, nó sẽ xuất hiện. Đừng hoảng nếu một góc trông trống rỗng lúc đầu.
+
+Đó là bản đồ. Giờ hãy đến thăm từng vùng lần lượt.
+
+---
+
+## 2. Mỗi pane và tab dùng để làm gì
+
+### Pane Source (trên bên trái) — nơi bạn viết
+
+Đây là bề mặt viết của bạn: một trang giấy phẳng, gọn gàng nơi bạn **gõ, chỉnh sửa, và lưu** mã của mình. Các tệp bạn viết ở đây được lưu dưới dạng tệp **`.R`** (script R thuần túy) hoặc tệp **`.Rmd`** (R Markdown — mã và ghi chú viết cùng nhau, thứ mà chúng ta dùng cho các báo cáo). Không có gì ở đây tự chạy; nó chỉ nằm đó và chờ, như những ghi chú trên một trang giấy, cho đến khi bạn chọn chạy nó.
+
+*Một bác sĩ lâm sàng sẽ dùng nó để:* giữ một bản ghi phân tích đã lưu và có thể chạy lại — ví dụ một script đọc bộ dữ liệu bệnh nhân của bạn, làm sạch nó, và tạo ra một bảng tóm tắt mà bạn có thể tái tạo bất cứ lúc nào.
+
+### Console (dưới bên trái) — nơi mã chạy
+
+Đây là buồng máy. Mã khi chạy thì chạy **ở đây**, và kết quả của nó xuất hiện ở đây dưới dạng văn bản. Bạn sẽ để ý một ký hiệu **`>`** ở mép trái — đây là **dấu nhắc (prompt)**, cách R nói "Tôi đã sẵn sàng, cứ tiếp tục đi." Bạn có thể gõ một lệnh ngay sau dấu `>` và nhấn Enter để chạy nó ngay lập tức.
+
+*Một bác sĩ lâm sàng sẽ dùng nó để:* thử một phép tính hoặc kiểm tra nhanh một lần — chẳng hạn hỏi R độ tuổi trung bình trong một bộ dữ liệu mà không cần lưu bất cứ thứ gì.
+
+### Environment (tab trên bên phải) — những gì R ghi nhớ
+
+Tab Environment liệt kê các **đối tượng (object) hiện đang được giữ trong bộ nhớ của R** — các bộ dữ liệu, bảng, và bất kỳ giá trị nào bạn đã tạo và đặt tên. Khi bạn nạp dữ liệu khóa học vào một đối tượng tên là `clinical_data`, nó sẽ xuất hiện ở đây, thường kèm ghi chú về số hàng (bệnh nhân) và số cột (biến) mà nó chứa.
+
+*Một bác sĩ lâm sàng sẽ dùng nó để:* xác nhận nhanh rằng một bộ dữ liệu đã được nạp đúng và có đúng số bệnh nhân dự kiến trước khi phân tích nó.
+
+### History (tab trên bên phải) — các lệnh đã chạy
+
+Nằm cạnh Environment là tab **History**, một danh sách liên tục **mọi lệnh bạn đã chạy** trong phiên này. Bạn có thể chọn một lệnh trước đó và gửi nó trở lại Console hoặc Source để dùng lại.
+
+*Một bác sĩ lâm sàng sẽ dùng nó để:* khôi phục một lệnh họ đã gõ trước đó nhưng quên lưu vào script của mình.
+
+### Files (tab dưới bên phải) — trình duyệt thư mục của bạn
+
+Tab Files là một **trình duyệt tệp** đơn giản, khá giống File Explorer trên Windows hoặc Finder trên máy Mac, nhưng hiển thị nội dung của thư mục dự án của bạn. Bạn có thể thấy các script, các tệp dữ liệu, và mở bất kỳ tệp nào chỉ với một cú nhấp.
+
+*Một bác sĩ lâm sàng sẽ dùng nó để:* tìm và mở tệp dữ liệu `Data/clinical_data_clean.csv` hoặc mở lại một script từ ngày hôm trước.
+
+### Plots (tab dưới bên phải) — nơi biểu đồ xuất hiện
+
+Bất cứ khi nào mã của bạn tạo ra một biểu đồ, nó xuất hiện trong tab **Plots**. Dọc theo mép trên của tab này là các nút nhỏ: **Zoom** (mở biểu đồ lớn hơn trong cửa sổ riêng) và **Export** (lưu nó thành ảnh hoặc PDF, hoặc sao chép vào clipboard). Cũng có các mũi tên trái/phải để lùi lại qua các biểu đồ trước đó.
+
+*Một bác sĩ lâm sàng sẽ dùng nó để:* xem một đường cong sống còn (survival curve) hoặc phân bố huyết áp, rồi export nó để đưa vào một slide hoặc bản thảo.
+
+### Packages (tab dưới bên phải) — các phần bổ trợ đã cài
+
+R đi kèm một bộ công cụ cốt lõi, và hàng nghìn công cụ khác nằm trong các **gói (package)** — các phần bổ trợ tùy chọn mở rộng những gì R có thể làm. Tab Packages liệt kê các gói **đã cài đặt** trên máy tính của bạn, mỗi gói có một **ô đánh dấu (tick box)**. Đánh dấu vào một ô sẽ nạp gói đó để sử dụng. (Bạn cũng có thể nạp chúng bằng cách gõ một lệnh, cách mà chúng ta thường ưu tiên hơn — sẽ nói thêm bên dưới.)
+
+*Một bác sĩ lâm sàng sẽ dùng nó để:* xác nhận rằng một gói cần thiết, chẳng hạn `tidyverse` (một tập hợp phổ biến để xử lý dữ liệu), đã được cài và sẵn sàng.
+
+### Help (tab dưới bên phải) — tài liệu hướng dẫn
+
+Tab Help hiển thị **tài liệu hướng dẫn** — trang hướng dẫn chính thức cho bất kỳ hàm R nào, giải thích nó làm gì và cách sử dụng nó. Bạn có thể mở trang trợ giúp cho một hàm bằng cách gõ một dấu chấm hỏi trước tên của nó trong Console:
+
+```r
+?mean
+```
+
+*Một bác sĩ lâm sàng sẽ dùng nó để:* tra cứu chính xác một hàm mong đợi điều gì — ví dụ, kiểm tra cách `mean()` xử lý các giá trị khuyết trước khi tin tưởng vào một kết quả.
+
+---
+
+## 3. Chính xác cách để...
+
+Dưới đây là một tập hợp các hướng dẫn nhỏ, độc lập. Mỗi hướng dẫn giả định bạn chưa từng làm điều này trước đây. Ở những chỗ một phím tắt sẽ hữu ích, chúng tôi đưa ra cả phiên bản **Windows** (dùng phím **Ctrl**) và phiên bản **Mac** (dùng phím **Cmd**, ⌘).
+
+---
+
+### Cách mở dự án khóa học
+
+Khóa học được cung cấp dưới dạng một **dự án (project)** — một thư mục độc lập với một tệp đặc biệt bên trong tên là **`Clinical_Data_Analysis_PreCourse.Rproj`**.
+
+1. Mở thư mục khóa học trong File Explorer (Windows) hoặc Finder (Mac).
+2. **Nhấp đúp** vào tệp **`Clinical_Data_Analysis_PreCourse.Rproj`**.
+3. RStudio mở ra với dự án đã được nạp. Bạn sẽ thấy tên của dự án ở **góc trên bên phải** của cửa sổ RStudio.
+
+**Tệp `.Rproj` là gì, và tại sao nó quan trọng?** Đó là một dấu hiệu nhỏ nói rằng "thư mục này là một dự án." Việc mở nó làm một điều rất quan trọng và hữu ích một cách âm thầm: nó đặt **thư mục làm việc (working directory)** của R thành thư mục đó. Thư mục làm việc đơn giản là nơi R tìm đến đầu tiên khi bạn yêu cầu nó mở một tệp. Vì bạn đã mở thông qua `.Rproj`, bạn có thể tham chiếu đến dữ liệu là `Data/clinical_data_clean.csv` và R sẽ tìm thấy nó — không cần các đường dẫn tệp dài dòng, dễ hỏng, không phải đoán xem mọi thứ nằm ở đâu. Hãy luôn bắt đầu ngày của bạn bằng cách mở dự án theo cách này.
+
+---
+
+### Cách mở một tệp `.R` hoặc `.Rmd`
+
+Hai cách dễ dàng — dùng cách nào cảm thấy tự nhiên với bạn:
+
+- **Từ pane Files (dưới bên phải):** nhấp tab **Files**, rồi **nhấp vào tên của tệp**. Nó mở ra ở pane Source (trên bên trái).
+- **Từ menu:** nhấp **File > Open File...**, rồi duyệt đến tệp và nhấp **Open**.
+
+---
+
+### Cách chạy MỘT dòng mã
+
+1. Trong pane Source, **nhấp vào bất kỳ đâu trên dòng** bạn muốn chạy (bạn không cần chọn toàn bộ dòng — chỉ cần đặt con trỏ vào đó).
+2. Nhấn **Ctrl + Enter** (Windows) hoặc **Cmd + Enter** (Mac). Bạn cũng có thể nhấp nút **Run** ở góc trên bên phải của pane Source.
+3. Dòng đó chạy trong Console bên dưới, và bất kỳ kết quả nào sẽ xuất hiện ở đó. Con trỏ hữu ích nhảy xuống dòng tiếp theo, sẵn sàng chạy lại.
+
+---
+
+### Cách chạy NHIỀU dòng mã
+
+1. **Nhấp và kéo** để chọn tất cả các dòng bạn muốn chạy (bôi đen chúng).
+2. Nhấn **Ctrl + Enter** (Windows) hoặc **Cmd + Enter** (Mac), hoặc nhấp **Run**. Mọi dòng được chọn sẽ chạy theo thứ tự.
+
+Để chạy **toàn bộ tệp** từ trên xuống dưới trong một lần, nhấp nút **Source** (góc trên bên phải của pane Source), hoặc nhấn **Ctrl + Shift + Enter** (Windows) / **Cmd + Shift + Enter** (Mac).
+
+---
+
+### Cách dừng mã đang chạy
+
+Đôi khi mã mất nhiều thời gian hơn dự kiến, hoặc bạn khởi động một thứ gì đó do nhầm lẫn. Để dừng nó:
+
+- Nhấp vào **biển báo Stop nhỏ màu đỏ** (⛔) xuất hiện ở góc trên bên phải của **Console** khi mã đang chạy, **hoặc**
+- Nhấp vào bên trong Console và nhấn phím **Esc**.
+
+R sẽ dừng việc nó đang làm và đưa bạn trở lại dấu nhắc `>` thân thiện. Không có gì hỏng cả — bạn chỉ đơn giản đã yêu cầu nó ngừng lại.
+
+---
+
+### Cách tìm một đối tượng
+
+Một "đối tượng (object)" là bất cứ thứ gì bạn đã tạo và đặt tên — thường gặp nhất là một bộ dữ liệu.
+
+- Nhìn vào tab **Environment** (trên bên phải). Mọi đối tượng bạn đã tạo được liệt kê ở đó theo tên, chẳng hạn `clinical_data`.
+- Ngoài ra, **gõ tên của nó** trong Console và nhấn Enter — R sẽ in nó ra để bạn có thể xem.
+
+---
+
+### Cách xem một bộ dữ liệu
+
+Để xem dữ liệu của bạn được bày ra như một bảng tính thực thụ:
+
+- Trong tab **Environment**, **nhấp vào tên của đối tượng** (ví dụ `clinical_data`), **hoặc**
+- Gõ dòng này trong Console và nhấn Enter:
+
+```r
+View(clinical_data)
+```
+
+Lưu ý chữ **V viết hoa** trong `View`. Một trình xem kiểu bảng tính mở ra trong khu vực Source, nơi bạn có thể cuộn qua các hàng (bệnh nhân) và cột (biến), và thậm chí sắp xếp hoặc lọc để kiểm tra dữ liệu. Trình xem này chỉ để **xem** — nó không thay đổi dữ liệu của bạn.
+
+---
+
+### Cách tìm một biểu đồ
+
+- Bất kỳ biểu đồ nào bạn tạo sẽ xuất hiện trong tab **Plots** (dưới bên phải).
+- Nhấp **Zoom** để mở nó lớn hơn trong cửa sổ riêng để xem cho rõ.
+- Nhấp **Export** để lưu nó thành ảnh hoặc PDF, hoặc để sao chép nó.
+- Dùng **các mũi tên trái/phải** ở đầu tab Plots để lùi tới qua các biểu đồ bạn đã tạo trước đó trong phiên.
+
+---
+
+### Cách cài đặt và nạp một gói (phép so sánh với chiếc tủ lạnh)
+
+Đây là ý tưởng thường gây bối rối cho người mới nhất, nên hãy làm cho nó đơn giản bằng một hình ảnh đời thường.
+
+Hãy hình dung một gói là một **chiếc tủ lạnh đầy nguyên liệu hữu ích**.
+
+- **Cài đặt (Installing)** là *mua và chở chiếc tủ lạnh về bếp của bạn*. Bạn làm việc này **một lần**. Sau đó, chiếc tủ lạnh sống trong nhà bạn.
+- **Nạp (Loading)** là *mở cửa tủ lạnh để lấy các nguyên liệu*. Bạn làm việc này **mỗi lần bạn nấu ăn** — nghĩa là mỗi phiên R mới.
+
+Trong R:
+
+**Cài một lần** (mỗi máy tính):
+
+```r
+install.packages("tidyverse")
+```
+
+Lưu ý **dấu ngoặc kép** quanh tên. Bạn chỉ chạy lệnh này một lần; bạn không cần cài lại nó mỗi lần.
+
+**Nạp mỗi phiên** (mỗi lần bạn mở RStudio và muốn dùng nó):
+
+```r
+library(tidyverse)
+```
+
+Ở đây không cần dấu ngoặc kép. Nếu bạn mở R vào ngày mai và một lệnh đã hoạt động ngày hôm qua bỗng nhiên phàn nàn rằng nó "could not find" (không thể tìm thấy) một hàm, nguyên nhân thường gặp chỉ đơn giản là bạn chưa mở tủ lạnh — hãy chạy dòng `library()` và tiếp tục.
+
+---
+
+### Cách lưu công việc của bạn
+
+- Để lưu script bạn đang chỉnh sửa, nhấn **Ctrl + S** (Windows) hoặc **Cmd + S** (Mac), hoặc nhấp vào **biểu tượng đĩa nhỏ** ở đầu pane Source.
+- Vui lòng lưu **thường xuyên** — sau mỗi thay đổi có ý nghĩa, giống như cách bạn lưu một tài liệu mà bạn quan tâm.
+
+**Một điều then chốt cần hiểu:** các đối tượng được liệt kê trong pane **Environment** là **tạm thời**. Chúng sống trong bộ nhớ và biến mất khi bạn đóng RStudio. Điều đó hoàn toàn ổn và bình thường — vì **script của bạn mới là bản ghi vĩnh viễn**. Một script đã lưu có thể xây dựng lại mọi đối tượng từ đầu, bất cứ lúc nào, chỉ bằng cách chạy lại nó. Vì vậy chúng ta trân trọng script, và để cho Environment đến rồi đi.
+
+---
+
+## 4. Thói quen tốt (đáng để áp dụng từ ngày đầu tiên)
+
+> **Một vài thói quen nhẹ nhàng sẽ giúp bạn tránh được phiền toái:**
+>
+> - **Làm việc trong script, không phải trong Console.** Gõ công việc thực sự của bạn vào một script ở pane Source và chạy nó từ đó, để bạn luôn có một bản ghi đã lưu. Chỉ dùng Console cho những kiểm tra nhanh, dùng một lần rồi bỏ.
+> - **Chú thích mã của bạn (comment)** bằng ký hiệu `#`. Bất cứ thứ gì sau một `#` trên một dòng là một ghi chú cho con người, bị R bỏ qua. Hãy giải thích *tại sao* bạn làm điều gì đó — bản thân bạn trong tương lai sẽ cảm ơn bạn.
+>   ```r
+>   # Read in the cleaned patient dataset
+>   clinical_data <- read.csv("Data/clinical_data_clean.csv")
+>   ```
+> - **Lưu thường xuyên** — Ctrl/Cmd+S sẽ nhanh chóng trở thành một phản xạ.
+> - **Khi mọi thứ trở nên kỳ lạ, hãy khởi động lại R.** Nếu R bắt đầu hoạt động khác thường, vào **Session > Restart R**. Điều này cho bạn một trang giấy trắng, sạch sẽ. Rồi chạy lại script của bạn từ đầu. Cách này khắc phục một số lượng đáng ngạc nhiên các vấn đề bí ẩn, và không có gì phải lo lắng.
+
+---
+
+## 5. Lời kết
+
+Đó là toàn bộ chuyến tham quan. Nếu nó có vẻ nhiều, xin hãy nhớ rằng bạn thực sự không cần giữ tất cả trong đầu — bạn chỉ cần biết rằng bản đồ tồn tại và mọi phần của nó sẽ ở đây chờ đợi bạn. Vào ngày đầu tiên, chúng ta sẽ cùng nhau mở dự án, chạy những dòng đầu tiên, và nạp bộ dữ liệu `clinical_data` bên cạnh nhau, với một nhịp độ thong thả. Không ai được kỳ vọng phải đến với sự thành thạo. Bạn đã đọc hồ sơ bệnh nhân, cân nhắc bằng chứng, và suy luận cẩn thận mỗi ngày — đó chính xác là những kỹ năng quan trọng ở đây, và R chỉ đơn giản là một công cụ mới cho cùng một lối tư duy lâm sàng đó. Chúng tôi rất mong được bắt đầu cùng bạn.
