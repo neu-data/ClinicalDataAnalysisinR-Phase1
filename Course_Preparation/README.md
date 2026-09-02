@@ -28,7 +28,7 @@ clinical dataset, and arrive ready for Session 1.
 2. **Open the project** — double-click **`Clinical_Data_Analysis_PreCourse.Rproj`**.
    This opens RStudio in the right folder so all file paths work.
 3. **Learn & practise** — read `02_Getting_Started_with_RStudio/`, work through the
-   lessons `03_…` → `07_…` (lesson `08_…` is optional), then try the `Exercises/`.
+   lessons `03_…` → `07_…` in order, then try the `Exercises/`.
 
 ## What's in this folder
 
@@ -41,9 +41,7 @@ clinical dataset, and arrive ready for Session 1.
 | `04_Data_Management/` | Lesson 2 — cleaning clinical data (`02_Data_Management.Rmd`) |
 | `05_Exploratory_Data_Analysis/` | Lesson 3 — descriptives, tables, plots (`03_Exploratory_Analysis.Rmd`) |
 | `06_Statistical_Tests/` | Lesson 4 — t-test, chi-square, correlation (`04_Statistical_Tests.Rmd`) |
-| `07_Regression/` | Lesson 5 — linear & logistic regression (`05_Regression.Rmd`) |
-| `08_Advanced_Model/` | Lesson 6 — survival analysis, **optional** (`06_Survival_Analysis.Rmd`) |
-| `Data/` | The dataset (`clinical_data_clean.csv`, `clinical_data_raw.csv`, `.xlsx`), data dictionary, data-quality notes, generator script |
+| `07_Regression/` | Lesson 5 — linear & logistic regression (`05_Regression.Rmd`) || `Data/` | The dataset (`clinical_data_clean.csv`, `clinical_data_raw.csv`, `.xlsx`), data dictionary, data-quality notes, generator script |
 | `Exercises/` | Six short pre-course exercises (`.R`) — practice, not assessment |
 | `Solutions/` | Worked solutions + `expected_results.md` reference answers |
 | `Cheat_Sheets/` | Course R cheat sheet + statistical test decision guide |
@@ -63,11 +61,14 @@ that the analyses produce realistic, interpretable results. See
 - R packages: `tidyverse`, `readxl`, `gtsummary`, `broom`, `survival`, `survminer`
   (installed in one step during setup)
 
-## How this relates to the main course
+## What this pack is for
 
-This is the **pre-course** pack only. The five teaching sessions, slides and the
-main course materials live in the separate `Course/` folder. Nothing here
-replaces those — this pack simply gets everyone to the same starting line.
+**This pack is everything you need before the course.** Work through it this week
+to arrive installed and comfortable with R — it gets everyone to the same starting
+line. That is all you need to do right now.
+
+The live teaching materials (slides and worked examples) are used *during* the
+sessions and will be shared as the course runs — you do **not** need them yet.
 
 ---
 

@@ -24,7 +24,7 @@ Please work through things in this order:
 1. **Read this file first** (you are here).
 2. **Install the software** — open folder `01_Install_R_and_RStudio/`, follow the installation manual, then run `installation_test.R` to check everything works.
 3. **Tour RStudio** — open folder `02_Getting_Started_with_RStudio/` and, when prompted, double-click `Clinical_Data_Analysis_PreCourse.Rproj` to open the whole project in RStudio.
-4. **Work through the lessons** — go through folders `03` to `07` in order. Folder `08` (survival analysis) is optional and more advanced — peek only if you are curious.
+4. **Work through the lessons** — go through folders `03` to `07` in order.
 5. **Try the Exercises** — attempt the short exercises in `Exercises/`, then check yourself against `Solutions/`.
 6. **Keep the reference material handy** — dip into `Cheat_Sheets/` and `Guides/` whenever you like.
 
@@ -39,9 +39,7 @@ There is no need to memorise anything. Reading, clicking along, and getting a fe
 - **04_Data_Management/** — `02_Data_Management.Rmd`: reading, tidying and handling data.
 - **05_Exploratory_Data_Analysis/** — `03_Exploratory_Analysis.Rmd`: summarising and visualising data.
 - **06_Statistical_Tests/** — `04_Statistical_Tests.Rmd`: common tests for clinical questions.
-- **07_Regression/** — `05_Regression.Rmd`: introductory regression modelling.
-- **08_Advanced_Model/** — `06_Survival_Analysis.Rmd`: optional / advanced.
-- **Data/** — `clinical_data_raw.csv`, `clinical_data_clean.csv`, a data dictionary, and data-quality notes.
+- **07_Regression/** — `05_Regression.Rmd`: introductory regression modelling.- **Data/** — `clinical_data_raw.csv`, `clinical_data_clean.csv`, a data dictionary, and data-quality notes.
 - **Exercises/** — six short pre-course exercises.
 - **Solutions/** — fully worked solutions to check against.
 - **Cheat_Sheets/** — an R cheat sheet and a statistical-test decision guide.

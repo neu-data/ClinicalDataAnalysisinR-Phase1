@@ -132,7 +132,7 @@ Chạy các script trình diễn **từng dòng một** bằng `Ctrl+Enter` (Win
 
 ### BUỔI 1 — Nhập môn R & RStudio
 
-**Phân bổ thời gian:** Bài giảng 60 phút · Trình diễn 40 phút · Bài tập 25 phút · Hỏi & Đáp xuyên suốt.
+**Phân bổ thời gian (90 phút):** Ôn tập 10 phút · Bài giảng & trình diễn trực tiếp 50 phút · Bài tập có hướng dẫn 25 phút · Tổng kết & Hỏi–Đáp 5 phút.
 **Script trình diễn:** `Scripts/day1_demo.R` · **Bài tập:** `Practicals/day1_exercise.R` · **Lời giải:** `Solutions/day1_solution.R`
 
 **Mục tiêu học tập (buổi):** 1, 2, 3, 4 — điều hướng RStudio; dùng object/vector/hàm/gói; nhập CSV và Excel; nhìn dữ liệu lần đầu một cách phê phán.
@@ -204,7 +204,7 @@ Chạy các script trình diễn **từng dòng một** bằng `Ctrl+Enter` (Win
 
 ### BUỔI 2 — Hiểu & làm sạch dữ liệu lâm sàng
 
-**Phân bổ thời gian:** Bài giảng 60 phút · Trình diễn 45 phút · Bài tập 30 phút · Hỏi & Đáp xuyên suốt.
+**Phân bổ thời gian (90 phút):** Ôn tập 10 phút · Bài giảng & trình diễn trực tiếp 50 phút · Bài tập có hướng dẫn 25 phút · Tổng kết & Hỏi–Đáp 5 phút.
 **Script trình diễn:** `Scripts/day2_demo.R` · **Bài tập:** `Practicals/day2_exercise.R` · **Lời giải:** `Solutions/day2_solution.R`
 
 **Mục tiêu học tập (buổi):** 5, 6, 7 — làm sạch văn bản và biến nhị phân, xử lý các giá trị đại diện dữ liệu thiếu, kiểm định các khoảng lâm sàng, mã hóa lại/tạo biến, đặt factor với các mức tham chiếu đúng.
@@ -262,7 +262,7 @@ Chạy các script trình diễn **từng dòng một** bằng `Ctrl+Enter` (Win
 
 ### BUỔI 3 — Thống kê mô tả, bảng biểu & hình
 
-**Phân bổ thời gian:** Bài giảng 60 phút · Trình diễn 45 phút · Bài tập 30 phút · Hỏi & Đáp xuyên suốt.
+**Phân bổ thời gian (90 phút):** Ôn tập 10 phút · Bài giảng & trình diễn trực tiếp 50 phút · Bài tập có hướng dẫn 25 phút · Tổng kết & Hỏi–Đáp 5 phút.
 **Script trình diễn:** `Scripts/day3_demo.R` · **Bài tập:** `Practicals/day3_exercise.R` · **Lời giải:** `Solutions/day3_solution.R`
 
 **Mục tiêu học tập (buổi):** 8, 9 — xu hướng trung tâm/độ phân tán, tần số, bảng chéo; Bảng 1 và các hình chất lượng xuất bản.
@@ -311,7 +311,7 @@ Chạy các script trình diễn **từng dòng một** bằng `Ctrl+Enter` (Win
 
 ### BUỔI 4 — Phân tích thống kê (kiểm định giả thuyết + nhập môn hồi quy logistic)
 
-**Phân bổ thời gian:** Bài giảng 60 phút · Trình diễn 45 phút · Bài tập 30 phút · Hỏi & Đáp xuyên suốt.
+**Phân bổ thời gian (90 phút):** Ôn tập 10 phút · Bài giảng & trình diễn trực tiếp 50 phút · Bài tập có hướng dẫn 25 phút · Tổng kết & Hỏi–Đáp 5 phút.
 **Script trình diễn:** `Scripts/day4_demo.R` · **Bài tập:** `Practicals/day4_exercise.R` · **Lời giải:** `Solutions/day4_solution.R`
 
 **Mục tiêu học tập (buổi):** 10, 11 (nhập môn) — khớp câu hỏi với kiểm định; chạy/diễn giải kiểm định t, Wilcoxon, ANOVA, chi bình phương/Fisher, tương quan; khớp và diễn giải hồi quy logistic đơn giản dưới dạng tỷ số chênh.
@@ -366,7 +366,7 @@ Chạy các script trình diễn **từng dòng một** bằng `Ctrl+Enter` (Win
 
 ### BUỔI 5 — Mô hình hóa hồi quy & khả năng tái lập (capstone)
 
-**Phân bổ thời gian:** Bài giảng 60 phút · Trình diễn 45 phút · Bài tập 30 phút · Hỏi & Đáp xuyên suốt.
+**Phân bổ thời gian (90 phút):** Ôn tập 10 phút · Bài giảng & trình diễn trực tiếp 50 phút · Bài tập có hướng dẫn 25 phút · Tổng kết & Hỏi–Đáp 5 phút.
 **Script trình diễn:** `Scripts/day5_demo.R` · **Bài tập:** `Practicals/day5_exercise.R` · **Lời giải:** `Solutions/day5_solution.R`
 
 **Mục tiêu học tập (buổi):** 11 (đầy đủ), 12, 13 — khớp/báo cáo một mô hình đa biến; nhiễu và tương tác; chẩn đoán (VIF, tính tuyến tính, ảnh hưởng, AUC); khả năng tái lập.

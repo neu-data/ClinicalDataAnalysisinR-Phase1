@@ -28,7 +28,7 @@ lâm sàng thực tế, và đến buổi học đầu tiên trong tư thế s�
 2. **Mở dự án** — nhấp đúp vào **`Clinical_Data_Analysis_PreCourse.Rproj`**.
    Thao tác này mở RStudio đúng thư mục để mọi đường dẫn tệp hoạt động chính xác.
 3. **Học & thực hành** — đọc `02_Getting_Started_with_RStudio/`, làm qua các bài học
-   `03_…` → `07_…` (bài học `08_…` là tùy chọn), rồi thử phần `Exercises/`.
+   `03_…` → `07_…` theo thứ tự, rồi thử phần `Exercises/`.
 
 ## Nội dung trong thư mục này
 
@@ -41,9 +41,7 @@ lâm sàng thực tế, và đến buổi học đầu tiên trong tư thế s�
 | `04_Data_Management/` | Bài học 2 — làm sạch dữ liệu lâm sàng (`02_Data_Management.Rmd`) |
 | `05_Exploratory_Data_Analysis/` | Bài học 3 — thống kê mô tả, bảng, biểu đồ (`03_Exploratory_Analysis.Rmd`) |
 | `06_Statistical_Tests/` | Bài học 4 — t-test, chi-square, correlation (`04_Statistical_Tests.Rmd`) |
-| `07_Regression/` | Bài học 5 — linear & logistic regression (`05_Regression.Rmd`) |
-| `08_Advanced_Model/` | Bài học 6 — survival analysis, **tùy chọn** (`06_Survival_Analysis.Rmd`) |
-| `Data/` | Bộ dữ liệu (`clinical_data_clean.csv`, `clinical_data_raw.csv`, `.xlsx`), từ điển dữ liệu, ghi chú chất lượng dữ liệu, tập lệnh tạo dữ liệu |
+| `07_Regression/` | Bài học 5 — linear & logistic regression (`05_Regression.Rmd`) || `Data/` | Bộ dữ liệu (`clinical_data_clean.csv`, `clinical_data_raw.csv`, `.xlsx`), từ điển dữ liệu, ghi chú chất lượng dữ liệu, tập lệnh tạo dữ liệu |
 | `Exercises/` | Sáu bài tập ngắn trước khóa học (`.R`) — để thực hành, không phải để đánh giá |
 | `Solutions/` | Lời giải chi tiết + `expected_results.md` đáp án tham chiếu |
 | `Cheat_Sheets/` | Cheat sheet R của khóa học + hướng dẫn chọn kiểm định thống kê |
@@ -63,11 +61,14 @@ Một bộ dữ liệu **mô phỏng** hoàn toàn gồm **430 bệnh nhân** (k
 - Các gói R: `tidyverse`, `readxl`, `gtsummary`, `broom`, `survival`, `survminer`
   (được cài đặt trong một bước duy nhất khi thiết lập)
 
-## Bộ tài liệu này liên hệ thế nào với khóa học chính
+## Bộ tài liệu này để làm gì
 
-Đây chỉ là bộ tài liệu **trước khóa học**. Năm buổi giảng dạy, slide và các tài liệu
-của khóa học chính nằm trong thư mục `Course/` riêng biệt. Không có gì ở đây
-thay thế cho những tài liệu đó — bộ tài liệu này chỉ đơn giản đưa mọi người về cùng một vạch xuất phát.
+**Đây là tất cả những gì bạn cần trước khóa học.** Hãy hoàn thành trong tuần này để
+đến buổi học đã cài đặt xong và làm quen với R — nó đưa mọi người về cùng một vạch
+xuất phát. Bây giờ bạn chỉ cần làm bấy nhiêu.
+
+Các tài liệu giảng dạy trực tiếp (slide và ví dụ minh hoạ) được dùng *trong* các buổi
+học và sẽ được chia sẻ khi khóa học diễn ra — bây giờ bạn **chưa** cần đến chúng.
 
 ---
 

@@ -165,9 +165,10 @@ def footer_logo_num(logo_rid):
         '<p:sp><p:nvSpPr><p:cNvPr id="903" name="Slide Number"/>'
         '<p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr>'
         '<p:nvPr><p:ph type="sldNum" sz="quarter" idx="12"/></p:nvPr></p:nvSpPr>'
-        '<p:spPr/><p:txBody><a:bodyPr/><a:lstStyle/><a:p>'
+        '<p:spPr><a:xfrm><a:off x="11330000" y="6470000"/><a:ext cx="620000" cy="320000"/></a:xfrm></p:spPr>'
+        '<p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:pPr algn="r"/>'
         '<a:fld id="{C1FF6DA9-008F-8B48-92A6-B652298478BF}" type="slidenum">'
-        '<a:rPr lang="en-US" smtClean="0"/><a:t>2</a:t></a:fld>'
+        '<a:rPr lang="en-US" sz="1050" smtClean="0"><a:solidFill><a:schemeClr val="accent5"><a:lumMod val="50000"/></a:schemeClr></a:solidFill></a:rPr><a:t>2</a:t></a:fld>'
         '<a:endParaRPr lang="en-US"/></a:p></p:txBody></p:sp>'
     )
     return footer + logo + num

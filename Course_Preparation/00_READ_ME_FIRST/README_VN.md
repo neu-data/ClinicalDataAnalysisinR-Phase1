@@ -24,7 +24,7 @@ Vui lòng làm việc theo thứ tự sau:
 1. **Đọc tệp này trước** (bạn đang ở đây).
 2. **Cài đặt phần mềm** — mở thư mục `01_Install_R_and_RStudio/`, làm theo tài liệu hướng dẫn cài đặt, rồi chạy `installation_test.R` để kiểm tra mọi thứ hoạt động.
 3. **Tham quan RStudio** — mở thư mục `02_Getting_Started_with_RStudio/` và, khi được nhắc, nhấp đúp `Clinical_Data_Analysis_PreCourse.Rproj` để mở toàn bộ dự án trong RStudio.
-4. **Làm qua các bài học** — đi qua các thư mục `03` đến `07` theo thứ tự. Thư mục `08` (survival analysis) là tùy chọn và nâng cao hơn — chỉ ghé qua nếu bạn tò mò.
+4. **Làm qua các bài học** — đi qua các thư mục `03` đến `07` theo thứ tự.
 5. **Thử các bài Exercises** — làm thử các bài tập ngắn trong `Exercises/`, rồi tự đối chiếu với `Solutions/`.
 6. **Giữ tài liệu tham khảo trong tầm tay** — tham khảo `Cheat_Sheets/` và `Guides/` bất cứ khi nào bạn muốn.
 
@@ -39,9 +39,7 @@ Không cần phải ghi nhớ bất cứ điều gì. Đọc, nhấp chuột the
 - **04_Data_Management/** — `02_Data_Management.Rmd`: đọc, sắp xếp và xử lý dữ liệu.
 - **05_Exploratory_Data_Analysis/** — `03_Exploratory_Analysis.Rmd`: tóm tắt và trực quan hóa dữ liệu.
 - **06_Statistical_Tests/** — `04_Statistical_Tests.Rmd`: các kiểm định thường gặp cho câu hỏi lâm sàng.
-- **07_Regression/** — `05_Regression.Rmd`: mô hình hồi quy nhập môn.
-- **08_Advanced_Model/** — `06_Survival_Analysis.Rmd`: tùy chọn / nâng cao.
-- **Data/** — `clinical_data_raw.csv`, `clinical_data_clean.csv`, một từ điển dữ liệu, và ghi chú chất lượng dữ liệu.
+- **07_Regression/** — `05_Regression.Rmd`: mô hình hồi quy nhập môn.- **Data/** — `clinical_data_raw.csv`, `clinical_data_clean.csv`, một từ điển dữ liệu, và ghi chú chất lượng dữ liệu.
 - **Exercises/** — sáu bài tập ngắn trước khóa học.
 - **Solutions/** — lời giải chi tiết đầy đủ để đối chiếu.
 - **Cheat_Sheets/** — một cheat sheet R và hướng dẫn chọn kiểm định thống kê.

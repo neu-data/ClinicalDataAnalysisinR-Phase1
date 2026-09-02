@@ -132,7 +132,7 @@ Run demo scripts **line by line** with `Ctrl+Enter` (Windows) / `Cmd+Enter` (Mac
 
 ### DAY 1 — Introduction to R & RStudio
 
-**Timing:** Lecture 60 min · Demo 40 min · Exercise 25 min · Q&A throughout.
+**Timing (90 min):** Recap 10 min · Lecture & live demo 50 min · Guided exercise 25 min · Wrap-up & Q&A 5 min.
 **Demo script:** `Scripts/day1_demo.R` · **Exercise:** `Practicals/day1_exercise.R` · **Solution:** `Solutions/day1_solution.R`
 
 **Learning objectives (day):** 1, 2, 3, 4 — navigate RStudio; use objects/vectors/functions/packages; import CSV and Excel; take a first critical look at the data.
@@ -204,7 +204,7 @@ Run demo scripts **line by line** with `Ctrl+Enter` (Windows) / `Cmd+Enter` (Mac
 
 ### DAY 2 — Understanding & cleaning clinical data
 
-**Timing:** Lecture 60 min · Demo 45 min · Exercise 30 min · Q&A throughout.
+**Timing (90 min):** Recap 10 min · Lecture & live demo 50 min · Guided exercise 25 min · Wrap-up & Q&A 5 min.
 **Demo script:** `Scripts/day2_demo.R` · **Exercise:** `Practicals/day2_exercise.R` · **Solution:** `Solutions/day2_solution.R`
 
 **Learning objectives (day):** 5, 6, 7 — clean text and binaries, handle missing sentinels, validate clinical ranges, recode/derive, set factors with correct reference levels.
@@ -262,7 +262,7 @@ Run demo scripts **line by line** with `Ctrl+Enter` (Windows) / `Cmd+Enter` (Mac
 
 ### DAY 3 — Descriptive statistics, tables & figures
 
-**Timing:** Lecture 60 min · Demo 45 min · Exercise 30 min · Q&A throughout.
+**Timing (90 min):** Recap 10 min · Lecture & live demo 50 min · Guided exercise 25 min · Wrap-up & Q&A 5 min.
 **Demo script:** `Scripts/day3_demo.R` · **Exercise:** `Practicals/day3_exercise.R` · **Solution:** `Solutions/day3_solution.R`
 
 **Learning objectives (day):** 8, 9 — central tendency/spread, frequencies, cross-tabs; publication-quality Table 1 and figures.
@@ -311,7 +311,7 @@ Run demo scripts **line by line** with `Ctrl+Enter` (Windows) / `Cmd+Enter` (Mac
 
 ### DAY 4 — Statistical analysis (hypothesis tests + intro to logistic regression)
 
-**Timing:** Lecture 60 min · Demo 45 min · Exercise 30 min · Q&A throughout.
+**Timing (90 min):** Recap 10 min · Lecture & live demo 50 min · Guided exercise 25 min · Wrap-up & Q&A 5 min.
 **Demo script:** `Scripts/day4_demo.R` · **Exercise:** `Practicals/day4_exercise.R` · **Solution:** `Solutions/day4_solution.R`
 
 **Learning objectives (day):** 10, 11 (intro) — match question to test; run/interpret t-test, Wilcoxon, ANOVA, chi-square/Fisher, correlation; fit and interpret simple logistic regression as odds ratios.
@@ -366,7 +366,7 @@ Run demo scripts **line by line** with `Ctrl+Enter` (Windows) / `Cmd+Enter` (Mac
 
 ### DAY 5 — Regression modelling & reproducibility (capstone)
 
-**Timing:** Lecture 60 min · Demo 45 min · Exercise 30 min · Q&A throughout.
+**Timing (90 min):** Recap 10 min · Lecture & live demo 50 min · Guided exercise 25 min · Wrap-up & Q&A 5 min.
 **Demo script:** `Scripts/day5_demo.R` · **Exercise:** `Practicals/day5_exercise.R` · **Solution:** `Solutions/day5_solution.R`
 
 **Learning objectives (day):** 11 (full), 12, 13 — fit/report a multivariable model; confounding and interaction; diagnostics (VIF, linearity, influence, AUC); reproducibility.
