@@ -92,6 +92,10 @@ htn_xl <- read_excel("Data/hypertension_phc_raw.xlsx", sheet = "data")
 # EXPECTED CONSOLE OUTPUT: read_csv prints a column specification and
 # "Rows: 1503 Columns: 36". Note 1503 (not 1500) - duplicates lurk here!
 
+# you can also read spss files with the haven package
+# E.g.: Import the SPSS file
+library(haven)
+data <- read_sav("path/to/your/file.sav")
 
 # ----------------------------------------------------------------------------
 # 7. FIRST LOOK AT A DATA FRAME
