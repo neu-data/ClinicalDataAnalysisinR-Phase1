@@ -15,6 +15,7 @@
 # ----------------------------------------------------------------------------
 # 1. R AS A CALCULATOR  -- everything happens in the Console
 # ----------------------------------------------------------------------------
+# basic calculation
 2 + 2
 140 / 90              # a blood-pressure ratio, just to show division
 sqrt(16)
@@ -29,9 +30,14 @@ mean(c(120, 130, 145, 150))   # mean of four systolic readings
 # 2. OBJECTS  -- store a value with the assignment arrow  <-
 # ----------------------------------------------------------------------------
 sbp <- 152            # systolic blood pressure of one patient
-sbp                   # type the name to print it
+sbp
+print(sbp)# type the name to print it
+SBP
 age <- 60
-sbp + 10              # objects behave like the values they hold
+age
+sbp + 10 # objects behave like the values they hold
+sbp = 152
+sbp <- 152
 
 # COMMON MISTAKE: using = instead of <-, or forgetting the object exists.
 #   R is case-sensitive:  SBP is NOT the same object as sbp.
@@ -44,12 +50,15 @@ sbp_readings <- c(152, 138, 145, 160, 129, 142)   # c() = "combine"
 sbp_readings
 length(sbp_readings)
 mean(sbp_readings)
-sd(sbp_readings)
+sd(sbp_readings) # standard deviation
 max(sbp_readings)
 summary(sbp_readings)
 
 # A character vector and a logical vector
-sex <- c("Female", "Male", "Female", "Female", "Male", "Female")
+sex <- c("Female", "Male", "Female", "Female", "Male", "Female", "Male")
+sex
+
+# logical
 high_bp <- sbp_readings >= 140      # TRUE / FALSE for each reading
 high_bp
 sum(high_bp)                        # how many readings were >= 140?
@@ -112,6 +121,7 @@ glimpse(htn)          # compact structure: type of every column
 # ----------------------------------------------------------------------------
 # 8. LOOKING AT SINGLE VARIABLES
 # ----------------------------------------------------------------------------
+# $
 htn$age               # the $ extracts one column as a vector
 summary(htn$age)      # NOTE the max = 200  -> an impossible age (Day 2!)
 table(htn$sex)        # NOTE: Female, F, female, f ... messy (Day 2!)
