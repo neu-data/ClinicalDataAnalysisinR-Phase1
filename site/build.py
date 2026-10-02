@@ -29,8 +29,9 @@ SESSION_DATES = ["08-09-2026", "15-09-2026", "22-09-2026", "29-09-2026", "06-10-
 TRAINERS = "Bernard Osang'ir & My Luong Vuong"
 REPO_URL = "https://github.com/neu-data/ClinicalDataAnalysisinR-Phase1"
 SITE_URL = "https://neu-data.github.io/ClinicalDataAnalysisinR-Phase1"
-# Certificate portal (Google Apps Script web app URL). Leave empty until it is deployed.
-CERT_PORTAL_URL = ""
+# Certificate portal (Google Apps Script web app URL), embedded on the Certificate page.
+CERT_PORTAL_URL = ("https://script.google.com/macros/s/"
+                   "AKfycbyo0gY-ilc-g2PXHmEszcxyaCy6T1r7cqGhvq6hJSajmUnmvfWfexv5OKcGlbpRVSjaBA/exec")
 
 # ----- Language strings -----------------------------------------------------------------
 L = {
@@ -59,11 +60,12 @@ L = {
         cert_title="Certificate of completion",
         cert_body=("Participants who attend **3 to 5 of the 5 sessions** receive a Neudata certificate "
                    "of completion, signed by the trainers My Luong Vuong and Bernard Isekah Osang'ir.\n\n"
-                   "**How to get it:** open the certificate portal, enter the email you registered with, "
+                   "**How to get it:** in the form below, enter the email you registered with, "
                    "then the 6-digit code we email you and your official full name. Your certificate is "
                    "emailed to you as a PDF. Each certificate has a unique ID and a QR code that anyone "
                    "can scan to verify it."),
         cert_button="Get your certificate",
+        cert_newtab="Form not showing? Open the certificate portal in a new tab",
         cert_soon="The certificate portal opens after the final session.",
         dl_intro="Everything used in the course, ready to download.",
         col_session="Session", col_date="Date", col_topic="Topic", col_materials="Materials",
@@ -96,11 +98,12 @@ L = {
         cert_title="Chứng nhận hoàn thành",
         cert_body=("Học viên tham dự **từ 3 đến 5 trên 5 buổi học** sẽ nhận chứng nhận hoàn thành của "
                    "Neudata, do giảng viên My Luong Vuong và Bernard Isekah Osang'ir ký.\n\n"
-                   "**Cách nhận:** mở cổng chứng nhận, nhập email bạn đã đăng ký, sau đó nhập mã 6 chữ số "
+                   "**Cách nhận:** trong biểu mẫu bên dưới, nhập email bạn đã đăng ký, sau đó nhập mã 6 chữ số "
                    "chúng tôi gửi qua email và họ tên chính thức của bạn. Chứng nhận sẽ được gửi đến email "
                    "của bạn dưới dạng PDF. Mỗi chứng nhận có mã số riêng và mã QR để bất kỳ ai cũng có thể "
                    "quét để xác minh."),
         cert_button="Nhận chứng nhận",
+        cert_newtab="Không thấy biểu mẫu? Mở cổng chứng nhận trong thẻ mới",
         cert_soon="Cổng chứng nhận sẽ mở sau buổi học cuối cùng.",
         dl_intro="Toàn bộ tài liệu dùng trong khóa học, sẵn sàng để tải xuống.",
         col_session="Buổi", col_date="Ngày", col_topic="Chủ đề", col_materials="Tài liệu",
@@ -455,8 +458,15 @@ def build(lang):
         rmd_page(p, out / f"lesson{i}.qmd")
 
     # ---- certificate and downloads
-    action = (f"[{S['cert_button']}]({CERT_PORTAL_URL}){{.btn .btn-primary .btn-lg role=\"button\"}}"
-              if CERT_PORTAL_URL else f"*{S['cert_soon']}*")
+    if CERT_PORTAL_URL:
+        portal = f"{CERT_PORTAL_URL}?lang={lang}"
+        title = S["cert_button"]
+        action = (f'```{{=html}}\n<iframe src="{portal}" title="{title}" '
+                  'style="width:100%;height:860px;border:1px solid #d6e2e7;border-radius:12px;" '
+                  'loading="lazy"></iframe>\n```\n\n'
+                  f"[{S['cert_newtab']}]({portal}){{target=\"_blank\"}}")
+    else:
+        action = f"*{S['cert_soon']}*"
     (out / "certificate.qmd").write_text(
         f"---\ntitle: {yaml_str(S['cert_title'])}\n---\n\n{S['cert_body']}\n\n{action}\n", encoding="utf-8")
     sections = [(S["files_slides"], "slides"), (S["files_scripts"], "scripts"),
