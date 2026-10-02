@@ -6,8 +6,10 @@ Participants who attend **3 to 5 of the 5 sessions** receive a Neudata certifica
 
 **How to get it:** in the form below, enter the email you registered with, then the 6-digit code we email you and your official full name. Your certificate is emailed to you as a PDF. Each certificate has a unique ID and a QR code that anyone can scan to verify it.
 
+[Generate my certificate](https://script.google.com/macros/s/AKfycbyo0gY-ilc-g2PXHmEszcxyaCy6T1r7cqGhvq6hJSajmUnmvfWfexv5OKcGlbpRVSjaBA/exec?lang=en){.btn .btn-primary .btn-lg role="button" target="_blank"}
+
 ```{=html}
-<iframe src="https://script.google.com/macros/s/AKfycbyo0gY-ilc-g2PXHmEszcxyaCy6T1r7cqGhvq6hJSajmUnmvfWfexv5OKcGlbpRVSjaBA/exec?lang=en" title="Get your certificate" style="width:100%;height:860px;border:1px solid #d6e2e7;border-radius:12px;" loading="lazy"></iframe>
+<iframe src="https://script.google.com/macros/s/AKfycbyo0gY-ilc-g2PXHmEszcxyaCy6T1r7cqGhvq6hJSajmUnmvfWfexv5OKcGlbpRVSjaBA/exec?lang=en" title="Generate my certificate" style="width:100%;height:860px;border:1px solid #d6e2e7;border-radius:12px;margin-top:1rem;" loading="lazy"></iframe>
 ```
 
 [Form not showing? Open the certificate portal in a new tab](https://script.google.com/macros/s/AKfycbyo0gY-ilc-g2PXHmEszcxyaCy6T1r7cqGhvq6hJSajmUnmvfWfexv5OKcGlbpRVSjaBA/exec?lang=en){target="_blank"}

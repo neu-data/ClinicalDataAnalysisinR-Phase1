@@ -64,7 +64,7 @@ L = {
                    "then the 6-digit code we email you and your official full name. Your certificate is "
                    "emailed to you as a PDF. Each certificate has a unique ID and a QR code that anyone "
                    "can scan to verify it."),
-        cert_button="Get your certificate",
+        cert_button="Generate my certificate",
         cert_newtab="Form not showing? Open the certificate portal in a new tab",
         cert_soon="The certificate portal opens after the final session.",
         dl_intro="Everything used in the course, ready to download.",
@@ -102,7 +102,7 @@ L = {
                    "chúng tôi gửi qua email và họ tên chính thức của bạn. Chứng nhận sẽ được gửi đến email "
                    "của bạn dưới dạng PDF. Mỗi chứng nhận có mã số riêng và mã QR để bất kỳ ai cũng có thể "
                    "quét để xác minh."),
-        cert_button="Nhận chứng nhận",
+        cert_button="Tạo chứng nhận của tôi",
         cert_newtab="Không thấy biểu mẫu? Mở cổng chứng nhận trong thẻ mới",
         cert_soon="Cổng chứng nhận sẽ mở sau buổi học cuối cùng.",
         dl_intro="Toàn bộ tài liệu dùng trong khóa học, sẵn sàng để tải xuống.",
@@ -461,8 +461,10 @@ def build(lang):
     if CERT_PORTAL_URL:
         portal = f"{CERT_PORTAL_URL}?lang={lang}"
         title = S["cert_button"]
-        action = (f'```{{=html}}\n<iframe src="{portal}" title="{title}" '
-                  'style="width:100%;height:860px;border:1px solid #d6e2e7;border-radius:12px;" '
+        # button opens the portal in this page's language; the same form is embedded below it
+        action = (f"[{title}]({portal}){{.btn .btn-primary .btn-lg role=\"button\" target=\"_blank\"}}\n\n"
+                  f'```{{=html}}\n<iframe src="{portal}" title="{title}" '
+                  'style="width:100%;height:860px;border:1px solid #d6e2e7;border-radius:12px;margin-top:1rem;" '
                   'loading="lazy"></iframe>\n```\n\n'
                   f"[{S['cert_newtab']}]({portal}){{target=\"_blank\"}}")
     else:

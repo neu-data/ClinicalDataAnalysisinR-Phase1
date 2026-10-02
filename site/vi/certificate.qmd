@@ -6,8 +6,10 @@ Học viên tham dự **từ 3 đến 5 trên 5 buổi học** sẽ nhận chứ
 
 **Cách nhận:** trong biểu mẫu bên dưới, nhập email bạn đã đăng ký, sau đó nhập mã 6 chữ số chúng tôi gửi qua email và họ tên chính thức của bạn. Chứng nhận sẽ được gửi đến email của bạn dưới dạng PDF. Mỗi chứng nhận có mã số riêng và mã QR để bất kỳ ai cũng có thể quét để xác minh.
 
+[Tạo chứng nhận của tôi](https://script.google.com/macros/s/AKfycbyo0gY-ilc-g2PXHmEszcxyaCy6T1r7cqGhvq6hJSajmUnmvfWfexv5OKcGlbpRVSjaBA/exec?lang=vi){.btn .btn-primary .btn-lg role="button" target="_blank"}
+
 ```{=html}
-<iframe src="https://script.google.com/macros/s/AKfycbyo0gY-ilc-g2PXHmEszcxyaCy6T1r7cqGhvq6hJSajmUnmvfWfexv5OKcGlbpRVSjaBA/exec?lang=vi" title="Nhận chứng nhận" style="width:100%;height:860px;border:1px solid #d6e2e7;border-radius:12px;" loading="lazy"></iframe>
+<iframe src="https://script.google.com/macros/s/AKfycbyo0gY-ilc-g2PXHmEszcxyaCy6T1r7cqGhvq6hJSajmUnmvfWfexv5OKcGlbpRVSjaBA/exec?lang=vi" title="Tạo chứng nhận của tôi" style="width:100%;height:860px;border:1px solid #d6e2e7;border-radius:12px;margin-top:1rem;" loading="lazy"></iframe>
 ```
 
 [Không thấy biểu mẫu? Mở cổng chứng nhận trong thẻ mới](https://script.google.com/macros/s/AKfycbyo0gY-ilc-g2PXHmEszcxyaCy6T1r7cqGhvq6hJSajmUnmvfWfexv5OKcGlbpRVSjaBA/exec?lang=vi){target="_blank"}
