@@ -1,0 +1,24 @@
+---
+title: "Day 4: Common Medical Statistical Tests"
+---
+
+**Date:** 29-09-2026 · Tuesday, 8:00–9:30 PM (Vietnam time)
+
+## Agenda
+
+- Hypothesis testing basics
+- Comparing two groups: t-test and Wilcoxon
+- More than two groups: ANOVA
+- Categorical association: chi-square and Fisher
+- Correlation and choosing the right test
+
+## Materials
+
+| | |
+|:--|:--|
+| 🎞️ **Slides** | [Open the slides](slides-day4.qmd) — Press **F** for full screen, **S** for speaker notes, **E** to print. |
+| 📥 **PowerPoint** | [Download the slides (PowerPoint)](files/slides/Clinical_Data_Analysis_in_R_Phase1.pptx) |
+| 💻 **Live-coding demo script** | [day4_demo.R](files/scripts/day4_demo.R) |
+| 🧪 **Practical exercise** | [day4_exercise.R](files/practicals/day4_exercise.R) |
+| ✅ **Worked solution** | [day4_solution.R](files/solutions/day4_solution.R) |
+| 📁 **Course data** | [Course data](data.qmd) |

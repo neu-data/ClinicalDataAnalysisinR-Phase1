@@ -1,0 +1,179 @@
+---
+title: "Lesson 3 — Exploratory Data Analysis"
+subtitle: "Clinical Data Analysis in R (Phase I) — Pre-course"
+author: "Neudata"
+execute:
+  echo: true
+  warning: false
+  message: false
+knitr:
+  opts_knit:
+    root.dir: "../../Course_Preparation/05_Exploratory_Data_Analysis"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,
+                      fig.width = 6, fig.height = 4)
+```
+
+## What this lesson is for
+
+Before testing anything, we **describe** and **look at** the data. You will
+compute descriptive statistics, build a publication-style summary table, and
+make the four plots you will use most often: a histogram, a boxplot, a bar plot
+and a scatterplot — and, just as importantly, **interpret** each one.
+
+```{r}
+library(tidyverse)
+library(gtsummary)
+
+clinical_data <- read_csv("../Data/clinical_data_clean.csv")
+
+# A couple of grouped variables for plotting
+clinical_data <- clinical_data %>%
+  mutate(
+    bmi_group = case_when(
+      BMI < 18.5 ~ "Underweight",
+      BMI < 25   ~ "Normal",
+      BMI < 30   ~ "Overweight",
+      BMI >= 30  ~ "Obese"
+    ),
+    bmi_group = factor(bmi_group,
+                       levels = c("Underweight", "Normal", "Overweight", "Obese"))
+  )
+```
+
+---
+
+## 1. Describing continuous variables
+
+For a continuous variable we usually report the **mean** and **standard
+deviation** (if roughly symmetric) or the **median** and **IQR** (if skewed).
+
+```{r}
+mean(clinical_data$age)                 # average age
+sd(clinical_data$age)                   # standard deviation
+median(clinical_data$BMI)               # middle value of BMI
+IQR(clinical_data$BMI)                  # interquartile range
+```
+
+## 2. Describing categorical variables
+
+For categories we report **counts** and **percentages**.
+
+```{r}
+# Counts
+table(clinical_data$smoking)
+
+# Proportions (multiply by 100 for percentages)
+prop.table(table(clinical_data$smoking)) * 100
+
+# Prevalence of hypertension
+mean(clinical_data$hypertension == "Yes") * 100
+```
+
+## 3. Summaries by group
+
+The clinical question is usually *"does this differ between groups?"*
+`group_by()` + `summarise()` answers it.
+
+```{r}
+clinical_data %>%
+  group_by(sex) %>%
+  summarise(
+    n        = n(),
+    mean_sbp = mean(systolic_bp, na.rm = TRUE),
+    mean_bmi = mean(BMI, na.rm = TRUE)
+  )
+```
+
+## 4. A publication-ready "Table 1"
+
+`gtsummary` builds the baseline characteristics table journals expect — in one
+command.
+
+```{r}
+clinical_data %>%
+  select(age, sex, BMI, systolic_bp, diabetes, treatment, hypertension) %>%
+  tbl_summary(by = hypertension) %>%
+  add_p()                                # adds a p-value column
+```
+
+Read it as: for each characteristic, how the hypertensive and non-hypertensive
+groups compare.
+
+---
+
+## 5. Four essential plots
+
+### Histogram — the shape of one continuous variable
+
+```{r}
+ggplot(clinical_data, aes(x = age)) +
+  geom_histogram(binwidth = 5, fill = "#0D7377", colour = "white") +
+  labs(title = "Distribution of age", x = "Age (years)", y = "Number of patients")
+```
+
+**Interpretation:** age is roughly bell-shaped and centred in the mid-50s — a
+typical middle-aged clinic population, with no strange spikes.
+
+### Boxplot — a continuous variable across groups
+
+```{r}
+ggplot(clinical_data, aes(x = hypertension, y = systolic_bp, fill = hypertension)) +
+  geom_boxplot() +
+  labs(title = "Systolic BP by hypertension status",
+       x = "Hypertension", y = "Systolic BP (mmHg)") +
+  theme(legend.position = "none")
+```
+
+**Interpretation:** the box (middle 50% of patients) sits clearly higher for
+hypertensive patients — as expected. The dots above the whiskers are outliers.
+
+### Bar plot — counts of a category
+
+```{r}
+ggplot(clinical_data, aes(x = smoking, fill = smoking)) +
+  geom_bar() +
+  labs(title = "Number of patients by smoking status",
+       x = "Smoking status", y = "Number of patients") +
+  theme(legend.position = "none")
+```
+
+**Interpretation:** most patients have never smoked, with fewer former and
+current smokers — useful to know before using smoking as a predictor.
+
+### Scatterplot — two continuous variables together
+
+```{r}
+ggplot(clinical_data, aes(x = BMI, y = systolic_bp)) +
+  geom_point(alpha = 0.5, colour = "#0D7377") +
+  geom_smooth(method = "lm", se = TRUE, colour = "#C1440E") +
+  labs(title = "Systolic BP against BMI",
+       x = "BMI (kg/m2)", y = "Systolic BP (mmHg)")
+```
+
+**Interpretation:** the upward trend line suggests higher BMI is associated with
+higher systolic blood pressure. A scatterplot is the right first step before a
+correlation or linear regression.
+
+---
+
+## Key points to remember
+
+- Continuous data → mean & SD, or median & IQR if skewed.
+- Categorical data → counts and percentages (`table()`, `prop.table()`).
+- `group_by()` + `summarise()` compares groups.
+- `gtsummary::tbl_summary()` builds a Table 1 in one line.
+- The four core plots: **histogram** (one variable's shape), **boxplot**
+  (variable by group), **bar plot** (category counts), **scatterplot**
+  (two continuous variables).
+- Always *interpret* a plot in clinical terms — a picture is only useful if you
+  can say what it means.
+
+## Try it yourself
+
+1. Make a histogram of `systolic_bp`. Is it roughly symmetric?
+2. Make a boxplot of `BMI` by `sex`. Do men and women differ much?
+3. Build a `tbl_summary()` of `age`, `BMI` and `systolic_bp` split `by = sex`.
+4. Make a scatterplot of `age` (x) against `systolic_bp` (y) and describe the trend.

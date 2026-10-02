@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clinical Data Analysis in R - Phase 1 · Neudata</title>
+<link rel="icon" href="en/images/neudata-logo.png">
+<style>
+  :root { --teal:#055F56; --navy:#04242F; --blue:#0B376C; --mist:#EAF2F5; --grey:#8A99A3; }
+  * { box-sizing: border-box; }
+  body { margin:0; min-height:100vh; display:flex; flex-direction:column; font-family:"Segoe UI",Roboto,Arial,sans-serif;
+         background:#fff; color:var(--navy); }
+  header { background:var(--navy); border-bottom:4px solid var(--teal); padding:12px 20px; }
+  header img { height:44px; background:#fff; border-radius:6px; padding:3px 8px; }
+  main { flex:1; display:flex; align-items:center; justify-content:center; padding:24px 16px; }
+  .card { max-width:720px; width:100%; text-align:center; }
+  .hero { background:linear-gradient(120deg,var(--navy) 0%,var(--blue) 70%,var(--teal) 100%); color:#fff;
+          border-radius:12px; padding:36px 24px; }
+  h1 { margin:0 0 6px; font-family:"Century Gothic","Avenir Next","Segoe UI",Arial,sans-serif; font-size:clamp(1.5rem,4vw,2.2rem); }
+  .sub { color:#dbeeea; margin:4px 0; }
+  .choose { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:28px; }
+  .choose a { display:inline-block; min-width:220px; padding:14px 22px; border-radius:10px; text-decoration:none;
+              font-weight:700; font-size:1.05rem; border:2px solid var(--teal); }
+  .choose a.vi { background:var(--teal); color:#fff; }
+  .choose a.en { background:#fff; color:var(--teal); }
+  .choose a:hover { filter:brightness(1.08); }
+  footer { background:var(--navy); color:#fff; text-align:center; padding:14px; font-size:.85rem; border-top:4px solid var(--teal); }
+  footer a { color:#9FD3CB; }
+</style>
+</head>
+<body>
+<header><img src="en/images/neudata-logo.png" alt="Neudata Consulting Ltd"></header>
+<main>
+  <div class="card">
+    <div class="hero">
+      <h1>Phân tích Dữ liệu Lâm sàng bằng R — Giai đoạn 1</h1>
+      <p class="sub">Clinical Data Analysis in R — Phase 1</p>
+      <p class="sub">8/9 – 6/10/2026 · Online</p>
+    </div>
+    <div class="choose">
+      <a class="vi" href="vi/index.html" lang="vi">🇻🇳 Tiếng Việt</a>
+      <a class="en" href="en/index.html" lang="en">🇬🇧 English</a>
+    </div>
+  </div>
+</main>
+<footer>Neudata Consulting Ltd · <em>Insight. Impact. Innovation.</em> ·
+  <a href="https://www.neu-data.com">www.neu-data.com</a></footer>
+<script>
+  // Send returning visitors straight to their language; first-time visitors pick above.
+  try {
+    var saved = localStorage.getItem("neudata-course-lang");
+    if (saved === "en" || saved === "vi") { location.replace(saved + "/index.html"); }
+  } catch (e) {}
+  document.querySelectorAll(".choose a").forEach(function (a) {
+    a.addEventListener("click", function () {
+      try { localStorage.setItem("neudata-course-lang", a.classList.contains("vi") ? "vi" : "en"); } catch (e) {}
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,550 @@
+---
+title: "Ngày 2: Hiểu & Làm sạch dữ liệu lâm sàng"
+subtitle: "Phân tích Dữ liệu Lâm sàng bằng R — Giai đoạn I"
+author: "Bernard Osang'ir & My Luong Vuong"
+institute: "Neudata Consulting Ltd"
+date: "15-09-2026"
+lang: vi
+section-label: "Phần"
+format:
+  neudata-revealjs:
+    scrollable: true
+---
+
+# Ngày 2: Hiểu & Làm sạch dữ liệu lâm sàng
+
+## Kế hoạch
+
+- Vì sao làm sạch quan trọng: rác vào, rác ra
+- Các kiểu biến và mã hoá lâm sàng
+- Dữ liệu khuyết, bản ghi trùng, phân loại không nhất quán
+- Kiểm định, mã hoá lại, ngày tháng và biến phân loại (factor)
+- Lưu bộ dữ liệu sạch: bản giao ước cho các Ngày 3-5
+
+::: {.notes}
+Điểm mấu chốt: hôm nay ta biến một tệp thô lộn xộn thành một bộ dữ liệu gọn gàng, sẵn sàng phân tích và lưu nó một lần cho cả tuần.
+
+Ngộ nhận: làm sạch không phải một bước nhanh trước công việc 'thật'; nó CHÍNH LÀ phần lớn công việc.
+
+Diễn giải lâm sàng: mọi kết quả về sau đều phụ thuộc vào các quyết định đưa ra hôm nay.
+
+Hỏi: ai từng phát hiện lỗi trong dữ liệu của mình sau khi đã chạy phân tích? Mong đợi: hầu hết giơ tay, thường là sau khi đã nộp.
+
+Mẹo trình diễn: để tệp thô mở bên cạnh tập lệnh để mọi người thấy mớ hỗn độn mà ta đang thuần hóa.
+:::
+
+## Vì sao làm sạch dữ liệu quan trọng
+
+### Rác vào, rác ra
+
+| Một giá trị p không thể cứu một huyết áp gõ nhầm.
+| Lỗi không tự thông báo; chúng ẩn trong những con số hợp lý.
+| Dữ liệu sạch là nền tảng của một kết quả đáng tin.
+
+### Làm sạch chiếm bao nhiêu phần của một dự án?
+
+| Thường là 60-80% tổng thời gian phân tích.
+| Bỏ qua nó không tiết kiệm thời gian; nó chuyển chi phí sang khâu bình duyệt.
+
+::: {.callout-note}
+## Vì sao bác sĩ lâm sàng nên quan tâm
+Một ngưỡng cắt hay đơn vị sai có thể lật ngược một kết luận lâm sàng.
+:::
+
+::: {.notes}
+Điểm mấu chốt: làm sạch là phần lớn thời gian phân tích thực tế và là phần mà người thẩm định soi kỹ nhất.
+
+Ngộ nhận: 'người quản lý dữ liệu đã làm sạch rồi' - vẫn phải có ai đó đối chiếu nó với ý nghĩa lâm sàng.
+
+Diễn giải lâm sàng: một SBP bằng 7 hay một tuổi 200 sẽ âm thầm làm méo các giá trị trung bình và mô hình.
+
+Hỏi: khoảng SBP lúc nghỉ thực tế của một người lớn là bao nhiêu? Mong đợi: khoảng 90-180; chính trực giác này là thứ ta mã hoá thành các quy tắc kiểm định.
+
+Mẹo trình diễn: hiện một giá trị bất khả và hỏi nó sẽ làm gì với một giá trị trung bình.
+:::
+
+## Các kiểu biến trong dữ liệu lâm sàng
+
+| Kiểu | Nó là gì | Ví dụ trong dữ liệu của ta |
+|:---|:---|:---|
+| Liên tục | Số trên một thang đo | age, sbp\_mmhg, weight\_kg |
+| Nhị phân | Hai phân loại | diabetes (Yes/No) |
+| Phân loại | Các nhóm không thứ tự | facility, occupation |
+| Thứ tự | Các nhóm có thứ tự | education (None to Tertiary) |
+| Ngày tháng | Thời gian theo lịch | enroll\_date |
+
+: Kiểu quyết định cách R lưu trữ, tóm tắt và mô hình hóa một biến.
+
+::: {.notes}
+Điểm mấu chốt: chọn đúng kiểu ngay từ đầu chi phối mọi tóm tắt, đồ thị và mô hình về sau.
+
+Ngộ nhận: 'một con số luôn là liên tục' - các phân loại được mã hoá (1=Yes) là số nhưng lại mang tính phân loại.
+
+Diễn giải lâm sàng: education có thứ tự nên giữ nguyên thứ tự của nó; facility không nên bị coi là một thang đo có xếp hạng.
+
+Hỏi: điểm đau Likert 0-10 là liên tục hay thứ tự? Mong đợi: có thể biện hộ theo cả hai cách; điểm mấu chốt là quyết định một cách có chủ đích.
+
+Mẹo trình diễn: ánh xạ mỗi hàng tới một cột trong tệp thô đang mở.
+:::
+
+## Mã hoá lâm sàng: Các mã nhất quán {.smaller}
+
+### Mã hoá nghĩa là gì
+
+| Thống nhất một giá trị viết duy nhất cho mỗi phân loại ngoài đời.
+| Sex được lưu là Female / Male, không phải F / f / female.
+| Các biến nhị phân được lưu là Yes / No, không phải một mớ lẫn lộn Y, 1, true.
+
+### Vì sao điều đó quan trọng
+
+| R coi 'Yes' và 'yes' là hai nhóm khác nhau.
+| Các mã không nhất quán chia một phân loại thành nhiều phân loại.
+| Các mã nhất quán làm cho bảng và mô hình đáng tin cậy.
+
+::: {.callout-warning}
+## Cái bẫy thường gặp
+Tám cách viết của sex trở thành tám phân loại ma.
+:::
+
+::: {.notes}
+Điểm mấu chốt: một phân loại chỉ tồn tại nếu nhãn của nó được viết giống hệt nhau mỗi lần.
+
+Ngộ nhận: R đủ thông minh để biết 'Y' nghĩa là 'Yes' - không phải vậy.
+
+Diễn giải lâm sàng: một biến sex bị chia tách sẽ làm sai lệch mọi ước lượng có hiệu chỉnh theo sex.
+
+Hỏi: một trường văn bản tự do có thể tạo ra bao nhiêu giá trị khác nhau của sex? Mong đợi: nhiều đến bất ngờ; ta sẽ thấy tám.
+
+Mẹo trình diễn: chạy table() trước khi làm sạch để lộ ra sự hỗn loạn.
+:::
+
+## Dữ liệu khuyết: Nó ẩn mình ra sao
+
+### Nó hiếm khi trông giống một thứ
+
+| Ô trống, chữ NA, và các mã báo hiệu 999 hay -99.
+| Nếu R không nhận ra chúng, 999 bị coi là một giá trị thật.
+| Chỉ một số 999 có thể phá hỏng một giá trị trung bình hay một hồi quy.
+
+### Đọc nó cho đúng ngay khi nhập
+
+| Nói cho read\_csv biết chuỗi nào nghĩa là khuyết.
+| na = c("", "NA", "999", "-99")
+
+::: {.callout-note}
+## Các dạng khuyết (tóm tắt)
+MCAR, MAR, MNAR - dạng khuyết ảnh hưởng đến cách ta xử lý nó về sau.
+:::
+
+::: {.notes}
+Điểm mấu chốt: định nghĩa tình trạng khuyết ngay khi nhập để các mã báo hiệu không bao giờ lọt vào phân tích dưới dạng số.
+
+Ngộ nhận: ô trống là dạng khuyết duy nhất - các mã báo hiệu dạng số mới là loại nguy hiểm.
+
+Diễn giải lâm sàng: một SBP 999 sẽ thổi phồng giá trị trung bình và làm tăng giả tạo tỷ lệ tăng huyết áp.
+
+Hỏi: điều gì xảy ra với mean(sbp) nếu một số 999 được đọc như một giá trị thật? Mong đợi: nó nhảy vọt; ví dụ này thuyết phục cho đối số na=.
+
+Mẹo trình diễn: nhập một lần không có na= và một lần có nó; so sánh summary().
+:::
+
+## Bản ghi trùng: 1503 so với 1500 {.smaller}
+
+### Câu chuyện
+
+| Tệp thô có 1503 hàng nhưng chỉ 1500 bệnh nhân.
+| Ba bản ghi bị nhập hai lần - trùng hoàn toàn.
+| Bản ghi trùng thổi phồng cỡ mẫu và làm méo ước lượng.
+
+### Phát hiện và loại bỏ
+
+| sum(duplicated(raw)) cho thấy có bao nhiêu bản ghi trùng toàn phần.
+| distinct(raw) giữ lại một bản của mỗi hàng duy nhất.
+| n\_distinct(raw\$patient\_id) khi đó phải bằng nrow(raw).
+
+::: {.callout-tip}
+## Luôn kiểm tra lại
+Xác nhận số hàng là 1500 sau distinct().
+:::
+
+::: {.notes}
+Điểm mấu chốt: bản ghi trùng là một sự tăng cỡ mẫu giả và phải bị loại trước khi đếm bất cứ thứ gì.
+
+Ngộ nhận: distinct() bỏ đi những hàng bạn muốn giữ - ở đây nó chỉ loại các bản sao toàn-hàng chính xác.
+
+Diễn giải lâm sàng: một bệnh nhân bị lặp sẽ đếm hai lần kết cục của họ, làm sai lệch tỷ lệ hiện mắc.
+
+Hỏi: vì sao kiểm tra n\_distinct(patient\_id) cùng với nrow? Mong đợi: để bắt các lỗi nhập liệu cùng-ID-khác-hàng mà distinct() sẽ giữ lại.
+
+Mẹo trình diễn: in nrow trước và sau để thấy được sự giảm từ 1503 xuống 1500.
+:::
+
+## Phân loại không nhất quán: 8 cách viết của Sex {.smaller}
+
+### Mớ hỗn độn
+
+| Female, F, female, f và Male, M, male, m.
+| Các khoảng trắng lạc tạo ra thêm nhiều biến thể.
+| Tám nhãn cho hai nhóm thật.
+
+### Cách sửa
+
+| str\_trim() loại bỏ khoảng trắng đầu và cuối.
+| str\_to\_lower() làm cho hoa-thường không còn quan trọng.
+| case\_when() ánh xạ mọi biến thể sang Female hoặc Male.
+
+::: {.callout-note}
+## Ý nghĩa lâm sàng
+Bất cứ điều gì ngoài dự kiến đều thành NA, không phải một phỏng đoán.
+:::
+
+::: {.notes}
+Điểm mấu chốt: chuẩn hóa hoa-thường và khoảng trắng trước, rồi ánh xạ một tập nhỏ các giá trị đã biết.
+
+Ngộ nhận: bạn phải liệt kê từng biến thể bằng tay - chuyển về chữ thường thu gọn phân nửa số đó ngay lập tức.
+
+Diễn giải lâm sàng: đừng bao giờ bịa ra một giới tính cho một mục không đọc được; NA là trung thực.
+
+Hỏi: vì sao đưa các giá trị chưa biết về NA thay vì về nhóm lớn hơn? Mong đợi: phỏng đoán tạo ra sai lệch; NA là minh bạch.
+
+Mẹo trình diễn: cho thấy table(sex) trước và sau case\_when.
+:::
+
+## Chuẩn hóa biến nhị phân bằng một hàm trợ giúp
+
+[Một hàm tái sử dụng sửa mọi biến Yes/No.]{.slide-intro}
+
+```r
+to_yesno <- function(x) {
+  x <- str_to_lower(str_trim(as.character(x)))
+  case_when(
+    x %in% c("yes","y","1","true") ~ "Yes",
+    x %in% c("no","n","0","false") ~ "No",
+    TRUE ~ NA_character_)
+}
+raw <- raw |> mutate(across(
+  c(diabetes, family_history_htn, health_insurance,
+    htn_diagnosed, treatment_uptake), to_yesno))
+```
+
+::: {.code-note}
+Viết quy tắc một lần, áp dụng nó cho nhiều cột bằng across().
+:::
+
+::: {.notes}
+Điểm mấu chốt: một hàm trợ giúp làm cho cùng một quy tắc làm sạch trở nên nhất quán và có thể kiểm toán trên nhiều cột.
+
+Ngộ nhận: bạn nên lặp lại case\_when cho từng biến - across() tránh các lỗi sao-chép-dán.
+
+Diễn giải lâm sàng: treatment\_uptake phải là Yes/No sạch trước khi nó có thể là một kết cục.
+
+Hỏi: vì sao ép về as.character trước? Mong đợi: một cột được đọc là numeric 0/1 sẽ không khớp các mẫu văn bản nếu không làm vậy.
+
+Mẹo trình diễn: gọi to\_yesno(c("Y"," no ",1)) riêng lẻ để cho thấy nó hoạt động.
+:::
+
+## Kiểm định: Các giá trị sinh lý bất khả
+
+### Phát hiện điều bất khả
+
+| age 200 và age 0; sbp 0 và sbp 700.
+| weight 7 kg; height 17 cm.
+| Đây là lỗi nhập liệu, không phải bệnh nhân thật.
+
+### Sửa bằng các khoảng giá trị hợp lý
+
+| if\_else(age \>= 18 & age \<= 110, age, NA\_real\_)
+| Ngoài khoảng thì thành NA, không phải xóa cả hàng.
+
+::: {.callout-note}
+## Chọn các khoảng
+Đặt giới hạn từ kiến thức lâm sàng và dân số nghiên cứu của bạn, không phải chỉ từ dữ liệu.
+:::
+
+::: {.notes}
+Điểm mấu chốt: mã hoá tính hợp lý lâm sàng thành các khoảng rõ ràng và chuyển các vi phạm thành NA.
+
+Ngộ nhận: giá trị ngoại lai và giá trị bất khả là như nhau - một SBP thật 185 là hợp lý và phải được giữ lại.
+
+Diễn giải lâm sàng: các khoảng nên phản ánh dân số; một nghiên cứu ở người lớn biện minh cho age \>= 18.
+
+Hỏi: có nên xóa cả hàng vì một chiều cao sai không? Mong đợi: không - chỉ để trống ô đó thôi để các trường hợp lệ khác còn được giữ.
+
+Mẹo trình diễn: cho thấy summary() trước và sau; giá trị min và max sẽ khớp vào một khoảng hợp lý.
+:::
+
+## Mã hoá lại và tạo biến dẫn xuất
+
+:::: {.columns}
+::: {.column width="50%"}
+### Tính lại BMI từ nguồn
+
+- bmi = weight\_kg / (height\_cm/100)\^2
+- Tạo biến dẫn xuất sau khi làm sạch height và weight.
+- Đừng bao giờ tin một BMI đã tính sẵn một cách mù quáng.
+:::
+::: {.column width="50%"}
+### Tạo các phân loại lâm sàng
+
+- bmi\_cat bằng cut(): từ Underweight tới Obese.
+- bp\_category bằng case\_when().
+- Normal, Elevated, Hypertension.
+:::
+::::
+
+::: {.notes}
+Điểm mấu chốt: tạo biến dẫn xuất từ các đầu vào đã làm sạch để giá trị dẫn xuất thừa hưởng việc làm sạch.
+
+Ngộ nhận: tính lại BMI là thừa - cột được cung cấp có thể cũ hoặc sai.
+
+Diễn giải lâm sàng: bp\_category dùng các ngưỡng cắt theo hướng dẫn (\>=140/90 tăng huyết áp, \>=130/80 tăng cao).
+
+Hỏi: vì sao tính lại BMI thay vì giữ cột của tệp? Mong đợi: nó bảo đảm tính nhất quán với height và weight đã được kiểm định.
+
+Mẹo trình diễn: cho thấy một hàng mà BMI được cung cấp không khớp với giá trị được tính lại.
+:::
+
+## Trình diễn: Tính lại BMI và phân loại
+
+```r
+raw <- raw |> mutate(
+  bmi = round(weight_kg / (height_cm/100)^2, 1),
+  bmi_cat = cut(bmi,
+    breaks = c(-Inf, 18.5, 25, 30, Inf),
+    labels = c("Underweight","Normal",
+               "Overweight","Obese")),
+  bp_category = case_when(
+    is.na(sbp_mmhg) | is.na(dbp_mmhg) ~ NA_character_,
+    sbp_mmhg >= 140 | dbp_mmhg >= 90 ~ "Hypertension",
+    sbp_mmhg >= 130 | dbp_mmhg >= 80 ~ "Elevated",
+    TRUE ~ "Normal"))
+```
+
+::: {.code-note}
+Xử lý NA một cách tường minh trước để một BP khuyết không bao giờ bị đọc là Normal.
+:::
+
+::: {.notes}
+Điểm mấu chốt: sắp xếp case\_when từ cụ thể nhất tới tổng quát nhất, và chặn NA trước nhánh TRUE.
+
+Ngộ nhận: NA rơi xuống nhánh TRUE cuối - nên một BP khuyết sẽ bị dán nhãn sai là Normal.
+
+Diễn giải lâm sàng: phân loại nhầm một BP khuyết thành Normal sẽ đánh giá thấp gánh nặng tăng huyết áp.
+
+Hỏi: điều gì xảy ra nếu dòng is.na bị xóa? Mong đợi: bệnh nhân có BP khuyết bị dán nhãn Normal - một lỗi âm thầm.
+
+Mẹo trình diễn: cố ý bỏ dòng is.na, chạy table(bp\_category), rồi khôi phục nó.
+:::
+
+## Trình diễn: Phân tích các định dạng ngày hỗn hợp
+
+[enroll\_date đến với vài định dạng khác nhau.]{.slide-intro}
+
+```r
+library(lubridate)
+raw <- raw |> mutate(
+  enroll_date = parse_date_time(
+    enroll_date,
+    orders = c("ymd","dmy","d-b-Y")) |>
+  as_date())
+sum(is.na(raw$enroll_date))
+```
+
+```{.text .code-output}
+[1] 0
+```
+
+::: {.code-note}
+orders liệt kê các định dạng để thử, theo thứ tự ưu tiên.
+:::
+
+::: {.notes}
+Điểm mấu chốt: parse\_date\_time của lubridate thử từng định dạng lần lượt, thuần hóa các kiểu nhập liệu hỗn hợp.
+
+Ngộ nhận: ngày tháng chỉ là văn bản - lưu dưới dạng văn bản thì không thể sắp xếp hay lấy hiệu.
+
+Diễn giải lâm sàng: một Date thật cho phép bạn tính thời gian theo dõi và kiểm tra các cửa sổ thu nhận.
+
+Hỏi: vì sao kiểm tra sum(is.na(enroll\_date)) sau đó? Mong đợi: một sự tăng đột biến nghĩa là một định dạng ta chưa liệt kê và phải thêm vào.
+
+Mẹo trình diễn: cho parse\_date\_time vài chuỗi mẫu để cho thấy mỗi order khớp như thế nào.
+:::
+
+## Biến phân loại (factor) và mức tham chiếu {.smaller}
+
+### Factor cho các phân loại một cấu trúc
+
+| factor() lưu các phân loại với các mức được định nghĩa.
+| Factor có thứ tự giữ nguyên ý nghĩa thứ tự (education, activity).
+| Các mức chi phối thứ tự trong bảng và đồ thị.
+
+### Đặt mức tham chiếu một cách có chủ đích
+
+| Với các kết cục nhị phân, liệt kê 'No' trước.
+| factor(treatment\_uptake, levels = c("No","Yes"))
+| Mức đầu tiên là mốc so sánh cơ sở trong các mô hình.
+
+::: {.callout-note}
+## Vì sao 'No' trước
+Tỷ số chênh khi đó đọc là chênh lệch của Yes so với No - hướng lâm sàng tự nhiên.
+:::
+
+::: {.notes}
+Điểm mấu chốt: mức factor đầu tiên là mức tham chiếu, và nó quy định cách diễn giải mọi tỷ số chênh.
+
+Ngộ nhận: thứ tự mức chỉ mang tính hình thức - nó âm thầm đảo ngược hướng của các ước lượng mô hình.
+
+Diễn giải lâm sàng: với 'No' làm tham chiếu, OR \> 1 nghĩa là chênh lệch cao hơn của kết cục, đúng như bác sĩ mong đợi.
+
+Hỏi: một OR bằng 3.56 cho diabetes nghĩa là gì khi 'No' làm tham chiếu? Mong đợi: người tiểu đường có chênh lệch tiếp nhận điều trị gấp 3.56 lần so với người không tiểu đường.
+
+Mẹo trình diễn: khớp lại mô hình với các mức đảo ngược để cho thấy OR đảo thành 1/3.56.
+:::
+
+## Trình diễn: Kiểm tra dữ liệu khuyết cuối cùng
+
+```r
+colSums(is.na(analysis_data)) |>
+  sort(decreasing = TRUE) |>
+  head(12)
+```
+
+```{.text .code-output}
+adherence        411
+bp_controlled    411
+bmi               18
+sbp_mmhg          12
+age                9
+```
+
+::: {.code-note}
+adherence và bp\_controlled là NA theo thiết kế đối với bệnh nhân chưa điều trị.
+:::
+
+::: {.notes}
+Điểm mấu chốt: kiểm tra tình trạng khuyết theo từng cột và phân biệt NA có tính cấu trúc với các vấn đề dữ liệu.
+
+Ngộ nhận: mọi NA đều xấu - adherence không được xác định với người không điều trị, nên NA của nó là điều mong đợi.
+
+Diễn giải lâm sàng: chỉ bệnh nhân đang điều trị mới có thể có trạng thái adherence hoặc kiểm soát BP.
+
+Hỏi: có nên quy nạp adherence cho bệnh nhân chưa điều trị không? Mong đợi: không - nó khuyết một cách cấu trúc, không phải chưa biết.
+
+Mẹo trình diễn: lập bảng chéo tình trạng khuyết của adherence với treatment\_uptake để cho thấy dạng khuyết theo-thiết-kế.
+:::
+
+## Lưu dữ liệu sạch: bản giao ước
+
+### Lưu một lần, dùng lại cả tuần
+
+| saveRDS giữ nguyên các kiểu factor và mức của chúng.
+| write\_csv cho một bản sao lưu con người đọc được.
+| Các Ngày 3, 4 và 5 đều bắt đầu từ một tệp này.
+
+### Các lệnh
+
+| saveRDS(analysis\_data, "Data/analysis\_data.rds")
+| write\_csv(analysis\_data, "Data/analysis\_data.csv")
+
+::: {.callout-tip}
+## Nạp lại về sau
+analysis\_data \<- readRDS("Data/analysis\_data.rds")
+:::
+
+::: {.notes}
+Điểm mấu chốt: tệp .rds đã lưu là nguồn chân lý duy nhất cho phần còn lại của khóa học.
+
+Ngộ nhận: CSV giữ được mọi thứ - nó làm mất các mức factor và thứ tự, nên .rds mới là tệp phân tích.
+
+Diễn giải lâm sàng: một bộ dữ liệu sạch cố định làm cho mọi kết quả về sau có thể tái lập và kiểm toán được.
+
+Hỏi: vì sao ưu tiên .rds hơn .csv cho phân tích? Mong đợi: nó khôi phục các factor và các mức có thứ tự một cách chính xác, không cần làm sạch lại.
+
+Mẹo trình diễn: lưu, xóa không gian làm việc, rồi readRDS để chứng minh các factor còn nguyên.
+:::
+
+## Lỗi thường gặp và gỡ lỗi
+
+### Hãy để ý những điều này
+
+| Quên na= nên 999 lọt vào như một số thật.
+| Sai thứ tự mức factor làm đảo mọi tỷ số chênh.
+| Để NA rơi qua case\_when xuống nhầm nhóm.
+
+::: {.callout-important}
+## Lan truyền NA
+Bất kỳ phép số học nào với NA đều trả về NA; kiểm tra is.na trước khi tính.
+:::
+
+::: {.callout-tip}
+## Thói quen gỡ lỗi
+Sau mỗi bước hãy chạy summary() hoặc table(..., useNA = "ifany").
+:::
+
+::: {.notes}
+Điểm mấu chốt: hầu hết lỗi làm sạch đều âm thầm; hãy tạo thói quen xem xét sau mỗi bước.
+
+Ngộ nhận: không có thông báo lỗi nghĩa là bước đó đã chạy đúng - kết quả sai thường chạy mà không phàn nàn.
+
+Diễn giải lâm sàng: một kết cục bị mã hoá sai một cách âm thầm có thể thay đổi toàn bộ kết luận nghiên cứu.
+
+Hỏi: bạn sẽ bắt một đối số na= bị quên như thế nào? Mong đợi: một giá trị max phi lý trong summary(), ví dụ một SBP bằng 999.
+
+Mẹo trình diễn: kích hoạt từng lỗi trực tiếp, rồi cho thấy công cụ chẩn đoán bắt được nó.
+:::
+
+## Bài thực hành Ngày 2: Làm sạch bộ dữ liệu mô phỏng {.smaller}
+
+[Làm việc trong Practicals/day2\_exercise.R và mô phỏng lại quy trình hôm nay.]{.slide-intro}
+
+- Nhập tệp CSV thô với các mã báo hiệu na= đúng.
+- Loại bỏ bản ghi trùng bằng distinct(); xác nhận 1500 hàng.
+- Mã hoá lại sex thành Female/Male; chuẩn hóa các biến nhị phân Yes/No.
+- Áp dụng các khoảng hợp lý; đặt các giá trị bất khả thành NA.
+- Tính lại BMI; tạo bmi\_cat và bp\_category.
+- Phân tích enroll\_date; đặt các factor và mức tham chiếu.
+- Chạy kiểm tra dữ liệu khuyết cuối cùng và giải thích từng NA.
+- Lưu kết quả vào Data/analysis\_data.rds.
+
+::: {.notes}
+Điểm mấu chốt: bài thực hành tái lập toàn bộ bản giao ước để mỗi học viên kết thúc với một tệp sạch giống hệt nhau.
+
+Ngộ nhận: bỏ qua một bước cũng không sao nếu các con số 'trông ổn' - các ngày sau sẽ không nạp được một tệp sai kiểu.
+
+Diễn giải lâm sàng: trạng thái kết thúc mong đợi là bộ dữ liệu đã được kiểm định dùng cho mọi phân tích về sau.
+
+Hỏi: làm sao bạn biết tệp của mình đúng? Mong đợi: 1500 hàng, các factor sạch, và bản kiểm tra khớp với số đếm của phần trình diễn.
+
+Mẹo trình diễn: cho họ readRDS tệp của chính mình và glimpse() nó để tự kiểm tra so với của bạn.
+:::
+
+## Ôn tập và bắc cầu sang Ngày 3 {.smaller}
+
+### Hôm nay ta đạt được gì
+
+| Đã nhập, khử trùng lặp và chuẩn hóa dữ liệu thô.
+| Đã kiểm định các giá trị, tạo biến dẫn xuất, phân tích ngày tháng.
+| Đã đặt các factor và lưu analysis\_data.rds.
+
+### Ngày mai: Ngày 3
+
+| Khám phá và mô tả dữ liệu sạch.
+| Bảng tóm tắt, phân phối và các đồ thị đầu tiên.
+| Ta bắt đầu từ analysis\_data.rds - không làm sạch lại.
+
+::: {.callout-note}
+## Ghi nhớ
+Dữ liệu sạch tác động rõ ràng - mọi thứ ở hạ nguồn đều dựa trên hôm nay.
+:::
+
+::: {.notes}
+Điểm mấu chốt: bộ dữ liệu sạch, đã lưu là nhịp cầu bước vào phân tích mô tả ở Ngày 3.
+
+Ngộ nhận: làm sạch đã xong mãi mãi - hãy quay lại nó nếu các đồ thị Ngày 3 làm lộ ra các bất thường mới.
+
+Diễn giải lâm sàng: mô tả đáng tin cậy đòi hỏi dữ liệu đã kiểm định mà ta đã xây hôm nay.
+
+Hỏi: điều đầu tiên bạn làm vào Ngày 3 là gì? Mong đợi: readRDS tệp phân tích và glimpse nó, không phải nhập lại tệp CSV thô.
+
+Mẹo trình diễn: mở phần đầu tập lệnh của ngày mai để cho thấy nó bắt đầu bằng readRDS.
+:::

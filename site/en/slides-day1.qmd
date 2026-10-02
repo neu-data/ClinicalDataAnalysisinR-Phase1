@@ -1,0 +1,598 @@
+---
+title: "Day 1: Introduction to R & RStudio"
+subtitle: "Clinical Data Analysis in R — Phase I"
+author: "Bernard Osang'ir & My Luong Vuong"
+institute: "Neudata Consulting Ltd"
+date: "08-09-2026"
+lang: en
+section-label: "Section"
+format:
+  neudata-revealjs:
+    scrollable: true
+---
+
+# Day 1: Introduction to R & RStudio
+
+## Today's Plan
+
+- Why R for clinical research
+- R vs RStudio: install and the interface
+- Projects, scripts, objects and vectors
+- Data frames and packages (tidyverse)
+- Importing and a first look at the study data
+- Hands-on exercise
+
+::: {.notes}
+Key point: this whole day is about getting comfortable, not memorising. By tonight every participant will have imported a real clinical dataset and looked at it.
+
+Common misconception: that you must be a programmer. You do not; R is a tool like a calculator or a stethoscope.
+
+Clinical interpretation: reproducible analysis means a colleague or a regulator can re-run your work and get the same numbers.
+
+Ask the audience: who has used Excel for research? Expected answer: almost everyone. Bridge: R does what Excel does, but it records every step.
+
+Demo tip: keep RStudio open on screen behind you so people see the real thing, not just slides.
+:::
+
+## Why R for Clinical Research {.smaller}
+
+### What R gives you
+
+| A free, open-source language for statistics and data
+| Used in clinical trials, epidemiology and journals
+| Handles import, cleaning, analysis and plots in one place
+
+### Why it matters
+
+| Every step is written down, so the analysis is repeatable
+| No cost and no licence: install on any computer
+| A huge community and packages for medical research
+
+::: {.callout-note}
+## Reproducibility
+If you can re-run the script, you can defend the result.
+:::
+
+::: {.notes}
+Key point: the headline advantage is reproducibility plus zero cost. Click-by-click in Excel is hard to reproduce; a script is the recipe.
+
+Common misconception: that free means low quality. R is used by FDA, EMA reviewers, and most major epidemiology groups.
+
+Clinical interpretation: when a reviewer asks how you derived a number, you point to a line of code, not your memory.
+
+Ask the audience: what happens if you redo last year's analysis in Excel by hand? Expected answer: you may get slightly different numbers. A script removes that risk.
+
+Demo tip: mention that the figures in many NEJM and Lancet papers are made in R.
+:::
+
+## R vs RStudio: Two Different Things
+
+:::: {.columns}
+::: {.column width="50%"}
+### R (the engine)
+
+- The actual statistical language
+- Does the computation
+- You install it first
+- Rarely opened on its own
+:::
+::: {.column width="50%"}
+### RStudio (the dashboard)
+
+- A friendly workspace around R
+- Editor, console, plots, help
+- Install it second
+- This is what you open daily
+:::
+::::
+
+::: {.notes}
+Key point: R is the engine, RStudio is the dashboard. You need both, and you install R first.
+
+Common mistake: people try to open R directly and find a bare console. Always open RStudio instead.
+
+Clinical interpretation: think of R as the lab analyser and RStudio as the technician's interface to it.
+
+Ask the audience: which one do you double-click each morning? Expected answer: RStudio.
+
+Demo tip: show both icons on the desktop so the distinction is concrete.
+:::
+
+## The RStudio Interface: Four Panes {.smaller}
+
+### Top-left: Source (Script editor)
+
+| Where you write and save your code
+
+### Bottom-left: Console
+
+| Where code runs and results appear
+
+### Top-right: Environment
+
+| The objects and data you have created
+
+### Bottom-right: Files / Plots / Help
+
+| Folders, your graphs, and documentation
+
+::: {.callout-tip}
+## Orientation
+Spend two minutes finding each pane before you type.
+:::
+
+::: {.notes}
+Key point: just four panes. Source and Console on the left, Environment and the Files/Plots/Help tabs on the right.
+
+Common misconception: that the layout is fixed; it is configurable, but the defaults are fine for beginners.
+
+Clinical interpretation: the Environment pane is your worktop, it shows what data is currently loaded.
+
+Ask the audience: where will a graph appear? Expected answer: bottom-right, the Plots tab.
+
+Demo tip: type a line in the Console and the same line in the Source, and show that only the saved Source persists.
+:::
+
+## RStudio Projects and the Working Directory
+
+### The working directory
+
+| The folder R looks in when you open a file
+| Check it with getwd()
+
+### Use a Project, not setwd()
+
+| File \> New Project keeps everything in one folder
+| Paths become relative, like Data/file.csv
+| The work runs on any computer, unchanged
+
+::: {.callout-warning}
+## Avoid setwd()
+A hard-coded path breaks on every other machine.
+:::
+
+::: {.notes}
+Key point: an RStudio Project sets the working directory for you and makes paths portable.
+
+Common mistake: setwd("C:/Users/me/Desktop/...") at the top of a script. It works only on that one computer.
+
+Clinical interpretation: portability matters when you share an analysis with a statistician or a collaborator at another site.
+
+Ask the audience: what is wrong with writing the full C: path? Expected answer: nobody else has that exact folder.
+
+Demo tip: run getwd() once so people see what the current folder actually is, then open the course Project.
+:::
+
+## Script vs Console
+
+[Both run R code, but only one is your record.]{.slide-intro}
+
+:::: {.columns}
+::: {.column width="50%"}
+### Console
+
+- Type, press Enter, get an answer
+- Good for quick tries
+- Not saved when you close
+:::
+::: {.column width="50%"}
+### Script (Source)
+
+- You write, then save as a .R file
+- Re-run any time, line by line
+- This is your reproducible record
+:::
+::::
+
+::: {.notes}
+Key point: the script is the reproducible record; the console is a scratchpad.
+
+Common misconception: that typing in the console is enough. It vanishes on close.
+
+Clinical interpretation: the saved script is your analysis audit trail, like a signed lab notebook.
+
+Ask the audience: where should the real analysis live? Expected answer: in a saved script.
+
+Demo tip: run a line with Ctrl+Enter from the script and show the result appearing in the console below.
+:::
+
+## First Steps: R as a Calculator
+
+[The simplest way to start - just type sums into the Console.]{.slide-intro}
+
+```r
+2 + 2
+140 / 90        # a blood-pressure ratio
+sqrt(16)
+(120 + 130 + 145 + 150) / 4   # mean of four readings
+```
+
+```{.text .code-output}
+[1] 4
+[1] 1.555556
+[1] 4
+[1] 136.25
+```
+
+::: {.code-note}
+Everything in R is built from small steps like these - start simple, then build up.
+:::
+
+::: {.notes}
+Key teaching point: R is first and foremost a calculator - functions like sqrt() and arithmetic (+, -, \*, /) work exactly as you expect.
+
+Common misconception: that you must memorise commands before you can do anything. You can explore by just typing sums.
+
+Clinical interpretation: a blood-pressure ratio or a quick mean of a few readings is real, useful work on day one.
+
+Audience question: what does 140 / 90 give, and what might it represent? Expected answer: about 1.56 - a crude systolic-to-diastolic ratio.
+
+Demo tip: let participants call out sums and type them live; build confidence before introducing objects.
+:::
+
+## Objects and the Assignment Arrow
+
+### Store a value in an object
+
+| sbp \<- 152 means store 152 in an object named sbp
+| Type the name sbp to print it back
+| The arrow \<- is the assignment operator
+
+### R is case-sensitive
+
+| SBP and sbp are two different objects
+
+::: {.callout-important}
+## Common slips
+Using = instead of \<-; mixing up upper and lower case.
+:::
+
+::: {.notes}
+Key point: \<- stores a value in a named object; the name then behaves like the value.
+
+Common mistake: writing sbp = 152 (works but is discouraged) or calling it Sbp later and getting an error.
+
+Clinical interpretation: an object is just a labelled container, like a labelled specimen tube.
+
+Ask the audience: is Age the same as age in R? Expected answer: no, R is case-sensitive.
+
+Demo tip: type the shortcut Alt+- (Alt and minus) to insert \<- automatically, and show the case-sensitivity error live.
+:::
+
+## Objects and Vectors in Action
+
+[A vector holds many values of the same type.]{.slide-intro}
+
+```r
+sbp <- 152
+sbp
+sbp_readings <- c(152, 138, 145, 160, 129, 142)
+length(sbp_readings)
+mean(sbp_readings)
+sd(sbp_readings)
+```
+
+```{.text .code-output}
+[1] 152
+[1] 6
+[1] 144.3333
+[1] 11.23239
+```
+
+::: {.code-note}
+c() means combine; mean() and sd() summarise the whole vector.
+:::
+
+::: {.notes}
+Key point: c() combines values into a vector; functions like length(), mean() and sd() act on the whole vector at once.
+
+Common mistake: forgetting the commas inside c(), or mixing text and numbers in one vector.
+
+Clinical interpretation: a vector is one column of readings, six systolic measurements here.
+
+Ask the audience: what does length() tell us? Expected answer: how many values are in the vector, here six.
+
+Demo tip: also run summary(sbp\_readings) and max(sbp\_readings) so they see more functions on the same object.
+:::
+
+## Data Types You Will Meet
+
+### Three everyday types
+
+| numeric: numbers, like age or sbp (60, 152)
+| character: text in quotes, like "Female"
+| logical: TRUE or FALSE, like sbp \>= 140
+
+### Why type matters
+
+| You can average numbers, not text
+| R picks the type when it reads your data
+
+::: {.callout-note}
+## Tip
+glimpse() shows the type of every column at a glance.
+:::
+
+::: {.notes}
+Key point: numeric, character and logical are the three types beginners need. Each column of data is one type.
+
+Common misconception: that a number stored as text behaves like a number; it does not, you cannot average it.
+
+Clinical interpretation: if age was imported as text (because of a stray value like 200 or a letter), means will fail until it is fixed.
+
+Ask the audience: what type is "Yes"/"No"? Expected answer: character text; we will recode it later.
+
+Demo tip: create high\_bp \<- sbp\_readings \>= 140 and show the TRUE/FALSE logical vector, then sum() it to count.
+:::
+
+## Data Frames and Tibbles
+
+### The shape of a dataset
+
+| A data frame is a table: rows and columns
+| Each row is one patient (one observation)
+| Each column is one variable (age, sex, sbp)
+
+### Tibble
+
+| The tidyverse version of a data frame
+| Prints neatly and shows column types
+
+::: {.callout-note}
+## Read it as a clinic
+Rows are people; columns are what you measured.
+:::
+
+::: {.notes}
+Key point: a data frame (or tibble) is the rectangular table that holds your study, rows = patients, columns = variables.
+
+Common misconception: that R data looks like a spreadsheet with merged cells and colours; it is plain tidy columns.
+
+Clinical interpretation: this rows-are-patients, columns-are-variables layout is exactly the tidy structure analyses expect.
+
+Ask the audience: in our data, what does one row represent? Expected answer: one adult attending a PHC facility.
+
+Demo tip: contrast a tibble print (clean, shows types) with a base data.frame print so they appreciate tibbles.
+:::
+
+## Packages: Install Once, Load Each Session
+
+### Two different commands
+
+| install.packages("tidyverse") downloads it once
+| library(tidyverse) loads it every new session
+
+### Packages we use today
+
+| tidyverse: import, wrangle, plot
+| readxl: read Excel .xlsx files
+
+::: {.callout-important}
+## Common mistake
+Running install.packages() every time (slow, needs internet).
+:::
+
+::: {.notes}
+Key point: install once (downloads from the internet), library() every time you start R. Two separate jobs.
+
+Common mistake: putting install.packages() at the top of a script that runs daily; it re-downloads needlessly and fails offline.
+
+Clinical interpretation: a package is a toolbox of extra functions; tidyverse and readxl are the ones we need for import.
+
+Ask the audience: do you install a package every session? Expected answer: no, you only library() it.
+
+Demo tip: show library(tidyverse) printing its attaching message, and note that is normal, not an error.
+:::
+
+## Importing the Study Data
+
+[Load packages first, then read the file.]{.slide-intro}
+
+```r
+library(tidyverse)
+library(readxl)
+htn <- read_csv("Data/hypertension_phc_raw.csv")
+htn_xl <- read_excel(
+  "Data/hypertension_phc_raw.xlsx", sheet = "data")
+dim(htn)
+```
+
+```{.text .code-output}
+Rows: 1503  Columns: 36
+[1] 1503   36
+```
+
+::: {.code-note}
+read\_csv for CSV, read\_excel for Excel. Note 1503, not 1500.
+:::
+
+::: {.notes}
+Key point: read\_csv() reads the CSV, read\_excel() reads the Excel; both land in a tibble. The paths are relative because we are in a Project.
+
+Common mistake: forgetting library(readxl) before read\_excel, or a wrong path/file name (case and spelling must match exactly).
+
+Clinical interpretation: 1503 rows but the study enrolled 1,500, so three duplicate records are hiding in here.
+
+Ask the audience: why 1503 and not 1500? Expected answer: there are 3 duplicate records, which we fix on Day 2.
+
+Demo tip: point out the column specification message read\_csv prints; it is informational, not an error.
+:::
+
+## First Look: Knowing Your Data {.smaller}
+
+[Run these the moment any dataset is imported.]{.slide-intro}
+
+- dim(htn): how many rows and columns
+- names(htn): the variable names
+- glimpse(htn): every column with its type
+- head(htn): the first few rows
+- View(htn): open the spreadsheet viewer
+- htn\$age: pull one column out with the dollar sign
+- summary(htn\$age): min, mean, max of a variable
+- table(htn\$sex): counts of each category
+
+::: {.notes}
+Key point: a fixed first-look routine, dim, names, glimpse, head, View, then \$ to inspect single variables with summary and table.
+
+Common mistake: jumping straight to analysis without looking; many data problems are visible in the first thirty seconds.
+
+Clinical interpretation: summary() and table() are your screening tests for the data; they flag impossible values and messy categories.
+
+Ask the audience: what does htn\$age return? Expected answer: the age column as a single vector.
+
+Demo tip: run View(htn) so people see the familiar spreadsheet grid, then close it and rely on glimpse().
+:::
+
+## Inspecting Single Variables
+
+[The \$ extracts one column to summarise.]{.slide-intro}
+
+```r
+summary(htn$age)
+table(htn$sex)
+```
+
+```{.text .code-output}
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+   0.0    38.0    52.0    53.4    66.0   200.0
+
+     f      F female Female      m ...
+    11     63    402    498     14 ...
+```
+
+::: {.code-note}
+Max age 200 and eight spellings of sex: this data needs cleaning.
+:::
+
+::: {.notes}
+Key point: summary() on age and table() on sex immediately expose problems, an impossible max of 200 and many spellings of the same category.
+
+Common misconception: that imported data is clean; raw clinical data almost never is.
+
+Clinical interpretation: an age of 200 (and a 0) cannot be real; Female/female/F/f are all the same group recorded inconsistently.
+
+Ask the audience: how many true sex categories should there be? Expected answer: two, but the table shows eight labels.
+
+Demo tip: also run table(htn\$facility) to reveal stray spaces, and tell them Day 2 fixes all of this.
+:::
+
+## Common Mistakes and Quick Debugging
+
+### When it does not work, check
+
+| Did you run library() for the package?
+| Did you use \<- and not = for assignment?
+| Is the spelling and CASE exactly right?
+| Is the file path and name correct?
+
+::: {.callout-warning}
+## could not find function
+Usually means the package is not loaded: run library().
+:::
+
+::: {.callout-important}
+## cannot open file
+Wrong path or file name; check the Files pane.
+:::
+
+::: {.notes}
+Key point: most beginner errors are one of four things, missing library(), wrong operator, a case/spelling slip, or a bad path.
+
+Common mistake: panicking at red text. Read the message; it usually names the problem.
+
+Clinical interpretation: debugging is like differential diagnosis, read the sign (the error), form a hypothesis, test the fix.
+
+Ask the audience: you get could not find function read\_csv, what is wrong? Expected answer: tidyverse is not loaded; run library(tidyverse).
+
+Demo tip: deliberately trigger one error live (mistype the file name) and walk through reading the message calmly.
+:::
+
+## What the Data Is Already Telling Us
+
+### Problems visible on the first look
+
+| Age = 200 and age = 0: impossible values
+| Sex recorded eight different ways
+| 1503 rows for 1,500 people: duplicates
+
+### Why this is good news
+
+| We found it in seconds, before any analysis
+| Cleaning is the topic of Day 2
+
+::: {.callout-note}
+## Garbage in, garbage out
+No statistic is trustworthy on uncleaned data.
+:::
+
+::: {.notes}
+Key point: the first look has already surfaced the three big issues, impossible values, inconsistent categories, and duplicate rows.
+
+Common misconception: that finding problems means you did something wrong; finding them early is exactly the goal.
+
+Clinical interpretation: analysing before cleaning would bias every result, the mean age would be pulled up by the 200.
+
+Ask the audience: should we calculate mean age right now? Expected answer: no, fix the impossible values first.
+
+Demo tip: foreshadow Day 2 by showing how a single 200 distorts mean(htn\$age); it motivates the cleaning day.
+:::
+
+## Day 1 Exercise: Import the Clinical Dataset
+
+### Your tasks
+
+| Open the course RStudio Project
+| library(tidyverse) and library(readxl)
+| Import the CSV with read\_csv()
+| Import the Excel file with read\_excel()
+| Run glimpse() on the data
+| summary() the age column, table() the sex column
+
+::: {.callout-tip}
+## What to notice
+Spot the impossible age, the many sex spellings, 1503 rows.
+:::
+
+::: {.notes}
+Key point: the exercise is the whole Day 1 workflow end to end, project, packages, import both formats, then inspect.
+
+Common mistake: forgetting a library() call, or a path typo; circulate and check these first.
+
+Clinical interpretation: by importing and inspecting, participants experience the same data-quality red flags we just discussed.
+
+Ask the audience: after table(sex), how many distinct labels do you see? Expected answer: eight, for two real categories.
+
+Demo tip: give a fixed time (about 15 minutes), then debrief by asking who found the age of 200 first.
+:::
+
+## Recap and Bridge to Day 2 {.smaller}
+
+### Today you learned to
+
+| Tell R from RStudio and find the four panes
+| Work in a Project with a saved script
+| Make objects (\<-) and vectors (c())
+| Load packages and import CSV and Excel data
+| Inspect data with glimpse, summary and table
+
+### Tomorrow: Day 2
+
+| Cleaning the mess: fix ages, unify categories
+| Remove duplicates and handle missing values
+
+::: {.callout-note}
+## Well done
+You imported real clinical data on day one.
+:::
+
+::: {.notes}
+Key point: consolidate the arc, from never having opened R to importing and inspecting a real dataset, then preview cleaning.
+
+Common misconception: that we will start analysing tomorrow; first we clean, because trustworthy analysis needs clean data.
+
+Clinical interpretation: today was data IN and a first look; Day 2 turns the raw, messy file into an analysis-ready dataset.
+
+Ask the audience: what are the three data problems we must fix tomorrow? Expected answer: impossible values, inconsistent categories, duplicate rows.
+
+Demo tip: end by re-opening their script and re-running it top to bottom, proving reproducibility in one keystroke.
+:::

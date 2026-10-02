@@ -1,0 +1,24 @@
+---
+title: "Day 2: Understanding & Cleaning Clinical Data"
+---
+
+**Date:** 15-09-2026 · Tuesday, 8:00–9:30 PM (Vietnam time)
+
+## Agenda
+
+- Why cleaning matters: garbage in, garbage out
+- Variable types and clinical coding
+- Missing data, duplicates, inconsistent categories
+- Validation, recoding, dates and factors
+- Save the clean dataset: the contract for Days 3-5
+
+## Materials
+
+| | |
+|:--|:--|
+| 🎞️ **Slides** | [Open the slides](slides-day2.qmd) — Press **F** for full screen, **S** for speaker notes, **E** to print. |
+| 📥 **PowerPoint** | [Download the slides (PowerPoint)](files/slides/Clinical_Data_Analysis_in_R_Phase1.pptx) |
+| 💻 **Live-coding demo script** | [day2_demo.R](files/scripts/day2_demo.R) |
+| 🧪 **Practical exercise** | [day2_exercise.R](files/practicals/day2_exercise.R) |
+| ✅ **Worked solution** | [day2_solution.R](files/solutions/day2_solution.R) |
+| 📁 **Course data** | [Course data](data.qmd) |

@@ -1,0 +1,20 @@
+<section id="$idprefix$title-slide" class="neudata-title-slide"$for(title-slide-attributes/pairs)$ $it.key$="$it.value$"$endfor$>
+  <div class="neudata-title-block">
+    <h1 class="title">$title$</h1>
+$if(subtitle)$
+    <p class="subtitle">$subtitle$</p>
+$endif$
+    <div class="neudata-presenters">
+$for(author)$
+      <p class="author">$author$</p>
+$endfor$
+$for(institute)$
+      <p class="institute">$institute$</p>
+$endfor$
+    </div>
+  </div>
+  <img class="neudata-title-logo" src="neudata-logo.png" alt="Neudata Consulting Ltd">
+$if(date)$
+  <p class="date">Date: $date$</p>
+$endif$
+</section>

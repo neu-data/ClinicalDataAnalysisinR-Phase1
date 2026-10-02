@@ -1,0 +1,49 @@
+# Neudata · publish the bilingual course website to GitHub Pages
+# Settings → Pages → Source: GitHub Actions
+# Lesson results come from the committed _freeze/ folders, so R is not needed here.
+name: Publish course website
+
+on:
+  push:
+    branches: [main]
+    paths: ["site/**", ".github/workflows/publish-site.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: quarto-dev/quarto-actions/setup@v2
+      - name: Render English site
+        run: quarto render site/en
+      - name: Render Vietnamese site
+        run: quarto render site/vi
+      - name: Assemble
+        run: |
+          mkdir -p public
+          cp site/_shared/index.html public/
+          cp -r site/en/_site public/en
+          cp -r site/vi/_site public/vi
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

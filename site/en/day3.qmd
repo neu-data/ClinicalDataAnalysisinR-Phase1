@@ -1,0 +1,24 @@
+---
+title: "Day 3: Descriptive Statistics, Tables & Figures"
+---
+
+**Date:** 22-09-2026 · Tuesday, 8:00–9:30 PM (Vietnam time)
+
+## Agenda
+
+- Central tendency and spread
+- Frequency and cross-tabulations
+- Publication Table 1 with gtsummary
+- Choosing and building figures
+- Exporting reproducible outputs
+
+## Materials
+
+| | |
+|:--|:--|
+| 🎞️ **Slides** | [Open the slides](slides-day3.qmd) — Press **F** for full screen, **S** for speaker notes, **E** to print. |
+| 📥 **PowerPoint** | [Download the slides (PowerPoint)](files/slides/Clinical_Data_Analysis_in_R_Phase1.pptx) |
+| 💻 **Live-coding demo script** | [day3_demo.R](files/scripts/day3_demo.R) |
+| 🧪 **Practical exercise** | [day3_exercise.R](files/practicals/day3_exercise.R) |
+| ✅ **Worked solution** | [day3_solution.R](files/solutions/day3_solution.R) |
+| 📁 **Course data** | [Course data](data.qmd) |

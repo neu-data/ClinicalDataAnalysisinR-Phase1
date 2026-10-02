@@ -1,0 +1,24 @@
+---
+title: "Ngày 5: Giới Thiệu Hồi Quy & Diễn Giải Kết Quả"
+---
+
+**Ngày:** 06-10-2026 · Thứ Ba, 20:00–21:30 (giờ Việt Nam)
+
+## Nội dung
+
+- Hồi quy tuyến tính: mô hình hóa một biến kết cục liên tục
+- Hồi quy logistic: tỷ số chênh cho một biến kết cục Có/Không
+- Hiệu chỉnh cho nhiều yếu tố, và nhiễu
+- Bảng, hình và phần Kết quả sẵn sàng cho xuất bản
+- Khả năng tái lập: script, seed và project
+
+## Tài liệu
+
+| | |
+|:--|:--|
+| 🎞️ **Bài giảng** | [Mở bài giảng](slides-day5.qmd) — Nhấn **F** để toàn màn hình, **S** để xem ghi chú, **E** để in. |
+| 📥 **PowerPoint** | [Tải bài giảng (PowerPoint)](files/slides/Clinical_Data_Analysis_in_R_Phase1_VN.pptx) |
+| 💻 **Mã minh họa trực tiếp** | [day5_demo.R](files/scripts/day5_demo.R) |
+| 🧪 **Bài thực hành** | [day5_exercise.R](files/practicals/day5_exercise.R) |
+| ✅ **Lời giải mẫu** | [day5_solution.R](files/solutions/day5_solution.R) |
+| 📁 **Dữ liệu khóa học** | [Dữ liệu khóa học](data.qmd) |

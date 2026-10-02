@@ -1,0 +1,16 @@
+---
+title: "Lịch học"
+---
+
+**Thứ Ba, 20:00–21:30 (giờ Việt Nam)**
+
+| Buổi | Ngày | Chủ đề | Tài liệu |
+|:--:|:--|:--|:--|
+| 1 | 08-09-2026 | Giới thiệu về R & RStudio | [Trang buổi học](day1.qmd) · [Bài giảng](slides-day1.qmd) |
+| 2 | 15-09-2026 | Hiểu & Làm sạch dữ liệu lâm sàng | [Trang buổi học](day2.qmd) · [Bài giảng](slides-day2.qmd) |
+| 3 | 22-09-2026 | Thống kê mô tả, Bảng và Hình | [Trang buổi học](day3.qmd) · [Bài giảng](slides-day3.qmd) |
+| 4 | 29-09-2026 | Các Kiểm Định Thống Kê Y Học Thường Gặp | [Trang buổi học](day4.qmd) · [Bài giảng](slides-day4.qmd) |
+| 5 | 06-10-2026 | Giới Thiệu Hồi Quy & Diễn Giải Kết Quả | [Trang buổi học](day5.qmd) · [Bài giảng](slides-day5.qmd) |
+
+- [Giới thiệu khóa học](slides-intro.qmd)
+- [Bài tập cuối khóa](slides-assignment.qmd) · [Bài tập cuối khóa](assignment.qmd)

@@ -1,0 +1,116 @@
+---
+title: "Dữ liệu chuẩn bị"
+---
+
+📥 [clinical_data_clean.csv](files/precourse/data/clinical_data_clean.csv) · [clinical_data_raw.csv](files/precourse/data/clinical_data_raw.csv) · [clinical_data_raw.xlsx](files/precourse/data/clinical_data_raw.xlsx) · [data_dictionary.csv](files/precourse/data/data_dictionary.csv)
+
+**Tệp:** `clinical_data_raw.csv` (lộn xộn), `clinical_data_clean.csv` (sẵn sàng để phân tích), `clinical_data_raw.xlsx` (bản sao Excel của tệp thô)
+
+Đây là một bộ dữ liệu **hoàn toàn tổng hợp** được tạo ra để giảng dạy. Nó **không chứa dữ liệu bệnh nhân thật**. Nó mô tả 430 bệnh nhân trưởng thành được tuyển vào tại năm cơ sở chăm sóc ban đầu / bệnh viện, mỗi bệnh nhân được theo dõi tối đa 24 tháng cho một biến cố tim mạch hoặc tử vong.
+
+> **Ghi chú về đơn vị:** `glucose` và `cholesterol` tính bằng **mmol/L** (đơn vị được dùng ở hầu hết các nơi trên thế giới). Glucose lúc đói ≥ 7.0 mmol/L và cholesterol toàn phần ≥ 5.0 mmol/L là các mốc tham chiếu lâm sàng thông dụng.
+
+| # | Biến | Nhãn | Loại | Đơn vị / giá trị | Mô tả |
+|---|----------|-------|------|----------------|-------------|
+| 1 | `patient_id` | Mã định danh bệnh nhân | văn bản | P1000–P1429 | Mã ẩn danh duy nhất |
+| 2 | `age` | Tuổi | số nguyên | năm (30–88) | Tuổi lúc nhập viện |
+| 3 | `sex` | Giới tính | phân loại | Female / Male | Giới tính sinh học |
+| 4 | `weight_kg` | Cân nặng | số | kilôgam | Cân nặng cơ thể được đo |
+| 5 | `height_cm` | Chiều cao | số | xăng-ti-mét | Chiều cao được đo |
+| 6 | `BMI` | Chỉ số khối cơ thể | số | kg/m² | `weight_kg / (height_cm/100)^2` |
+| 7 | `smoking` | Tình trạng hút thuốc | phân loại | Never / Former / Current | Tự khai báo |
+| 8 | `alcohol_use` | Sử dụng rượu | phân loại | None / Moderate / Heavy | Tự khai báo |
+| 9 | `systolic_bp` | Huyết áp tâm thu | số nguyên | mmHg | Huyết áp tâm thu |
+| 10 | `diastolic_bp` | Huyết áp tâm trương | số nguyên | mmHg | Huyết áp tâm trương |
+| 11 | `hypertension` | Tăng huyết áp | phân loại | Yes / No | Tăng huyết áp đã được chẩn đoán |
+| 12 | `diabetes` | Đái tháo đường | phân loại | Yes / No | Đái tháo đường đã được chẩn đoán |
+| 13 | `glucose` | Glucose lúc đói | số | mmol/L | Glucose huyết tương lúc đói |
+| 14 | `cholesterol` | Cholesterol toàn phần | số | mmol/L | Cholesterol huyết thanh toàn phần |
+| 15 | `treatment` | Nhóm điều trị | phân loại | Treated / Untreated | Đã nhận điều trị hạ huyết áp |
+| 16 | `hospital` | Bệnh viện tuyển bệnh | phân loại | 5 cơ sở | Địa điểm tuyển bệnh |
+| 17 | `admission_date` | Ngày nhập viện | ngày | YYYY-MM-DD | Ngày ghi danh / nhập viện |
+| 18 | `followup_date` | Ngày theo dõi | ngày | YYYY-MM-DD | Ngày theo dõi cuối hoặc ngày xảy ra biến cố |
+| 19 | `outcome` | Biến cố theo dõi | số nguyên | 0 / 1 | 1 = biến cố tim mạch hoặc tử vong; 0 = không có biến cố (bị kiểm duyệt) |
+| 20 | `time_to_event` | Thời gian đến biến cố | số | tháng (0–24) | Số tháng từ nhập viện đến biến cố hoặc kiểm duyệt |
+
+## Các biến liên hệ với nhau như thế nào ("sự thật" được cài sẵn)
+
+Dữ liệu được mô phỏng sao cho các mô hình thống kê tạo ra các kết quả **thực tế, có thể diễn giải** thay vì nhiễu:
+
+- **Tăng huyết áp** trở nên nhiều khả năng hơn với **age** và **BMI** cao hơn, và ở các bệnh nhân có **diabetes**.
+- **Đái tháo đường** được phản ánh mạnh mẽ trong **glucose** lúc đói (bệnh nhân đái tháo đường có glucose cao hơn nhiều).
+- **Huyết áp** tăng theo tuổi, BMI và tăng huyết áp.
+- **Điều trị** chủ yếu được cung cấp cho các bệnh nhân tăng huyết áp và cao tuổi hơn.
+- **Biến cố theo dõi** (`outcome` / `time_to_event`) trở nên nhiều khả năng hơn với tuổi cao hơn, đái tháo đường và tăng huyết áp, và **điều trị làm giảm nguy cơ**.
+
+Những mối liên hệ này là điều mà các phân tích của bạn trong khóa học sẽ *khám phá lại* từ dữ liệu.
+
+
+## Các Vấn Đề Chất Lượng Dữ Liệu Cố Ý trong `clinical_data_raw.csv`
+
+Dữ liệu lâm sàng thực tế **không bao giờ** sạch. Để làm cho các bài học làm sạch dữ liệu trở nên thực tế, chúng tôi
+đã cố ý đưa vào các vấn đề dưới đây trong `clinical_data_raw.csv`. Mỗi
+vấn đề đều là một *ví dụ dạy học*: bạn sẽ học cách **tìm** nó và **sửa** nó
+trong bài học **04 — Data Management**.
+
+`clinical_data_clean.csv` là tệp tham chiếu gọn gàng với tất cả các vấn đề này đã được giải quyết.
+
+---
+
+### 1. Bản ghi trùng
+- **3 hàng là bản sao chính xác** của các bệnh nhân khác (cùng `patient_id` và các giá trị).
+- Do đó tệp thô có **433 hàng** nhưng chỉ có **430 bệnh nhân duy nhất**.
+- **Phát hiện:** `sum(duplicated(clinical_data_raw))` hoặc `janitor::get_dupes()`.
+- **Sửa:** `dplyr::distinct()`.
+
+### 2. Giá trị khuyết
+- Các giá trị đã bị loại bỏ ngẫu nhiên từ một số cột:
+  `glucose` (22), `cholesterol` (18), `alcohol_use` (12), `BMI` (9),
+  `followup_date` (7), `diastolic_bp` (5).
+- **Phát hiện:** `colSums(is.na(clinical_data_raw))`.
+- **Sửa:** quyết định theo từng biến — để nguyên là `NA`, dùng phân tích ca đầy đủ, hoặc gán giá trị. Trong khóa học này, chúng ta chỉ đơn giản giữ chúng là `NA` và để R bỏ qua chúng bằng `na.rm = TRUE`.
+
+### 3. Mã hóa phân loại không nhất quán
+- `sex` xuất hiện dưới dạng **Female, female, F, f, Male, male, M, m**.
+- `hypertension` và `diabetes` trộn lẫn **Yes / No / yes / no / 1 / 0**.
+- `smoking` chứa một giá trị chữ thường lạc lõng **"current"** bên cạnh "Current".
+- **Phát hiện:** `table(clinical_data_raw$sex)`.
+- **Sửa:** `dplyr::case_when()` / `forcats` để gộp về các nhãn nhất quán.
+
+### 4. Giá trị bất khả thi
+| Biến | Giá trị sai | Vì sao bất khả thi |
+|----------|-----------|----------------|
+| `age` | 219 | Không ai 219 tuổi |
+| `age` | 2 | Một đứa trẻ 2 tuổi không phải là bệnh nhân người lớn |
+| `height_cm` | 17 | 17 cm không phải là chiều cao của con người |
+| `weight_kg` | 400 | Cân nặng cơ thể không hợp lý |
+| `BMI` | 4.2 | BMI dưới ~12 là không thể sống sót |
+| `systolic_bp` | 350 | Vượt xa mọi giá trị huyết áp thực tế |
+
+- **Phát hiện:** `summary()`, `range()`, biểu đồ hộp, hoặc các phép kiểm tra logic như `age > 110`.
+- **Sửa:** đặt các giá trị bất khả thi thành `NA` (chúng ta không thể biết giá trị thật).
+
+### 5. Giá trị xét nghiệm cực đoan
+- Giá trị `glucose` là **41 mmol/L** (glucose lúc đói thực tế hiếm khi trên ~30).
+- Giá trị `cholesterol` là **−3.0 mmol/L** (một giá trị xét nghiệm không thể âm).
+- **Phát hiện:** `summary()` / sắp xếp cột / biểu đồ hộp.
+- **Sửa:** đặt thành `NA` (lỗi nhập liệu).
+
+### 6. Ngày tháng không nhất quán
+- Đối với **2 bệnh nhân**, `followup_date` **trước** `admission_date`.
+- **Phát hiện:** `clinical_data_raw$followup_date < clinical_data_raw$admission_date`.
+- **Sửa:** đặt ngày theo dõi bất khả thi thành `NA` (hoặc truy vấn nguồn).
+
+---
+
+## "Hợp đồng" làm sạch (một phiên bản sạch trông như thế nào)
+
+Sau bài học 04, bạn sẽ có thể biến tệp thô thành một bộ dữ liệu mà:
+
+1. có **430 bệnh nhân duy nhất** (đã loại bỏ bản ghi trùng);
+2. sử dụng **các nhãn nhất quán** (`Female`/`Male`, `Yes`/`No`, `Never`/`Former`/`Current`);
+3. **không có giá trị bất khả thi** (tuổi, chiều cao, cân nặng, BMI, huyết áp, xét nghiệm bất khả thi → `NA`);
+4. **không có ngày theo dõi trước ngày nhập viện**;
+5. có một **`BMI` được tính lại, nhất quán nội tại**.
+
+Tệp `clinical_data_clean.csv` được cung cấp là đáp án tham chiếu.

@@ -1,0 +1,285 @@
+---
+title: "Phân tích Dữ liệu Lâm sàng bằng R"
+subtitle: "Giai đoạn I  -  Nhập môn R cho Nghiên cứu Lâm sàng"
+author: "Bernard Osang'ir & My Luong Vuong"
+institute: "Neudata Consulting Ltd"
+date: "08-09-2026"
+lang: vi
+section-label: "Phần"
+format:
+  neudata-revealjs:
+    scrollable: true
+---
+
+
+## Chào mừng & Mục tiêu Khóa học
+
+### Vì sao có khóa học này
+
+| Bác sĩ ngày càng cần tự phân tích dữ liệu của mình và đọc thống kê một cách phản biện.
+| R miễn phí, có khả năng tái lập và là công cụ chuẩn trong nghiên cứu lâm sàng hiện đại.
+
+### Cam kết của chúng tôi
+
+| Bắt đầu từ số không - không đòi hỏi nền tảng lập trình.
+| Học qua thực hành, sử dụng MỘT bộ dữ liệu lâm sàng thực tế suốt cả tuần.
+| Kết thúc khóa, bạn có thể tạo bảng, hình và kết quả hồi quy sẵn sàng để công bố.
+
+::: {.callout-tip}
+## Học qua phép so sánh
+Hãy hình dung R như một trợ lý nghiên cứu rất chính xác: bạn viết hướng dẫn một lần, nó lặp lại hoàn hảo mãi mãi.
+:::
+
+::: {.notes}
+Định hình không khí: hỗ trợ, thực tiễn, gắn với lâm sàng.
+
+Ngộ nhận phổ biến: 'Tôi không phải người giỏi toán/máy tính nên R không dành cho tôi.' Diễn giải lại: R là một kỹ năng như dùng một thiết bị lâm sàng mới - học được qua luyện tập.
+
+Diễn giải lâm sàng: khả năng tái lập bảo vệ bạn trong kiểm toán, chỉnh sửa và phân tích lại.
+
+Câu hỏi cho học viên: hiện có bao nhiêu người dùng Excel/SPSS/Stata? Dự kiến: đa số - bắc cầu từ đó.
+
+Mẹo demo: giữ ngày đầu tiên nhẹ nhàng, ít thuật ngữ.
+:::
+
+## Khóa học này dành cho ai
+
+[Thiết kế cho các chuyên gia lâm sàng bận rộn - không cần kinh nghiệm lập trình.]{.slide-intro}
+
+- Bác sĩ và bác sĩ nội trú
+- Điều dưỡng và nhân viên nghiên cứu tại bệnh viện
+- Dược sĩ lâm sàng và dược sĩ bệnh viện
+- Nhà nghiên cứu lâm sàng và điều phối viên thử nghiệm
+- Chuyên gia y tế công cộng
+- Học viên cao học và nghiên cứu sinh tiến sĩ
+- Bất kỳ ai thu thập hoặc diễn giải dữ liệu lâm sàng
+
+::: {.notes}
+Thiết lập điểm xuất phát chung.
+
+Điểm giảng dạy chính: sự đa dạng nền tảng là một thế mạnh - ghép người tự tin với người kém tự tin hơn.
+
+Ngộ nhận phổ biến: rằng nhà thống kê và bác sĩ cần công cụ khác nhau - không phải vậy.
+
+Câu hỏi cho học viên: nỗi bực bội lớn nhất về dữ liệu của bạn hôm nay là gì? Dự kiến: làm sạch, hoặc 'Tôi không thể tái lập phân tích của năm ngoái'.
+
+Mẹo demo: ghi lại tên/vai trò để điều chỉnh ví dụ.
+:::
+
+## Mục tiêu Học tập (1 trên 2)
+
+### Đến cuối tuần bạn sẽ có thể
+
+- Sử dụng R và RStudio một cách tự tin.
+- Hiểu cấu trúc của các bộ dữ liệu lâm sàng.
+- Nhập dữ liệu từ tệp Excel và CSV.
+- Làm sạch, kiểm định và mã hóa lại dữ liệu lâm sàng.
+- Thực hiện và diễn giải thống kê mô tả.
+- Tạo bảng chất lượng công bố (một Bảng 1 cho bản thảo).
+- Tạo hình chất lượng công bố.
+
+::: {.notes}
+Đi qua các mục tiêu 1-7 (kỹ năng xử lý và mô tả dữ liệu).
+
+Điểm giảng dạy chính: các mục tiêu này ánh xạ một-một với năm ngày học.
+
+Diễn giải lâm sàng: mỗi mục tiêu là một bước trong quy trình viết bản thảo thực tế.
+
+Câu hỏi cho học viên: mục tiêu nào quan trọng nhất với bạn? Dự kiến: khác nhau - trấn an rằng tất cả đều được bao phủ.
+
+Mẹo demo: quay lại danh sách này ở phần tóm tắt mỗi ngày để cho thấy tiến bộ.
+:::
+
+## Mục tiêu Học tập (2 trên 2)
+
+### Bạn cũng sẽ có thể
+
+- Lựa chọn và thực hiện các kiểm định thống kê thông dụng.
+- Diễn giải kết quả thống kê một cách chính xác.
+- Thực hiện hồi quy logistic đơn biến và đa biến.
+- Báo cáo tỷ số chênh (OR) kèm khoảng tin cậy.
+- Viết các script phân tích có khả năng tái lập.
+- Xuất các kết quả sẵn sàng để công bố.
+- Diễn giải phát hiện cho các ấn phẩm y khoa.
+
+::: {.notes}
+Các mục tiêu 8-13 (kỹ năng phân tích, suy luận và báo cáo).
+
+Điểm giảng dạy chính: diễn giải được coi trọng ngang với tính toán xuyên suốt khóa học.
+
+Ngộ nhận phổ biến: rằng chạy kiểm định là phần khó - diễn giải và báo cáo tốt mới khó hơn.
+
+Câu hỏi cho học viên: ai từng bị phê bình về thống kê trong một bài báo? Dự kiến: một vài người - khóa học này ngăn điều đó.
+
+Mẹo demo: nhấn mạnh rằng ta luôn hỏi 'điều này có ý nghĩa gì về mặt lâm sàng?'
+:::
+
+## Cấu trúc Khóa học - Năm Buổi
+
+| Buổi | Chủ đề | Kỹ năng cốt lõi | Sản phẩm bài tập |
+|:---|:---|:---|:---|
+| 1 | Nhập môn R & RStudio | Nhập dữ liệu | Đã nhập bộ dữ liệu |
+| 2 | Hiểu & Làm sạch Dữ liệu Lâm sàng | Làm sạch & mã hóa lại | Dữ liệu sẵn sàng phân tích |
+| 3 | Thống kê Mô tả, Bảng & Hình | Bảng & hình | Bảng 1 cho bản thảo |
+| 4 | Các Kiểm định Thống kê Y khoa Thông dụng | Kiểm định t, Chi bình phương, Phi tham số | Chọn đúng kiểm định |
+| 5 | Nhập môn Hồi quy & Diễn giải Kết quả | Mô hình hóa & báo cáo | Mục Kết quả ngắn |
+
+: Năm buổi học buổi tối (các Thứ Ba, mỗi buổi 90 phút); mỗi buổi xây dựng trên buổi trước.
+
+::: {.notes}
+Đưa ra bản đồ của cả tuần.
+
+Điểm giảng dạy chính: các kỹ năng tích lũy - dữ liệu sạch của Buổi 2 phục vụ mọi buổi sau.
+
+Diễn giải lâm sàng: đây chính xác là cách một dự án phân tích thực tế diễn ra, từ đầu đến cuối.
+
+Câu hỏi cho học viên: buổi nào trông đáng ngại nhất? Dự kiến: Buổi 4-5 - trấn an rằng ta xây dựng dần dần.
+
+Mẹo demo: giữ slide này sẵn để định hướng lại cho ai cảm thấy lạc lối.
+:::
+
+## Mỗi Buổi Diễn ra Thế nào (90 Phút)
+
+### Một nhịp điệu buổi tối có thể dự đoán
+
+| Ôn tập & thiết lập - khoảng 10 phút: kết nối lại với tuần trước.
+| Bài giảng & demo trực tiếp - khoảng 55 phút: khái niệm, rồi giảng viên viết code trong lúc bạn quan sát.
+| Bài tập có hướng dẫn - khoảng 20 phút: bạn viết code, chúng tôi hỗ trợ.
+| Tổng kết & hỏi đáp - xuyên suốt và trong 5 phút cuối.
+
+::: {.callout-note}
+## Mang theo
+Một laptop đã cài R và RStudio (xem gói tài liệu trước khóa học), và thư mục dữ liệu của khóa học.
+:::
+
+::: {.notes}
+Giải thích định dạng để học viên biết điều gì mong đợi ở mỗi buổi.
+
+Điểm giảng dạy chính: quan sát rồi thực hành (mẫu demo-rồi-bài tập) là cách học lập trình.
+
+Lỗi phổ biến: cố gõ theo trong lúc demo và bị tụt lại - hãy quan sát trước, viết code khi làm bài tập.
+
+Câu hỏi cho học viên: thích gõ theo hay quan sát rồi làm? Dự kiến: pha trộn - giải thích vì sao quan sát trước hiệu quả.
+
+Mẹo demo: chia sẻ màn hình với cỡ chữ lớn (ví dụ 16-18pt).
+:::
+
+## Nghiên cứu Tình huống - Một Bộ Dữ liệu Cả Tuần
+
+### Nghiên cứu
+
+| Các Yếu tố Quyết định việc Tiếp nhận Điều trị Tăng huyết áp ở Người trưởng thành khám tại các Cơ sở Chăm sóc Sức khỏe Ban đầu.
+
+### Thiết kế
+
+| Nghiên cứu cắt ngang đa trung tâm - 6 cơ sở chăm sóc sức khỏe ban đầu.
+| 1,500 người trưởng thành đến khám được sàng lọc tăng huyết áp.
+| Cơ sở: Bugando PHC, Kisesa HC, Nyamagana PHC, Ilemela HC, Buzuruga PHC, Igoma HC.
+
+### Biến kết cục chính
+
+| Tiếp nhận điều trị - liệu một bệnh nhân đã được chẩn đoán có đang dùng liệu pháp hạ huyết áp hay không.
+
+::: {.notes}
+Giới thiệu bộ dữ liệu duy nhất làm nền cho mọi bài tập.
+
+Điểm giảng dạy chính: dùng một bộ dữ liệu thực tế suốt cả tuần cho phép các kỹ năng cộng dồn.
+
+Diễn giải lâm sàng: tiếp nhận điều trị là một câu hỏi khoa học triển khai thực tế - nhiều bệnh nhân được chẩn đoán không bao giờ bắt đầu điều trị.
+
+Câu hỏi cho học viên: vì sao một bệnh nhân đã chẩn đoán lại không được điều trị? Dự kiến: chi phí, khoảng cách, niềm tin, không có bảo hiểm - đây là các yếu tố dự báo của chúng ta.
+
+Mẹo demo: đây là dữ liệu mô phỏng được xây dựng để hoạt động thực tế - an toàn để chia sẻ và tái lập.
+:::
+
+## Các Biến Chúng ta Sẽ Sử dụng
+
+### Nhân khẩu học & xã hội
+
+| Tuổi, giới, nơi cư trú, học vấn, nghề nghiệp, tình trạng hôn nhân, bảo hiểm y tế.
+
+### Hành vi & lâm sàng
+
+| Hút thuốc, rượu bia, hoạt động thể chất, BMI, đái tháo đường, tiền sử gia đình, huyết áp.
+
+### Xét nghiệm & kết cục
+
+| Bảng lipid máu, đường huyết, creatinine, điện giải; tiếp nhận điều trị, tuân thủ, kiểm soát huyết áp.
+
+::: {.callout-tip}
+## Từ điển dữ liệu
+Một từ điển dữ liệu đầy đủ (36 biến) được cung cấp - hãy mở nó trong mọi bài tập.
+:::
+
+::: {.notes}
+Xem trước từ điển dữ liệu để làm quen với các biến trước phần nhập dữ liệu của Buổi 1.
+
+Điểm giảng dạy chính: biết rõ các biến và kiểu của chúng là một nửa của phân tích tốt.
+
+Ngộ nhận phổ biến: càng nhiều biến càng tốt - ta sẽ bàn về tính tiết kiệm ở Buổi 5.
+
+Diễn giải lâm sàng: các biến này trải rộng khung yếu tố quyết định (yếu tố tiền định, yếu tố tạo điều kiện, yếu tố nhu cầu).
+
+Câu hỏi cho học viên: biến nào bạn kỳ vọng sẽ dự báo tiếp nhận điều trị? Dự kiến: bảo hiểm, đái tháo đường, học vấn - ta sẽ kiểm tra điều này.
+
+Mẹo demo: phát bản in từ điển dữ liệu ngay bây giờ.
+:::
+
+## Cả Tuần Dẫn tới một Kết quả Công bố Thế nào
+
+### Quy trình phân tích
+
+| Nhập (Buổi 1)  -\>  Làm sạch & kiểm định (Buổi 2)  -\>  Mô tả (Buổi 3)
+| Kiểm định & mô hình hóa (Buổi 4)  -\>  Mô hình cuối, diễn giải & báo cáo (Buổi 5).
+
+### Sản phẩm cuối cùng của bạn
+
+| Một mục Kết quả ngắn, có khả năng tái lập, xác định các yếu tố quyết định việc tiếp nhận điều trị -
+| đúng như một tạp chí sẽ kỳ vọng.
+
+::: {.callout-note}
+## Ý tưởng lớn
+Mỗi ngày tạo ra một mảnh của một bản thảo thực tế; đến cuối tuần các mảnh ghép thành một phân tích hoàn chỉnh.
+:::
+
+::: {.notes}
+Cho thấy mạch xuyên suốt để học viên nhìn thấy đích đến ngay từ Buổi 1.
+
+Điểm giảng dạy chính: phân tích là một quy trình, không phải một câu lệnh thần kỳ đơn lẻ.
+
+Diễn giải lâm sàng: khả năng tái lập nghĩa là một người phản biện có thể chạy lại script của bạn và ra đúng con số của bạn.
+
+Câu hỏi cho học viên: đa số phân tích sai ở đâu? Dự kiến: làm sạch và diễn giải - do đó có hai buổi trọn vẹn cho chúng.
+
+Mẹo demo: nhắc lại sơ đồ quy trình này ở đầu mỗi buổi.
+:::
+
+## Lịch học, Giảng viên & Cách Đăng ký
+
+### Khi nào chúng ta gặp nhau
+
+| Năm buổi học buổi tối - mỗi Thứ Ba, 20:00, mỗi buổi 90 phút.
+| 8 tháng 9 đến 6 tháng 10 năm 2026.
+| Giảng dạy trực tuyến - tham gia từ bất cứ đâu với một laptop.
+
+### Giảng viên của bạn
+
+| Bernard Osang'ir - Chuyên gia Thống kê Sinh học Cao cấp (giảng viên chính).
+| My Luong Vuong - Nhà thống kê sinh học & Dịch tễ học.
+
+::: {.callout-tip}
+## Đăng ký / hỏi thông tin
+My Luong Vuong  -  myluong1710\@gmail.com  -  www.neu-data.com  -  quét mã QR trên poster để đăng ký.
+:::
+
+::: {.notes}
+Dùng slide này để xác nhận hậu cần và giới thiệu đội ngũ giảng dạy.
+
+Điểm giảng dạy chính: ba giảng viên nghĩa là có nhiều hỗ trợ trong các bài tập có hướng dẫn.
+
+Việc nội bộ: chia sẻ liên kết/QR đăng ký và email hỏi thông tin cho đồng nghiệp muốn tham gia khóa sau.
+
+Mẹo demo: mời mỗi giảng viên nói một câu về bản thân.
+
+Câu hỏi cho học viên: có câu hỏi nào về lịch học hay truy cập trước khi bắt đầu không? Dự kiến: xác nhận khung giờ tối Thứ Ba phù hợp.
+:::

@@ -1,0 +1,24 @@
+---
+title: "Ngày 4: Các Kiểm Định Thống Kê Y Học Thường Gặp"
+---
+
+**Ngày:** 29-09-2026 · Thứ Ba, 20:00–21:30 (giờ Việt Nam)
+
+## Nội dung
+
+- Kiến thức cơ bản về kiểm định giả thuyết
+- So sánh hai nhóm: kiểm định t và kiểm định Wilcoxon
+- Nhiều hơn hai nhóm: ANOVA
+- Liên quan giữa các biến phân loại: kiểm định chi bình phương và Fisher
+- Tương quan và chọn kiểm định phù hợp
+
+## Tài liệu
+
+| | |
+|:--|:--|
+| 🎞️ **Bài giảng** | [Mở bài giảng](slides-day4.qmd) — Nhấn **F** để toàn màn hình, **S** để xem ghi chú, **E** để in. |
+| 📥 **PowerPoint** | [Tải bài giảng (PowerPoint)](files/slides/Clinical_Data_Analysis_in_R_Phase1_VN.pptx) |
+| 💻 **Mã minh họa trực tiếp** | [day4_demo.R](files/scripts/day4_demo.R) |
+| 🧪 **Bài thực hành** | [day4_exercise.R](files/practicals/day4_exercise.R) |
+| ✅ **Lời giải mẫu** | [day4_solution.R](files/solutions/day4_solution.R) |
+| 📁 **Dữ liệu khóa học** | [Dữ liệu khóa học](data.qmd) |

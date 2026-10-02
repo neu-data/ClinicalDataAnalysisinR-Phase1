@@ -1,0 +1,24 @@
+---
+title: "Day 5: Introduction to Regression & Interpreting Output"
+---
+
+**Date:** 06-10-2026 · Tuesday, 8:00–9:30 PM (Vietnam time)
+
+## Agenda
+
+- Linear regression: modelling a continuous outcome
+- Logistic regression: odds ratios for a Yes/No outcome
+- Adjusting for several factors, and confounding
+- Publication-ready tables, figures and a Results section
+- Reproducibility: scripts, seeds and projects
+
+## Materials
+
+| | |
+|:--|:--|
+| 🎞️ **Slides** | [Open the slides](slides-day5.qmd) — Press **F** for full screen, **S** for speaker notes, **E** to print. |
+| 📥 **PowerPoint** | [Download the slides (PowerPoint)](files/slides/Clinical_Data_Analysis_in_R_Phase1.pptx) |
+| 💻 **Live-coding demo script** | [day5_demo.R](files/scripts/day5_demo.R) |
+| 🧪 **Practical exercise** | [day5_exercise.R](files/practicals/day5_exercise.R) |
+| ✅ **Worked solution** | [day5_solution.R](files/solutions/day5_solution.R) |
+| 📁 **Course data** | [Course data](data.qmd) |

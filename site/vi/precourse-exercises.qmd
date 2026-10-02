@@ -1,0 +1,12 @@
+---
+title: "Bài tập và lời giải"
+---
+
+| Bài tập | Lời giải |
+|:--|:--|
+| [Exercise_1_Meet_Your_Dataset_VN.R](files/precourse/exercises/Exercise_1_Meet_Your_Dataset_VN.R) | [Solution_1_Meet_Your_Dataset_VN.R](files/precourse/solutions/Solution_1_Meet_Your_Dataset_VN.R) |
+| [Exercise_2_Data_Management_VN.R](files/precourse/exercises/Exercise_2_Data_Management_VN.R) | [Solution_2_Data_Management_VN.R](files/precourse/solutions/Solution_2_Data_Management_VN.R) |
+| [Exercise_3_Descriptive_Analysis_VN.R](files/precourse/exercises/Exercise_3_Descriptive_Analysis_VN.R) | [Solution_3_Descriptive_Analysis_VN.R](files/precourse/solutions/Solution_3_Descriptive_Analysis_VN.R) |
+| [Exercise_4_Visualization_VN.R](files/precourse/exercises/Exercise_4_Visualization_VN.R) | [Solution_4_Visualization_VN.R](files/precourse/solutions/Solution_4_Visualization_VN.R) |
+| [Exercise_5_Statistical_Testing_VN.R](files/precourse/exercises/Exercise_5_Statistical_Testing_VN.R) | [Solution_5_Statistical_Testing_VN.R](files/precourse/solutions/Solution_5_Statistical_Testing_VN.R) |
+| [Exercise_6_Regression_VN.R](files/precourse/exercises/Exercise_6_Regression_VN.R) | [Solution_6_Regression_VN.R](files/precourse/solutions/Solution_6_Regression_VN.R) |

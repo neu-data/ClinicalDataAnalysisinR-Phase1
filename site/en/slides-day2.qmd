@@ -1,0 +1,550 @@
+---
+title: "Day 2: Understanding & Cleaning Clinical Data"
+subtitle: "Clinical Data Analysis in R — Phase I"
+author: "Bernard Osang'ir & My Luong Vuong"
+institute: "Neudata Consulting Ltd"
+date: "15-09-2026"
+lang: en
+section-label: "Section"
+format:
+  neudata-revealjs:
+    scrollable: true
+---
+
+# Day 2: Understanding & Cleaning Clinical Data
+
+## Plan
+
+- Why cleaning matters: garbage in, garbage out
+- Variable types and clinical coding
+- Missing data, duplicates, inconsistent categories
+- Validation, recoding, dates and factors
+- Save the clean dataset: the contract for Days 3-5
+
+::: {.notes}
+Key point: today we turn a messy raw file into a tidy, analysis-ready dataset and save it once for the whole week.
+
+Misconception: cleaning is not a quick step before the 'real' work; it IS most of the work.
+
+Clinical interpretation: every later result depends on decisions made today.
+
+Ask: who has ever found an error in their data after running the analysis? Expected: most hands go up, often after submission.
+
+Demo tip: keep the raw file open beside the script so people see the mess we are taming.
+:::
+
+## Why Data Cleaning Matters
+
+### Garbage in, garbage out
+
+| A p-value cannot rescue a mistyped blood pressure.
+| Errors do not announce themselves; they hide in plausible numbers.
+| Clean data is the foundation of a credible result.
+
+### How much of a project is cleaning?
+
+| Typically 60-80% of total analysis time.
+| Skipping it does not save time; it moves the cost to peer review.
+
+::: {.callout-note}
+## Why clinicians should care
+A wrong cut-off or unit can flip a clinical conclusion.
+:::
+
+::: {.notes}
+Key point: cleaning is the majority of real-world analysis time and the part reviewers scrutinise most.
+
+Misconception: 'the data manager already cleaned it' - someone must still check it against clinical sense.
+
+Clinical interpretation: an SBP of 7 or an age of 200 will quietly distort means and models.
+
+Ask: what is a realistic resting SBP range for an adult? Expected: roughly 90-180; this intuition is exactly what we encode as validation rules.
+
+Demo tip: show one impossible value and ask what it would do to a mean.
+:::
+
+## Variable Types in Clinical Data
+
+| Type | What it is | Example in our data |
+|:---|:---|:---|
+| Continuous | Numbers on a scale | age, sbp\_mmhg, weight\_kg |
+| Binary | Two categories | diabetes (Yes/No) |
+| Categorical | Unordered groups | facility, occupation |
+| Ordinal | Ordered groups | education (None to Tertiary) |
+| Date | Calendar time | enroll\_date |
+
+: The type decides how R stores, summarises and models a variable.
+
+::: {.notes}
+Key point: choosing the right type up front controls every later summary, plot and model.
+
+Misconception: 'a number is always continuous' - coded categories (1=Yes) are numbers but are categorical.
+
+Clinical interpretation: ordinal education should keep its order; facility should not be treated as a ranked scale.
+
+Ask: is a Likert pain score 0-10 continuous or ordinal? Expected: defensible either way; the point is to decide deliberately.
+
+Demo tip: map each row to a column in the open raw file.
+:::
+
+## Clinical Coding: Consistent Codes {.smaller}
+
+### What coding means
+
+| Agreeing one written value per real-world category.
+| Sex stored as Female / Male, not F / f / female.
+| Binaries stored as Yes / No, not a mix of Y, 1, true.
+
+### Why it matters
+
+| R treats 'Yes' and 'yes' as two different groups.
+| Inconsistent codes split one category into several.
+| Consistent codes make tables and models trustworthy.
+
+::: {.callout-warning}
+## Common trap
+Eight spellings of sex become eight phantom categories.
+:::
+
+::: {.notes}
+Key point: a category exists only if its label is written identically every time.
+
+Misconception: R is smart enough to know 'Y' means 'Yes' - it is not.
+
+Clinical interpretation: a split sex variable would bias any sex-adjusted estimate.
+
+Ask: how many distinct values of sex might a free-text field produce? Expected: surprisingly many; we will see eight.
+
+Demo tip: run table() before cleaning to reveal the chaos.
+:::
+
+## Missing Data: How It Hides
+
+### It rarely looks like one thing
+
+| Blank cells, the word NA, and sentinel codes 999 or -99.
+| If R does not recognise them, 999 is treated as a real value.
+| A single 999 can wreck a mean or a regression.
+
+### Read it correctly at import
+
+| Tell read\_csv which strings mean missing.
+| na = c("", "NA", "999", "-99")
+
+::: {.callout-note}
+## Types of missingness (brief)
+MCAR, MAR, MNAR - the pattern affects how we handle it later.
+:::
+
+::: {.notes}
+Key point: define missingness at import so sentinels never enter the analysis as numbers.
+
+Misconception: blanks are the only kind of missing - numeric sentinels are the dangerous ones.
+
+Clinical interpretation: 999 systolic would inflate the mean and falsely raise hypertension prevalence.
+
+Ask: what happens to mean(sbp) if one 999 is read as a real value? Expected: it jumps; the example sells the na= argument.
+
+Demo tip: import once without na= and once with it; compare summary().
+:::
+
+## Duplicates: 1503 vs 1500 {.smaller}
+
+### The story
+
+| The raw file has 1503 rows but only 1500 patients.
+| Three records were entered twice - exact duplicates.
+| Duplicates inflate the sample and distort estimates.
+
+### Detect and remove
+
+| sum(duplicated(raw)) shows how many full duplicates.
+| distinct(raw) keeps one copy of each unique row.
+| n\_distinct(raw\$patient\_id) should then equal nrow(raw).
+
+::: {.callout-tip}
+## Always re-check
+Confirm row count is 1500 after distinct().
+:::
+
+::: {.notes}
+Key point: duplicates are a false sample-size increase and must go before any counting.
+
+Misconception: distinct() drops rows you wanted - it only removes exact full-row copies here.
+
+Clinical interpretation: a duplicated patient double-counts their outcome, biasing prevalence.
+
+Ask: why check n\_distinct(patient\_id) as well as nrow? Expected: to catch same-ID-different-row data-entry errors distinct() would keep.
+
+Demo tip: print nrow before and after so the 1503 to 1500 drop is visible.
+:::
+
+## Inconsistent Categories: the 8 Spellings of Sex {.smaller}
+
+### The mess
+
+| Female, F, female, f and Male, M, male, m.
+| Stray spaces make even more variants.
+| Eight labels for two real groups.
+
+### The fix
+
+| str\_trim() removes leading and trailing spaces.
+| str\_to\_lower() makes case irrelevant.
+| case\_when() maps every variant to Female or Male.
+
+::: {.callout-note}
+## Clinical sense
+Anything unexpected becomes NA, not a guess.
+:::
+
+::: {.notes}
+Key point: normalise case and spacing first, then map a small set of known values.
+
+Misconception: you must list every variant by hand - lowercasing collapses half of them instantly.
+
+Clinical interpretation: never invent a sex for an unreadable entry; NA is honest.
+
+Ask: why send unknowns to NA rather than to the larger group? Expected: guessing introduces bias; NA is transparent.
+
+Demo tip: show table(sex) before and after the case\_when.
+:::
+
+## Standardising Binaries with a Helper
+
+[One reusable function fixes every Yes/No variable.]{.slide-intro}
+
+```r
+to_yesno <- function(x) {
+  x <- str_to_lower(str_trim(as.character(x)))
+  case_when(
+    x %in% c("yes","y","1","true") ~ "Yes",
+    x %in% c("no","n","0","false") ~ "No",
+    TRUE ~ NA_character_)
+}
+raw <- raw |> mutate(across(
+  c(diabetes, family_history_htn, health_insurance,
+    htn_diagnosed, treatment_uptake), to_yesno))
+```
+
+::: {.code-note}
+Write the rule once, apply it to many columns with across().
+:::
+
+::: {.notes}
+Key point: a helper function makes the same cleaning rule consistent and auditable across columns.
+
+Misconception: you should repeat case\_when for each variable - across() avoids copy-paste errors.
+
+Clinical interpretation: treatment\_uptake must be a clean Yes/No before it can be an outcome.
+
+Ask: why coerce as.character first? Expected: a column read as numeric 0/1 would not match the text patterns otherwise.
+
+Demo tip: call to\_yesno(c("Y"," no ",1)) on its own to show it working.
+:::
+
+## Validation: Impossible Physiological Values
+
+### Spot the impossible
+
+| age 200 and age 0; sbp 0 and sbp 700.
+| weight 7 kg; height 17 cm.
+| These are data-entry errors, not real patients.
+
+### Fix with plausible ranges
+
+| if\_else(age \>= 18 & age \<= 110, age, NA\_real\_)
+| Outside the range becomes NA, not a deletion of the row.
+
+::: {.callout-note}
+## Choosing ranges
+Set limits from clinical knowledge and your study's population, not from the data alone.
+:::
+
+::: {.notes}
+Key point: encode clinical plausibility as explicit ranges and convert violations to NA.
+
+Misconception: outliers and impossible values are the same - a true SBP of 185 is plausible and must stay.
+
+Clinical interpretation: ranges should reflect the population; an adult study justifies age \>= 18.
+
+Ask: should we delete the whole row for one bad height? Expected: no - blank only that cell so the other valid fields survive.
+
+Demo tip: show summary() before and after; the min and max snap into a sensible range.
+:::
+
+## Recoding and Deriving Variables
+
+:::: {.columns}
+::: {.column width="50%"}
+### Recompute BMI from source
+
+- bmi = weight\_kg / (height\_cm/100)\^2
+- Derive after cleaning height and weight.
+- Never trust a pre-computed BMI blindly.
+:::
+::: {.column width="50%"}
+### Create clinical categories
+
+- bmi\_cat with cut(): Underweight to Obese.
+- bp\_category with case\_when().
+- Normal, Elevated, Hypertension.
+:::
+::::
+
+::: {.notes}
+Key point: derive variables from cleaned inputs so the derived value inherits the cleaning.
+
+Misconception: recomputing BMI is redundant - the supplied column may be stale or wrong.
+
+Clinical interpretation: bp\_category uses guideline cut-offs (\>=140/90 hypertension, \>=130/80 elevated).
+
+Ask: why recompute BMI instead of keeping the file's column? Expected: it guarantees consistency with the validated height and weight.
+
+Demo tip: show one row where the supplied BMI disagrees with the recomputed value.
+:::
+
+## Demo: Recompute BMI and Categorise
+
+```r
+raw <- raw |> mutate(
+  bmi = round(weight_kg / (height_cm/100)^2, 1),
+  bmi_cat = cut(bmi,
+    breaks = c(-Inf, 18.5, 25, 30, Inf),
+    labels = c("Underweight","Normal",
+               "Overweight","Obese")),
+  bp_category = case_when(
+    is.na(sbp_mmhg) | is.na(dbp_mmhg) ~ NA_character_,
+    sbp_mmhg >= 140 | dbp_mmhg >= 90 ~ "Hypertension",
+    sbp_mmhg >= 130 | dbp_mmhg >= 80 ~ "Elevated",
+    TRUE ~ "Normal"))
+```
+
+::: {.code-note}
+Handle NA explicitly first so missing BP never reads as Normal.
+:::
+
+::: {.notes}
+Key point: order case\_when from most specific to most general, and trap NA before the TRUE branch.
+
+Misconception: NA falls through to the last TRUE branch - so a missing BP would be wrongly labelled Normal.
+
+Clinical interpretation: misclassifying missing BP as Normal would understate hypertension burden.
+
+Ask: what would happen if the is.na line were removed? Expected: patients with missing BP get labelled Normal - a silent error.
+
+Demo tip: deliberately drop the is.na line, run table(bp\_category), then restore it.
+:::
+
+## Demo: Parsing Mixed Date Formats
+
+[enroll\_date arrives in several different formats.]{.slide-intro}
+
+```r
+library(lubridate)
+raw <- raw |> mutate(
+  enroll_date = parse_date_time(
+    enroll_date,
+    orders = c("ymd","dmy","d-b-Y")) |>
+  as_date())
+sum(is.na(raw$enroll_date))
+```
+
+```{.text .code-output}
+[1] 0
+```
+
+::: {.code-note}
+orders lists the formats to try, in priority order.
+:::
+
+::: {.notes}
+Key point: lubridate's parse\_date\_time tries each format in turn, taming mixed entry styles.
+
+Misconception: dates are just text - stored as text they cannot be sorted or differenced.
+
+Clinical interpretation: a real Date lets you compute follow-up time and check enrolment windows.
+
+Ask: why check sum(is.na(enroll\_date)) afterwards? Expected: a spike means a format we did not list and must add.
+
+Demo tip: feed parse\_date\_time a few sample strings to show each order matching.
+:::
+
+## Factors and Reference Levels {.smaller}
+
+### Factors give categories structure
+
+| factor() stores categories with defined levels.
+| Ordered factors keep ordinal meaning (education, activity).
+| Levels control the order in tables and plots.
+
+### Set the reference level deliberately
+
+| For binary outcomes, list 'No' first.
+| factor(treatment\_uptake, levels = c("No","Yes"))
+| The first level is the comparison baseline in models.
+
+::: {.callout-note}
+## Why 'No' first
+Odds ratios then read as the odds of Yes versus No - the natural clinical direction.
+:::
+
+::: {.notes}
+Key point: the first factor level is the reference, and it sets how every odds ratio is interpreted.
+
+Misconception: level order is cosmetic - it silently flips the direction of model estimates.
+
+Clinical interpretation: with 'No' as reference, OR \> 1 means higher odds of the outcome, as clinicians expect.
+
+Ask: what does an OR of 3.56 for diabetes mean with 'No' as reference? Expected: diabetics have 3.56 times the odds of treatment uptake versus non-diabetics.
+
+Demo tip: refit with levels reversed to show the OR invert to 1/3.56.
+:::
+
+## Demo: Final Missing-Data Audit
+
+```r
+colSums(is.na(analysis_data)) |>
+  sort(decreasing = TRUE) |>
+  head(12)
+```
+
+```{.text .code-output}
+adherence        411
+bp_controlled    411
+bmi               18
+sbp_mmhg          12
+age                9
+```
+
+::: {.code-note}
+adherence and bp\_controlled are NA by design for untreated patients.
+:::
+
+::: {.notes}
+Key point: audit missingness per column and distinguish structural NA from data problems.
+
+Misconception: all NA is bad - adherence is undefined for someone not on treatment, so its NA is expected.
+
+Clinical interpretation: only patients on treatment can have an adherence or BP-control status.
+
+Ask: should we impute adherence for untreated patients? Expected: no - it is structurally missing, not unknown.
+
+Demo tip: cross-tabulate adherence missingness against treatment\_uptake to show the by-design pattern.
+:::
+
+## Saving the Clean Data: the Contract
+
+### Save once, reuse all week
+
+| saveRDS keeps factor types and levels intact.
+| write\_csv gives a human-readable backup.
+| Days 3, 4 and 5 all start from this one file.
+
+### The commands
+
+| saveRDS(analysis\_data, "Data/analysis\_data.rds")
+| write\_csv(analysis\_data, "Data/analysis\_data.csv")
+
+::: {.callout-tip}
+## Reload later
+analysis\_data \<- readRDS("Data/analysis\_data.rds")
+:::
+
+::: {.notes}
+Key point: the saved .rds is the single source of truth for the rest of the course.
+
+Misconception: CSV preserves everything - it loses factor levels and ordering, so .rds is the analysis file.
+
+Clinical interpretation: a fixed clean dataset makes every later result reproducible and auditable.
+
+Ask: why prefer .rds over .csv for the analysis? Expected: it restores factors and ordered levels exactly, no re-cleaning needed.
+
+Demo tip: save, clear the workspace, then readRDS to prove the factors survive.
+:::
+
+## Common Mistakes and Debugging
+
+### Watch for these
+
+| Forgetting na= so 999 enters as a real number.
+| Wrong factor level order flipping every odds ratio.
+| Letting NA fall through case\_when to the wrong group.
+
+::: {.callout-important}
+## NA propagation
+Any arithmetic with NA returns NA; check is.na before computing.
+:::
+
+::: {.callout-tip}
+## Debug habit
+After each step run summary() or table(..., useNA = "ifany").
+:::
+
+::: {.notes}
+Key point: most cleaning bugs are silent; build the habit of inspecting after every step.
+
+Misconception: no error message means the step worked - wrong results often run without complaint.
+
+Clinical interpretation: a silently mis-coded outcome can change the entire study conclusion.
+
+Ask: how would you catch a forgotten na= argument? Expected: an implausible max in summary(), e.g. an SBP of 999.
+
+Demo tip: trigger each mistake live, then show the diagnostic that catches it.
+:::
+
+## Day 2 Exercise: Clean the Simulated Dataset {.smaller}
+
+[Work in Practicals/day2\_exercise.R and mirror today's pipeline.]{.slide-intro}
+
+- Import the raw CSV with the correct na= sentinels.
+- Remove duplicate records with distinct(); confirm 1500 rows.
+- Recode sex to Female/Male; standardise the Yes/No binaries.
+- Apply plausible ranges; set impossible values to NA.
+- Recompute BMI; derive bmi\_cat and bp\_category.
+- Parse enroll\_date; set factors and reference levels.
+- Run the final missing-data audit and explain each NA.
+- Save the result to Data/analysis\_data.rds.
+
+::: {.notes}
+Key point: the exercise reproduces the full contract so each participant ends with an identical clean file.
+
+Misconception: skipping a step is fine if numbers 'look ok' - later days will fail to load a wrong-typed file.
+
+Clinical interpretation: the expected end state is the validated dataset used for all later analyses.
+
+Ask: how will you know your file is correct? Expected: 1500 rows, clean factors, and the audit matching the demo counts.
+
+Demo tip: have them readRDS their own file and glimpse() it to self-check against yours.
+:::
+
+## Recap and Bridge to Day 3 {.smaller}
+
+### What we achieved today
+
+| Imported, de-duplicated and standardised the raw data.
+| Validated values, derived variables, parsed dates.
+| Set factors and saved analysis\_data.rds.
+
+### Tomorrow: Day 3
+
+| Explore and describe the clean data.
+| Summary tables, distributions and first plots.
+| We start from analysis\_data.rds - no re-cleaning.
+
+::: {.callout-note}
+## Remember
+Clean data clear impact - everything downstream rests on today.
+:::
+
+::: {.notes}
+Key point: the clean, saved dataset is the bridge into descriptive analysis on Day 3.
+
+Misconception: cleaning is finished forever - revisit it if Day 3 plots reveal new anomalies.
+
+Clinical interpretation: trustworthy description requires the validated data we built today.
+
+Ask: what is the first thing you do on Day 3? Expected: readRDS the analysis file and glimpse it, not re-import the raw CSV.
+
+Demo tip: open tomorrow's script header to show it begins with readRDS.
+:::

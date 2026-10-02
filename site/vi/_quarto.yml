@@ -1,0 +1,113 @@
+project:
+  type: website
+  output-dir: _site
+
+lang: vi
+
+execute:
+  freeze: auto
+
+website:
+  title: "Phân tích Dữ liệu Lâm sàng bằng R - Giai đoạn 1"
+  site-url: "https://neu-data.github.io/ClinicalDataAnalysisinR-Phase1/vi/"
+  repo-url: "https://github.com/neu-data/ClinicalDataAnalysisinR-Phase1"
+  favicon: images/neudata-logo.png
+  search: true
+  page-navigation: true
+  navbar:
+    logo: images/neudata-logo.png
+    logo-alt: "Neudata Consulting Ltd"
+    title: false
+    background: "#04242F"
+    foreground: "#FFFFFF"
+    left:
+      - href: index.qmd
+        text: "Trang chủ"
+      - href: schedule.qmd
+        text: "Lịch học"
+      - text: "Chuẩn bị"
+        menu:
+          - href: precourse.qmd
+            text: "Bắt đầu tại đây"
+          - href: precourse-guide.qmd
+            text: "Hướng dẫn học tập"
+          - href: precourse-checklist.qmd
+            text: "Danh sách chuẩn bị"
+          - href: install.qmd
+            text: "Cài đặt R và RStudio"
+          - href: rstudio.qmd
+            text: "Làm quen với RStudio"
+          - href: lesson1.qmd
+            text: "Bài 1 — Kiến thức cơ bản về R"
+          - href: lesson2.qmd
+            text: "Bài 2 — Quản lý Dữ liệu (Làm sạch Dữ liệu Lâm sàng)"
+          - href: lesson3.qmd
+            text: "Bài 3 — Phân tích Dữ liệu Khám phá"
+          - href: lesson4.qmd
+            text: "Bài 4 — Các Kiểm định Thống kê Thường gặp"
+          - href: lesson5.qmd
+            text: "Bài 5 — Hồi quy"
+          - href: precourse-exercises.qmd
+            text: "Bài tập và lời giải"
+          - href: precourse-data.qmd
+            text: "Dữ liệu chuẩn bị"
+          - href: cheatsheet.qmd
+            text: "Tóm tắt lệnh R"
+          - href: test-guide.qmd
+            text: "Chọn kiểm định thống kê"
+          - href: guide1.qmd
+            text: "Bắt Đầu Từ Câu Hỏi, Không Phải Từ Mã Lệnh"
+          - href: guide2.qmd
+            text: "Cùng Những Kỹ Năng, Câu Hỏi Của Riêng Bạn"
+          - href: guide3.qmd
+            text: "Từ Kết Quả R đến Một Bài Báo Khoa Học"
+      - text: "Buổi học"
+        menu:
+          - href: slides-intro.qmd
+            text: "Giới thiệu khóa học"
+          - href: day1.qmd
+            text: "Ngày 1: Giới thiệu về R & RStudio"
+          - href: day2.qmd
+            text: "Ngày 2: Hiểu & Làm sạch dữ liệu lâm sàng"
+          - href: day3.qmd
+            text: "Ngày 3: Thống kê mô tả, Bảng và Hình"
+          - href: day4.qmd
+            text: "Ngày 4: Các Kiểm Định Thống Kê Y Học Thường Gặp"
+          - href: day5.qmd
+            text: "Ngày 5: Giới Thiệu Hồi Quy & Diễn Giải Kết Quả"
+          - href: slides-assignment.qmd
+            text: "Bài tập cuối khóa"
+      - text: "Tài liệu"
+        menu:
+          - href: handbook.qmd
+            text: "Sổ tay học viên"
+          - href: reference.qmd
+            text: "Tra cứu lệnh R"
+          - href: packages.qmd
+            text: "Hướng dẫn cài đặt gói"
+          - href: data.qmd
+            text: "Dữ liệu khóa học"
+          - href: assignment.qmd
+            text: "Bài tập cuối khóa"
+          - href: downloads.qmd
+            text: "Tải xuống"
+      - href: certificate.qmd
+        text: "Chứng nhận"
+    right:
+      - href: ../en/index.html
+        text: "English"
+      - icon: globe
+        href: https://www.neu-data.com
+        aria-label: Neudata
+  page-footer:
+    left: "**Neudata Consulting Ltd** · *Insight. Impact. Innovation.*"
+    center: "Neudata | #ClearDataClearImpact"
+    right: "[www.neu-data.com](https://www.neu-data.com) · [contact@neu-data.com](mailto:contact@neu-data.com)"
+
+format:
+  html:
+    theme: [cosmo, course.scss]
+    toc: true
+    code-copy: true
+    code-overflow: wrap
+    include-after-body: lang-switch.html

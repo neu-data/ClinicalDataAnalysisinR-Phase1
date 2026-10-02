@@ -1,0 +1,113 @@
+project:
+  type: website
+  output-dir: _site
+
+lang: en
+
+execute:
+  freeze: auto
+
+website:
+  title: "Clinical Data Analysis in R - Phase 1"
+  site-url: "https://neu-data.github.io/ClinicalDataAnalysisinR-Phase1/en/"
+  repo-url: "https://github.com/neu-data/ClinicalDataAnalysisinR-Phase1"
+  favicon: images/neudata-logo.png
+  search: true
+  page-navigation: true
+  navbar:
+    logo: images/neudata-logo.png
+    logo-alt: "Neudata Consulting Ltd"
+    title: false
+    background: "#04242F"
+    foreground: "#FFFFFF"
+    left:
+      - href: index.qmd
+        text: "Home"
+      - href: schedule.qmd
+        text: "Schedule"
+      - text: "Pre-course"
+        menu:
+          - href: precourse.qmd
+            text: "Start here"
+          - href: precourse-guide.qmd
+            text: "Study guide"
+          - href: precourse-checklist.qmd
+            text: "Preparation checklist"
+          - href: install.qmd
+            text: "Install R and RStudio"
+          - href: rstudio.qmd
+            text: "Getting started with RStudio"
+          - href: lesson1.qmd
+            text: "Lesson 1 — R Basics"
+          - href: lesson2.qmd
+            text: "Lesson 2 — Data Management (Cleaning Clinical Data)"
+          - href: lesson3.qmd
+            text: "Lesson 3 — Exploratory Data Analysis"
+          - href: lesson4.qmd
+            text: "Lesson 4 — Common Statistical Tests"
+          - href: lesson5.qmd
+            text: "Lesson 5 — Regression"
+          - href: precourse-exercises.qmd
+            text: "Exercises and solutions"
+          - href: precourse-data.qmd
+            text: "Pre-course data"
+          - href: cheatsheet.qmd
+            text: "R cheat sheet"
+          - href: test-guide.qmd
+            text: "Choosing a statistical test"
+          - href: guide1.qmd
+            text: "Start With the Question, Not the Code"
+          - href: guide2.qmd
+            text: "The Same Skills, Your Own Questions"
+          - href: guide3.qmd
+            text: "From R Output to a Scientific Paper"
+      - text: "Sessions"
+        menu:
+          - href: slides-intro.qmd
+            text: "Course introduction"
+          - href: day1.qmd
+            text: "Day 1: Introduction to R & RStudio"
+          - href: day2.qmd
+            text: "Day 2: Understanding & Cleaning Clinical Data"
+          - href: day3.qmd
+            text: "Day 3: Descriptive Statistics, Tables & Figures"
+          - href: day4.qmd
+            text: "Day 4: Common Medical Statistical Tests"
+          - href: day5.qmd
+            text: "Day 5: Introduction to Regression & Interpreting Output"
+          - href: slides-assignment.qmd
+            text: "Final assignment"
+      - text: "Materials"
+        menu:
+          - href: handbook.qmd
+            text: "Participant handbook"
+          - href: reference.qmd
+            text: "R command reference"
+          - href: packages.qmd
+            text: "Package installation guide"
+          - href: data.qmd
+            text: "Course data"
+          - href: assignment.qmd
+            text: "Final assignment"
+          - href: downloads.qmd
+            text: "Downloads"
+      - href: certificate.qmd
+        text: "Certificate"
+    right:
+      - href: ../vi/index.html
+        text: "Tiếng Việt"
+      - icon: globe
+        href: https://www.neu-data.com
+        aria-label: Neudata
+  page-footer:
+    left: "**Neudata Consulting Ltd** · *Insight. Impact. Innovation.*"
+    center: "Neudata | #ClearDataClearImpact"
+    right: "[www.neu-data.com](https://www.neu-data.com) · [contact@neu-data.com](mailto:contact@neu-data.com)"
+
+format:
+  html:
+    theme: [cosmo, course.scss]
+    toc: true
+    code-copy: true
+    code-overflow: wrap
+    include-after-body: lang-switch.html

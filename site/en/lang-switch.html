@@ -1,0 +1,17 @@
+<script>
+  // Language switch: open the same page in the other language (/en/x.html <-> /vi/x.html)
+  document.addEventListener("DOMContentLoaded", function () {
+    var m = window.location.pathname.match(/^(.*\/)(en|vi)\/([^\/]*)$/);
+    if (!m) return;
+    var other = m[2] === "en" ? "vi" : "en";
+    var target = m[1] + other + "/" + (m[3] || "index.html");
+    document.querySelectorAll("a.nav-link").forEach(function (a) {
+      // a.href is the fully resolved URL, whatever form Quarto wrote the attribute in
+      if (new RegExp("/" + other + "/(index\\.html)?$").test(a.href)) {
+        a.setAttribute("href", target);
+        a.setAttribute("hreflang", other);
+        a.classList.add("lang-switch");
+      }
+    });
+  });
+</script>

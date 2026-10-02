@@ -1,0 +1,52 @@
+---
+title: "Downloads"
+---
+
+Everything used in the course, ready to download.
+
+
+## Slide decks (PowerPoint)
+
+- [Clinical_Data_Analysis_in_R_Phase1.pptx](files/slides/Clinical_Data_Analysis_in_R_Phase1.pptx)
+
+## Scripts
+
+- [day1_demo.R](files/scripts/day1_demo.R)
+- [day2_demo.R](files/scripts/day2_demo.R)
+- [day3_demo.R](files/scripts/day3_demo.R)
+- [day4_demo.R](files/scripts/day4_demo.R)
+- [day5_demo.R](files/scripts/day5_demo.R)
+
+## Practical exercise
+
+- [day1_exercise.R](files/practicals/day1_exercise.R)
+- [day2_exercise.R](files/practicals/day2_exercise.R)
+- [day3_exercise.R](files/practicals/day3_exercise.R)
+- [day4_exercise.R](files/practicals/day4_exercise.R)
+- [day5_exercise.R](files/practicals/day5_exercise.R)
+
+## Worked solution
+
+- [day1_solution.R](files/solutions/day1_solution.R)
+- [day2_solution.R](files/solutions/day2_solution.R)
+- [day3_solution.R](files/solutions/day3_solution.R)
+- [day4_solution.R](files/solutions/day4_solution.R)
+- [day5_solution.R](files/solutions/day5_solution.R)
+
+## Data
+
+- [analysis_data.csv](files/data/analysis_data.csv)
+- [analysis_data.rds](files/data/analysis_data.rds)
+- [data_dictionary.csv](files/data/data_dictionary.csv)
+- [Data_Dictionary.pdf](files/data/Data_Dictionary.pdf)
+- [hypertension_phc_clean.csv](files/data/hypertension_phc_clean.csv)
+- [hypertension_phc_raw.csv](files/data/hypertension_phc_raw.csv)
+- [hypertension_phc_raw.xlsx](files/data/hypertension_phc_raw.xlsx)
+
+## Documents
+
+- [Course_Orientation_EN.pdf](files/docs/Course_Orientation_EN.pdf)
+- [Final_Assignment.pdf](files/docs/Final_Assignment.pdf)
+- [Package_Installation_Guide.pdf](files/docs/Package_Installation_Guide.pdf)
+- [Participant_Handbook.pdf](files/docs/Participant_Handbook.pdf)
+- [R_Command_Reference_Sheet.pdf](files/docs/R_Command_Reference_Sheet.pdf)

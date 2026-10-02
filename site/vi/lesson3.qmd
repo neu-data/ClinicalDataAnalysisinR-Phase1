@@ -1,0 +1,183 @@
+---
+title: "Bài 3 — Phân tích Dữ liệu Khám phá"
+subtitle: "Phân tích Dữ liệu Lâm sàng bằng R (Giai đoạn I) — Trước khóa học"
+author: "Neudata"
+execute:
+  echo: true
+  warning: false
+  message: false
+knitr:
+  opts_knit:
+    root.dir: "../../Course_Preparation/05_Exploratory_Data_Analysis"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,
+                      fig.width = 6, fig.height = 4)
+```
+
+## Mục tiêu của bài học này
+
+Trước khi kiểm định bất cứ điều gì, chúng ta **mô tả** và **quan sát** dữ liệu. Bạn
+sẽ tính các thống kê mô tả, xây dựng một bảng tóm tắt theo phong cách xuất bản, và
+tạo bốn biểu đồ bạn sẽ dùng thường xuyên nhất: biểu đồ tần suất (histogram), biểu
+đồ hộp (boxplot), biểu đồ cột và biểu đồ phân tán — và, quan trọng không kém, **diễn
+giải** từng biểu đồ.
+
+```{r}
+library(tidyverse)
+library(gtsummary)
+
+clinical_data <- read_csv("../Data/clinical_data_clean.csv")
+
+# Một vài biến được nhóm để vẽ biểu đồ
+clinical_data <- clinical_data %>%
+  mutate(
+    bmi_group = case_when(
+      BMI < 18.5 ~ "Underweight",
+      BMI < 25   ~ "Normal",
+      BMI < 30   ~ "Overweight",
+      BMI >= 30  ~ "Obese"
+    ),
+    bmi_group = factor(bmi_group,
+                       levels = c("Underweight", "Normal", "Overweight", "Obese"))
+  )
+```
+
+---
+
+## 1. Mô tả các biến liên tục
+
+Đối với một biến liên tục, chúng ta thường báo cáo **trung bình** và **độ lệch
+chuẩn** (nếu tương đối đối xứng) hoặc **trung vị** và **khoảng tứ phân vị (IQR)**
+(nếu lệch).
+
+```{r}
+mean(clinical_data$age)                 # tuổi trung bình
+sd(clinical_data$age)                   # độ lệch chuẩn
+median(clinical_data$BMI)               # giá trị giữa của BMI
+IQR(clinical_data$BMI)                  # khoảng tứ phân vị
+```
+
+## 2. Mô tả các biến phân loại
+
+Đối với các danh mục, chúng ta báo cáo **số đếm** và **phần trăm**.
+
+```{r}
+# Số đếm
+table(clinical_data$smoking)
+
+# Tỷ lệ (nhân với 100 để ra phần trăm)
+prop.table(table(clinical_data$smoking)) * 100
+
+# Tỷ lệ hiện mắc tăng huyết áp
+mean(clinical_data$hypertension == "Yes") * 100
+```
+
+## 3. Tóm tắt theo nhóm
+
+Câu hỏi lâm sàng thường là *"điều này có khác nhau giữa các nhóm không?"*
+`group_by()` + `summarise()` trả lời câu hỏi đó.
+
+```{r}
+clinical_data %>%
+  group_by(sex) %>%
+  summarise(
+    n        = n(),
+    mean_sbp = mean(systolic_bp, na.rm = TRUE),
+    mean_bmi = mean(BMI, na.rm = TRUE)
+  )
+```
+
+## 4. Một "Bảng 1" sẵn sàng để xuất bản
+
+`gtsummary` xây dựng bảng đặc điểm nền (baseline characteristics) mà các tạp chí
+mong đợi — chỉ trong một lệnh.
+
+```{r}
+clinical_data %>%
+  select(age, sex, BMI, systolic_bp, diabetes, treatment, hypertension) %>%
+  tbl_summary(by = hypertension) %>%
+  add_p()                                # thêm một cột giá trị p
+```
+
+Hãy đọc nó như sau: với mỗi đặc điểm, nhóm tăng huyết áp và nhóm không tăng huyết
+áp so sánh với nhau ra sao.
+
+---
+
+## 5. Bốn biểu đồ thiết yếu
+
+### Biểu đồ tần suất (histogram) — hình dạng của một biến liên tục
+
+```{r}
+ggplot(clinical_data, aes(x = age)) +
+  geom_histogram(binwidth = 5, fill = "#0D7377", colour = "white") +
+  labs(title = "Distribution of age", x = "Age (years)", y = "Number of patients")
+```
+
+**Diễn giải:** tuổi có hình dạng gần giống hình chuông và tập trung ở khoảng giữa
+tuổi 50 — một quần thể phòng khám trung niên điển hình, không có đỉnh nhọn bất
+thường nào.
+
+### Biểu đồ hộp (boxplot) — một biến liên tục giữa các nhóm
+
+```{r}
+ggplot(clinical_data, aes(x = hypertension, y = systolic_bp, fill = hypertension)) +
+  geom_boxplot() +
+  labs(title = "Systolic BP by hypertension status",
+       x = "Hypertension", y = "Systolic BP (mmHg)") +
+  theme(legend.position = "none")
+```
+
+**Diễn giải:** cái hộp (50% bệnh nhân ở giữa) nằm cao hơn rõ rệt đối với bệnh nhân
+tăng huyết áp — đúng như dự đoán. Các chấm phía trên râu (whisker) là các giá trị
+ngoại lai.
+
+### Biểu đồ cột — số đếm của một danh mục
+
+```{r}
+ggplot(clinical_data, aes(x = smoking, fill = smoking)) +
+  geom_bar() +
+  labs(title = "Number of patients by smoking status",
+       x = "Smoking status", y = "Number of patients") +
+  theme(legend.position = "none")
+```
+
+**Diễn giải:** hầu hết bệnh nhân chưa bao giờ hút thuốc, với ít người từng hút và
+đang hút hơn — điều hữu ích cần biết trước khi dùng hút thuốc làm một biến dự báo.
+
+### Biểu đồ phân tán — hai biến liên tục cùng nhau
+
+```{r}
+ggplot(clinical_data, aes(x = BMI, y = systolic_bp)) +
+  geom_point(alpha = 0.5, colour = "#0D7377") +
+  geom_smooth(method = "lm", se = TRUE, colour = "#C1440E") +
+  labs(title = "Systolic BP against BMI",
+       x = "BMI (kg/m2)", y = "Systolic BP (mmHg)")
+```
+
+**Diễn giải:** đường xu hướng đi lên gợi ý rằng BMI cao hơn có liên quan đến huyết
+áp tâm thu cao hơn. Biểu đồ phân tán là bước đầu tiên đúng đắn trước khi tính tương
+quan hay hồi quy tuyến tính.
+
+---
+
+## Những điểm chính cần ghi nhớ
+
+- Dữ liệu liên tục → trung bình & SD, hoặc trung vị & IQR nếu lệch.
+- Dữ liệu phân loại → số đếm và phần trăm (`table()`, `prop.table()`).
+- `group_by()` + `summarise()` so sánh các nhóm.
+- `gtsummary::tbl_summary()` xây dựng một Bảng 1 trong một dòng.
+- Bốn biểu đồ cốt lõi: **histogram** (hình dạng của một biến), **boxplot** (biến
+  theo nhóm), **biểu đồ cột** (số đếm danh mục), **biểu đồ phân tán** (hai biến liên
+  tục).
+- Luôn *diễn giải* một biểu đồ theo ngôn ngữ lâm sàng — một bức tranh chỉ hữu ích
+  nếu bạn có thể nói được ý nghĩa của nó.
+
+## Tự thực hành
+
+1. Tạo một biểu đồ tần suất (histogram) của `systolic_bp`. Nó có tương đối đối xứng không?
+2. Tạo một biểu đồ hộp (boxplot) của `BMI` theo `sex`. Nam và nữ có khác nhau nhiều không?
+3. Xây dựng một `tbl_summary()` của `age`, `BMI` và `systolic_bp` chia theo `by = sex`.
+4. Tạo một biểu đồ phân tán của `age` (x) theo `systolic_bp` (y) và mô tả xu hướng.

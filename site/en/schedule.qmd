@@ -1,0 +1,16 @@
+---
+title: "Schedule"
+---
+
+**Tuesday, 8:00–9:30 PM (Vietnam time)**
+
+| Session | Date | Topic | Materials |
+|:--:|:--|:--|:--|
+| 1 | 08-09-2026 | Introduction to R & RStudio | [Session page](day1.qmd) · [Slides](slides-day1.qmd) |
+| 2 | 15-09-2026 | Understanding & Cleaning Clinical Data | [Session page](day2.qmd) · [Slides](slides-day2.qmd) |
+| 3 | 22-09-2026 | Descriptive Statistics, Tables & Figures | [Session page](day3.qmd) · [Slides](slides-day3.qmd) |
+| 4 | 29-09-2026 | Common Medical Statistical Tests | [Session page](day4.qmd) · [Slides](slides-day4.qmd) |
+| 5 | 06-10-2026 | Introduction to Regression & Interpreting Output | [Session page](day5.qmd) · [Slides](slides-day5.qmd) |
+
+- [Course introduction](slides-intro.qmd)
+- [Final assignment](slides-assignment.qmd) · [Final assignment](assignment.qmd)

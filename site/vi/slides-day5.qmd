@@ -1,0 +1,748 @@
+---
+title: "Ngày 5: Giới Thiệu Hồi Quy & Diễn Giải Kết Quả"
+subtitle: "Phân tích Dữ liệu Lâm sàng bằng R — Giai đoạn I"
+author: "Bernard Osang'ir & My Luong Vuong"
+institute: "Neudata Consulting Ltd"
+date: "06-10-2026"
+lang: vi
+section-label: "Phần"
+format:
+  neudata-revealjs:
+    scrollable: true
+---
+
+# Ngày 5: Giới Thiệu Hồi Quy & Diễn Giải Kết Quả
+
+## Kế hoạch
+
+- Hồi quy tuyến tính: mô hình hóa một biến kết cục liên tục
+- Hồi quy logistic: tỷ số chênh cho một biến kết cục Có/Không
+- Hiệu chỉnh cho nhiều yếu tố, và nhiễu
+- Bảng, hình và phần Kết quả sẵn sàng cho xuất bản
+- Khả năng tái lập: script, seed và project
+
+::: {.notes}
+Chào mừng đến với ngày tổng kết.
+
+Ý chính: hôm nay chúng ta biến một mô hình đã khớp thành một kết quả có thể xuất bản và tái lập.
+
+Điều này kết nối tất cả những gì từ Ngày 1-4: nhập, làm sạch, tóm tắt, và giờ là mô hình hóa và báo cáo.
+
+Nói với lớp rằng mục tiêu không phải là thêm thống kê mà là phán đoán tốt hơn và báo cáo gọn gàng hơn.
+
+Mẹo trình diễn: mở sẵn day5\_demo.R trong RStudio suốt buổi.
+:::
+
+## Mục Tiêu Hôm Nay
+
+[Đến cuối Ngày 5 bạn sẽ có thể:]{.slide-intro}
+
+- Khớp và đọc một hồi quy tuyến tính cho một biến kết cục liên tục.
+- Khớp một hồi quy logistic và đọc tỷ số chênh với KTC 95%.
+- Hiểu tại sao chúng ta hiệu chỉnh cho nhiều yếu tố, và nhận diện nhiễu.
+- Trình bày kết quả hiệu chỉnh dưới dạng một bảng rõ ràng và một biểu đồ forest.
+- Viết một phần Kết quả ngắn gọn, trung thực từ các con số của chính bạn.
+- Làm cho toàn bộ phân tích có thể tái lập từ đầu đến cuối.
+
+::: {.notes}
+Đặt mục tiêu cụ thể, có thể kiểm chứng cho cả ngày.
+
+Điểm dạy chính: các mục tiêu này khớp một-một với sản phẩm bàn giao của bài tập.
+
+Diễn giải lâm sàng: mỗi kỹ năng là thứ họ sẽ dùng cho nghiên cứu của chính mình, không phải lý thuyết trừu tượng.
+
+Câu hỏi cho học viên: cái nào cảm thấy ít quen thuộc nhất? Dùng việc giơ tay để điều chỉnh nhịp độ cho cả ngày.
+
+Mẹo trình diễn: quay lại danh sách này lúc tổng kết và đánh dấu từng mục đã xong.
+:::
+
+## Chúng Ta Đang Ở Đâu Trong Hành Trình {.smaller}
+
+### Xuyên suốt tuần
+
+| Buổi 1-2: nhập và làm sạch bộ dữ liệu tăng huyết áp.
+| Buổi 3: tóm tắt và trực quan hóa (Bảng 1, các hình).
+| Buổi 4: các kiểm định thống kê thường gặp (kiểm định t, chi bình phương, tương quan).
+| Buổi 5: hồi quy - mô hình hóa, diễn giải, báo cáo và tái lập.
+
+### Ví dụ xuyên suốt hôm nay
+
+| Biến kết cục: treatment\_uptake ở người tăng huyết áp đã được chẩn đoán.
+| Mẫu phân tích: 1,089 người đã chẩn đoán; 992 trường hợp đầy đủ được mô hình hóa.
+
+::: {.callout-note}
+## Một bộ dữ liệu, từ đầu đến cuối
+Mọi kết quả hôm nay đều đến từ cùng nghiên cứu bạn đã làm sạch trước đó.
+:::
+
+::: {.notes}
+Định hướng cho khán giả: đây là một quy trình mạch lạc, không phải các mẹo rời rạc.
+
+Hiểu lầm thường gặp: rằng mô hình hóa là phần khó. Phán đoán (chọn biến nào, báo cáo thế nào) mới khó hơn.
+
+Diễn giải lâm sàng: chỉ bệnh nhân đã chẩn đoán mới có thể tiếp nhận điều trị, nên chúng ta giới hạn ở họ.
+
+Câu hỏi cho học viên: tại sao chỉ mô hình hóa 1,089 người đã chẩn đoán mà không phải cả 1,500? Trả lời mong đợi: người không có chẩn đoán không thể có quyết định tiếp nhận điều trị; bao gồm họ sẽ làm sai lệch ước lượng.
+:::
+
+## Hồi Quy Tuyến Tính: Mô Hình Hóa Một Con Số {.smaller}
+
+### Khi biến kết cục là một con số
+
+| Hồi quy tuyến tính mô hình hóa một biến kết cục LIÊN TỤC, chẳng hạn huyết áp.
+| Biến kết cục = một phần hệ thống (các yếu tố dự báo) + biến thiên không giải thích được.
+| Nó ước lượng biến kết cục thay đổi bao nhiêu cho mỗi đơn vị của một yếu tố dự báo.
+
+### Đọc kết quả
+
+| Hệ số (độ dốc) là thay đổi của biến kết cục cho mỗi mức tăng một đơn vị.
+| Mỗi hệ số đi kèm một KTC 95% và một giá trị p.
+| Thêm các yếu tố dự báo cho ta hiệu ứng ĐÃ HIỆU CHỈNH của mỗi cái, giữ những cái khác không đổi.
+
+::: {.callout-note}
+## Câu hỏi lâm sàng
+Huyết áp tâm thu có liên quan với tuổi không - và nó có còn đúng sau khi hiệu chỉnh cho giới và BMI?
+:::
+
+::: {.notes}
+Điểm dạy chính: hồi quy tuyến tính dành cho biến kết cục liên tục; độ dốc là thay đổi trên mỗi đơn vị.
+
+Diễn giải lâm sàng: hệ số chặn hiếm khi có ý nghĩa; các độ dốc mới là thứ chúng ta báo cáo.
+
+Sai lầm thường gặp: dùng hồi quy tuyến tính cho một biến kết cục Có/Không - điều đó cần hồi quy logistic (tiếp theo).
+
+Câu hỏi cho học viên: biến kết cục là huyết áp tâm thu (một con số) và yếu tố dự báo là tuổi - dùng mô hình nào? Trả lời: hồi quy tuyến tính.
+:::
+
+## Demo: Hồi Quy Tuyến Tính Của SBP Theo Tuổi
+
+[Huyết áp tâm thu có tăng theo tuổi không, khi hiệu chỉnh cho giới và BMI?]{.slide-intro}
+
+```r
+m1 <- lm(sbp_mmhg ~ age, data = analysis_data)
+summary(m1)
+
+# adjust for sex and BMI
+m2 <- lm(sbp_mmhg ~ age + sex + bmi,
+         data = analysis_data)
+tidy(m2, conf.int = TRUE)
+```
+
+```{.text .code-output}
+term        estimate conf.low conf.high p.value
+(Intercept)   87.31    81.01    93.61   <0.001
+age            0.26     0.19     0.33   <0.001
+sexMale        0.33    -1.57     2.22    0.74
+bmi            1.45     1.26     1.64   <0.001
+```
+
+::: {.code-note}
+Mỗi năm tuổi thêm khoảng 0.26 mmHg vào SBP và mỗi đơn vị BMI khoảng 1.45 mmHg; giới không có ý nghĩa thống kê.
+:::
+
+::: {.notes}
+Điểm dạy chính: đọc mỗi độ dốc như một thay đổi đã hiệu chỉnh trên mỗi đơn vị, cùng với KTC 95% của nó.
+
+Diễn giải lâm sàng: tuổi và BMI liên quan độc lập với SBP; giới thì không (KTC vượt qua 0, p = 0.74).
+
+Sai lầm thường gặp: báo cáo hệ số chặn như thể nó có ý nghĩa lâm sàng.
+
+Mẹo demo: chạy summary(m1) trước (thô), rồi m2 đã hiệu chỉnh, và lưu ý độ dốc của tuổi gần như không đổi.
+:::
+
+## Tại Sao Dùng Hồi Quy Logistic? {.smaller}
+
+### Biến kết cục là nhị phân
+
+| Tiếp nhận điều trị là Có/Không - không phải một con số, nên không phải hồi quy tuyến tính.
+| Hồi quy logistic mô hình hóa SỐ CHÊNH của biến kết cục 'Có'.
+| Nó xử lý một yếu tố dự báo hoặc nhiều yếu tố cùng lúc.
+
+### Số chênh và tỷ số chênh
+
+| Số chênh = xác suất Có chia cho xác suất Không.
+| Một tỷ số chênh (OR) so sánh số chênh giữa hai nhóm.
+| OR là con số duy nhất mà các bác sĩ lâm sàng đọc từ mô hình.
+
+::: {.callout-tip}
+## Tại sao số chênh, không phải xác suất
+Số chênh cho phép nhân các hiệu ứng một cách gọn gàng và cho một OR không đổi theo nhóm.
+:::
+
+::: {.notes}
+Điểm dạy chính: một biến kết cục nhị phân cần hồi quy logistic, mô hình hóa số chênh thay vì một trung bình.
+
+Diễn giải lâm sàng: tỷ số chênh là sản phẩm bàn giao - nó đi thẳng vào bản thảo và biểu đồ forest.
+
+Sai lầm thường gặp: cố khớp một mô hình tuyến tính cho một biến kết cục Có/Không.
+
+Câu hỏi cho học viên: số chênh là bao nhiêu nếu 3 trong 4 bệnh nhân tiếp nhận điều trị? Trả lời: 3 trên 1, tức số chênh = 3.
+:::
+
+## Đọc Một Tỷ Số Chênh {.smaller}
+
+### Hướng của hiệu ứng
+
+| OR = 1: yếu tố dự báo không có hiệu ứng lên số chênh tiếp nhận.
+| OR \> 1: số chênh tiếp nhận cao hơn (một yếu tố thúc đẩy dương).
+| OR \< 1: số chênh tiếp nhận thấp hơn (một yếu tố bảo vệ / âm).
+
+### Độ chính xác và ý nghĩa thống kê
+
+| KTC 95% cho thấy khoảng hợp lý cho OR thật.
+| Nếu KTC không chứa 1, hiệu ứng có ý nghĩa thống kê.
+| Một KTC rộng nghĩa là một ước lượng thiếu chính xác, không chắc chắn.
+
+::: {.callout-note}
+## Cách diễn đạt ví dụ
+Người đái tháo đường có số chênh tiếp nhận gấp 3.6 lần (aOR 3.56, KTC 95% 1.46 đến 9.61).
+:::
+
+::: {.notes}
+Điểm dạy chính: đọc một OR theo hướng (so với 1) cộng với ý nghĩa thống kê (KTC có vượt qua 1 không?).
+
+Sai lầm thường gặp: đọc hệ số thô (log số chênh) như thể nó là OR - luôn lấy lũy thừa (exponentiate) trước.
+
+Diễn giải lâm sàng: 'OR không chứa 1' là tương đương hồi quy của p \< 0.05, nhưng có kèm độ lớn.
+
+Câu hỏi cho học viên: OR 0.7 với KTC 0.5 đến 0.9 - nghĩa là gì? Trả lời: một hiệu ứng bảo vệ thật, số chênh thấp hơn 30%.
+:::
+
+## Demo: Hồi Quy Logistic Đơn Biến (Đái Tháo Đường)
+
+[Đái tháo đường có làm tăng số chênh tiếp nhận điều trị không?]{.slide-intro}
+
+```r
+m_diab <- glm(treatment_uptake ~ diabetes,
+              data = dx, family = binomial)
+exp(coef(m_diab))      # odds ratio
+exp(confint(m_diab))   # 95% CI
+```
+
+```{.text .code-output}
+(Intercept)   diabetesYes
+      0.74          2.85
+            2.5 %   97.5 %
+diabetesYes  2.01     4.07
+```
+
+::: {.code-note}
+OR chưa hiệu chỉnh \~2.85: người đái tháo đường có số chênh tiếp nhận cao gần gấp ba; KTC không chứa 1.
+:::
+
+::: {.notes}
+Điểm dạy chính: family = binomial cho glm biết biến kết cục là 0/1; exp() biến log số chênh thành một OR có thể diễn giải.
+
+Sai lầm thường gặp: báo cáo exp(coef) nhưng quên mức tham chiếu - ở đây diabetesYes được so sánh với No.
+
+Diễn giải lâm sàng: OR chưa hiệu chỉnh sẽ co lại khi chúng ta hiệu chỉnh cho các yếu tố nhiễu như tuổi.
+
+Mẹo demo: hiển thị summary(m\_diab) trước để họ thấy log số chênh, rồi exp() để biến nó thành một OR thân thiện với bác sĩ lâm sàng.
+:::
+
+## Một Yếu Tố Dự Báo Liên Tục: Tuổi {.smaller}
+
+### OR trên mỗi một đơn vị
+
+| glm(treatment\_uptake \~ age) cho OR trên mỗi MỘT năm tuổi thêm.
+| OR đó gần bằng 1 vì một năm là một bước rất nhỏ.
+| Ở đây khoảng 1.03 mỗi năm - dễ bị bỏ qua.
+
+### Đổi thang đo sang một đơn vị có ý nghĩa
+
+| OR trên mỗi 10 năm = OR trên 1 năm nâng lên lũy thừa 10.
+| exp(coef(m\_age)\["age"\] \* 10) cho OR trên mỗi thập niên.
+| 1.03 mỗi năm trở thành khoảng 1.34 mỗi thập niên.
+
+::: {.callout-tip}
+## Truyền đạt bằng đơn vị lâm sàng
+Mỗi thập niên dễ hiểu hơn nhiều so với mỗi năm đối với khán giả lâm sàng.
+:::
+
+::: {.notes}
+Điểm dạy chính: với một yếu tố dự báo liên tục, OR là trên mỗi thay đổi một đơn vị - chọn một đơn vị mà người ta quan tâm.
+
+Sai lầm thường gặp: bỏ qua tuổi như không quan trọng vì OR \~1.03 trông tầm thường trên mỗi năm đơn lẻ.
+
+Diễn giải lâm sàng: cách diễn đạt theo thập niên (khoảng 1.34) cho thấy tuổi là một yếu tố thúc đẩy đáng kể của tiếp nhận.
+
+Mẹo demo: chạy exp(coef(m\_age)\['age'\] \* 10) trực tiếp để đổi từ mỗi năm sang mỗi thập niên.
+:::
+
+## Xây Dựng Mô Hình: Kiến Thức Lâm Sàng Trước Tiên
+
+### Chọn yếu tố dự báo trước khi nhìn giá trị p
+
+| Tính hợp lý về sinh học hoặc lâm sàng (đái tháo đường thúc đẩy các lần khám).
+| Các yếu tố nhiễu đã biết từ y văn (tuổi, giới, học vấn).
+| Các yếu tố quyết định đã nêu của nghiên cứu (khoảng cách, kiến thức).
+
+### Rồi khớp MỘT mô hình đã định trước
+
+| Quyết định danh sách biến trước, khớp một lần, báo cáo nó.
+| Đây là cách tiếp cận trung thực, có thể lặp lại cho một nghiên cứu về yếu tố quyết định.
+
+::: {.callout-important}
+## Đãi cát tìm vàng dữ liệu
+Thử nhiều mô hình và chỉ báo cáo những mô hình có ý nghĩa thống kê sẽ làm tăng dương tính giả.
+:::
+
+::: {.notes}
+Slide triết lý cốt lõi: lựa chọn dựa trên động cơ lâm sàng thắng tự động hóa mù quáng.
+
+Điểm dạy chính: một mô hình đã định trước có thể bảo vệ trước người phản biện và có thể tái lập.
+
+Sai lầm thường gặp: để máy tính chọn biến, rồi kể một câu chuyện lâm sàng quanh bất cứ cái gì còn sót lại.
+
+Diễn giải lâm sàng: trong một nghiên cứu giải thích, chúng ta giữ các yếu tố nhiễu đã biết ngay cả khi không có ý nghĩa thống kê.
+
+Câu hỏi cho học viên: có nên bỏ một biến chỉ vì p \> 0.05? Trả lời mong đợi: không, không nếu nó là một yếu tố nhiễu đã biết; bỏ nó có thể đưa lại nhiễu.
+:::
+
+## Nhiễu: Một Ví Dụ Lâm Sàng
+
+:::: {.columns}
+::: {.column width="50%"}
+### Nhiễu là gì
+
+- Một biến thứ ba làm méo mối liên hệ thô giữa phơi nhiễm và biến kết cục.
+- Ví dụ: cư dân thành thị trẻ hơn và có bảo hiểm tốt hơn.
+- Những yếu tố đó cũng làm tăng tiếp nhận - nên nơi cư trú thô trông quá mạnh.
+- Hiệu chỉnh cho chúng sẽ tách được hiệu ứng thật của nơi cư trú.
+:::
+::: {.column width="50%"}
+### Cách chúng ta phát hiện nó
+
+- So sánh OR thô với OR hiệu chỉnh của nơi cư trú.
+- Nếu ước lượng dịch chuyển đáng kể (quy tắc kinh nghiệm \>10%), có nhiễu.
+- Luôn báo cáo và diễn giải tỷ số chênh ĐÃ HIỆU CHỈNH.
+- OR thành thị đã hiệu chỉnh trong mô hình của chúng ta là 1.87 (1.41-2.49).
+:::
+::::
+
+::: {.notes}
+Nhiễu là khái niệm mô hình hóa quan trọng nhất đối với bác sĩ lâm sàng.
+
+Điểm dạy chính: hiệu chỉnh là cách các nghiên cứu quan sát xấp xỉ một so sánh công bằng.
+
+Sai lầm thường gặp: báo cáo và diễn giải OR thô.
+
+Diễn giải lâm sàng: hiệu ứng thành thị thô một phần được giải thích bởi tuổi và bảo hiểm; sau khi hiệu chỉnh, một lợi thế thành thị còn lại thực sự khoảng 1.87 vẫn tồn tại.
+
+Mẹo trình diễn: trong slide tiếp theo chúng ta cho thấy các con số thô vs hiệu chỉnh từ R.
+:::
+
+## Demo: OR Thô vs Hiệu Chỉnh Cho Nơi Cư Trú {.smaller}
+
+[Khớp một mô hình thô, rồi so sánh với mô hình đầy đủ.]{.slide-intro}
+
+```r
+crude <- glm(treatment_uptake ~ residence,
+             data = dx, family = binomial)
+full <- glm(treatment_uptake ~ age + sex + education +
+             residence + diabetes + family_history_htn +
+             health_insurance + knowledge_score +
+             distance_to_facility_km,
+             data = dx, family = binomial)
+exp(coef(crude))["residenceUrban"]
+exp(coef(full))["residenceUrban"]
+```
+
+```{.text .code-output}
+residenceUrban
+     2.34
+residenceUrban
+     1.87
+```
+
+::: {.code-note}
+OR co lại từ 2.34 (thô) xuống 1.87 (hiệu chỉnh): tuổi và bảo hiểm đã gây nhiễu cho nó.
+:::
+
+::: {.notes}
+Demo trực tiếp từ day5\_demo.R, phần 2-3.
+
+Điểm dạy chính: exp() biến log số chênh thành một tỷ số chênh.
+
+Sai lầm thường gặp: quên rằng glm cần family = binomial cho một mô hình logistic.
+
+Diễn giải lâm sàng: mức giảm \>10% xác nhận có nhiễu; con số 1.87 đã hiệu chỉnh là cái chúng ta báo cáo.
+
+Câu hỏi cho học viên: tại sao hiệu ứng thành thị co lại? Trả lời mong đợi: vì cư dân thành thị khác nhau về tuổi và bảo hiểm, những yếu tố này làm tăng tiếp nhận một cách độc lập.
+:::
+
+## Demo: Mô Hình Cuối Cùng và Các OR Đã Được Sắp Gọn
+
+[Khớp một lần, rồi biến các hệ số thành tỷ số chênh với KTC.]{.slide-intro}
+
+```r
+model_final <- full
+library(broom)
+or_table <- tidy(model_final,
+                 exponentiate = TRUE,
+                 conf.int = TRUE)
+print(or_table, n = Inf)
+```
+
+```{.text .code-output}
+term            estimate conf.low conf.high
+diabetesYes        3.56     1.46      9.61
+health_insuranceYes 2.05    1.54      2.74
+residenceUrban     1.87     1.41      2.49
+age                1.03     1.02      1.04
+```
+
+::: {.code-note}
+exponentiate = TRUE cho các OR; conf.int = TRUE thêm KTC 95% - chính xác bảng mà người đọc của bạn cần.
+:::
+
+::: {.notes}
+Demo trực tiếp từ day5\_demo.R, phần 7.
+
+Điểm dạy chính: broom::tidy() biến một đối tượng mô hình thành một data frame sạch, sẵn sàng để vẽ hoặc xuất.
+
+Sai lầm thường gặp: chép tay các con số từ summary() vào một bảng Word - dễ sai và không thể tái lập.
+
+Diễn giải lâm sàng: mọi KTC được hiển thị đều không chứa 1, nên tất cả đều có ý nghĩa thống kê; đái tháo đường có OR lớn nhất nhưng KTC rộng nhất.
+
+Câu hỏi cho học viên: tại sao KTC của đái tháo đường lại rộng như vậy? Trả lời mong đợi: người đái tháo đường là một phân nhóm nhỏ hơn, nên ước lượng kém chính xác hơn.
+:::
+
+## Mô Hình Đa Biến Cuối Cùng: Các OR Đã Hiệu Chỉnh {.smaller}
+
+| Yếu tố dự báo | aOR | KTC 95% | p |
+|:---|:---|:---|:---|
+| Tuổi (mỗi năm) | 1.03 | 1.02-1.04 | \<0.001 |
+| Giới: Nam (so với Nữ) | 0.74 | 0.56-0.97 | 0.031 |
+| Học vấn (xu hướng tuyến tính) | 1.96 | 1.39-2.77 | \<0.001 |
+| Nơi cư trú: Thành thị (so với Nông thôn) | 1.87 | 1.41-2.49 | \<0.001 |
+| Đái tháo đường: Có | 3.56 | 1.46-9.61 | 0.007 |
+| Bảo hiểm y tế: Có | 2.05 | 1.54-2.74 | \<0.001 |
+| Khoảng cách tới cơ sở (mỗi km) | 0.98 | 0.96-1.01 | 0.128 |
+
+: Hồi quy logistic; n = 992 trường hợp đầy đủ; AUC = 0.71. Tiền sử gia đình aOR 1.91 (1.44-2.54); kiến thức 1.10 (1.06-1.14) mỗi điểm.
+
+::: {.notes}
+Đây là các con số chuẩn từ key\_findings.md - trích dẫn chúng chính xác.
+
+Điểm dạy chính: đây là bảng kết quả chính của bản thảo.
+
+Sai lầm thường gặp: bỏ sót KTC hoặc n; người phản biện luôn hỏi.
+
+Diễn giải lâm sàng: khoảng cách theo hướng bảo vệ-chống-lại-tiếp nhận như kỳ vọng (OR 0.98) nhưng không có ý nghĩa thống kê - báo cáo đúng như vậy, đừng gọi nó là không có hiệu ứng.
+
+Câu hỏi cho học viên: yếu tố dự báo nào quan trọng nhất? Trả lời mong đợi: đái tháo đường có OR lớn nhất (3.56), nhưng thận trọng - KTC của nó rộng nhất, nên độ chính xác thấp hơn.
+
+Mẹo trình diễn: tiền sử gia đình và kiến thức được đưa vào chú thích để giữ bảng trong giới hạn số dòng.
+:::
+
+## Trực Quan Hóa Các OR Đã Hiệu Chỉnh
+
+:::: {.columns}
+::: {.column width="38%"}
+### Cách đọc nó
+
+- Mỗi điểm là một tỷ số chênh đã hiệu chỉnh.
+- Các râu là khoảng tin cậy 95%.
+- Đường đứt nét tại 1 = không có hiệu ứng.
+- Bên phải của 1 tăng tiếp nhận; bên trái giảm nó.
+- Đái tháo đường nằm xa nhất về bên phải - hiệu ứng lớn nhất.
+- Khoảng cách vượt qua 1 - không có ý nghĩa thống kê.
+:::
+::: {.column width="62%"}
+![](images/resources/forest_plot_or.png){width=100%}
+:::
+::::
+
+::: {.notes}
+Điểm dạy chính: một biểu đồ forest truyền đạt toàn bộ mô hình trong một cái nhìn.
+
+Trục x ở thang log nên các KTC trông đối xứng quanh mỗi điểm.
+
+Sai lầm thường gặp: đặt trục OR ở thang tuyến tính, làm bẹp các OR nhỏ.
+
+Diễn giải lâm sàng: bất kỳ râu KTC nào vượt qua đường đứt nét tại 1 đều không có ý nghĩa thống kê - ở đây chỉ có khoảng cách.
+
+Câu hỏi cho học viên: tại sao khoảng cách trông khác các yếu tố khác? Trả lời mong đợi: khoảng của nó nằm vắt qua 1, nên chúng ta không thể loại trừ việc không có hiệu ứng.
+:::
+
+## Demo: Bảng và Biểu Đồ Forest Sẵn Sàng Xuất Bản
+
+[Dựng một bảng kiểu tạp chí, rồi lưu hình.]{.slide-intro}
+
+```r
+library(gtsummary)
+tbl <- tbl_regression(model_final,
+                      exponentiate = TRUE) |>
+  bold_p()
+tbl
+# save the forest plot built from or_table
+ggsave("Resources/forest_plot_or.png",
+       plot = forest, width = 8, height = 5, dpi = 300)
+```
+
+::: {.code-note}
+tbl\_regression đọc mô hình trực tiếp - không chép tay - và ggsave xuất hình cho bản thảo.
+:::
+
+::: {.notes}
+Demo trực tiếp từ day5\_demo.R, phần 8-9.
+
+Điểm dạy chính: bảng và hình nên được sinh ra từ code, không bao giờ gõ lại.
+
+Sai lầm thường gặp: sửa các con số bằng tay trong Word, làm hỏng khả năng tái lập và gây ra lỗi sao chép.
+
+Diễn giải lâm sàng: file PNG đã lưu là chính xác hình trên slide trước.
+
+Mẹo trình diễn: hiển thị as\_gt(tbl) \|\> gtsave("Resources/regression\_table.html") để xuất bảng nữa; đề cập một phương án dự phòng write\_csv nếu không có gtsummary.
+:::
+
+## Xuất Kết Quả Cho Bản Thảo {.smaller}
+
+### Lưu bảng
+
+| gtsummary: as\_gt(tbl) rồi gtsave() ghi HTML, PNG hoặc Word.
+| Phương án dự phòng: write\_csv(or\_table, "Resources/regression\_table.csv").
+
+### Lưu hình
+
+| ggsave() ghi biểu đồ forest ở kích thước và độ phân giải cố định.
+| Dùng dpi = 300 cho các hình chất lượng in trong tạp chí.
+
+### Tại sao xuất từ code
+
+| Báo cáo có thể được dựng lại từ dữ liệu thô mà không cần bước thủ công nào.
+| Không sao chép nghĩa là không có lỗi sao chép.
+
+::: {.callout-tip}
+## Giữ một thư mục Resources/
+Gửi mọi bảng và hình vào đó để các kết quả nằm cùng một chỗ.
+:::
+
+::: {.notes}
+Điểm dạy chính: kết quả là sản phẩm của code, không phải file dựng bằng tay.
+
+Sai lầm thường gặp: chụp màn hình một đồ thị từ trình xem RStudio thay vì dùng ggsave - độ phân giải thấp và không tái lập được.
+
+Diễn giải lâm sàng: một người phản biện yêu cầu chỉnh sửa sẽ nhận được nó bằng cách sửa một dòng và chạy lại.
+
+Câu hỏi cho học viên: dpi bao nhiêu cho một hình in? Trả lời mong đợi: 300.
+
+Mẹo trình diễn: chạy ggsave và gtsave trực tiếp, rồi mở thư mục Resources/ để cho thấy các file xuất hiện.
+:::
+
+## Từ Tỷ Số Chênh Đến Câu Văn
+
+:::: {.columns}
+::: {.column width="50%"}
+### Các con số
+
+- Đái tháo đường: aOR 3.56 (1.46-9.61).
+- Bảo hiểm: aOR 2.05 (1.54-2.74).
+- Thành thị: aOR 1.87 (1.41-2.49).
+- Xu hướng học vấn: aOR 1.96 (1.39-2.77).
+- Giới nam: aOR 0.74 (0.56-0.97).
+- Khoảng cách: aOR 0.98 (0.96-1.01), KYN.
+:::
+::: {.column width="50%"}
+### Biến mỗi OR thành một câu
+
+- Nêu hướng, độ lớn, nhóm so sánh và KTC.
+- OR\>1: 'gấp X lần số chênh tiếp nhận'.
+- OR\<1: 'số chênh thấp hơn' - ở đây nam so với nữ.
+- Liên tục: 'trên mỗi 1 đơn vị tăng'.
+- Nêu rõ nhóm tham chiếu một cách tường minh.
+- Báo cáo các phát hiện KYN một cách trung thực, kèm KTC.
+:::
+::::
+
+::: {.notes}
+Điểm dạy chính: một phần Kết quả là sự chuyển ngữ có cấu trúc, không phải bịa đặt.
+
+Mỗi OR trở thành một mệnh đề rõ ràng: hướng, độ lớn, nhóm so sánh, độ chính xác.
+
+Sai lầm thường gặp: viết 'X gây ra Y' từ một OR quan sát - hãy dùng 'có liên quan với'.
+
+Diễn giải lâm sàng: một OR 0.74 cho giới nam nghĩa là nam có số chênh thấp hơn nữ khoảng 26%.
+
+Câu hỏi cho học viên: làm sao diễn đạt một phát hiện không có ý nghĩa thống kê? Trả lời mong đợi: báo cáo ước lượng và KTC và nêu rằng nó không có ý nghĩa thống kê - đừng khẳng định 'không có hiệu ứng'.
+:::
+
+## Ví Dụ Thực Hành: Một Đoạn Kết Quả {.smaller}
+
+### Đoạn kết quả mô hình
+
+| Trong 992 người tăng huyết áp đã được chẩn đoán, tiếp nhận điều trị liên quan độc lập
+| với đái tháo đường (aOR 3.56, KTC 95% 1.46-9.61), bảo hiểm y tế
+| (2.05, 1.54-2.74), nơi cư trú thành thị (1.87, 1.41-2.49) và học vấn cao hơn
+| (1.96, 1.39-2.77). Tuổi cao hơn (1.03 mỗi năm) và kiến thức nhiều hơn (1.10
+| mỗi điểm) cũng làm tăng số chênh, trong khi nam giới có số chênh thấp hơn nữ giới
+| (0.74, 0.56-0.97). Khoảng cách tới cơ sở không có ý nghĩa thống kê (0.98,
+| 0.96-1.01). Mô hình phân biệt ở mức chấp nhận được (AUC 0.71).
+
+::: {.callout-tip}
+## Luôn kết thúc bằng khả năng phân biệt
+Báo cáo AUC cho người đọc biết mô hình phân tách tiếp nhận với không tiếp nhận tốt đến đâu.
+:::
+
+::: {.notes}
+Đây là một câu trả lời mẫu mà lớp có thể chỉnh sửa cho bài tập.
+
+Điểm dạy chính: mở đầu bằng n phân tích, liệt kê các yếu tố quyết định có ý nghĩa thống kê với OR và KTC, rồi báo cáo cái không có ý nghĩa thống kê và độ khớp tổng thể.
+
+Sai lầm thường gặp: ngôn ngữ nhân quả ('đái tháo đường làm tăng tiếp nhận') từ một nghiên cứu cắt ngang.
+
+Diễn giải lâm sàng: đoạn văn phản ánh chính xác các hướng trong key\_findings.md.
+
+Câu hỏi cho học viên: điều gì thuộc về câu đầu tiên? Trả lời mong đợi: cỡ mẫu và biến kết cục, để người đọc biết cơ sở của mọi con số theo sau.
+:::
+
+## Khả Năng Tái Lập: Thông Điệp Tổng Kết {.smaller}
+
+### Làm cho công việc của bạn ai cũng chạy lại được
+
+| Script hơn menu bấm chuột: code là hồ sơ vĩnh viễn.
+| set.seed() làm cho mọi tính ngẫu nhiên (bootstrap, chia mẫu) có thể lặp lại.
+| Dùng RStudio Projects và đường dẫn tương đối - không bao giờ C:/Users/yourname/...
+| Lưu mọi bảng và hình vào đĩa để báo cáo dựng lại được từ code.
+
+### Ghi lại và chia sẻ môi trường của bạn
+
+| sessionInfo() ghi lại đúng phiên bản R và các gói của bạn.
+| R Markdown / Quarto kết code, văn bản và hình thành một báo cáo.
+
+::: {.callout-tip}
+## Thực hành tốt nhất
+Một cú nhấp chuột nên dựng lại toàn bộ báo cáo từ dữ liệu thô đến PDF.
+:::
+
+::: {.notes}
+Điểm dạy chính: một kết quả bạn không thể tái lập là một kết quả bạn không thể bảo vệ.
+
+Các phân tích bằng menu bấm chuột không để lại dấu vết; script thì có.
+
+Sai lầm thường gặp: gán cứng một đường dẫn tuyệt đối chỉ chạy trên laptop của bạn - nó hỏng với mọi cộng tác viên.
+
+Diễn giải lâm sàng: khả năng tái lập là một phần của liêm chính nghiên cứu, không phải một thứ tùy chọn.
+
+Câu hỏi cho học viên: tại sao đặt seed nếu hồi quy logistic là tất định? Trả lời mong đợi: để toàn bộ script - bao gồm bất kỳ lấy mẫu lại hay mô phỏng nào - tái lập giống hệt từ đầu đến cuối.
+
+Mẹo trình diễn: hiển thị cấu trúc thư mục Data/ Scripts/ Solutions/ Resources/ References/.
+:::
+
+## Demo: Một Đoạn Mã Về Khả Năng Tái Lập
+
+[Seed, đường dẫn tương đối, và một môi trường được ghi lại.]{.slide-intro}
+
+```r
+set.seed(2025)
+analysis_data <- readRDS("Data/analysis_data.rds")
+dx <- filter(analysis_data, htn_diagnosed == "Yes")
+# record the exact software environment
+writeLines(capture.output(sessionInfo()),
+           "References/session_info.txt")
+```
+
+```{.text .code-output}
+R version 4.4.1 (2024-06-14)
+attached: dplyr_1.1.4 broom_1.0.6 gtsummary_2.0
+... (full environment written to References/session_info.txt)
+```
+
+::: {.code-note}
+Đường dẫn tương đối cộng với một sessionInfo() đã lưu cho phép bất kỳ đồng nghiệp nào chạy lại cái này trên bất kỳ máy nào.
+:::
+
+::: {.notes}
+Demo trực tiếp từ day5\_demo.R, phần 0-1 và 10.
+
+Điểm dạy chính: ba thói quen này - seed, đường dẫn tương đối, môi trường được ghi lại - bao phủ hầu hết các thất bại về khả năng tái lập.
+
+Sai lầm thường gặp: làm sạch lại dữ liệu bên trong script phân tích; làm sạch nên thuộc về script riêng của nó (tách biệt trách nhiệm).
+
+Diễn giải lâm sàng: readRDS nạp dữ liệu đã được làm sạch, sẵn sàng phân tích.
+
+Mẹo trình diễn: mở References/session\_info.txt sau khi chạy để cho thấy những gì đã được ghi lại.
+:::
+
+## Bài Tập Ngày 5: Hoàn Thành Phân Tích & Viết Một Phần Kết Quả
+
+### Nhiệm vụ của bạn
+
+| Khớp mô hình đa biến đã định trước trên tập con đã chẩn đoán.
+| Tạo một bảng OR đã sắp gọn (exponentiate = TRUE, conf.int = TRUE).
+| Chạy các chẩn đoán: VIF, kiểm tra tính tuyến tính, khoảng cách Cook, AUC.
+| Dựng một bảng gtsummary và một biểu đồ forest, và lưu cả hai vào Resources/.
+| Viết một phần Kết quả 4-6 câu từ các OR của chính bạn.
+
+::: {.callout-note}
+## Sản phẩm bàn giao
+Một script có thể tái lập cộng với một đoạn Kết quả ngắn trích dẫn các aOR, KTC 95% và AUC.
+:::
+
+::: {.notes}
+Điểm dạy chính: bài tập này tích hợp cả tuần thành một sản phẩm bàn giao.
+
+Sai lầm thường gặp: quên giới hạn ở htn\_diagnosed == 'Yes', hoặc báo cáo OR thô thay vì OR đã hiệu chỉnh.
+
+Diễn giải lâm sàng: bảng chấm điểm (key\_findings.md) thưởng cho phương pháp và diễn giải đúng, không phải khớp đến số thập phân thứ 2.
+
+Câu hỏi cho học viên: đoạn Kết quả nên dài bao nhiêu? Trả lời mong đợi: gọn 4-6 câu - n và biến kết cục, các yếu tố quyết định có ý nghĩa thống kê với OR và KTC, cái không có ý nghĩa thống kê, rồi AUC.
+
+Mẹo trình diễn: chỉ họ tới day5\_demo.R như một khung sườn và đi vòng quanh trong lúc họ làm.
+:::
+
+## Tổng Kết Khóa Học: Những Gì Bạn Giờ Đã Làm Được
+
+[Năm ngày, một bộ dữ liệu thực, một quy trình phân tích đầy đủ.]{.slide-intro}
+
+- Nhập dữ liệu lâm sàng lộn xộn vào R và hiểu cấu trúc của nó.
+- Làm sạch nó: sửa các giá trị bất khả thi, chuẩn hóa các danh mục, xử lý dữ liệu khuyết.
+- Tóm tắt và trực quan hóa: Bảng 1, histogram, boxplot, biểu đồ cột.
+- Khớp và diễn giải hồi quy logistic với các tỷ số chênh đã hiệu chỉnh.
+- Xây dựng mô hình từ lập luận lâm sàng và kiểm tra các giả định của chúng.
+- Tạo các bảng và hình sẵn sàng xuất bản, và một phần Kết quả.
+- Làm việc một cách có thể tái lập với script, project, seed và báo cáo Quarto.
+
+::: {.notes}
+Điểm dạy chính: chúc mừng chặng đường đã đi - họ bắt đầu mà không có nền tảng lập trình.
+
+Trấn an họ rằng sự thành thạo đến cùng với luyện tập trên dữ liệu của chính họ.
+
+Diễn giải lâm sàng: giờ họ sở hữu một quy trình có thể bảo vệ, có thể tái lập mà họ có thể mang tới các nghiên cứu của chính mình.
+
+Câu hỏi cho học viên: thói quen giá trị nhất cần giữ là gì? Trả lời mong đợi: làm mọi thứ trong một script để nó có thể tái lập.
+
+Mẹo trình diễn: mời một hoặc hai học viên chia sẻ điều gì khiến họ bất ngờ nhất.
+:::
+
+## Giai Đoạn II Có Thể Bao Gồm Những Gì {.smaller}
+
+### Mô hình hóa sâu hơn
+
+| Nhiễu, tương tác và biến đổi hiệu ứng một cách chuyên sâu.
+| Chẩn đoán mô hình: đa cộng tuyến, độ khớp và khả năng phân biệt (AUC).
+| Lựa chọn biến và cách xây dựng một mô hình có trách nhiệm.
+
+### Phương pháp và kỹ năng mới
+
+| Phân tích sống còn: Kaplan-Meier và mô hình Cox cho dữ liệu thời gian-đến-biến cố.
+| Mô hình hiệu ứng hỗn hợp: bệnh nhân được phân cụm trong các cơ sở.
+| Dữ liệu khuyết (đa quy nạp) và báo cáo Quarto tự động.
+
+::: {.callout-tip}
+## Tiếp tục luyện tập
+Mang bộ dữ liệu của chính bạn tới Giai đoạn II và phân tích nó từ đầu đến cuối.
+:::
+
+::: {.notes}
+Điểm dạy chính: mô hình logistic hôm nay là nền tảng; Giai đoạn II tổng quát hóa nó.
+
+Diễn giải lâm sàng: nghiên cứu 6 cơ sở của họ tự nhiên được phân cụm, điều này thúc đẩy các mô hình hỗn hợp trong Giai đoạn II.
+
+Hiểu lầm thường gặp: rằng phân tích sống còn và hồi quy logistic không liên quan - cả hai đều là hồi quy, chỉ khác loại biến kết cục.
+
+Câu hỏi cho học viên: chủ đề Giai đoạn II nào phù hợp với một nghiên cứu theo dõi bệnh nhân theo thời gian? Trả lời mong đợi: phân tích sống còn, vì biến kết cục là thời gian-đến-biến cố.
+
+Mẹo trình diễn: cảm ơn lớp học, chỉ tới References/ để đọc thêm, và kết thúc bằng \#ClearDataClearImpact.
+:::

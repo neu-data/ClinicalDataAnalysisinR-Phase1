@@ -1,0 +1,12 @@
+---
+title: "Exercises and solutions"
+---
+
+| Exercise | Solution |
+|:--|:--|
+| [Exercise_1_Meet_Your_Dataset.R](files/precourse/exercises/Exercise_1_Meet_Your_Dataset.R) | [Solution_1_Meet_Your_Dataset.R](files/precourse/solutions/Solution_1_Meet_Your_Dataset.R) |
+| [Exercise_2_Data_Management.R](files/precourse/exercises/Exercise_2_Data_Management.R) | [Solution_2_Data_Management.R](files/precourse/solutions/Solution_2_Data_Management.R) |
+| [Exercise_3_Descriptive_Analysis.R](files/precourse/exercises/Exercise_3_Descriptive_Analysis.R) | [Solution_3_Descriptive_Analysis.R](files/precourse/solutions/Solution_3_Descriptive_Analysis.R) |
+| [Exercise_4_Visualization.R](files/precourse/exercises/Exercise_4_Visualization.R) | [Solution_4_Visualization.R](files/precourse/solutions/Solution_4_Visualization.R) |
+| [Exercise_5_Statistical_Testing.R](files/precourse/exercises/Exercise_5_Statistical_Testing.R) | [Solution_5_Statistical_Testing.R](files/precourse/solutions/Solution_5_Statistical_Testing.R) |
+| [Exercise_6_Regression.R](files/precourse/exercises/Exercise_6_Regression.R) | [Solution_6_Regression.R](files/precourse/solutions/Solution_6_Regression.R) |

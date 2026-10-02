@@ -1,0 +1,21 @@
+variable,label,type,units_or_values,description
+patient_id,Patient identifier,character,P1000-P1429,Unique anonymous identifier for each patient
+age,Age,integer,years (30-88),Patient age at admission
+sex,Sex,categorical,Female / Male,Biological sex
+weight_kg,Weight,numeric,kilograms,Measured body weight
+height_cm,Height,numeric,centimetres,Measured standing height
+BMI,Body Mass Index,numeric,kg/m^2,Weight divided by height squared (weight_kg / (height_cm/100)^2)
+smoking,Smoking status,categorical,Never / Former / Current,Self-reported smoking status
+alcohol_use,Alcohol use,categorical,None / Moderate / Heavy,Self-reported alcohol consumption
+systolic_bp,Systolic blood pressure,integer,mmHg,Systolic blood pressure at admission
+diastolic_bp,Diastolic blood pressure,integer,mmHg,Diastolic blood pressure at admission
+hypertension,Hypertension,categorical,Yes / No,Diagnosed hypertension
+diabetes,Diabetes,categorical,Yes / No,Diagnosed diabetes mellitus
+glucose,Fasting glucose,numeric,mmol/L,Fasting plasma glucose
+cholesterol,Total cholesterol,numeric,mmol/L,Total serum cholesterol
+treatment,Treatment group,categorical,Treated / Untreated,Whether the patient received antihypertensive treatment
+hospital,Recruiting hospital,categorical,5 facilities,Facility where the patient was recruited
+admission_date,Admission date,date,YYYY-MM-DD,Date of enrolment / admission
+followup_date,Follow-up date,date,YYYY-MM-DD,Date of last follow-up or event
+outcome,Follow-up event,integer,0 = event-free / 1 = event,Cardiovascular event or death during follow-up
+time_to_event,Time to event,numeric,months (0-24),Months from admission to event or censoring

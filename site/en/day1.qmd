@@ -1,0 +1,25 @@
+---
+title: "Day 1: Introduction to R & RStudio"
+---
+
+**Date:** 08-09-2026 · Tuesday, 8:00–9:30 PM (Vietnam time)
+
+## Agenda
+
+- Why R for clinical research
+- R vs RStudio: install and the interface
+- Projects, scripts, objects and vectors
+- Data frames and packages (tidyverse)
+- Importing and a first look at the study data
+- Hands-on exercise
+
+## Materials
+
+| | |
+|:--|:--|
+| 🎞️ **Slides** | [Open the slides](slides-day1.qmd) — Press **F** for full screen, **S** for speaker notes, **E** to print. |
+| 📥 **PowerPoint** | [Download the slides (PowerPoint)](files/slides/Clinical_Data_Analysis_in_R_Phase1.pptx) |
+| 💻 **Live-coding demo script** | [day1_demo.R](files/scripts/day1_demo.R) |
+| 🧪 **Practical exercise** | [day1_exercise.R](files/practicals/day1_exercise.R) |
+| ✅ **Worked solution** | [day1_solution.R](files/solutions/day1_solution.R) |
+| 📁 **Course data** | [Course data](data.qmd) |

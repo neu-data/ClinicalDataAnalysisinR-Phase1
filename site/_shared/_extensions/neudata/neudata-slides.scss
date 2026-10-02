@@ -1,0 +1,251 @@
+/*-- scss:defaults --*/
+
+// Neudata palette (matches the Beamer and PowerPoint templates)
+$neudata-teal: #0D7377;        // slide titles (PowerPoint title teal)
+$neudata-deep-teal: #055F56;   // logo teal
+$neudata-blue: #0070C0;        // notes / alerts
+$neudata-navy: #04242F;
+$neudata-logo-blue: #0B376C;
+$neudata-mist: #EAF2F5;
+$neudata-grey: #8A99A3;
+$neudata-ink: #1A1A1A;
+
+// Century Gothic as in the PowerPoint template, with close fallbacks
+$font-family-sans-serif: "Century Gothic", "URW Gothic", "TeX Gyre Adventor", "Avenir Next", "Segoe UI", Arial, sans-serif;
+$presentation-heading-font: $font-family-sans-serif;
+$font-family-monospace: Consolas, "SFMono-Regular", Menlo, "DejaVu Sans Mono", monospace;
+
+$body-bg: #FFFFFF;
+$body-color: $neudata-ink;
+$link-color: $neudata-blue;
+$presentation-heading-color: $neudata-teal;
+$presentation-heading-font-weight: 700;
+$presentation-heading-text-transform: none;
+$presentation-heading-letter-spacing: normal;
+$presentation-font-size-root: 34px;
+$presentation-h1-font-size: 2.2em;
+$presentation-h2-font-size: 1.45em;
+$presentation-h3-font-size: 1.1em;
+$presentation-line-height: 1.35;
+$code-block-bg: $neudata-mist;
+$code-block-border-color: $neudata-teal;
+$code-color: $neudata-logo-blue;
+$callout-color-note: $neudata-blue;
+$callout-color-tip: $neudata-deep-teal;
+$selection-bg: rgba($neudata-teal, 0.25);
+
+/*-- scss:rules --*/
+
+.reveal {
+  letter-spacing: normal;
+}
+
+// ---- Content slide titles: teal with a thin full-width rule -------------------
+.reveal .slides section > h2 {
+  margin-bottom: 0.6em;
+  padding-bottom: 0.18em;
+  border-bottom: 2px solid $neudata-teal;
+}
+.reveal .slides h3 {
+  color: $neudata-teal;
+  margin-top: 0.5em;
+  margin-bottom: 0.2em;
+}
+
+// Bullets in teal
+.reveal ul li::marker { color: $neudata-teal; }
+.reveal ol li::marker { color: $neudata-teal; font-weight: 700; }
+
+// ---- Footer: logo bottom-left, tagline centred, slide number bottom-right ----
+.reveal .slide-logo {
+  max-height: 64px !important;
+  height: 64px !important;
+  left: 18px;
+  bottom: 10px;
+}
+.reveal .footer {
+  color: $neudata-teal;
+  font-size: 0.5em;
+  bottom: 18px;
+}
+.reveal .slide-number {
+  color: $neudata-grey;
+  background: transparent;
+  font-size: 0.5em;
+  right: 24px !important;
+  bottom: 16px !important;
+}
+
+// ---- Title slide -----------------------------------------------------------------
+.reveal .slides section.neudata-title-slide {
+  height: 100%;
+  text-align: center;
+
+  .neudata-title-block {
+    position: absolute;
+    top: 18%;
+    left: 8%;
+    right: 8%;
+  }
+  h1.title {
+    color: $neudata-teal;
+    font-size: 2.3em;
+    font-weight: 700;
+    margin-bottom: 0.15em;
+  }
+  .subtitle {
+    color: $neudata-navy;
+    font-size: 1.05em;
+    font-weight: 700;
+  }
+  .neudata-presenters {
+    margin-top: 1.6em;
+    p { margin: 0.15em 0; font-size: 0.95em; color: $neudata-ink; }
+  }
+  .neudata-title-logo {
+    position: absolute;
+    left: 2.5%;
+    bottom: 3%;
+    height: 230px;
+    margin: 0;
+  }
+  .date {
+    position: absolute;
+    right: 5%;
+    bottom: 10%;
+    margin: 0;
+    font-size: 0.7em;
+    font-weight: 700;
+  }
+}
+
+// Hide the small corner logo, footer and number on the title slide
+.reveal:has(section.neudata-title-slide.present) .slide-logo,
+.reveal:has(section.neudata-title-slide.present) .footer,
+.reveal:has(section.neudata-title-slide.present) .slide-number { display: none !important; }
+
+// ---- Section dividers (# Heading) -------------------------------------------------
+.reveal .slides section.neudata-section {
+  height: 100%;
+
+  h1 {
+    position: absolute;
+    left: 41%;
+    top: 38%;
+    width: 55%;
+    margin: 0;
+    text-align: left;
+    color: $neudata-teal;
+    font-size: 2.1em;
+  }
+  .neudata-section-art {
+    position: absolute;
+    left: 6%;
+    top: 30%;
+    display: flex;
+    align-items: center;
+    gap: 70px;
+  }
+  .neudata-section-logo { height: 220px; margin: 0; }
+  .neudata-section-rule {
+    display: block;
+    width: 4px;
+    height: 270px;
+    background: $neudata-teal;
+  }
+  .neudata-section-number {
+    position: absolute;
+    left: 41%;
+    top: 55%;
+    margin: 0;
+    color: $neudata-grey;
+    font-size: 0.75em;
+  }
+}
+.reveal:has(section.neudata-section.present) .slide-logo { display: none !important; }
+
+// ---- Closing copyright slide --------------------------------------------------------
+.reveal .slides section.neudata-copyright-slide {
+  h2 { display: none; }
+  .neudata-copyright-logo {
+    display: block;
+    height: 280px;
+    margin: 0 auto 0.6em;
+  }
+  .neudata-copyright-title {
+    color: $neudata-blue;
+    font-weight: 700;
+    font-size: 0.95em;
+    margin: 0 8% 0.4em;
+  }
+  .neudata-copyright-text {
+    margin: 0 8%;
+    p {
+      font-family: $font-family-monospace;
+      font-size: 0.44em;
+      line-height: 1.4;
+      margin: 0 0 0.8em;
+      letter-spacing: normal;
+    }
+  }
+}
+.reveal:has(section.neudata-copyright-slide.present) .slide-logo { display: none !important; }
+
+// ---- Building blocks -----------------------------------------------------------------
+// Big number:  [16,293]{.neudata-stat} with a label line below
+.reveal .neudata-stat {
+  display: block;
+  font-size: 2.4em;
+  font-weight: 700;
+  color: $neudata-teal;
+  line-height: 1.1;
+}
+.reveal .neudata-stat-label {
+  display: block;
+  color: $neudata-grey;
+  font-size: 0.65em;
+}
+// Key-findings box:  ::: {.key-findings}
+.reveal .key-findings {
+  background: $neudata-mist;
+  border-left: 8px solid $neudata-deep-teal;
+  padding: 0.5em 0.8em;
+  border-radius: 0 8px 8px 0;
+  > :last-child { margin-bottom: 0; }
+}
+// Blue note text, as in the PowerPoint "Title and Notes" layout
+.reveal .neudata-note { color: $neudata-blue; }
+
+// Course-deck elements (generated from the deckbuild content files)
+.reveal .slide-intro { display: block; font-style: italic; color: $neudata-grey; margin-bottom: 0.4em; }
+.reveal .slides section .line-block { margin: 0 0 0.35em; line-height: 1.3; }
+.reveal .slides section h3 { margin-top: 0.35em; }
+.reveal .code-note {
+  background: rgba($neudata-blue, 0.08);
+  border-left: 6px solid $neudata-blue;
+  color: $neudata-navy;
+  padding: 0.3em 0.7em;
+  border-radius: 0 6px 6px 0;
+  font-size: 0.8em;
+  margin-top: 0.4em;
+}
+.reveal pre.code-output, .reveal div.sourceCode.code-output pre, .reveal .code-output {
+  background: #f7f9fa;
+  border-left: 4px solid $neudata-grey;
+}
+.reveal .callout { font-size: 1em; margin: 0.5em 0; }
+.reveal .callout .callout-body-container, .reveal .callout .callout-title-container { font-size: 0.85em; }
+// Code readable from the back of a (virtual) room
+.reveal div.sourceCode pre code, .reveal pre code { font-size: 1.35em; line-height: 1.35; }
+.reveal .smaller div.sourceCode pre code, .reveal .smaller pre code { font-size: 1.2em; }
+
+// Tables: navy header row, striped body
+.reveal table {
+  font-size: 0.75em;
+  thead th {
+    background: $neudata-navy;
+    color: #fff;
+    border-bottom: none;
+  }
+  tbody tr:nth-child(even) { background: $neudata-mist; }
+}

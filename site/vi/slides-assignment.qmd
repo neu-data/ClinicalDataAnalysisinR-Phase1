@@ -1,0 +1,213 @@
+---
+title: "Bài tập lớn Cuối khóa"
+subtitle: "Phân tích Dữ liệu Lâm sàng bằng R — Giai đoạn I"
+author: "Bernard Osang'ir & My Luong Vuong"
+institute: "Neudata Consulting Ltd"
+date: "06-10-2026"
+lang: vi
+section-label: "Phần"
+format:
+  neudata-revealjs:
+    scrollable: true
+---
+
+# Bài tập lớn Cuối khóa
+
+## Tổng quan
+
+- Một bài phân tích độc lập, làm tại nhà
+- Một tuần để hoàn thành
+- Sử dụng cùng bộ dữ liệu nghiên cứu
+- Chấm trên thang 100%
+
+::: {.notes}
+Giới thiệu bài đánh giá tổng kết.
+
+Điểm giảng dạy chính: bài này củng cố toàn bộ năm ngày thành một phân tích độc lập.
+
+Diễn giải lâm sàng: nó phản ánh việc viết phần phân tích cho một bài báo thực tế.
+
+Câu hỏi cho học viên: nên dành bao nhiêu thời gian? Dự kiến: một vài buổi tập trung trải trong tuần.
+
+Mẹo demo: khuyến khích bắt đầu từ script làm sạch đã lưu ở Buổi 2.
+:::
+
+## Bài tập lớn Cuối khóa - Cần Làm Gì {.smaller}
+
+### Nhiệm vụ
+
+| Làm việc độc lập, phân tích bộ dữ liệu nghiên cứu và xác định các yếu tố quyết định việc tiếp nhận điều trị.
+
+### Bài nộp của bạn phải
+
+- Nhập dữ liệu thô và làm sạch/kiểm định nó.
+- Tạo thống kê mô tả và một Bảng 1 sẵn sàng công bố.
+- Tạo ít nhất hai hình chất lượng công bố.
+- Thực hiện các kiểm định thống kê phù hợp.
+- Khớp các mô hình hồi quy logistic đơn biến và đa biến.
+- Diễn giải kết quả và viết một mục Kết quả ngắn.
+- Có khả năng tái lập hoàn toàn (một script duy nhất chạy từ đầu đến cuối).
+
+::: {.notes}
+Nêu rõ chính xác cần nộp những gì.
+
+Điểm giảng dạy chính: khả năng tái lập được chấm điểm - script phải chạy được trên một máy sạch.
+
+Lỗi phổ biến: chỉ nộp kết quả mà không có script, hoặc script với đường dẫn tuyệt đối cứng.
+
+Diễn giải lâm sàng: mục Kết quả nên đọc như một bài nộp tạp chí.
+
+Câu hỏi cho học viên: điều gì khiến một script có khả năng tái lập? Dự kiến: đường dẫn tương đối, các lệnh library(), set.seed, không có bước thủ công.
+
+Mẹo demo: chỉ họ tới bản nháp kết quả Buổi 5 như một mẫu.
+:::
+
+## Bài tập lớn Cuối khóa - Sản phẩm & Nộp bài
+
+### Nộp
+
+| 1. Một script R (.R) có chú thích, hoặc một tệp R Markdown/Quarto.
+| 2. Bảng 1 và các hình đã xuất.
+| 3. Một mục Kết quả một trang (khoảng 250-400 từ).
+
+### Định dạng
+
+| Dùng một RStudio Project với đường dẫn tương đối.
+| Đặt tên tệp rõ ràng: Surname\_Phase1\_Assignment.R
+
+::: {.callout-warning}
+## Liêm chính học thuật
+Làm việc độc lập. Bạn có thể dùng các script và ghi chú của khóa học, nhưng phần phân tích và viết phải là của riêng bạn.
+:::
+
+::: {.notes}
+Làm rõ cơ chế nộp bài.
+
+Điểm giảng dạy chính: code rõ ràng, có chú thích là một phần của điểm số, không phải chuyện phụ.
+
+Lỗi phổ biến: hình lưu ở độ phân giải màn hình - yêu cầu 300 dpi qua ggsave.
+
+Diễn giải lâm sàng: một bài nộp gọn gàng phản ánh một nhà phân tích gọn gàng.
+
+Câu hỏi cho học viên: script R hay Quarto? Dự kiến: cái nào cũng được - Quarto dễ đạt điểm khả năng tái lập.
+
+Mẹo demo: cho xem cấu trúc thư mục bạn kỳ vọng.
+:::
+
+## Bảng Chấm điểm (trên thang 100%) {.smaller}
+
+| Thành phần | Được đánh giá điều gì | Điểm |
+|:---|:---|:---|
+| Nhập & làm sạch dữ liệu | Nhập đúng, mã khuyết, kiểm định, mã hóa lại | 20 |
+| Thống kê mô tả | Tóm tắt phù hợp và một Bảng 1 chính xác | 15 |
+| Hình | Hai hình rõ ràng, gán nhãn đúng, chất lượng công bố | 10 |
+| Kiểm định thống kê | Chọn đúng kiểm định và áp dụng chính xác | 15 |
+| Mô hình hồi quy | Mô hình logistic đơn biến & đa biến vững chắc | 20 |
+| Diễn giải & Kết quả | OR/KTC chính xác và văn phong lâm sàng rõ ràng | 15 |
+| Khả năng tái lập & chất lượng code | Chạy từ đầu đến cuối; sạch, có chú thích, đường dẫn tương đối | 5 |
+
+: Tổng = 100%. Một hướng dẫn chấm điểm chi tiết được cung cấp cho giảng viên.
+
+::: {.notes}
+Làm cho việc chấm điểm minh bạch.
+
+Điểm giảng dạy chính: làm sạch và hồi quy chiếm trọng số cao nhất (mỗi phần 20) - hãy dành thời gian cho chúng.
+
+Diễn giải lâm sàng: diễn giải được khen thưởng một cách rõ ràng, không chỉ tính toán.
+
+Lỗi phổ biến: code hoàn hảo, diễn giải sai - bạn mất 15 điểm diễn giải.
+
+Câu hỏi cho học viên: bạn sẽ tập trung nỗ lực ở đâu? Dự kiến: làm sạch + mô hình hóa - chính xác.
+
+Mẹo demo: hướng dẫn chấm điểm đầy đủ với tiêu chí từng điểm nằm trong gói tài liệu giảng viên.
+:::
+
+## Hướng dẫn Chấm điểm - Điều gì Đạt Điểm Tối đa
+
+:::: {.columns}
+::: {.column width="50%"}
+### Bài nộp xuất sắc
+
+- Xử lý mọi sự lộn xộn (bản trùng, giá trị canh gác, giá trị bất khả thi).
+- Bảng 1 phân tầng theo tiếp nhận điều trị với các kiểm định hợp lý.
+- Tỷ số chênh hiệu chỉnh (aOR) kèm khoảng tin cậy 95% (KTC 95%) và mức tham chiếu đúng.
+- Đoạn văn Kết quả khớp với con số và được đóng khung lâm sàng.
+- Một script chạy trơn tru từ dữ liệu thô đến kết quả.
+:::
+::: {.column width="50%"}
+### Những chỗ thường mất điểm
+
+- Để nguyên 999 / -99 như số thực.
+- Phân tích cả 1,500 thay vì chỉ bệnh nhân đã được chẩn đoán.
+- Báo cáo log-odds thay vì tỷ số chênh (OR).
+- Diễn giải một kết quả không có ý nghĩa thống kê là 'không có tác động'.
+- Đường dẫn tuyệt đối hỏng trên máy tính khác.
+:::
+::::
+
+::: {.notes}
+Cho học viên một hình dung cụ thể về bài xuất sắc so với bài yếu.
+
+Điểm giảng dạy chính: đa số điểm bị mất do các lỗi làm sạch và diễn giải có thể tránh được.
+
+Diễn giải lâm sàng: 'không có ý nghĩa thống kê' nghĩa là 'chưa đủ bằng chứng', không phải 'không có tác động'.
+
+Lỗi phổ biến: quên giới hạn ở htn\_diagnosed == Yes cho phân tích tiếp nhận điều trị.
+
+Câu hỏi cho học viên: vì sao chỉ phân tích bệnh nhân đã được chẩn đoán? Dự kiến: tiếp nhận điều trị chỉ được xác định sau khi đã chẩn đoán.
+
+Mẹo demo: phát slide này như một bảng tự kiểm trước khi nộp.
+:::
+
+## Tài nguyên & Đọc thêm {.smaller}
+
+### Trong gói tài liệu khóa học
+
+| Bảng tra cứu lệnh R và hướng dẫn cài đặt gói.
+| Tất cả script demo và lời giải mẫu.
+| Bộ dữ liệu, từ điển dữ liệu và bộ slide này.
+
+### Để đi xa hơn
+
+| R for Data Science (Wickham & Grolemund) - miễn phí trực tuyến.
+| Regression Modeling Strategies (Harrell).
+| Các trang tài liệu gtsummary và ggplot2.
+
+::: {.callout-tip}
+## Tiếp tục luyện tập
+Chạy lại các script của tuần trên dữ liệu của chính bạn - đó là nơi kỹ năng trở nên bền vững.
+:::
+
+::: {.notes}
+Chỉ ra mọi thứ họ có thể mang về và nơi để phát triển tiếp.
+
+Điểm giảng dạy chính: bảng tra cứu trả lời 80% câu hỏi hằng ngày.
+
+Diễn giải lâm sàng: áp dụng R vào dữ liệu của CHÍNH họ là bài kiểm tra thực sự của việc học.
+
+Câu hỏi cho học viên: sau khóa học bạn sẽ phân tích gì đầu tiên? Dự kiến: một cuộc kiểm toán hoặc một dự án đang dang dở.
+
+Mẹo demo: nhắc đến Giai đoạn II (phân tích sống còn, mô hình hỗn hợp) như bước tiếp theo.
+:::
+
+# Cảm ơn & Hỏi đáp
+
+## Giữ liên lạc
+
+- Bạn giờ đã có thể nhập, làm sạch, phân tích và báo cáo dữ liệu lâm sàng bằng R
+- Luyện tập trên các bộ dữ liệu của riêng bạn
+- Giai đoạn II: phân tích sống còn, mô hình hỗn hợp và dự báo
+- Liên hệ: Neudata  -  \#ClearDataClearImpact
+
+::: {.notes}
+Kết thúc ấm áp và mở lời cho thảo luận.
+
+Điểm giảng dạy chính: chúc mừng rằng mọi người đã đi từ số không đến một phân tích hoàn chỉnh trong năm ngày.
+
+Diễn giải lâm sàng: khuyến khích họ đưa phân tích có khả năng tái lập vào nhóm của mình.
+
+Câu hỏi cho học viên: điều bạn thu nhận lớn nhất là gì? Dự kiến: khác nhau - khẳng định mỗi ý.
+
+Mẹo demo: thu thập phản hồi và chia sẻ thông tin liên hệ để theo dõi tiếp.
+:::
+
