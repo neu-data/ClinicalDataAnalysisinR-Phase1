@@ -2,4 +2,8 @@
 title: "Chứng nhận hoàn thành"
 ---
 
-Học viên tham dự **ít nhất 4 trên 5 buổi học** và nộp **bài tập cuối khóa** sẽ nhận chứng nhận hoàn thành của Neudata. Chứng nhận được gửi qua email dưới dạng PDF, mỗi chứng nhận có một mã số riêng để Neudata xác minh tại [contact@neu-data.com](mailto:contact@neu-data.com).
+Học viên tham dự **từ 3 đến 5 trên 5 buổi học** sẽ nhận chứng nhận hoàn thành của Neudata, do giảng viên My Luong Vuong và Bernard Isekah Osang'ir ký.
+
+**Cách nhận:** mở cổng chứng nhận, nhập email bạn đã đăng ký, sau đó nhập mã 6 chữ số chúng tôi gửi qua email và họ tên chính thức của bạn. Chứng nhận sẽ được gửi đến email của bạn dưới dạng PDF. Mỗi chứng nhận có mã số riêng và mã QR để bất kỳ ai cũng có thể quét để xác minh.
+
+*Cổng chứng nhận sẽ mở sau buổi học cuối cùng.*

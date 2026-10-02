@@ -2,4 +2,8 @@
 title: "Certificate of completion"
 ---
 
-Participants who attend **at least 4 of the 5 sessions** and submit the **final assignment** receive a Neudata certificate of completion. Certificates are sent by email as PDF, each with a unique ID that Neudata can verify at [contact@neu-data.com](mailto:contact@neu-data.com).
+Participants who attend **3 to 5 of the 5 sessions** receive a Neudata certificate of completion, signed by the trainers My Luong Vuong and Bernard Isekah Osang'ir.
+
+**How to get it:** open the certificate portal, enter the email you registered with, then the 6-digit code we email you and your official full name. Your certificate is emailed to you as a PDF. Each certificate has a unique ID and a QR code that anyone can scan to verify it.
+
+*The certificate portal opens after the final session.*

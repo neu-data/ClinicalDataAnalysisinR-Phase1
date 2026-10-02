@@ -29,6 +29,8 @@ SESSION_DATES = ["08-09-2026", "15-09-2026", "22-09-2026", "29-09-2026", "06-10-
 TRAINERS = "Bernard Osang'ir & My Luong Vuong"
 REPO_URL = "https://github.com/neu-data/ClinicalDataAnalysisinR-Phase1"
 SITE_URL = "https://neu-data.github.io/ClinicalDataAnalysisinR-Phase1"
+# Certificate portal (Google Apps Script web app URL). Leave empty until it is deployed.
+CERT_PORTAL_URL = ""
 
 # ----- Language strings -----------------------------------------------------------------
 L = {
@@ -55,10 +57,14 @@ L = {
         online="Online", nocode="No coding experience required",
         hero_promise="A free, hands-on short course for health professionals and researchers in Vietnam",
         cert_title="Certificate of completion",
-        cert_body=("Participants who attend **at least 4 of the 5 sessions** and submit the "
-                   "**final assignment** receive a Neudata certificate of completion. Certificates "
-                   "are sent by email as PDF, each with a unique ID that Neudata can verify at "
-                   "[contact@neu-data.com](mailto:contact@neu-data.com)."),
+        cert_body=("Participants who attend **3 to 5 of the 5 sessions** receive a Neudata certificate "
+                   "of completion, signed by the trainers My Luong Vuong and Bernard Isekah Osang'ir.\n\n"
+                   "**How to get it:** open the certificate portal, enter the email you registered with, "
+                   "then the 6-digit code we email you and your official full name. Your certificate is "
+                   "emailed to you as a PDF. Each certificate has a unique ID and a QR code that anyone "
+                   "can scan to verify it."),
+        cert_button="Get your certificate",
+        cert_soon="The certificate portal opens after the final session.",
         dl_intro="Everything used in the course, ready to download.",
         col_session="Session", col_date="Date", col_topic="Topic", col_materials="Materials",
         session_page="Session page", files_slides="Slide decks (PowerPoint)",
@@ -88,10 +94,14 @@ L = {
         online="Trực tuyến", nocode="Không cần kinh nghiệm lập trình",
         hero_promise="Khóa học ngắn miễn phí, thực hành cho nhân viên y tế và nhà nghiên cứu tại Việt Nam",
         cert_title="Chứng nhận hoàn thành",
-        cert_body=("Học viên tham dự **ít nhất 4 trên 5 buổi học** và nộp **bài tập cuối khóa** sẽ "
-                   "nhận chứng nhận hoàn thành của Neudata. Chứng nhận được gửi qua email dưới dạng "
-                   "PDF, mỗi chứng nhận có một mã số riêng để Neudata xác minh tại "
-                   "[contact@neu-data.com](mailto:contact@neu-data.com)."),
+        cert_body=("Học viên tham dự **từ 3 đến 5 trên 5 buổi học** sẽ nhận chứng nhận hoàn thành của "
+                   "Neudata, do giảng viên My Luong Vuong và Bernard Isekah Osang'ir ký.\n\n"
+                   "**Cách nhận:** mở cổng chứng nhận, nhập email bạn đã đăng ký, sau đó nhập mã 6 chữ số "
+                   "chúng tôi gửi qua email và họ tên chính thức của bạn. Chứng nhận sẽ được gửi đến email "
+                   "của bạn dưới dạng PDF. Mỗi chứng nhận có mã số riêng và mã QR để bất kỳ ai cũng có thể "
+                   "quét để xác minh."),
+        cert_button="Nhận chứng nhận",
+        cert_soon="Cổng chứng nhận sẽ mở sau buổi học cuối cùng.",
         dl_intro="Toàn bộ tài liệu dùng trong khóa học, sẵn sàng để tải xuống.",
         col_session="Buổi", col_date="Ngày", col_topic="Chủ đề", col_materials="Tài liệu",
         session_page="Trang buổi học", files_slides="Bài giảng (PowerPoint)",
@@ -445,8 +455,10 @@ def build(lang):
         rmd_page(p, out / f"lesson{i}.qmd")
 
     # ---- certificate and downloads
+    action = (f"[{S['cert_button']}]({CERT_PORTAL_URL}){{.btn .btn-primary .btn-lg role=\"button\"}}"
+              if CERT_PORTAL_URL else f"*{S['cert_soon']}*")
     (out / "certificate.qmd").write_text(
-        f"---\ntitle: {yaml_str(S['cert_title'])}\n---\n\n{S['cert_body']}\n", encoding="utf-8")
+        f"---\ntitle: {yaml_str(S['cert_title'])}\n---\n\n{S['cert_body']}\n\n{action}\n", encoding="utf-8")
     sections = [(S["files_slides"], "slides"), (S["files_scripts"], "scripts"),
                 (S["exercise"], "practicals"), (S["solution"], "solutions"),
                 (S["files_data"], "data"), (S["files_docs"], "docs")]
