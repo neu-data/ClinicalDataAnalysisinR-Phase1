@@ -1,0 +1,444 @@
+## Chapter 5: Regression Modelling and Reporting Results
+
+These solutions use the same packages, data and main model as Chapter 5.
+The setup code below recreates the analytic population (`dx`), the
+pre-specified multivariable model (`model_full`) and its complete-case data
+(`cc`). Remember that the data are simulated for teaching: the results
+illustrate methods, not real clinical findings.
+
+```{r s5-setup, include=FALSE}
+library(tidyverse)
+library(broom)
+library(gtsummary)
+library(car)
+library(pROC)
+library(knitr)
+```
+
+```{r s5-data}
+analysis_data <- readRDS("Data/analysis_data.rds")
+
+# Diagnosed patients; education as an unordered factor (reference "None")
+dx <- analysis_data |>
+  filter(htn_diagnosed == "Yes") |>
+  mutate(education = factor(education, ordered = FALSE))
+
+model_full <- glm(
+  treatment_uptake ~ age + sex + education + residence + diabetes +
+    family_history_htn + health_insurance + knowledge_score +
+    distance_to_facility_km,
+  data = dx, family = binomial
+)
+cc <- model.frame(model_full)    # the 992 complete cases
+```
+
+### Exercise 5.1
+
+We fit the linear model to all adults with complete data on the four
+variables and extract the coefficients with confidence intervals.
+
+```{r s5-ex1-fit}
+lm_sex <- lm(sbp_mmhg ~ age + bmi + sex, data = analysis_data)
+summary(lm_sex)$coefficients |> round(3)
+
+# Age per 10 years, with 95% CI
+age10 <- 10 * c(coef(lm_sex)["age"], confint(lm_sex)["age", ])
+round(age10, 2)
+
+c(n = nobs(lm_sex), R2 = round(summary(lm_sex)$r.squared, 3),
+  adj_R2 = round(summary(lm_sex)$adj.r.squared, 3))
+```
+
+```{r s5-ex1-values, include=FALSE}
+b_sex  <- coef(lm_sex)["sexMale"]
+ci_sex <- confint(lm_sex)["sexMale", ]
+```
+
+1. Each 10-year increase in age is associated with a mean SBP
+   `r sprintf("%.1f", age10[1])` mmHg higher (95% CI
+   `r sprintf("%.1f", age10[2])` to `r sprintf("%.1f", age10[3])`),
+   holding BMI and sex fixed.
+2. Men have a mean SBP `r sprintf("%.1f", abs(b_sex))` mmHg
+   `r ifelse(b_sex > 0, "higher", "lower")` than women of the same age and
+   BMI (95% CI `r sprintf("%.1f", ci_sex[1])` to
+   `r sprintf("%.1f", ci_sex[2])`).
+   The interval includes zero, so the data are compatible with no
+   difference in mean SBP by sex.
+3. The model explains `r round(100 * summary(lm_sex)$r.squared, 1)`% of the
+   variance in SBP, essentially the same as the model without sex in the
+   chapter. Adding sex contributes little.
+4. The residual plot is below.
+
+```{r s5-ex1-plot, fig.cap="Residuals against fitted values for the linear regression of SBP on age, BMI and sex.", fig.height=3.6}
+augment(lm_sex) |>
+  ggplot(aes(.fitted, .resid)) +
+  geom_point(alpha = 0.25, colour = "#0D7377") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_smooth(method = "loess", se = FALSE, colour = "#E07A1F") +
+  labs(x = "Fitted SBP (mmHg)", y = "Residual (mmHg)")
+```
+
+The residuals form a band of roughly constant width around zero, with no
+clear curvature or funnel shape, so the linearity and equal-variance
+assumptions look reasonable. (A Q–Q plot, as in the chapter, would be used
+to check normality.)
+
+### Exercise 5.2
+
+```{r s5-ex2-table}
+tab_fh <- table(FamilyHistory = dx$family_history_htn,
+                Uptake        = dx$treatment_uptake)
+tab_fh
+
+fh <- dx |>
+  group_by(family_history_htn) |>
+  summarise(n = n(), p = mean(treatment_uptake == "Yes")) |>
+  mutate(odds = p / (1 - p))
+kable(fh, digits = 3, caption = "Uptake by family history of hypertension.")
+
+or_fh <- fh$odds[2] / fh$odds[1]          # crude odds ratio
+rr_fh <- fh$p[2] / fh$p[1]                # crude risk ratio
+c(OR = round(or_fh, 3), RR = round(rr_fh, 3))
+```
+
+```{r s5-ex2-glm}
+glm_fh <- glm(treatment_uptake ~ family_history_htn, data = dx,
+              family = binomial)
+exp(coef(glm_fh))
+
+# Zhang and Yu conversion from OR to RR, using the risk in the reference group
+p0 <- fh$p[1]
+round(or_fh / ((1 - p0) + p0 * or_fh), 3)
+```
+
+1. Without a family history, `r round(100 * fh$p[1], 1)`% of patients are on
+   treatment (odds `r round(fh$odds[1], 2)`); with a family history,
+   `r round(100 * fh$p[2], 1)`% (odds `r round(fh$odds[2], 2)`). The crude
+   OR is `r round(or_fh, 2)`.
+2. The exponentiated coefficient from `glm()` is identical: a
+   one-predictor logistic regression reproduces the $2 \times 2$ table.
+3. The crude RR is `r round(rr_fh, 2)`, smaller than the OR. Uptake is
+   common (around 40–55%), so the odds are much larger than the risks and
+   the OR lies further from 1 than the RR. The Zhang and Yu formula, with
+   $p_0 = `r round(p0, 3)`$, recovers the RR exactly for a crude OR.
+
+### Exercise 5.3
+
+We multiply each coefficient and its profile-likelihood confidence limits
+by the chosen increment before exponentiating.
+
+```{r s5-ex3}
+ci_log <- confint(model_full)
+tibble(term = c("age", "knowledge_score", "distance_to_facility_km"),
+       increment = c(10, 5, 10)) |>
+  mutate(OR    = exp(increment * coef(model_full)[term]),
+         lower = exp(increment * ci_log[term, 1]),
+         upper = exp(increment * ci_log[term, 2])) |>
+  kable(digits = 2, caption = "Adjusted ORs for chosen increments.")
+```
+
+A decade of age is a natural clinical unit, and a 5-point difference in
+knowledge (a quarter of the 0–20 scale, close to the interquartile range)
+is easy to interpret. For distance, 10 km is roughly the difference between
+living next to the clinic and living at the upper quartile of distance in
+this sample. The increments must be chosen before the analysis (and stated
+in the Methods) because otherwise an analyst could pick whichever unit made
+an association look most impressive; the choice changes the size of the OR
+but not its p-value.
+
+### Exercise 5.4
+
+```{r s5-ex4-crude}
+glm_ins_cc <- glm(treatment_uptake ~ health_insurance, data = cc,
+                  family = binomial)
+b_crude <- coef(glm_ins_cc)["health_insuranceYes"]
+b_adj   <- coef(model_full)["health_insuranceYes"]
+
+c(crude_OR = exp(b_crude), adjusted_OR = exp(b_adj),
+  pct_change_logOR = 100 * (b_adj - b_crude) / b_crude) |>
+  unname() |> setNames(c("crude_OR", "adjusted_OR", "pct_change_logOR")) |>
+  round(2)
+```
+
+1. The OR moves from `r round(exp(b_crude), 2)` (crude) to
+   `r round(exp(b_adj), 2)` (adjusted), a change of about
+   `r round(100 * (b_adj - b_crude) / b_crude)`% in the log OR, well above
+   the 10% change-in-estimate threshold.
+2. A plausible causal diagram: insurance increases uptake (by reducing the
+   cost of medicines and visits). Education, residence and age could
+   influence both whether a person is insured and whether they take up
+   treatment, so they are potential confounders. Knowledge score could be a
+   mediator if insurance schemes provide health education, or a confounder
+   if better-informed people seek insurance; the direction is uncertain.
+   Diabetes and family history are unlikely to be caused by insurance and
+   mainly affect the outcome.
+3. To decide between confounding and non-collapsibility we can check how
+   strongly insurance is related to the other predictors, and compute a
+   *marginal* (population-averaged) OR from the adjusted model by
+   standardisation: predict every patient's probability of uptake with
+   insurance set to "Yes" and to "No", average each, and form the OR of the
+   two averages. Standardisation removes confounding by the model
+   covariates but, unlike the conditional OR, is collapsible.
+
+```{r s5-ex4-standardise}
+# Is insurance associated with the other predictors? (ORs near 1 = weakly)
+glm(health_insurance ~ age + sex + education + residence + diabetes +
+      family_history_htn + knowledge_score + distance_to_facility_km,
+    data = cc, family = binomial) |>
+  tidy(exponentiate = TRUE) |>
+  filter(term != "(Intercept)") |>
+  select(term, OR = estimate, p = p.value) |>
+  mutate(OR = round(OR, 2), p = round(p, 3))
+
+# Marginal OR by standardisation over the observed covariates
+all_yes <- mutate(cc, health_insurance = "Yes")   # everyone insured
+all_no  <- mutate(cc, health_insurance = "No")    # no one insured
+p_yes <- mean(predict(model_full, newdata = all_yes, type = "response"))
+p_no  <- mean(predict(model_full, newdata = all_no,  type = "response"))
+c(p_insured = p_yes, p_uninsured = p_no,
+  marginal_OR = (p_yes / (1 - p_yes)) / (p_no / (1 - p_no))) |> round(3)
+```
+
+```{r s5-ex4-values, include=FALSE}
+marg_or <- (p_yes / (1 - p_yes)) / (p_no / (1 - p_no))
+```
+
+Insurance is only weakly related to most of the other predictors, but
+insured patients are somewhat *less* likely to be urban, to have diabetes
+or to have a family history, all of which favour uptake. This produces
+some negative confounding of the crude OR. The standardised (marginal) OR,
+`r round(marg_or, 2)`, removes that confounding while staying on the
+population-averaged scale of the crude OR. We can therefore split the
+change on the log-odds scale into two parts:
+
+- crude to marginal, from `r round(exp(b_crude), 2)` to
+  `r round(marg_or, 2)`: the change due to **confounding** by the measured
+  covariates;
+- marginal to conditional, from `r round(marg_or, 2)` to
+  `r round(exp(b_adj), 2)`: the change due to **non-collapsibility**.
+
+```{r s5-ex4-split}
+logs <- c(crude = b_crude, marginal = log(marg_or), conditional = b_adj)
+c(confounding_part      = unname(logs[2] - logs[1]),
+  noncollapsibility_part = unname(logs[3] - logs[2])) |> round(3)
+```
+
+The two components are of similar size. So the answer is "both": about
+half of the change from the crude to the adjusted OR reflects confounding
+(insured patients have fewer of the other characteristics that favour
+uptake), and about half reflects non-collapsibility. Both ORs are valid,
+but they answer different questions: the conditional OR compares patients
+with the same covariate values; the marginal OR compares the whole
+population with and without insurance.
+
+### Exercise 5.5
+
+```{r s5-ex5-drop1}
+drop1(model_full, test = "LRT")["education", ]
+```
+
+1. The LR test compares `model_full` with the same model without the three
+   education indicators. The null hypothesis is that all three education
+   coefficients are zero, that is, that the odds of uptake are the same at
+   every level of education once the other variables are accounted for. It
+   is rejected ($p \approx 0.001$).
+
+```{r s5-ex5-trend}
+cc_num <- cc |> mutate(edu_num = as.integer(education) - 1)  # 0, 1, 2, 3
+
+model_trend <- glm(
+  treatment_uptake ~ age + sex + edu_num + residence + diabetes +
+    family_history_htn + health_insurance + knowledge_score +
+    distance_to_facility_km,
+  data = cc_num, family = binomial
+)
+tidy(model_trend, exponentiate = TRUE, conf.int = TRUE) |>
+  filter(term == "edu_num") |>
+  select(term, OR = estimate, conf.low, conf.high, p.value)
+
+AIC(model_full, model_trend)
+```
+
+```{r s5-ex5-values, include=FALSE}
+or_trend <- exp(coef(model_trend)["edu_num"])
+aics <- AIC(model_full, model_trend)$AIC
+```
+
+2. With education coded 0–3, each step up the education scale (None to
+   Primary, Primary to Secondary, Secondary to Tertiary) is associated with
+   `r round(or_trend, 2)` times the odds of uptake. This assumes the same
+   OR for every step, so the OR for Tertiary versus None is
+   $`r round(or_trend, 2)`^3 = `r round(or_trend^3, 2)`$.
+3. The trend model has AIC `r sprintf("%.1f", aics[2])` against
+   `r sprintf("%.1f", aics[1])` for the factor model: it fits as well with
+   two fewer parameters, and is therefore preferred by AIC (a difference of
+   about `r round(aics[1] - aics[2])` points). The category ORs
+   in the chapter (1.39, 1.92, 2.44) do increase roughly geometrically.
+   Either choice is defensible; what matters is that it is made *before*
+   looking at the results. The factor version is easier for readers to
+   interpret and makes no assumption about equal steps; the trend version
+   is more parsimonious and gives a single, more precise estimate. A
+   sensible approach is to report the categories in the table and mention
+   the trend test in the text.
+
+### Exercise 5.6
+
+```{r s5-ex6-fit}
+model_fac <- update(model_full, . ~ . + facility)
+anova(model_full, model_fac, test = "LRT")[, 3:5]
+
+# Percentage change in each shared OR when facility is added
+shared <- names(coef(model_full))[-1]
+tibble(term = shared,
+       OR_without = exp(coef(model_full)[shared]),
+       OR_with    = exp(coef(model_fac)[shared])) |>
+  mutate(pct_change = 100 * (OR_with - OR_without) / OR_without) |>
+  kable(digits = 2, caption = "Adjusted ORs with and without facility.")
+```
+
+```{r s5-ex6-auc}
+auc_without <- auc(roc(model_full$y, fitted(model_full), quiet = TRUE))
+auc_with    <- auc(roc(model_fac$y,  fitted(model_fac),  quiet = TRUE))
+round(c(without = auc_without, with = auc_with), 3)
+```
+
+```{r s5-ex6-values, include=FALSE}
+lrt_fac <- anova(model_full, model_fac, test = "LRT")
+pct <- 100 * abs(exp(coef(model_fac)[shared]) / exp(coef(model_full)[shared]) - 1)
+```
+
+1. Adding the five facility indicators reduces the deviance by
+   `r round(lrt_fac$Deviance[2], 1)` on 5 df ($p =
+   `r round(lrt_fac[2, "Pr(>Chi)"], 2)`$): no clear evidence that uptake
+   differs between facilities after adjustment.
+2. The largest change in any other OR is
+   `r round(max(pct), 1)`% (for `r shared[which.max(pct)]`); no OR changes
+   by more than 10%. Facility does not confound the other associations.
+3. The AUC rises only slightly, from `r round(auc_without, 3)` to
+   `r round(auc_with, 3)`, as expected whenever terms are added to a model
+   evaluated on its own data. Facility adds little. However, it remains a
+   design variable: patients within the same facility may be correlated,
+   and a sensitivity analysis with facility as a fixed effect (or with
+   cluster-robust standard errors) is worth reporting to show that the
+   conclusions do not depend on ignoring clustering.
+
+### Exercise 5.7
+
+```{r s5-ex7-lrt}
+model_ir <- update(model_full, . ~ . + health_insurance:residence)
+anova(model_full, model_ir, test = "LRT")[, 3:5]
+```
+
+To obtain the OR for insurance in each residence group, note that in the
+interaction model the log OR for insurance is $\beta_{\text{ins}}$ among
+rural patients (the reference) and $\beta_{\text{ins}} +
+\beta_{\text{int}}$ among urban patients. The variance of the sum is
+$\operatorname{Var}(\beta_{\text{ins}}) + \operatorname{Var}(\beta_{\text{int}}) +
+2\operatorname{Cov}(\beta_{\text{ins}}, \beta_{\text{int}})$, taken from
+the variance–covariance matrix `vcov()`.
+
+```{r s5-ex7-strata}
+b <- coef(model_ir)
+V <- vcov(model_ir)
+ins <- "health_insuranceYes"
+int <- "residenceUrban:health_insuranceYes"
+
+log_or <- c(rural = unname(b[ins]),
+            urban = unname(b[ins] + b[int]))
+se     <- c(rural = sqrt(V[ins, ins]),
+            urban = sqrt(V[ins, ins] + V[int, int] + 2 * V[ins, int]))
+
+tibble(residence = names(log_or),
+       OR    = exp(log_or),
+       lower = exp(log_or - 1.96 * se),
+       upper = exp(log_or + 1.96 * se)) |>
+  kable(digits = 2,
+        caption = "OR for health insurance by residence (Wald CIs).")
+```
+
+```{r s5-ex7-values, include=FALSE}
+lrt_ir <- anova(model_full, model_ir, test = "LRT")
+or_r <- exp(log_or); lo <- exp(log_or - 1.96 * se); hi <- exp(log_or + 1.96 * se)
+```
+
+3. A possible write-up: "The association between health insurance and
+   treatment uptake did not differ materially by residence (likelihood-ratio
+   test for interaction $p = `r round(lrt_ir[2, "Pr(>Chi)"], 2)`$); the
+   adjusted OR for insurance was `r sprintf("%.2f", or_r[1])` (95% CI
+   `r sprintf("%.2f", lo[1])` to `r sprintf("%.2f", hi[1])`) among rural
+   and `r sprintf("%.2f", or_r[2])` (`r sprintf("%.2f", lo[2])` to
+   `r sprintf("%.2f", hi[2])`) among urban patients. We therefore report
+   the model without the interaction term." Note that the two
+   stratum-specific intervals overlap widely; the economist's hypothesis is
+   not supported by these data, although the study was not powered to
+   detect a modest interaction.
+
+### Exercise 5.8
+
+```{r s5-ex8-events}
+treated <- dx |> filter(treatment_uptake == "Yes")
+table(treated$bp_controlled, useNA = "ifany")
+table(Diabetes = treated$diabetes, Controlled = treated$bp_controlled)
+```
+
+```{r s5-ex8-epv, include=FALSE}
+n_ctrl <- sum(treated$bp_controlled == "Yes", na.rm = TRUE)
+```
+
+1. Only `r n_ctrl` of the `r nrow(treated)` treated patients have controlled
+   blood pressure. Here the *event* is the less frequent category,
+   controlled BP, so the effective sample size is `r n_ctrl`, not
+   `r nrow(treated)`.
+2. With 10 events per parameter, the model can support about
+   `r floor(n_ctrl / 10)` parameters. Even this is optimistic, and the
+   estimates will be imprecise.
+3. We pre-specify three parameters: age, BMI and adherence (good versus
+   poor), all of which are clinically plausible determinants of BP control.
+   Sex is omitted to respect the EPV limit. Diabetes cannot be used: none of
+   the treated patients with diabetes has controlled BP, so the model would
+   suffer from separation.
+
+```{r s5-ex8-fit}
+model_bp <- glm(bp_controlled ~ age + bmi + adherence,
+                data = treated, family = binomial)
+nobs(model_bp)
+
+tidy(model_bp, exponentiate = TRUE, conf.int = TRUE) |>
+  filter(term != "(Intercept)") |>
+  select(term, OR = estimate, conf.low, conf.high, p.value) |>
+  mutate(across(OR:conf.high, \(x) round(x, 2)), p.value = round(p.value, 3))
+
+auc_bp <- auc(roc(model_bp$y, fitted(model_bp), quiet = TRUE))
+round(auc_bp, 3)
+```
+
+```{r s5-ex8-values, include=FALSE}
+t_bp <- tidy(model_bp, exponentiate = TRUE, conf.int = TRUE)
+f <- function(term, k = 1) {
+  r <- t_bp[t_bp$term == term, ]
+  b <- log(r$estimate) * k; l <- log(r$conf.low) * k; u <- log(r$conf.high) * k
+  sprintf("%.2f, 95%% CI %.2f to %.2f", exp(b), exp(l), exp(u))
+}
+```
+
+4. A possible Results paragraph: "Among the `r nrow(treated)` patients on
+   antihypertensive treatment, `r n_ctrl`
+   (`r round(100 * n_ctrl / nrow(treated), 1)`%) had controlled blood
+   pressure. Because of the small number of patients with controlled blood
+   pressure, the model was restricted to three pre-specified predictors.
+   Higher BMI was associated with lower odds of control (OR per 5 kg/m²
+   `r f("bmi", 5)`), as was older age (OR per 10 years
+   `r f("age", 10)`). Good adherence was associated with lower odds of
+   control than poor adherence (OR `r f("adherenceGood")`), an unexpected
+   finding. The model's discrimination was acceptable (AUC
+   `r sprintf("%.2f", auc_bp)`). With only `r n_ctrl` events, estimates are
+   imprecise and should be interpreted cautiously."
+
+   The adherence result runs against clinical expectation. In a real study
+   it would prompt a check of how adherence and BP control were measured
+   (for example, poorly controlled patients may be counselled more and then
+   report better adherence: reverse causation in a cross-sectional design).
+   Here it is simply a feature of the simulated data, and a reminder that
+   implausible results deserve scrutiny rather than a creative explanation.
+   Note also that the profile-likelihood CIs for rescaled ORs were obtained
+   by multiplying the log-scale limits by the increment, as in the chapter.

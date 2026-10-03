@@ -299,6 +299,126 @@ def copy(src, dest):
     shutil.copy2(src, dest)
 
 
+# ----- The book: "Introduction to R for Clinical Research" as the handbook -------------------
+BOOK = ROOT / "Book"
+BOOK_TITLE = {"en": ("Introduction to R for Clinical Research", "Clinical Data Analysis in R"),
+              "vi": ("Giới thiệu R cho Nghiên cứu Lâm sàng", "Phân tích Dữ liệu Lâm sàng bằng R")}
+BOOK_CHAPTERS = ["01-r-basics", "02-data-cleaning", "03-descriptive", "04-statistical-tests", "05-regression"]
+BOOK_S = {
+    "en": dict(chapter="Chapter", solutions="Solutions to the exercises", objectives="Learning objectives",
+               note="Clinical interpretation", tip="Good practice", warning="Common mistake",
+               important="Key points", prev="Previous", next="Next", contents="Contents",
+               authors="Bernard Isekah Osang'ir and Vương Mỹ Lượng",
+               intro=("The participant handbook is our book **{t}** — *{s}*. Each chapter explains the "
+                      "theory behind a method, shows the R code and its real output on the case-study "
+                      "data, with figures and tables, and ends with exercises. Worked solutions are at the "
+                      "end of the book."),
+               pdf="Download the book (PDF, English)", pdf_other="Tiếng Việt (PDF)",
+               overleaf="LaTeX source for Overleaf (zip)", read="Read online"),
+    "vi": dict(chapter="Chương", solutions="Lời giải bài tập", objectives="Mục tiêu học tập",
+               note="Diễn giải lâm sàng", tip="Thực hành tốt", warning="Lỗi thường gặp",
+               important="Điểm chính", prev="Trước", next="Tiếp", contents="Mục lục",
+               authors="Bernard Isekah Osang'ir và Vương Mỹ Lượng",
+               intro=("Sổ tay học viên là cuốn sách **{t}** — *{s}*. Mỗi chương giải thích lý thuyết của "
+                      "phương pháp, trình bày mã R và kết quả thực tế trên dữ liệu nghiên cứu tình huống, "
+                      "kèm hình và bảng, và kết thúc bằng bài tập. Lời giải chi tiết nằm ở cuối sách."),
+               pdf="Tải sách (PDF, tiếng Việt)", pdf_other="English (PDF)",
+               overleaf="Mã nguồn LaTeX cho Overleaf (zip)", read="Đọc trực tuyến"),
+}
+
+
+def number_headings(md, num):
+    """Prefix ## / ### headings with the book's section numbers (3.1, 3.1.1), skipping code."""
+    out, fence, sec, sub = [], False, 0, 0
+    for line in md.split("\n"):
+        if line.lstrip().startswith("```"):
+            fence = not fence
+        m = None if fence else re.match(r"^(##|###)\s+(.*)$", line)
+        if m and "{.unnumbered}" not in line:
+            if m.group(1) == "##":
+                sec, sub = sec + 1, 0
+                line = f"## {num}.{sec} {m.group(2)}"
+            else:
+                sub += 1
+                line = f"### {num}.{sec}.{sub} {m.group(2)}"
+        out.append(line)
+    return "\n".join(out)
+
+
+def book_md_to_qmd(md, B):
+    """Knitted book Markdown -> Quarto page body (callouts, figures)."""
+    md = re.sub(r"^::: \{\.objectives\}\s*$", f'::: {{.callout-note .nb-objectives icon=false title="{B["objectives"]}"}}',
+                md, flags=re.M)
+    md = re.sub(r'^::: \{\.exercise title="([^"]*)"\}\s*$', r'::: {.callout-tip .nb-exercise icon=false title="\1"}',
+                md, flags=re.M)
+    for kind in ("note", "tip", "warning", "important"):
+        md = re.sub(rf"^::: \{{\.callout-{kind}\}}\s*$", f'::: {{.callout-{kind} title="{B[kind]}"}}', md, flags=re.M)
+    md = md.replace("](figures/", "](images/book/")
+    return md
+
+
+def build_book_pages(lang, out, S):
+    """Write handbook.qmd (book landing page) and one page per chapter. Returns the page list."""
+    B = BOOK_S[lang]
+    t, s = BOOK_TITLE[lang]
+    knit = BOOK / "_knit" / lang
+    code = "EN" if lang == "en" else "VN"
+    other = "VN" if lang == "en" else "EN"
+    if not knit.exists():
+        return []
+    for png in (knit / "figures").glob("*.png"):
+        copy(png, out / "images" / "book" / png.name)
+    copy(BOOK / "references.bib", out / "references.bib")
+    docs = out / "files" / "docs"
+    for c in (code, other):
+        pdf = BOOK / f"Introduction_to_R_for_Clinical_Research_{c}.pdf"
+        if pdf.exists():
+            copy(pdf, docs / pdf.name)
+    zipf = BOOK / f"Introduction_to_R_for_Clinical_Research_{code}_overleaf.zip"
+    if zipf.exists():
+        copy(zipf, docs / zipf.name)
+
+    pages = []                                    # (file, title, md)
+    if (knit / "00-preface.md").exists():
+        md = (knit / "00-preface.md").read_text(encoding="utf-8")
+        title = re.match(r"#\s+(.*?)\s*(\{.*\})?\s*$", md.splitlines()[0]).group(1)
+        pages.append(("book-preface.qmd", title, md.split("\n", 1)[1], None))
+    for n, ch in enumerate(BOOK_CHAPTERS, 1):
+        f = knit / f"{ch}.md"
+        if f.exists():
+            md = f.read_text(encoding="utf-8")
+            title = re.match(r"#\s+(.*?)\s*(\{.*\})?\s*$", md.splitlines()[0]).group(1)
+            pages.append((f"book-chapter{n}.qmd", f"{B['chapter']} {n}: {title}", md.split("\n", 1)[1], n))
+    sols = [knit / f"sol-0{n}.md" for n in range(1, 6) if (knit / f"sol-0{n}.md").exists()]
+    if sols:
+        md = "\n\n".join(p.read_text(encoding="utf-8") for p in sols)
+        pages.append(("book-solutions.qmd", B["solutions"], md, None))
+
+    for k, (fname, title, md, num) in enumerate(pages):
+        nav = []
+        if k > 0:
+            nav.append(f"[← {B['prev']}: {pages[k - 1][1]}]({pages[k - 1][0]})")
+        nav.append(f"[{B['contents']}](handbook.qmd)")
+        if k + 1 < len(pages):
+            nav.append(f"[{B['next']}: {pages[k + 1][1]} →]({pages[k + 1][0]})")
+        if num:
+            md = number_headings(md, num)
+        head = (f"---\ntitle: {yaml_str(title)}\nsubtitle: {yaml_str(t)}\nbibliography: references.bib\n"
+                f"link-citations: true\n---\n\n")
+        (out / fname).write_text(head + book_md_to_qmd(md, B) + "\n\n---\n\n" + " · ".join(nav) + "\n",
+                                 encoding="utf-8")
+
+    links = [f"| 📥 **PDF** | [{B['pdf']}](files/docs/Introduction_to_R_for_Clinical_Research_{code}.pdf)"
+             f" · [{B['pdf_other']}](files/docs/Introduction_to_R_for_Clinical_Research_{other}.pdf) |",
+             f"| 🧾 **Overleaf** | [{B['overleaf']}](files/docs/{zipf.name}) |"]
+    toc = "\n".join(f"{i + 1}. [{p[1]}]({p[0]})" for i, p in enumerate(pages))
+    landing = (f"---\ntitle: {yaml_str(t)}\nsubtitle: {yaml_str(s)}\n---\n\n"
+               f"*{B['authors']}* · Neudata\n\n" + B["intro"].format(t=t, s=s) + "\n\n"
+               "| | |\n|---|---|\n" + "\n".join(links) + f"\n\n## {B['read']}\n\n" + toc + "\n")
+    (out / "handbook.qmd").write_text(landing, encoding="utf-8")
+    return pages
+
+
 # ----- Build one language -----------------------------------------------------------------
 def build(lang):
     S = L[lang]
@@ -408,8 +528,10 @@ def build(lang):
         (out / f"day{d}.qmd").write_text(md, encoding="utf-8")
 
     # ---- course documents
-    md_page(COURSE / "References" / f"participant_handbook{sfx}.md", out / "handbook.qmd", S["handbook"],
-            f"📥 [PDF](files/docs/Participant_Handbook.pdf)\n\n")
+    book_pages = build_book_pages(lang, out, S)
+    if not book_pages:
+        md_page(COURSE / "References" / f"participant_handbook{sfx}.md", out / "handbook.qmd", S["handbook"],
+                f"📥 [PDF](files/docs/Participant_Handbook.pdf)\n\n")
     md_page(COURSE / "References" / f"R_command_reference_sheet{sfx}.md", out / "reference.qmd", S["reference"],
             f"📥 [PDF](files/docs/R_Command_Reference_Sheet.pdf)\n\n")
     md_page(COURSE / "References" / f"package_installation_guide{sfx}.md", out / "packages.qmd", S["packages"],

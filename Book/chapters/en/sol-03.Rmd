@@ -1,0 +1,284 @@
+## Chapter 3: Descriptive Statistics, Tables and Figures
+
+```{r s3-setup, include=FALSE}
+library(tidyverse)
+library(gtsummary)
+library(janitor)
+library(knitr)
+library(scales)
+```
+
+All solutions start from the clean analysis file and, where the outcome is involved, from
+the population of diagnosed patients.
+
+```{r s3-data}
+analysis_data <- readRDS("Data/analysis_data.rds")
+diagnosed <- analysis_data |> filter(htn_diagnosed == "Yes")
+teal <- "#0D7377"
+```
+
+### Exercise 3.1
+
+We compute the four statistics for each variable, together with the number of missing
+values.
+
+```{r s3-ex1}
+analysis_data |>
+  select(age, distance_to_facility_km) |>
+  pivot_longer(everything(), names_to = "variable", values_to = "value") |>
+  group_by(variable) |>
+  summarise(
+    missing = sum(is.na(value)),
+    mean    = mean(value, na.rm = TRUE),
+    sd      = sd(value, na.rm = TRUE),
+    median  = median(value, na.rm = TRUE),
+    iqr     = IQR(value, na.rm = TRUE)
+  ) |>
+  kable(digits = 2, caption = "Summaries of age and distance to the facility.")
+```
+
+Age has 2 missing values and distance 60. For **age**, the mean (52.3 years) and median (52
+years) almost coincide and the SD (14.1) is small relative to the mean, so the distribution
+is roughly symmetric: report **mean (SD)**, 52.3 (14.1) years. For **distance**, the mean
+(7.8 km) is well above the median (6.45 km) and the SD (6.1 km) is close to the mean of a
+variable that cannot be negative, the signature of right skew (see the histogram in Section
+3.5): report **median (IQR)**: 6.45 km (IQR 4.0 to 10.3 km, an interquartile range of 6.3 km).
+
+### Exercise 3.2
+
+```{r s3-ex2}
+ldl <- analysis_data$ldl_mmol_l
+
+mean(ldl)                                   # the na.rm trap: NA
+
+c(n_valid   = sum(!is.na(ldl)),
+  n_missing = sum(is.na(ldl)),
+  pct_miss  = 100 * mean(is.na(ldl)),
+  mean      = mean(ldl, na.rm = TRUE),
+  sd        = sd(ldl, na.rm = TRUE),
+  cv_pct    = 100 * sd(ldl, na.rm = TRUE) / mean(ldl, na.rm = TRUE)) |>
+  round(2)
+```
+
+Without `na.rm = TRUE`, `mean()` returns `NA` because 105 LDL values (7.0%) are missing.
+Among the 1,395 patients with a result, mean LDL cholesterol was 2.70 mmol/L with SD 1.03
+mmol/L, a coefficient of variation of about 38%, so LDL is relatively more variable than
+total cholesterol (CV about 19%). A sentence for a paper: *"LDL cholesterol was available for
+1,395 of 1,500 participants (93.0%); mean 2.70 mmol/L (SD 1.03)."*
+
+### Exercise 3.3
+
+```{r s3-ex3-table}
+table(analysis_data$smoking, useNA = "ifany")
+table(analysis_data$bp_category, useNA = "ifany")
+```
+
+```{r s3-ex3-tabyl}
+analysis_data |>
+  tabyl(smoking) |>
+  adorn_pct_formatting(digits = 1)
+
+analysis_data |>
+  tabyl(bp_category) |>
+  adorn_pct_formatting(digits = 1)
+```
+
+Smoking status is missing for 45 patients and blood-pressure category for 3. There are 261
+current smokers: (a) 17.4% of all 1,500 patients (`percent`), and (b) 17.9% of the 1,455 with
+known smoking status (`valid_percent`). The difference is small here because only 3% are
+missing, but the denominator should always be stated.
+
+### Exercise 3.4
+
+```{r s3-ex4}
+ins_tab <- table(Insurance = diagnosed$health_insurance,
+                 Treated   = diagnosed$treatment_uptake)
+addmargins(ins_tab)
+
+round(100 * prop.table(ins_tab, margin = 1), 1)   # row % (within insurance)
+round(100 * prop.table(ins_tab, margin = 2), 1)   # column % (within uptake)
+```
+
+Among the 364 insured diagnosed patients, 55.5% were on treatment, compared with 42.2% of the
+725 uninsured. These are the **row percentages**, computed within categories of the
+explanatory variable (insurance). They answer the question "is insurance associated with
+uptake?" directly, because they compare the outcome between the exposure groups. The column
+percentages (39.8% of treated and 27.9% of untreated patients were insured) describe the
+make-up of the outcome groups, which is what a Table 1 by treatment uptake shows, but they do
+not state the uptake rate in each insurance group.
+
+### Exercise 3.5
+
+```{r s3-ex5-mean}
+diagnosed |>
+  group_by(treatment_uptake) |>
+  summarise(
+    n     = sum(!is.na(sbp_mmhg)),
+    mean  = mean(sbp_mmhg, na.rm = TRUE),
+    sd    = sd(sbp_mmhg, na.rm = TRUE),
+    se    = sd / sqrt(n),
+    lower = mean - qt(0.975, n - 1) * se,
+    upper = mean + qt(0.975, n - 1) * se
+  ) |>
+  kable(digits = 2, caption = "Mean SBP (mmHg) with 95% CI by uptake.")
+```
+
+```{r s3-ex5-prop}
+diagnosed |>
+  group_by(residence) |>
+  summarise(n = n(), treated = sum(treatment_uptake == "Yes")) |>
+  mutate(pct   = 100 * treated / n,
+         se    = sqrt((pct / 100) * (1 - pct / 100) / n),
+         lower = pct - 100 * 1.96 * se,
+         upper = pct + 100 * 1.96 * se) |>
+  select(-se) |>
+  kable(digits = 1, caption = "Treatment uptake (%) with 95% CI by residence.")
+```
+
+Untreated diagnosed patients had mean SBP 142.2 mmHg (95% CI about 140.6 to 143.8) and treated
+patients 148.1 mmHg (about 146.5 to 149.7). Uptake was 38.9% (95% CI about 34.7% to 43.2%)
+among rural and 53.2% (about 49.2% to 57.3%) among urban diagnosed patients; the intervals do
+not overlap, suggesting a real difference that Chapter 4 will test formally.
+
+The **SD** (about 18 to 20 mmHg) measures how much individual patients' SBP varies around
+their group mean; it would stay about the same if we recruited more patients. The **SE**
+(about 0.8 mmHg) measures how precisely each group *mean* is estimated; it is the SD divided
+by $\sqrt{n}$ and would shrink with a larger sample. The SD describes patients, the SE
+describes the uncertainty of an estimate.
+
+### Exercise 3.6
+
+```{r s3-ex6}
+diagnosed |>
+  select(age, sex, residence, education, health_insurance,
+         family_history_htn, knowledge_score, comorbidity_count,
+         treatment_uptake) |>
+  tbl_summary(
+    by = treatment_uptake,
+    type = comorbidity_count ~ "continuous",   # treat the count as numeric
+    statistic = list(
+      c(age, knowledge_score) ~ "{mean} ({sd})",
+      comorbidity_count ~ "{median} ({p25}, {p75})",
+      all_categorical() ~ "{n} ({p}%)"
+    ),
+    digits = list(c(age, knowledge_score) ~ 1, comorbidity_count ~ 0),
+    label = list(
+      age ~ "Age, years",
+      sex ~ "Sex",
+      residence ~ "Residence",
+      education ~ "Education",
+      health_insurance ~ "Health insurance",
+      family_history_htn ~ "Family history of hypertension",
+      knowledge_score ~ "Knowledge score (0-20)",
+      comorbidity_count ~ "Number of comorbidities"
+    ),
+    missing = "ifany",
+    missing_text = "Missing"
+  ) |>
+  add_overall(last = FALSE) |>
+  modify_header(label = "**Characteristic**") |>
+  as_kable(caption = "Diagnosed patients by treatment uptake.")
+```
+
+Without `type = comorbidity_count ~ "continuous"`, gtsummary would treat a count with only
+four distinct values as categorical and show n (%) for each value, which is in fact a
+perfectly good alternative here: the median (IQR) of 0 (0, 1) is identical in both groups and
+hides any difference.
+
+Two characteristics that differ: treated patients were **older** (mean about 56 versus 51
+years) and more often had a **family history of hypertension** (about 42% versus 31%); they
+were also more often insured, urban and better educated, and had a slightly higher knowledge
+score. These differences are clinically plausible: older patients and those with a family
+history are more likely to be recognised as high-risk and started on treatment, and
+insurance, education and knowledge plausibly lower the financial and informational barriers
+to care. They are unadjusted, descriptive differences in simulated data, to be examined with
+tests (Chapter 4) and multivariable models (Chapter 5).
+
+### Exercise 3.7
+
+```{r s3-ex7a, fig.cap="Hypertension knowledge score (0-20) among diagnosed patients not on treatment and on treatment; boxes show the median and quartiles, points show individual patients."}
+ggplot(diagnosed, aes(x = treatment_uptake, y = knowledge_score)) +
+  geom_jitter(width = 0.2, height = 0.2, alpha = 0.25, size = 0.8,
+              na.rm = TRUE) +
+  geom_boxplot(width = 0.4, outlier.shape = NA, fill = teal, alpha = 0.3,
+               na.rm = TRUE) +
+  labs(title = "Treated patients score slightly higher on knowledge",
+       x = "On antihypertensive treatment", y = "Knowledge score (0-20)")
+```
+
+The knowledge score is an integer, so a small vertical jitter (`height = 0.2`) stops patients
+with the same score from being drawn on top of each other. The median score is 11 among
+treated and 10 among untreated patients, but the two distributions overlap almost entirely.
+
+```{r s3-ex7b, fig.cap="Percentage of diagnosed hypertensive patients on treatment by highest education level (24 patients with missing education excluded); uptake rises steadily with education."}
+diagnosed |>
+  filter(!is.na(education)) |>
+  group_by(education) |>
+  summarise(pct = mean(treatment_uptake == "Yes")) |>
+  ggplot(aes(x = education, y = pct)) +
+  geom_col(fill = teal, width = 0.65) +
+  geom_text(aes(label = percent(pct, accuracy = 0.1)), vjust = -0.4) +
+  scale_y_continuous(labels = label_percent(), limits = c(0, 0.7)) +
+  labs(title = "Treatment uptake rises with education",
+       x = "Highest education level", y = "Diagnosed patients on treatment")
+```
+
+Because `education` is an ordered factor, the bars appear from none to tertiary without extra
+code. Uptake rises from about 37% among patients with no schooling to about 57% among those
+with tertiary education, a gradient consistent with education easing access to and use of
+care. A bar chart is appropriate here because each bar is a *percentage*, whose length from
+zero is meaningful.
+
+### Exercise 3.8
+
+```{r s3-ex8-table}
+facility_summary <- diagnosed |>
+  group_by(facility) |>
+  summarise(
+    n           = n(),
+    treated     = sum(treatment_uptake == "Yes"),
+    median_dist = median(distance_to_facility_km, na.rm = TRUE),
+    pct_insured = 100 * mean(health_insurance == "Yes")
+  ) |>
+  rowwise() |>                                   # one prop.test() per facility
+  mutate(
+    ci    = list(prop.test(treated, n, correct = FALSE)$conf.int),
+    pct   = 100 * treated / n,
+    lower = 100 * ci[1],
+    upper = 100 * ci[2]
+  ) |>
+  ungroup() |>
+  select(facility, n, pct, lower, upper, median_dist, pct_insured) |>
+  arrange(desc(pct))
+
+facility_summary |>
+  kable(digits = 1,
+        caption = "Uptake (%, Wilson 95% CI) and access by facility.")
+```
+
+```{r s3-ex8-fig, fig.cap="Treatment uptake among diagnosed patients against median distance to the facility, one point per facility; with only six facilities no clear relationship is visible."}
+ggplot(facility_summary, aes(x = median_dist, y = pct / 100)) +
+  geom_point(size = 3, colour = teal) +
+  geom_text(aes(label = facility), vjust = -1, size = 3.2) +
+  scale_y_continuous(labels = label_percent(), limits = c(0.35, 0.58)) +
+  scale_x_continuous(limits = c(5.2, 7.5)) +
+  labs(title = "Facility uptake and median distance",
+       x = "Median distance to facility (km)",
+       y = "Diagnosed patients on treatment")
+```
+
+`rowwise()` makes `mutate()` work one facility at a time, so `prop.test()` receives that
+facility's counts; the Wilson interval is stored as a list column and then split into its
+lower and upper limits. Uptake ranges from 38.5% (Igoma HC) to 53.6% (Nyamagana PHC), with
+Wilson intervals similar to the Wald intervals of Section 3.8 because each facility has more
+than 100 diagnosed patients. In the plot there is no clear pattern: the facilities with the
+shortest median distance (Buzuruga PHC and Igoma HC) do not have the highest uptake.
+
+Great caution is needed for three reasons. First, there are only **six** data points, so any
+apparent relationship could easily arise by chance. Second, this is an **ecological**
+comparison of facility averages: a relationship between facilities need not hold for
+individual patients (the *ecological fallacy*), and indeed at the patient level Table 1 in
+Section 3.10 showed that treated patients lived somewhat closer to the facility. Third,
+facilities differ in many ways at once (insurance coverage, staffing, catchment population),
+so distance cannot be isolated from other facility characteristics without a
+patient-level multivariable analysis that accounts for clustering (Chapter 5).

@@ -1,0 +1,472 @@
+---
+title: "Lời nói đầu"
+subtitle: "Giới thiệu R cho Nghiên cứu Lâm sàng"
+bibliography: references.bib
+link-citations: true
+---
+
+
+Mọi dự án nghiên cứu lâm sàng đều kết thúc bằng những con số: tỷ lệ bệnh nhân được điều trị, hiệu số huyết áp trung bình, một tỷ số chênh kèm khoảng tin cậy. Những con số ấy định hình các hướng dẫn chuyên môn, các quyết định cấp kinh phí và, rốt cuộc, chất lượng chăm sóc mà người bệnh nhận được. Thế nhưng con đường đi từ một bảng tính chứa các số đo thô đến một câu văn trong bản thảo bài báo lại thường bị che khuất. Nó có thể nằm trong một chuỗi thao tác nhấp chuột mà không ai ghi lại, trong một bảng tính đã bị sửa bằng tay, hoặc trong trí nhớ của một người phân tích duy nhất nay đã chuyển đi nơi khác. Cuốn sách này hướng tới việc làm cho con đường đó trở nên minh bạch, cẩn trọng và có thể lặp lại.
+
+*Introduction to R for Clinical Research* (*Giới thiệu R cho Nghiên cứu Lâm sàng*) hướng dẫn bạn phân tích dữ liệu lâm sàng bằng R, một ngôn ngữ lập trình miễn phí dành cho tính toán thống kê [@rcore2026]. Sách được viết cho những người làm trong ngành y tế muốn hiểu và tự thực hiện các phân tích của mình, chứ không phải cho các lập trình viên tình cờ làm việc trong lĩnh vực y tế. Chúng tôi bắt đầu từ con số không, không đòi hỏi bất kỳ kinh nghiệm lập trình nào, và kết thúc bằng một phân tích hoàn chỉnh, có thể tái lập, cho một nghiên cứu lâm sàng thực tế: từ việc nhập một tệp dữ liệu thô lộn xộn cho đến việc viết phần Kết quả của một bản thảo bài báo.
+
+## Vì sao dùng R cho nghiên cứu lâm sàng?
+
+Trên thị trường có rất nhiều phần mềm thống kê, và hầu hết đều có thể thực hiện một kiểm định t hay một mô hình hồi quy logistic. Lý do để chọn R không nằm ở một phương pháp thống kê cụ thể nào. Nó nằm ở một cách làm việc.
+
+### Phân tích dưới dạng mã lệnh
+
+Khi phân tích dữ liệu bằng R, bạn viết các chỉ dẫn vào một script: nhập tệp này, mã hóa lại biến kia, loại bỏ những giá trị không thể xảy ra này, ước lượng mô hình kia. Script *chính là* bản phân tích. Bất kỳ ai có script và dữ liệu thô đều có thể chạy nó và thu được đúng những bảng và hình như vậy. Nếu người phản biện hỏi một biến được tạo ra như thế nào, câu trả lời đã được ghi lại sẵn. Nếu sáu tháng sau bạn phát hiện ra một lỗi trong dữ liệu thô, bạn sửa lỗi đó rồi chạy lại script, và mọi con số phía sau đều được cập nhật một cách nhất quán.
+
+Đây chính là cốt lõi của **nghiên cứu có thể tái lập** (reproducible research): ý tưởng rằng một kết quả được công bố cần đi kèm với dữ liệu và mã lệnh cần thiết để tạo lại nó [@peng2011]. Peng lập luận rằng trong khoa học tính toán, nơi kết quả phụ thuộc vào những chuỗi xử lý dữ liệu dài, khả năng tái lập là tiêu chuẩn tối thiểu để kiểm tra các phát hiện, ngay cả trước khi có ai đó cố gắng lặp lại nghiên cứu một cách độc lập. Nghiên cứu lâm sàng ngày nay đã mang tính tính toán một cách toàn diện. Ngay cả một khảo sát cắt ngang khiêm tốn cũng bao gồm hàng chục quyết định về giá trị khuyết, giá trị ngoại lai, cách phân nhóm và cách xác định mô hình, và mỗi quyết định đều có thể làm thay đổi câu trả lời.
+
+Phần mềm kiểu "trỏ và nhấp" khiến chúng ta đưa ra những quyết định đó một cách thầm lặng. Một script buộc chúng phải được thể hiện rõ ràng. Đó là lý do tại sao xuyên suốt cuốn sách này, chúng tôi sẽ yêu cầu bạn viết công việc của mình vào script thay vì gõ lệnh vào console rồi quên chúng đi.
+
+### Minh bạch và đáng tin cậy
+
+Nghiên cứu lâm sàng ngày càng được kỳ vọng phải công khai. Các tạp chí yêu cầu tuyên bố chia sẻ dữ liệu, các nhà tài trợ yêu cầu kế hoạch quản lý dữ liệu, và các hướng dẫn báo cáo yêu cầu tác giả mô tả phương pháp thống kê đủ chi tiết để người khác có thể đánh giá. Một script R là phần phương pháp đầy đủ nhất mà bạn có thể viết. Nó không chỉ ghi lại kiểm định *nào* đã được dùng mà còn ghi lại dữ liệu đã được chuẩn bị *như thế nào* cho kiểm định đó, và đây chính là nơi phần lớn các lỗi thực tế xảy ra.
+
+Sự minh bạch cũng bảo vệ chính bạn. Viết mã phân tích buộc bạn phải suy nghĩ về từng bước, và đọc lại mã sau đó giúp bạn, đồng nghiệp hoặc người hướng dẫn phát hiện sai sót trước khi chúng được in ra. @wilson2017 mô tả một tập hợp các thực hành "đủ tốt" cho tính toán khoa học: giữ nguyên dữ liệu thô, viết mã trong script, đặt tên tệp và tên biến có ý nghĩa, tổ chức mỗi dự án trong một thư mục riêng, và ghi lại các bước biến dữ liệu thô thành kết quả. Không thực hành nào trong số này đòi hỏi kỹ năng nâng cao, và tất cả đều dễ áp dụng trong R. Chúng tôi áp dụng chúng ngay từ chương đầu tiên.
+
+### Miễn phí, mở và được sử dụng rộng rãi
+
+R là phần mềm miễn phí và mã nguồn mở. Bạn có thể cài đặt nó trên máy tính xách tay của mình, trên máy tính của bệnh viện hay trên máy chủ của trường đại học mà không phải trả phí bản quyền, và bạn có thể tiếp tục sử dụng khi chuyển cơ quan hay chuyển sang quốc gia khác. Đối với các nhà nghiên cứu ở những nước có thu nhập thấp và trung bình, cũng như bất kỳ ai làm việc với ngân sách hạn hẹp, điều này vô cùng quan trọng. Nó cũng có nghĩa là các cộng sự của bạn có thể chạy mã của bạn mà không cần mua bất cứ thứ gì.
+
+Vì R là phần mềm mở, hàng nghìn nhà thống kê và nhà nghiên cứu đã đóng góp các *gói* (packages): những tập hợp hàm mở rộng khả năng của R. Nhiều phương pháp dùng trong thống kê y học được triển khai đầu tiên trong R, và các phương pháp mới thường xuất hiện ở đó trước bất kỳ nơi nào khác. Trong cuốn sách này, chúng tôi dựa nhiều vào **tidyverse**, một bộ sưu tập nhất quán các gói dùng để nhập, sắp xếp, biến đổi và trực quan hóa dữ liệu, có chung một thiết kế và một "ngữ pháp" [@wickham2019tidyverse]. Tidyverse giúp mã R đọc lên gần giống như một đoạn mô tả điều bạn muốn làm, điều này hỗ trợ rất nhiều cho người mới bắt đầu và cho bất kỳ ai phải đọc mã của bạn sau này.
+
+### Đôi lời thẳng thắn về quá trình học
+
+So với một phần mềm dùng menu, R đòi hỏi ở bạn nhiều hơn trong giai đoạn đầu. Bạn sẽ gõ nhầm, sẽ gặp các thông báo lỗi và đôi khi sẽ tự hỏi tại sao một dấu phẩy lại quan trọng đến thế. Điều này hoàn toàn bình thường, và giai đoạn ấy qua đi nhanh hơn hầu hết mọi người nghĩ. Công sức bỏ ra sẽ được đền đáp nhanh chóng: một khi bạn đã viết được một script làm sạch và mô tả một bộ dữ liệu, việc điều chỉnh nó cho nghiên cứu tiếp theo chỉ mất vài phút thay vì vài ngày, và bạn không bao giờ phải nhớ mình đã chọn những tùy chọn menu nào.
+
+::: {.callout-tip title="Thực hành tốt"}
+Hãy coi script R như một phần của hồ sơ nghiên cứu, giống như đề cương và kế hoạch quản lý dữ liệu. Lưu nó cùng với dự án, đặt cho nó một cái tên rõ ràng như `02_clean_data.R`, và thêm những chú thích ngắn giải thích *tại sao* mỗi bước được thực hiện, chứ không chỉ *làm gì*.
+:::
+
+## Cuốn sách này dành cho ai
+
+Cuốn sách này được viết cho những người làm việc trong hoặc liên quan đến lĩnh vực chăm sóc sức khỏe và muốn tự mình phân tích dữ liệu:
+
+- **bác sĩ lâm sàng** thực hiện đánh giá lâm sàng (audit), dự án cải tiến chất lượng hoặc nghiên cứu song song với công việc lâm sàng;
+- **dược sĩ** quan tâm đến sử dụng thuốc, tuân thủ điều trị và dược dịch tễ học;
+- **điều dưỡng và hộ sinh** thu thập và sử dụng dữ liệu bệnh nhân trong thực hành và nghiên cứu;
+- **người làm y tế công cộng, nhà dịch tễ học và cán bộ chương trình** theo dõi dịch vụ và đánh giá các can thiệp;
+- **học viên sau đại học và sinh viên đại học** ngành y, điều dưỡng, dược, y tế công cộng và các ngành liên quan cần phân tích dữ liệu cho khóa luận hoặc luận văn;
+- **điều phối viên nghiên cứu và cán bộ quản lý dữ liệu** chuẩn bị bộ dữ liệu và muốn hiểu điều gì xảy ra với chúng ở bước tiếp theo.
+
+Bạn **không** cần có nền tảng lập trình. Chúng tôi giải thích từng đoạn mã khi nó xuất hiện lần đầu, và xây dựng dần dần từ việc gõ một phép tính đến việc ước lượng một mô hình đa biến. Bạn cũng không cần toán học nâng cao. Khi một công thức giúp ích cho việc hiểu, chúng tôi trình bày nó và giải thích từng thành phần bằng lời, nhưng trọng tâm luôn là biết *khi nào* một phương pháp là phù hợp, *cách* thực hiện nó đúng, và kết quả *có ý nghĩa gì* đối với người bệnh.
+
+Điều bạn thực sự cần là sự tò mò, khả năng suy luận lâm sàng và sẵn sàng học hỏi từ sai lầm. Kiến thức lâm sàng là một lợi thế thực sự ở đây: bạn đã biết rằng huyết áp tâm thu 700 mmHg là không thể có và một bệnh nhân 200 tuổi là lỗi nhập liệu. Phần lớn công việc phân tích dữ liệu tốt chính là áp dụng một cách có hệ thống đúng loại phán đoán đó.
+
+Những bạn đọc đã sử dụng một phần mềm thống kê khác như SPSS hay Stata sẽ thấy nội dung thống kê quen thuộc và có thể tập trung vào cách triển khai trong R và vào quy trình làm việc có thể tái lập. Những bạn đọc mới làm quen với thống kê sẽ thấy các khái niệm chính được giải thích từ những nguyên lý cơ bản, kèm theo tài liệu tham khảo là các giáo trình thống kê y học kinh điển dành cho những ai muốn tìm hiểu sâu hơn [@altman1991; @kirkwood2003; @bland2015].
+
+### Những gì bạn sẽ làm được
+
+Khi học xong cuốn sách, bạn sẽ có thể:
+
+1. sử dụng R và RStudio một cách tự tin, làm việc với script trong một RStudio Project;
+2. tạo và sử dụng đối tượng, vectơ và khung dữ liệu (data frame), cài đặt và nạp gói;
+3. nhập dữ liệu lâm sàng từ tệp CSV và Excel và kiểm tra chúng một cách có hệ thống;
+4. nhận biết các vấn đề thường gặp về chất lượng dữ liệu và xác định kiểu biến (số, ký tự, factor, ngày tháng);
+5. làm sạch dữ liệu theo cách có thể tái lập: xử lý các mã giá trị khuyết, loại bỏ bản ghi trùng lặp, thống nhất các nhóm phân loại không nhất quán và kiểm tra các giá trị không thể xảy ra;
+6. tạo các biến lâm sàng mới, chẳng hạn chỉ số khối cơ thể và phân loại huyết áp, và đặt nhóm tham chiếu hợp lý cho các factor;
+7. tính toán đúng các thống kê mô tả, bao gồm cả việc xử lý đúng dữ liệu khuyết;
+8. xây dựng "Bảng 1" sẵn sàng cho bản thảo và các hình đạt chất lượng xuất bản, rồi xuất chúng ra tệp;
+9. chọn kiểm định giả thuyết phù hợp cho một câu hỏi lâm sàng cụ thể, thực hiện nó, kiểm tra các giả định và diễn giải giá trị p và khoảng tin cậy một cách trung thực;
+10. ước lượng các mô hình hồi quy logistic đơn biến và đa biến, diễn giải tỷ số chênh với khoảng tin cậy 95% và kiểm tra mô hình;
+11. báo cáo kết quả theo phong cách các tạp chí lâm sàng mong đợi, kèm một script hoàn chỉnh có thể tạo lại mọi con số.
+
+Các kỹ năng này mang tính tích lũy. Mỗi chương lấy kết quả của chương trước làm điểm xuất phát, để đến chương cuối cùng bạn đã thực hiện xong một phân tích hoàn chỉnh cho một nghiên cứu duy nhất.
+
+## Cấu trúc của cuốn sách
+
+Cuốn sách gồm năm chương, một phụ lục lời giải và một danh mục tài liệu tham khảo. Tất cả các chương đều dùng chung một nghiên cứu tình huống, được mô tả ở phần sau của lời nói đầu này, để các kỹ năng bạn học được nối tiếp trực tiếp với nhau.
+
+**Chương 1: Bắt đầu với R và RStudio.** Chúng ta cài đặt R và RStudio, làm quen với giao diện RStudio và tìm hiểu vì sao script và Project là nền tảng của công việc có thể tái lập. Chúng ta dùng R như một máy tính, tạo đối tượng và vectơ, làm quen với các kiểu dữ liệu chính, và học cách cài đặt và nạp gói. Chương này kết thúc bằng việc nhập dữ liệu thô của nghiên cứu tình huống từ cả tệp CSV lẫn bảng tính Excel và xem xét lần đầu, một cách có cấu trúc, nội dung của chúng. Cuối Chương 1, bạn sẽ có dữ liệu thô trong R và cảm nhận được rằng có điều gì đó chưa ổn với nó.
+
+**Chương 2: Hiểu và làm sạch dữ liệu lâm sàng.** Dữ liệu lâm sàng thực tế hiếm khi sạch, và phân tích dữ liệu "bẩn" sẽ cho ra những câu trả lời tự tin nhưng sai. Chương này lần lượt xử lý các vấn đề được cố ý cài vào tệp dữ liệu thô: các mã giá trị khuyết như `999` và `-99`, bản ghi bệnh nhân bị trùng lặp, cách viết không nhất quán của các nhóm phân loại, khoảng trắng thừa, các số đo không thể có về mặt sinh lý và ngày tháng được ghi theo nhiều định dạng. Chúng ta tạo các biến mới, chuyển các biến phân loại thành factor với nhóm tham chiếu hợp lý về mặt lâm sàng, rà soát dữ liệu khuyết còn lại và lưu một tệp sạch, sẵn sàng cho phân tích. Mọi chương sau đều bắt đầu từ tệp này.
+
+**Chương 3: Thống kê mô tả, bảng và hình.** Trước khi kiểm định bất cứ điều gì, chúng ta phải mô tả tốt quần thể nghiên cứu. Chương này trình bày các số đo xu hướng trung tâm và độ phân tán, bảng tần số và bảng chéo, cùng cái bẫy thường gặp của giá trị khuyết trong các hàm tóm tắt. Chúng ta xây dựng một "Bảng 1" đạt chất lượng bản thảo với gói **gtsummary** [@sjoberg2021] và vẽ biểu đồ tần suất (histogram), biểu đồ cột, biểu đồ hộp và biểu đồ phân tán với **ggplot2** [@wickham2016ggplot2], chú ý đến các nguyên tắc trình bày đồ họa rõ ràng.
+
+**Chương 4: Các kiểm định thống kê thường dùng trong nghiên cứu y học.** Ở đây chúng ta chuyển từ mô tả sang suy luận. Chúng tôi giải thích giá trị p là gì và không phải là gì [@wasserstein2016; @greenland2016], cách kiểm tra các giả định về phân phối, và cách lựa chọn giữa kiểm định tham số và phi tham số. Chúng ta so sánh các nhóm bằng kiểm định t, kiểm định Wilcoxon và phân tích phương sai (ANOVA), xem xét mối liên quan giữa các biến phân loại bằng kiểm định khi bình phương và kiểm định chính xác Fisher, và đo lường tương quan. Mỗi kiểm định được áp dụng cho một câu hỏi thực sự từ nghiên cứu tình huống, với sự chú ý cẩn thận đến độ lớn ảnh hưởng (effect size) và khoảng tin cậy chứ không chỉ riêng giá trị p.
+
+**Chương 5: Mô hình hồi quy và báo cáo kết quả.** Chương cuối cùng kết nối mọi thứ lại với nhau. Chúng tôi giới thiệu hồi quy logistic cho biến kết cục nhị phân, diễn giải tỷ số chênh, và đi từ mô hình thô đến mô hình hiệu chỉnh, đồng thời thảo luận về nhiễu và các nguyên tắc xây dựng mô hình [@hosmer2013; @heinze2018]. Chúng ta kiểm tra hiện tượng đa cộng tuyến của mô hình và đánh giá khả năng phân biệt bằng diện tích dưới đường cong ROC, sau đó trình bày kết quả trong một bảng hồi quy sẵn sàng xuất bản và viết một đoạn Kết quả ngắn theo văn phong bản thảo lâm sàng.
+
+**Phụ lục: Lời giải bài tập.** Mỗi chương kết thúc bằng một loạt bài tập, xếp từ dễ đến khó. Phụ lục đưa ra lời giải chi tiết cho từng bài tập, kèm mã R, kết quả và một đoạn diễn giải ngắn. Hãy dùng phụ lục để kiểm tra bài làm sau khi bạn đã thực sự cố gắng tự giải.
+
+**Tài liệu tham khảo.** Tất cả các nguồn được trích dẫn trong sách được liệt kê ở cuối sách. Chúng bao gồm các giáo trình thống kê y học kinh điển, các bài báo gốc giới thiệu những phương pháp chúng ta sử dụng và tài liệu tham khảo cho các gói phần mềm. Mỗi chương cũng kết thúc bằng một mục "Đọc thêm" ngắn, chỉ ra những nguồn hữu ích nhất trong số này và giải thích lý do.
+
+## Cách đọc và sử dụng cuốn sách
+
+Các chương được thiết kế để đọc theo thứ tự, vì mỗi chương xây dựng trên dữ liệu và kỹ năng do chương trước tạo ra. Nếu đã biết chút ít về R, bạn có thể đọc lướt Chương 1, nhưng xin hãy đọc kỹ Chương 2: tệp dữ liệu sạch được tạo ra ở đó được dùng ở mọi nơi khác, và các quyết định đưa ra khi làm sạch dữ liệu ảnh hưởng đến mọi kết quả về sau.
+
+### Mã R và kết quả
+
+Mã R xuất hiện trong các khối có nền tô màu. Kết quả mà R in ra khi chạy mã xuất hiện ngay bên dưới, mỗi dòng bắt đầu bằng `#>`. Ví dụ:
+
+
+``` r
+# Trung bình của bốn lần đo huyết áp tâm thu (mmHg)
+sbp <- c(120, 130, 140, 150)
+mean(sbp)
+```
+
+```
+#> [1] 135
+```
+
+Dòng đầu tiên của khối, bắt đầu bằng `#`, là một *chú thích* (comment): R bỏ qua mọi thứ đứng sau dấu `#` trên một dòng, vì vậy chú thích là những ghi chú dành cho người đọc. Dòng thứ hai tạo một đối tượng tên là `sbp` chứa bốn giá trị, và dòng thứ ba tính trung bình của chúng. Dòng `#> [1] 135` là câu trả lời của R. Tiền tố `#>` được thêm vào để bạn có thể phân biệt mã lệnh và kết quả ngay khi nhìn; khi bạn tự chạy mã, kết quả sẽ xuất hiện trong console của RStudio mà không có tiền tố này. (Ký hiệu `[1]` chỉ đơn giản cho biết câu trả lời là phần tử thứ nhất của kết quả; điều này sẽ được giải thích trong Chương 1.)
+
+Toàn bộ kết quả trong sách này đều được tạo ra bằng cách thực sự chạy mã trên dữ liệu của nghiên cứu tình huống trong quá trình biên soạn sách. Nếu chạy cùng mã trên cùng dữ liệu, bạn sẽ thấy cùng kết quả, ngoại trừ những khác biệt nhỏ về định dạng giữa các phiên bản R và các gói.
+
+Trong phần văn bản, tên hàm, tên biến, tên gói và tên tệp được viết bằng phông chữ có độ rộng cố định, ví dụ `mean()`, `treatment_uptake` và `analysis_data.rds`. Tên hàm có kèm cặp ngoặc đơn phía sau để phân biệt với các đối tượng khác.
+
+### Các hộp chú ý
+
+Bốn loại hộp được làm nổi bật xuất hiện xuyên suốt cuốn sách. Mỗi loại có một mục đích riêng, và việc nhận ra chúng sẽ giúp bạn định hướng khi đọc.
+
+Hộp **Diễn giải lâm sàng** giải thích một kết quả thống kê có ý nghĩa gì đối với người bệnh hoặc đối với thực hành lâm sàng:
+
+::: {.callout-note title="Diễn giải lâm sàng"}
+Một tỷ số chênh bằng 2,0 đối với đái tháo đường có nghĩa là, trong số những bệnh nhân đã được chẩn đoán tăng huyết áp, odds đang được điều trị ở người đồng thời mắc đái tháo đường cao gấp đôi so với người không mắc, sau khi đã tính đến các biến khác trong mô hình. Điều đó không có nghĩa là đái tháo đường làm tăng gấp đôi *xác suất* được điều trị, và trong một nghiên cứu cắt ngang, tự bản thân nó không chứng minh được quan hệ nhân quả.
+:::
+
+Hộp **Thực hành tốt** đưa ra một thói quen hoặc kỹ thuật giúp công việc của bạn đáng tin cậy hơn, hiệu quả hơn hoặc dễ đọc hơn:
+
+::: {.callout-tip title="Thực hành tốt"}
+Không bao giờ sửa tệp dữ liệu thô bằng tay. Hãy giữ nguyên nó đúng như khi bạn nhận được, và thực hiện mọi chỉnh sửa trong script R, để mỗi thay đổi đều được ghi lại và có thể được xem xét lại hoặc hoàn tác.
+:::
+
+Hộp **Lỗi thường gặp** cảnh báo về một sai sót mà người mới bắt đầu, và đôi khi cả những người phân tích có kinh nghiệm, thường mắc phải:
+
+::: {.callout-warning title="Lỗi thường gặp"}
+Chạy `mean(x)` trên một biến có chứa giá trị khuyết sẽ trả về `NA` thay vì một con số. Thêm `na.rm = TRUE` sẽ loại bỏ các giá trị khuyết trước khi tính toán, nhưng bạn luôn cần báo cáo có bao nhiêu giá trị bị khuyết, thay vì lặng lẽ bỏ chúng đi.
+:::
+
+Cuối cùng, mỗi chương khép lại bằng một hộp **Điểm chính** tóm tắt những thông điệp cốt yếu:
+
+::: {.callout-important title="Điểm chính"}
+- Script R giúp một phân tích trở nên minh bạch và có thể tái lập.
+- Mọi chương đều dùng chung một nghiên cứu tình huống, vì vậy các kỹ năng được xây dựng nối tiếp nhau.
+- Hãy tự gõ mã, chạy nó và đọc kết quả thật cẩn thận.
+:::
+
+### Bài tập và lời giải
+
+Mỗi chương kết thúc bằng năm đến tám bài tập, tất cả đều có thể giải bằng dữ liệu của nghiên cứu tình huống. Các bài tập bắt đầu bằng những nhiệm vụ ngắn nhằm củng cố các kỹ thuật chính, rồi tiến dần đến những câu hỏi mở hơn, yêu cầu bạn lựa chọn cách tiếp cận và diễn giải kết quả về mặt lâm sàng. Lời giải chi tiết được tập hợp trong phụ lục. Bạn sẽ học được nhiều hơn rất nhiều nếu tự làm từng bài trước khi xem lời giải, và sau đó so sánh mã của mình với mã của chúng tôi: thường có nhiều hơn một cách viết đúng.
+
+### Hãy gõ, đừng sao chép
+
+Việc sao chép và dán mã từ sách vào R rất hấp dẫn. Thay vào đó, chúng tôi khuyến khích bạn **tự gõ mã**. Việc gõ làm bạn chậm lại vừa đủ để để ý đến từng tên hàm, từng đối số và từng dấu ngoặc. Bạn sẽ mắc những lỗi nhỏ, thấy các thông báo lỗi tương ứng và học cách sửa chúng, và đó chính xác là kỹ năng bạn sẽ cần khi phân tích dữ liệu của riêng mình. Sau vài chương, phần lớn cú pháp sẽ trở thành phản xạ tự nhiên.
+
+Khi gặp lỗi, hãy đọc kỹ thông báo. Nó thường cho bạn biết hàm nào bị lỗi và thường cả lý do. Hãy kiểm tra các dấu ngoặc đơn hoặc dấu nháy chưa được đóng, tên đối tượng viết sai chính tả (R phân biệt chữ hoa và chữ thường, vì vậy `Age` và `age` là khác nhau), và các dấu phẩy bị thiếu giữa các đối số. Sau đó hãy thử nghiệm: mỗi lần chỉ thay đổi một điều rồi chạy lại mã.
+
+## Phần mềm và thiết lập
+
+### Cài đặt R và RStudio
+
+Bạn cần hai phần mềm miễn phí. **R** là ngôn ngữ và là "động cơ" thực hiện các phép tính. **RStudio** là một môi trường phát triển tích hợp (integrated development environment, IDE): một không gian làm việc thuận tiện đặt bên trên R, với trình soạn thảo script, console, khung hiển thị các đối tượng trong bộ nhớ, và các khung dành cho tệp, đồ thị, gói và trợ giúp. Bạn cài R trước, sau đó cài RStudio.
+
+1. Tải và cài đặt R từ Mạng lưu trữ R toàn diện (Comprehensive R Archive Network, CRAN) tại [https://cran.r-project.org](https://cran.r-project.org). Chọn phiên bản dành cho hệ điều hành của bạn (Windows, macOS hoặc Linux) và chấp nhận các tùy chọn cài đặt mặc định.
+2. Tải và cài đặt RStudio Desktop (phiên bản miễn phí) từ [https://posit.co/download/rstudio-desktop/](https://posit.co/download/rstudio-desktop/).
+3. Mở RStudio. Phần mềm sẽ tự động tìm thấy R, và bạn sẽ hiếm khi cần mở riêng R.
+
+Cả hai chương trình đều được cập nhật thường xuyên. Bất kỳ phiên bản R nào gần đây đều dùng được với cuốn sách này; nếu bạn đã cài một phiên bản cũ hơn, nên cập nhật trước khi bắt đầu, vì một số gói đòi hỏi phiên bản R tương đối mới.
+
+### Các gói được sử dụng trong sách
+
+Bản cài đặt lõi của R đã cung cấp rất nhiều chức năng thống kê, nhưng chúng ta cũng sử dụng một số gói do cộng đồng đóng góp:
+
+- **tidyverse**: bộ sưu tập các gói dùng để nhập, xử lý và trực quan hóa dữ liệu, bao gồm **dplyr**, **tidyr**, **readr**, **forcats** và **stringr** [@wickham2019tidyverse];
+- **readxl**: nhập dữ liệu từ bảng tính Excel;
+- **janitor**: chuẩn hóa tên cột, hỗ trợ tìm bản ghi trùng lặp và lập bảng dữ liệu;
+- **lubridate**: đọc và xử lý ngày tháng;
+- **gtsummary**: tạo các bảng tóm tắt và bảng hồi quy sẵn sàng xuất bản [@sjoberg2021];
+- **broom**: chuyển kết quả của mô hình thành các khung dữ liệu gọn gàng;
+- **ggplot2**: tạo đồ họa dựa trên ngữ pháp đồ họa (grammar of graphics; gói này được cài cùng tidyverse) [@wickham2016ggplot2];
+- **car**: cung cấp các công cụ chẩn đoán hồi quy, bao gồm hệ số phóng đại phương sai (variance inflation factor, VIF);
+- **pROC**: tính toán và vẽ đường cong ROC cùng diện tích dưới đường cong.
+
+Mỗi gói chỉ cần được *cài đặt* một lần trên mỗi máy tính, tức là tải nó về từ CRAN. Đoạn mã sau cài đặt tất cả các gói dùng trong sách. Việc này cần kết nối internet và có thể mất vài phút trong lần đầu:
+
+
+``` r
+# Chạy MỘT LẦN trên mỗi máy tính: tải và cài đặt các gói dùng trong sách
+install.packages(c(
+  "tidyverse", "readxl", "janitor", "lubridate",
+  "gtsummary", "broom", "ggplot2", "car", "pROC"
+))
+```
+
+Sau khi cài đặt, một gói phải được *nạp* bằng `library()` trong mỗi phiên làm việc R mới trước khi có thể dùng các hàm của nó, ví dụ `library(tidyverse)`. Nhầm lẫn giữa hai bước này là một trong những nguyên nhân phổ biến nhất gây bực bội trong giai đoạn đầu: bạn cài đặt một lần, nhưng nạp mỗi lần sử dụng.
+
+::: {.callout-warning title="Lỗi thường gặp"}
+Đừng để `install.packages()` ở đầu các script phân tích. Cài đặt lại gói mỗi lần chạy script vừa chậm, vừa cần kết nối internet và có thể âm thầm làm thay đổi phiên bản gói giữa chừng dự án. Hãy cài đặt một lần từ console; nạp gói bằng `library()` trong script.
+:::
+
+### Làm việc trong RStudio Project
+
+R luôn làm việc tương đối với một thư mục gọi là *thư mục làm việc* (working directory). Nếu mã của bạn đọc `"Data/analysis_data.rds"`, R sẽ tìm thư mục `Data` bên trong thư mục làm việc. Cách đáng tin cậy nhất để quản lý điều này là dùng một **RStudio Project**: một thư mục chứa một tệp `.Rproj` nhỏ báo cho RStudio biết "đây là thư mục gốc của bản phân tích".
+
+Để tạo một Project, chọn *File > New Project*, sau đó chọn *New Directory* hoặc *Existing Directory*, rồi chọn thư mục đang chứa (hoặc sẽ chứa) dữ liệu và script của bạn. Mỗi khi bạn mở dự án, RStudio tự động đặt thư mục làm việc là thư mục đó, nhờ vậy mọi đường dẫn trong mã có thể viết *tương đối* so với nó. Khi đó, bản phân tích của bạn sẽ chạy mà không cần sửa đổi trên máy tính của đồng nghiệp, trên máy chủ hay trên chính máy tính xách tay của bạn một năm sau.
+
+Một cấu trúc thư mục đơn giản và hiệu quả cho một dự án phân tích lâm sàng là:
+
+- `Data/` cho các tệp dữ liệu thô và dữ liệu đã làm sạch (tệp thô không bao giờ bị sửa);
+- `Scripts/` cho các script R, được đánh số theo thứ tự cần chạy;
+- `Outputs/` cho các bảng và hình do script tạo ra;
+- một tệp `README` ngắn mô tả dự án và cách chạy nó.
+
+::: {.callout-tip title="Thực hành tốt"}
+Tránh dùng `setwd("C:/Users/yourname/Documents/...")` trong script. Một đường dẫn tuyệt đối được viết cứng chỉ hoạt động trên một máy tính. Trong một RStudio Project, hãy dùng đường dẫn tương đối như `"Data/hypertension_phc_raw.csv"`.
+:::
+
+### Các phiên bản phần mềm dùng trong sách
+
+R và các gói của nó thay đổi theo thời gian, và đôi khi một phiên bản mới làm thay đổi cách một hàm hoạt động hoặc cách kết quả được in ra. Mã trong sách này được chạy với các phiên bản liệt kê dưới đây. Nếu kết quả của bạn trông hơi khác so với của chúng tôi, hãy so sánh phiên bản của bạn với các phiên bản này.
+
+
+``` r
+# Phiên bản R dùng để tạo ra cuốn sách này
+R.version.string
+```
+
+```
+#> [1] "R version 4.6.1 (2026-06-24 ucrt)"
+```
+
+``` r
+# Phiên bản của các gói chính dùng trong sách
+pkgs <- c("tidyverse", "readxl", "janitor", "lubridate",
+          "gtsummary", "broom", "ggplot2", "car", "pROC")
+data.frame(
+  package = pkgs,
+  version = vapply(pkgs, function(p) as.character(packageVersion(p)),
+                   character(1)),
+  row.names = NULL
+)
+```
+
+```
+#>     package  version
+#> 1 tidyverse    2.0.0
+#> 2    readxl    1.5.0
+#> 3   janitor    2.2.1
+#> 4 lubridate    1.9.5
+#> 5 gtsummary    2.5.1
+#> 6     broom   1.0.13
+#> 7   ggplot2    4.0.3
+#> 8       car    3.1.5
+#> 9      pROC 1.19.0.1
+```
+
+Bạn có thể chạy cùng đoạn mã này trên máy tính của mình. Những khác biệt nhỏ ở chữ số cuối cùng của số phiên bản hiếm khi quan trọng; một phiên bản chính (major version, con số đầu tiên) khác đôi khi lại có ảnh hưởng.
+
+## Nghiên cứu tình huống
+
+Xuyên suốt cuốn sách, chúng ta phân tích một nghiên cứu duy nhất. Làm việc với một bộ dữ liệu duy nhất, nhất quán từ đầu đến cuối có một ưu điểm lớn: bạn thấy được các quyết định đưa ra khi làm sạch dữ liệu ảnh hưởng thế nào đến các bảng mô tả, các bảng mô tả định hướng việc lựa chọn kiểm định ra sao, và tất cả những điều này dẫn tới mô hình hồi quy cuối cùng và bản báo cáo như thế nào. Điều này phản ánh đúng cách nghiên cứu lâm sàng được thực hiện trong thực tế.
+
+### Bối cảnh lâm sàng: tăng huyết áp và khoảng trống điều trị
+
+Huyết áp tăng cao là yếu tố nguy cơ có thể thay đổi hàng đầu gây bệnh tim mạch và tử vong sớm trên toàn thế giới. Đây là nguyên nhân chính gây đột quỵ, bệnh tim thiếu máu cục bộ, suy tim và bệnh thận mạn. Gánh nặng toàn cầu của tăng huyết áp tăng đều đặn, và mức tăng đặc biệt mạnh ở các nước có thu nhập thấp và trung bình, nơi hệ thống y tế thường được tổ chức xoay quanh chăm sóc cấp tính hơn là chăm sóc bệnh mạn tính [@mills2020].
+
+Một phân tích gộp các nghiên cứu dựa trên quần thể từ khắp nơi trên thế giới cho thấy số người trưởng thành từ 30 đến 79 tuổi bị tăng huyết áp đã tăng gần gấp đôi trong giai đoạn 1990 đến 2019, lên tới hơn một tỷ người [@ncdrisc2021]. Cũng phân tích này ghi nhận một *khoảng trống điều trị* lớn và dai dẳng: một tỷ lệ đáng kể người bị tăng huyết áp không biết mình mắc bệnh, chưa đến một nửa đang được điều trị, và chỉ một số ít kiểm soát được huyết áp. Khoảng trống lớn nhất ở một số khu vực của châu Phi cận Sahara, Nam Á và châu Đại Dương.
+
+Các loại thuốc hiệu quả và rẻ tiền đã có sẵn. Hướng dẫn của Tổ chức Y tế Thế giới về điều trị tăng huyết áp bằng thuốc khuyến cáo bắt đầu điều trị thuốc ở người trưởng thành đã được chẩn đoán xác định và có huyết áp tâm thu từ 140 mmHg trở lên hoặc huyết áp tâm trương từ 90 mmHg trở lên, còn với những người có nguy cơ tim mạch cao thì bắt đầu điều trị ở ngưỡng thấp hơn [@who2021htn]. Do đó, vấn đề ở nhiều nơi không phải là thiếu liệu pháp hiệu quả mà là việc bệnh nhân đã được chẩn đoán không bắt đầu hoặc không duy trì điều trị. Có nhiều nguyên nhân: chi phí và việc không có bảo hiểm y tế, khoảng cách đến cơ sở y tế, hiểu biết hạn chế về tăng huyết áp, những ưu tiên cạnh tranh khác và việc bệnh không có triệu chứng, cũng như những đặc điểm của chính các dịch vụ y tế.
+
+Các cơ sở chăm sóc sức khỏe ban đầu là nơi phần lớn người trưởng thành bị tăng huyết áp được chẩn đoán và quản lý. Hiểu được bệnh nhân nào đến khám tại các cơ sở này đang được điều trị và bệnh nhân nào không có thể giúp các dịch vụ y tế định hướng hoạt động giáo dục, tiếp cận cộng đồng và bảo vệ tài chính tới những người cần nhất. Đó chính là câu hỏi mà nghiên cứu tình huống của chúng ta giải quyết.
+
+### Nghiên cứu
+
+**Tên đề tài.** *Các yếu tố quyết định việc sử dụng điều trị tăng huyết áp ở người trưởng thành đến khám tại các cơ sở chăm sóc sức khỏe ban đầu* (*Determinants of hypertension treatment uptake among adults attending primary healthcare facilities*).
+
+**Thiết kế.** Nghiên cứu cắt ngang đa trung tâm trên 1.500 người trưởng thành đến khám tại sáu cơ sở chăm sóc sức khỏe ban đầu. Với mỗi người tham gia, nghiên cứu ghi nhận các đặc điểm nhân khẩu học - xã hội, hành vi sức khỏe, số đo nhân trắc, huyết áp, các dấu ấn sinh học xét nghiệm, hiểu biết về tăng huyết áp, khả năng tiếp cận chăm sóc, tình trạng chẩn đoán và điều trị tăng huyết áp.
+
+**Câu hỏi nghiên cứu.** Trong số những người trưởng thành đã được chẩn đoán tăng huyết áp, những yếu tố nào có liên quan đến việc đang điều trị bằng thuốc hạ huyết áp?
+
+**Biến kết cục chính.** `treatment_uptake`: người tham gia hiện có đang dùng thuốc hạ huyết áp hay không (Yes/No, với "No" là nhóm tham chiếu). Biến này chỉ được phân tích trong số những người tham gia đã được chẩn đoán tăng huyết áp, tức là những người có `htn_diagnosed == "Yes"`. Việc giới hạn này xuất phát từ logic lâm sàng không kém gì từ thống kê: một người không thể bắt đầu điều trị cho một bệnh chưa được chẩn đoán.
+
+**Biến kết cục phụ.** Hai biến kết cục khác chỉ được xác định ở những người tham gia đang được điều trị:
+
+- `adherence`: mức độ tuân thủ điều trị, được ghi nhận là Good (tốt) hoặc Poor (kém);
+- `bp_controlled`: huyết áp có được kiểm soát hay không, được định nghĩa là huyết áp tâm thu dưới 140 mmHg *và* huyết áp tâm trương dưới 90 mmHg.
+
+**Các yếu tố quyết định tiềm năng.** Nghiên cứu ghi nhận một loạt yếu tố có thể ảnh hưởng một cách hợp lý đến việc một bệnh nhân đã được chẩn đoán có đang điều trị hay không:
+
+- *nhân khẩu học - xã hội*: tuổi, giới tính, nơi cư trú (thành thị hoặc nông thôn), trình độ học vấn, nghề nghiệp, tình trạng hôn nhân và bảo hiểm y tế;
+- *hành vi*: hút thuốc, uống rượu bia và hoạt động thể lực;
+- *lâm sàng*: chỉ số khối cơ thể, tiền sử gia đình bị tăng huyết áp, đái tháo đường, số bệnh đồng mắc, huyết áp tâm thu và tâm trương và thời gian kể từ khi được chẩn đoán;
+- *hiểu biết và khả năng tiếp cận*: điểm hiểu biết về tăng huyết áp (0 đến 20) và khoảng cách đến cơ sở y tế.
+
+Ngoài ra, tám dấu ấn sinh học xét nghiệm (lipid máu, glucose lúc đói, creatinine, natri và kali) có sẵn cho phân tích mô tả và các bài tập.
+
+::: {.callout-warning title="Lỗi thường gặp"}
+Vì thiết kế là cắt ngang, phơi nhiễm và biến kết cục được đo cùng một thời điểm. Một mối liên quan giữa, chẳng hạn, bảo hiểm y tế và việc sử dụng điều trị không chứng minh được rằng bảo hiểm *gây ra* việc sử dụng điều trị. Xuyên suốt cuốn sách, chúng tôi nói về *mối liên quan* và *yếu tố quyết định* theo nghĩa thận trọng này, và chúng tôi thảo luận rõ ràng về nhiễu trong Chương 5.
+:::
+
+### Dữ liệu là dữ liệu mô phỏng
+
+Bộ dữ liệu dùng trong sách này được **mô phỏng cho mục đích giảng dạy**. Nó được tạo ra bằng máy tính để giống với loại dữ liệu thu thập trong một khảo sát thực tế về tăng huyết áp tại tuyến chăm sóc ban đầu, với các phân phối thực tế, các mối quan hệ hợp lý giữa các biến và những loại vấn đề chất lượng dữ liệu thường gặp trong thực tế. Dữ liệu không mô tả bệnh nhân thật, và tên các cơ sở y tế chỉ được dùng để minh họa.
+
+Điều này dẫn đến hai hệ quả. Thứ nhất, không có vấn đề gì về bảo mật, và bạn được tự do khám phá, chỉnh sửa và chia sẻ dữ liệu trong quá trình học. Thứ hai, và quan trọng hơn, **các kết quả trong sách này minh họa phương pháp, không phải là phát hiện lâm sàng thực sự**. Khi chúng tôi báo cáo rằng một yếu tố nào đó có liên quan đến việc sử dụng điều trị, nhận định đó là về dữ liệu mô phỏng và không được trích dẫn như bằng chứng về chăm sóc tăng huyết áp ở bất kỳ đâu. Chúng tôi sẽ nhắc bạn điều này mỗi khi diễn giải kết quả.
+
+### Các biến
+
+Từ điển dữ liệu (data dictionary) mô tả từng biến trong số 36 biến được ghi nhận trong nghiên cứu. Nó được cung cấp dưới dạng tệp CSV để R có thể đọc như bất kỳ bộ dữ liệu nào khác. Đoạn mã dưới đây đọc từ điển và in ra các cột chính:
+
+
+``` r
+# Đọc từ điển dữ liệu đi kèm dữ liệu của nghiên cứu tình huống
+dictionary <- read.csv("Data/data_dictionary.csv")
+
+# Giữ lại các cột mô tả từng biến và trình bày dưới dạng bảng
+knitr::kable(
+  dictionary[, c("variable", "label", "type", "units_coding", "role")],
+  col.names = c("Biến", "Nhãn", "Kiểu", "Đơn vị / mã hóa", "Vai trò"),
+  caption = "Các biến được ghi nhận trong nghiên cứu về việc sử dụng điều trị tăng huyết áp."
+)
+```
+
+
+
+Table: Các biến được ghi nhận trong nghiên cứu về việc sử dụng điều trị tăng huyết áp.
+
+|Biến                    |Nhãn                           |Kiểu        |Đơn vị / mã hóa                             |Vai trò           |
+|:-----------------------|:------------------------------|:-----------|:-------------------------------------------|:-----------------|
+|patient_id              |Patient identifier             |Character   |PHC-0001 ... PHC-1500                       |ID                |
+|facility                |Healthcare facility            |Categorical |6 PHC facilities                            |Cluster/covariate |
+|enroll_date             |Date of enrolment              |Date        |Mixed: YYYY-MM-DD, DD/MM/YYYY, DD-Mon-YYYY  |Metadata          |
+|age                     |Age                            |Numeric     |Years                                       |Predictor         |
+|sex                     |Sex                            |Categorical |Female / Male                               |Predictor         |
+|residence               |Place of residence             |Categorical |Urban / Rural                               |Predictor         |
+|education               |Highest education              |Ordinal     |None < Primary < Secondary < Tertiary       |Predictor         |
+|occupation              |Occupation                     |Categorical |Unemployed/Farmer/Trader/Professional/Other |Predictor         |
+|marital_status          |Marital status                 |Categorical |Single/Married/Divorced/Widowed             |Predictor         |
+|health_insurance        |Has health insurance           |Binary      |Yes / No                                    |Predictor         |
+|height_cm               |Height                         |Numeric     |centimetres                                 |Derived input     |
+|weight_kg               |Weight                         |Numeric     |kilograms                                   |Derived input     |
+|bmi                     |Body mass index                |Numeric     |kg/m^2                                      |Predictor         |
+|smoking                 |Smoking status                 |Categorical |Never / Former / Current                    |Predictor         |
+|alcohol                 |Alcohol intake                 |Categorical |None / Moderate / Heavy                     |Predictor         |
+|physical_activity       |Physical activity level        |Ordinal     |Low / Moderate / High                       |Predictor         |
+|family_history_htn      |Family history of hypertension |Binary      |Yes / No                                    |Predictor         |
+|diabetes                |Diabetes mellitus              |Binary      |Yes / No                                    |Predictor         |
+|sbp_mmhg                |Systolic blood pressure        |Numeric     |mmHg                                        |Clinical          |
+|dbp_mmhg                |Diastolic blood pressure       |Numeric     |mmHg                                        |Clinical          |
+|total_chol_mmol_l       |Total cholesterol              |Numeric     |mmol/L                                      |Lab biomarker     |
+|hdl_mmol_l              |HDL cholesterol                |Numeric     |mmol/L                                      |Lab biomarker     |
+|ldl_mmol_l              |LDL cholesterol                |Numeric     |mmol/L                                      |Lab biomarker     |
+|triglycerides_mmol_l    |Triglycerides                  |Numeric     |mmol/L                                      |Lab biomarker     |
+|fasting_glucose_mmol_l  |Fasting glucose                |Numeric     |mmol/L                                      |Lab biomarker     |
+|creatinine_umol_l       |Serum creatinine               |Numeric     |umol/L                                      |Lab biomarker     |
+|sodium_mmol_l           |Serum sodium                   |Numeric     |mmol/L                                      |Lab biomarker     |
+|potassium_mmol_l        |Serum potassium                |Numeric     |mmol/L                                      |Lab biomarker     |
+|knowledge_score         |Hypertension knowledge score   |Numeric     |0-20                                        |Predictor         |
+|distance_to_facility_km |Distance to facility           |Numeric     |kilometres                                  |Predictor         |
+|comorbidity_count       |Number of comorbidities        |Count       |0+                                          |Predictor         |
+|htn_diagnosed           |Diagnosed hypertensive         |Binary      |Yes / No                                    |Filter            |
+|months_since_diagnosis  |Months since HTN diagnosis     |Numeric     |Months                                      |Predictor         |
+|treatment_uptake        |On antihypertensive treatment  |Binary      |Yes / No                                    |PRIMARY OUTCOME   |
+|adherence               |Treatment adherence            |Categorical |Good / Poor (blank if untreated)            |Secondary outcome |
+|bp_controlled           |Blood pressure controlled      |Binary      |Yes / No (blank if untreated)               |Secondary outcome |
+
+Cột **Vai trò** cho biết mỗi biến được sử dụng như thế nào (các giá trị trong bảng giữ nguyên tiếng Anh như trong tệp từ điển). `patient_id` định danh người tham gia và `facility` ghi nhận cụm (cơ sở y tế) mà mỗi người tham gia đến khám. Phần lớn các biến là biến dự báo tiềm năng. `htn_diagnosed` đóng vai trò *bộ lọc* xác định quần thể phân tích, `treatment_uptake` là biến kết cục chính, còn `adherence` và `bp_controlled` là các biến kết cục phụ. Tệp từ điển dữ liệu còn có một cột ghi chú mô tả các vấn đề đã biết trong dữ liệu thô, mà chúng ta sẽ dùng trong Chương 2. Hãy luôn để từ điển trong tầm tay: biết chính xác mỗi biến có nghĩa là gì và được mã hóa như thế nào đã là một nửa của một phân tích tốt.
+
+Trong tệp phân tích đã làm sạch, hai biến dẫn xuất được thêm vào 36 biến này: `bmi_cat`, phân loại chỉ số khối cơ thể theo Tổ chức Y tế Thế giới, và `bp_category`, phân loại huyết áp đo được. Cả hai đều được tạo ra trong Chương 2.
+
+### Tổng quan quần thể nghiên cứu
+
+Tệp phân tích đã làm sạch, được tạo ra trong Chương 2, có mỗi dòng ứng với một người tham gia. Đoạn mã sau nạp tệp này và đếm số người tham gia, số cơ sở y tế và số người tham gia đã được chẩn đoán tăng huyết áp, tức là quần thể cho phân tích chính:
+
+
+``` r
+# Nạp dữ liệu sạch, sẵn sàng cho phân tích, được tạo ra trong Chương 2
+analysis_data <- readRDS("Data/analysis_data.rds")
+
+# Số dòng (người tham gia) và số cột (biến)
+dim(analysis_data)
+```
+
+```
+#> [1] 1500   38
+```
+
+``` r
+# Các con số chính mô tả quần thể nghiên cứu
+diagnosed <- analysis_data[analysis_data$htn_diagnosed == "Yes", ]
+study_size <- data.frame(
+  quantity = c("Người tham gia", "Cơ sở y tế",
+               "Được chẩn đoán tăng huyết áp",
+               "Được chẩn đoán và đang điều trị"),
+  n = c(nrow(analysis_data),
+        length(unique(analysis_data$facility)),
+        nrow(diagnosed),
+        sum(diagnosed$treatment_uptake == "Yes", na.rm = TRUE))
+)
+knitr::kable(study_size, col.names = c("Chỉ số", "n"),
+             caption = "Quần thể của nghiên cứu tình huống.")
+```
+
+
+
+Table: Quần thể của nghiên cứu tình huống.
+
+|Chỉ số                          |    n|
+|:-------------------------------|----:|
+|Người tham gia                  | 1500|
+|Cơ sở y tế                      |    6|
+|Được chẩn đoán tăng huyết áp    | 1089|
+|Được chẩn đoán và đang điều trị |  508|
+
+Dữ liệu gồm 1.500 người tham gia và 38 biến (36 biến được ghi nhận cộng với hai biến phân loại dẫn xuất) từ sáu cơ sở y tế. Trong số những người tham gia, 1089 người đã được chẩn đoán tăng huyết áp, và họ tạo thành mẫu số cho biến kết cục chính. Trong số này, 508 người (47%) đang điều trị bằng thuốc hạ huyết áp. Trong các chương tiếp theo, chúng ta sẽ tìm hiểu những bệnh nhân này là ai, họ khác với những người không điều trị như thế nào, và những yếu tố nào vẫn còn liên quan đến việc điều trị sau khi đã tính đến các yếu tố khác.
+
+::: {.callout-note title="Diễn giải lâm sàng"}
+Trong dữ liệu mô phỏng này, chưa đến một nửa số bệnh nhân đã biết bị tăng huyết áp đang được điều trị. Trong một nghiên cứu thực tế, một phát hiện như vậy sẽ chỉ ra một khoảng trống đáng kể giữa chẩn đoán và chăm sóc ở tuyến ban đầu, và sẽ thúc đẩy việc tìm kiếm các yếu tố quyết định mà phần còn lại của cuốn sách thực hiện.
+:::
+
+## Các tệp dữ liệu và quy trình phân tích
+
+### Các tệp dữ liệu
+
+Dữ liệu của nghiên cứu tình huống gồm nhiều tệp, mỗi tệp có một mục đích riêng. Tất cả được lưu trong một thư mục tên là `Data/`, và toàn bộ mã trong sách đọc chúng bằng đường dẫn tương đối như `"Data/analysis_data.rds"`.
+
+- `hypertension_phc_raw.csv` và `hypertension_phc_raw.xlsx`: **dữ liệu thô**, giống như khi được nhóm thu thập dữ liệu gửi đến, ở hai định dạng phổ biến. Hai tệp chứa cùng các bản ghi. Chúng đã được cố ý gán những vấn đề mà dữ liệu lâm sàng thực tế rất hay gặp: 1.503 dòng cho 1.500 bệnh nhân do có ba bản ghi trùng lặp; các nhóm phân loại được viết theo nhiều cách (ví dụ `F`, `f`, `female` và `Female`); các biến có/không được mã hóa lúc là `Yes`/`No`, lúc là `Y`/`N` và lúc là `1`/`0`; giá trị khuyết được ghi là ô trống, `NA`, `999` hoặc `-99`; các giá trị không thể có như tuổi 200 hoặc huyết áp tâm thu 700 mmHg; khoảng trắng thừa trước và sau văn bản; và ngày tháng được nhập theo ba định dạng khác nhau. Các tệp này được dùng trong Chương 1 và Chương 2.
+- `analysis_data.rds`: **dữ liệu sạch, sẵn sàng cho phân tích**, được lưu ở định dạng tệp riêng của R. Các vấn đề đã được sửa, các biến có kiểu đúng, các biến phân loại là factor với nhóm tham chiếu hợp lý về mặt lâm sàng, và các biến dẫn xuất đã được thêm vào. Định dạng `.rds` lưu giữ chính xác tất cả những điều này, điều mà tệp CSV không làm được. Các chương từ 3 đến 5 bắt đầu từ tệp này.
+- `data_dictionary.csv` và `data_dictionary.md`: **từ điển dữ liệu**, mô tả từng biến, cách mã hóa, vai trò của biến trong phân tích và các vấn đề đã biết của biến.
+
+Chương 2 hướng dẫn bạn tự tạo ra `analysis_data.rds` từ tệp dữ liệu thô. Một bản dựng sẵn được cung cấp để bạn có thể làm việc với bất kỳ chương nào một cách độc lập, và để bạn so sánh dữ liệu đã làm sạch của mình với dữ liệu của chúng tôi.
+
+::: {.callout-tip title="Thực hành tốt"}
+Hãy giữ dữ liệu thô và dữ liệu sẵn sàng cho phân tích trong các tệp riêng biệt, và tạo tệp thứ hai từ tệp thứ nhất bằng một script. Nếu sau này phát hiện vấn đề trong dữ liệu thô, bạn sửa script và tạo lại tệp sạch, thay vì vá tệp sạch bằng tay.
+:::
+
+### Quy trình phân tích
+
+Các chương đi theo các giai đoạn của một phân tích dữ liệu lâm sàng điển hình. Nên ghi nhớ trình tự này, vì nó áp dụng cho hầu như mọi nghiên cứu bạn sẽ phân tích:
+
+1. **Nhập** dữ liệu thô vào R và kiểm tra chúng: có bao nhiêu dòng và cột, có những kiểu biến nào, điều gì có vẻ không ổn (Chương 1).
+2. **Làm sạch** dữ liệu: xử lý các mã giá trị khuyết, loại bỏ bản ghi trùng lặp, thống nhất các nhóm phân loại, kiểm tra các giá trị không thể có, đọc ngày tháng, tạo biến mới và đặt các mức của factor, sau đó lưu một tệp phân tích sạch (Chương 2).
+3. **Mô tả** quần thể nghiên cứu bằng các thống kê tóm tắt, một "Bảng 1" và các hình được thiết kế tốt, cho toàn bộ mẫu và theo nhóm biến kết cục (Chương 3).
+4. **Kiểm định** các giả thuyết cụ thể về sự khác biệt và mối liên quan, chọn từng kiểm định phù hợp với kiểu dữ liệu và kiểm tra các giả định của nó (Chương 4).
+5. **Mô hình hóa** biến kết cục bằng hồi quy, đi từ ước lượng thô đến ước lượng hiệu chỉnh và kiểm tra mức độ phù hợp của mô hình (Chương 5).
+6. **Báo cáo** các phát hiện một cách rõ ràng và trung thực, bằng bảng, hình và văn bản đáp ứng kỳ vọng của các tạp chí lâm sàng và các hướng dẫn báo cáo như STROBE cho nghiên cứu quan sát [@vonelm2007] (Chương 3 và Chương 5).
+
+Mỗi giai đoạn đều được viết dưới dạng mã lệnh, vì vậy toàn bộ con đường từ tệp thô đến báo cáo cuối cùng có thể được chạy lại bất cứ lúc nào. Tóm lại trong một câu, đó chính là điều cuốn sách này muốn truyền đạt.
+
+## Về các tác giả
+
+**Bernard Isekah Osang'ir** là Chuyên gia Thống kê Sinh học cao cấp tại Neudata Consulting Ltd.
+
+**Vương Mỹ Lượng** là Chuyên gia Thống kê Sinh học cao cấp tại Neudata Consulting Ltd.
+
+Cả hai tác giả đều làm việc trong lĩnh vực thiết kế và phân tích các nghiên cứu lâm sàng và y tế công cộng, và đào tạo các cán bộ y tế tự phân tích dữ liệu của mình một cách có thể tái lập bằng R.
+
+## Lời cảm ơn
+
+Cuốn sách này được phát triển từ các tài liệu giảng dạy dành cho những người làm trong ngành y tế học cách phân tích dữ liệu lâm sàng bằng R. Chúng tôi xin cảm ơn những học viên đã học qua các phiên bản trước của tài liệu: những câu hỏi, những lỗi sai và những nhận xét sâu sắc của họ đã cho thấy chỗ nào cần giải thích rõ hơn, chỗ nào ví dụ cần gắn với lâm sàng hơn và chỗ nào cần đi chậm lại. Chúng tôi cũng cảm ơn các đồng nghiệp và người phản biện đã đọc bản thảo các chương và đã có những góp ý cẩn thận giúp cải thiện cả phần thống kê lẫn phần văn phong.
+
+Cuối cùng, chúng tôi xin cảm ơn cộng đồng R: Nhóm R Core, những người phát triển và duy trì chính R, cùng nhiều tác giả của các gói được dùng trong sách này, những người đã chia sẻ công trình của mình một cách miễn phí để người khác có thể tiếp tục xây dựng trên đó. Mọi sai sót còn lại thuộc về chúng tôi.
+
+
+---
+
+[Mục lục](handbook.qmd) · [Tiếp: Chương 1: Bắt đầu với R và RStudio →](book-chapter1.qmd)

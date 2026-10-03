@@ -1,0 +1,2105 @@
+# Regression Modelling and Reporting Results {#ch-regression}
+
+In Chapter 4 we asked one question at a time. Is treatment uptake more
+common among patients with health insurance? Do urban and rural patients
+differ? Each test compared groups defined by a single variable. Clinical
+reality is rarely that tidy. Patients with health insurance may also be
+younger, better educated or live closer to a clinic, and each of these
+characteristics may itself influence whether a person with hypertension
+starts treatment. If we want to know whether insurance is associated with
+uptake *over and above* these other factors, we need a method that
+considers several variables at once. That method is regression.
+
+Regression is the workhorse of clinical and epidemiological research. It
+appears in almost every observational study published in medical journals,
+and it is the natural end point of the analysis we have been building since
+Chapter 1: we imported and cleaned the hypertension data, described the
+sample, tested simple hypotheses, and now we bring the determinants of
+treatment uptake together in a single model. This chapter explains how
+regression models work, how to fit and read them in R, how to check that
+they are reasonable, and how to turn the output into the tables, figures
+and sentences that appear in a published paper. It finishes with the
+practices that make the whole analysis reproducible, so that another
+person (or you, a year from now) can obtain exactly the same results.
+
+::: {.objectives}
+- Explain the three purposes of regression modelling (description,
+  prediction and explanation) and why the purpose shapes the model.
+- Fit and interpret a multiple linear regression for a continuous outcome,
+  including coefficients, $R^2$ and residual checks.
+- Convert between probabilities, odds and log-odds, and explain why
+  logistic regression models the log-odds of a binary outcome.
+- Fit a multivariable logistic regression with `glm()`, read its
+  `summary()` output line by line, and report odds ratios with 95%
+  confidence intervals.
+- Distinguish crude from adjusted estimates, recognise confounding, and
+  avoid the "Table 2 fallacy".
+- Build a model from clinical reasoning rather than automated selection,
+  and check events per variable, collinearity, linearity, discrimination,
+  calibration and influential observations.
+- Produce a publication-ready regression table and a forest plot, and write
+  a Results paragraph that follows the STROBE recommendations.
+- Organise an analysis so that it can be reproduced from raw data to report.
+:::
+
+## Why regression? {#sec-why-regression}
+
+### From one variable at a time to many
+
+The tests in Chapter 4 answer questions of the form "is the outcome
+associated with *this* variable?". A regression model answers a richer
+question: "how is the outcome associated with this variable, *given* the
+values of these other variables?" It does this by writing the expected
+value of the outcome (or a transformation of it) as a function of several
+predictors simultaneously. Each coefficient in the model then describes the
+association between one predictor and the outcome while the other
+predictors are held fixed. This "holding fixed" is what epidemiologists
+call *adjustment*, and it is the main reason regression is used in
+observational research [@vittinghoff2012; @kirkwood2003].
+
+Regression also provides more than a p-value. It gives an *estimate* of the
+size of each association, with a confidence interval describing its
+precision, and it can produce predictions for individual patients. As
+Chapter 4 emphasised, an estimate with its interval is far more informative
+than a statement that a test was "significant" [@altman1991;
+@wasserstein2016].
+
+### Description, prediction and explanation
+
+Before fitting any model you should be clear about what it is *for*,
+because the purpose determines which variables to include and how to judge
+the result [@vittinghoff2012; @harrell2015].
+
+- **Description.** The aim is to summarise how an outcome varies with
+  several characteristics in a population, for example how the prevalence
+  of treatment uptake differs by age, sex and residence. The model is a
+  compact, multivariable summary; no causal claim is made.
+- **Prediction.** The aim is to estimate, as accurately as possible, the
+  outcome for a new individual, for instance the probability that a newly
+  diagnosed patient will start treatment. Any variable that improves
+  predictive accuracy is welcome, whether or not it is a cause. Models are
+  judged by discrimination and calibration in *new* data, and great care is
+  needed to avoid overfitting [@harrell2015].
+- **Explanation (aetiology).** The aim is to estimate the effect of a
+  particular exposure on the outcome, for example the effect of health
+  insurance on uptake. Variables are included because they are
+  *confounders* of that exposure–outcome relationship, and the choice is
+  guided by subject-matter knowledge, often summarised in a causal diagram
+  [@rothman2008; @greenland1999dag].
+
+Our case study, *Determinants of hypertension treatment uptake among adults
+attending primary healthcare facilities*, sits between description and
+explanation. We want to know which patient and access characteristics are
+independently associated with uptake, so that services can be targeted.
+This chapter therefore fits a single, pre-specified multivariable model and
+interprets its coefficients as *adjusted associations*. We shall return
+repeatedly to the danger of reading them as causal effects.
+
+::: {.callout-tip title="Good practice"}
+Write down the purpose of your model, and the list of variables you will
+include, in your analysis plan *before* you look at the outcome data. A
+prediction model, a descriptive model and an aetiological model built from
+the same data set can legitimately look quite different.
+:::
+
+### A family of regression models
+
+All the models in this chapter share one structure: a *linear predictor*,
+which is a weighted sum of the explanatory variables,
+
+$$
+\eta = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \dots + \beta_k x_k ,
+$$
+
+linked to the expected value of the outcome by a function chosen to suit the
+type of outcome. These are the *generalised linear models*
+[@agresti2013]. The type of outcome determines the model, as summarised
+below.
+
+Table: Choosing a regression model by the type of outcome.
+
+| Outcome type | Example in the study | Model | Effect measure | R function |
+|---|---|---|---|---|
+| Continuous | Systolic blood pressure | Linear | Difference in means | `lm()` |
+| Binary | Treatment uptake (Yes/No) | Logistic | Odds ratio | `glm(family = binomial)` |
+| Count | Number of comorbidities | Poisson | Rate ratio | `glm(family = poisson)` |
+| Time to event | Time to treatment start | Cox | Hazard ratio | `survival::coxph()` |
+
+This chapter covers the first two rows in detail. Once you understand linear
+and logistic regression, the others follow the same logic.
+
+## Setting up the analysis {#sec-setup}
+
+As in every chapter, we start a fresh R session by loading the packages and
+the clean analysis data set created in Chapter 2.
+
+```{r c5-setup}
+library(tidyverse)   # dplyr, ggplot2, tidyr, ...
+library(broom)       # tidy() and augment() for model objects
+library(gtsummary)   # publication-ready regression tables
+library(car)         # vif() for collinearity
+library(pROC)        # ROC curves and the AUC
+library(patchwork)   # combining ggplot2 panels
+library(scales)      # axis formatting
+library(knitr)       # kable() tables
+
+analysis_data <- readRDS("Data/analysis_data.rds")
+```
+
+The primary outcome, `treatment_uptake`, only makes sense for people who
+already know they have hypertension: a person who has never been diagnosed
+cannot "take up" treatment. The analytic population is therefore the
+patients with `htn_diagnosed == "Yes"`.
+
+```{r c5-population}
+dx <- analysis_data |>
+  filter(htn_diagnosed == "Yes") |>
+  # education is stored as an ORDERED factor (None < Primary < ...).
+  # For regression we convert it to an ordinary factor so that each level
+  # is compared with the reference level "None" (explained below).
+  mutate(education = factor(education, ordered = FALSE))
+
+nrow(dx)                         # size of the analytic population
+table(dx$treatment_uptake)       # the outcome distribution
+levels(dx$treatment_uptake)      # first level = reference ("No")
+```
+
+Of the 1,089 diagnosed patients, 508 (46.6%) are on antihypertensive
+treatment. The first level of the outcome factor is `"No"`, so the models
+below estimate the odds of *uptake* ("Yes"), which is the event of
+interest. If the levels were the other way round, every odds ratio in this
+chapter would be inverted.
+
+::: {.callout-warning title="Common mistake"}
+Ordered factors are convenient for tables and plots, but R codes them in
+regression with *orthogonal polynomial contrasts*. The output then contains
+terms called `education.L`, `education.Q` and `education.C` (linear,
+quadratic and cubic trends) instead of one comparison per level. Their odds
+ratios are not "Primary versus None" or "per level of education", and they
+are very easy to misreport. Unless you specifically want a trend test,
+convert ordered factors with `factor(x, ordered = FALSE)` before modelling,
+as we did above.
+:::
+
+## Linear regression for a continuous outcome {#sec-linear}
+
+Linear regression is the simplest regression model and the foundation for
+everything else, so we begin with it, using systolic blood pressure (SBP)
+as the outcome. Because SBP is measured in everyone, we use the full sample
+of 1,500 adults for this section.
+
+### The simple linear regression model
+
+With one predictor $x$ (say body mass index, BMI), the simple linear
+regression model for patient $i$ is
+
+$$
+y_i = \beta_0 + \beta_1 x_i + \varepsilon_i ,
+\qquad \varepsilon_i \sim N(0, \sigma^2) .
+$$
+
+Here $\beta_0$ is the *intercept* (the mean of $y$ when $x = 0$), $\beta_1$
+is the *slope* (the change in the mean of $y$ for a one-unit increase in
+$x$), and $\varepsilon_i$ is the random error: the part of patient $i$'s
+blood pressure not explained by BMI. The errors are assumed to be
+independent and normally distributed with constant variance $\sigma^2$.
+
+The coefficients are estimated by *ordinary least squares*: we choose
+$\hat\beta_0$ and $\hat\beta_1$ to make the sum of squared vertical
+distances between the observed points and the fitted line as small as
+possible,
+
+$$
+\text{minimise} \quad \sum_{i=1}^{n} \left(y_i - \beta_0 - \beta_1 x_i\right)^2 ,
+$$
+
+which gives the closed-form solution
+
+$$
+\hat\beta_1 = \frac{\sum_{i}(x_i - \bar x)(y_i - \bar y)}{\sum_{i}(x_i - \bar x)^2},
+\qquad
+\hat\beta_0 = \bar y - \hat\beta_1 \bar x .
+$$
+
+The slope is therefore closely related to the Pearson correlation of
+Chapter 4: $\hat\beta_1 = r \, s_y / s_x$ [@altman1991; @bland2015].
+
+```{r c5-lm-simple}
+# Simple linear regression: SBP (mmHg) on BMI (kg/m^2)
+lm_simple <- lm(sbp_mmhg ~ bmi, data = analysis_data)
+coef(lm_simple)
+```
+
+The fitted line is $\widehat{\text{SBP}} =
+`r round(coef(lm_simple)[1], 1)` + `r round(coef(lm_simple)[2], 2)`
+\times \text{BMI}$. Each additional kg/m² of BMI is associated with a mean
+SBP about `r round(coef(lm_simple)[2], 2)` mmHg higher. The intercept is the
+predicted SBP at a BMI of zero, which is biologically impossible; it is
+needed to position the line but has no clinical interpretation. This is
+common, and it is one reason some analysts *centre* continuous predictors
+(subtract a typical value such as the mean) before fitting.
+
+### Multiple linear regression
+
+Blood pressure rises with age, and BMI may also differ by age, so we add age
+to the model. With $k$ predictors the model becomes
+
+$$
+y_i = \beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i} + \dots + \beta_k x_{ki}
++ \varepsilon_i ,
+$$
+
+or, in matrix notation, $\mathbf{y} = \mathbf{X}\boldsymbol\beta +
+\boldsymbol\varepsilon$, with least-squares solution
+$\hat{\boldsymbol\beta} = (\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{X}^\top\mathbf{y}$. You will never compute this by hand, but the
+formula makes one point clear: each coefficient is estimated using all the
+predictors together, so its value depends on which other variables are in
+the model. Each $\beta_j$ is the expected difference in $y$ between two
+people who differ by one unit in $x_j$ but have *the same values* of all
+the other predictors [@vittinghoff2012].
+
+```{r c5-lm-multiple}
+lm_sbp <- lm(sbp_mmhg ~ age + bmi, data = analysis_data)
+summary(lm_sbp)
+```
+
+Let us read this output from top to bottom.
+
+- **Call** repeats the model formula and data, which is useful when you
+  have fitted many models.
+- **Residuals** summarises the differences between observed and fitted
+  SBP. The median is close to zero and the quartiles are roughly symmetric
+  (about $\pm 12.6$ mmHg), which is what we expect if the errors are
+  symmetric around zero.
+- **Coefficients** is the heart of the output. For each term there is the
+  estimate, its standard error (SE), the $t$ statistic (estimate divided by
+  SE) and the two-sided p-value for the null hypothesis that the true
+  coefficient is zero.
+  - `(Intercept)` 87.5 mmHg is the predicted SBP for a person aged 0 with
+    a BMI of 0, again not clinically meaningful.
+  - `age` 0.26: holding BMI fixed, each additional year of age is
+    associated with a mean SBP 0.26 mmHg higher; over ten years that is
+    about 2.6 mmHg.
+  - `bmi` 1.45: among people of the same age, each additional kg/m² is
+    associated with a mean SBP 1.45 mmHg higher; a 5 kg/m² difference
+    corresponds to about 7.3 mmHg.
+- **Residual standard error** (18.1 mmHg) estimates $\sigma$, the typical
+  distance of an observation from its fitted value. It is large relative to
+  the coefficients: age and BMI explain only part of the variation in blood
+  pressure.
+- **`(51 observations deleted due to missingness)`** reminds us that `lm()`
+  silently drops every row with a missing value in any model variable. The
+  model was fitted to 1,449 people, not 1,500.
+- **Multiple R-squared** (0.16) is the proportion of the variance of SBP
+  explained by the model,
+  $R^2 = 1 - \sum_i (y_i - \hat y_i)^2 / \sum_i (y_i - \bar y)^2$. The
+  **adjusted** $R^2$ applies a small penalty for the number of predictors.
+- **F-statistic** tests the null hypothesis that *all* the slope
+  coefficients are zero. With $p < 2.2 \times 10^{-16}$ we conclude that age
+  and BMI together explain some variation in SBP.
+
+::: {.callout-note title="Clinical interpretation"}
+An $R^2$ of 0.16 does not mean the model is useless. In an explanatory
+analysis we care about the *coefficients*: a difference of about 7 mmHg in
+mean SBP for 5 kg/m² of BMI, independent of age, is clinically important at
+the population level. A low $R^2$ simply tells us that individual blood
+pressure depends on many other things (genetics, salt intake, medication,
+measurement error) that are not in the model.
+:::
+
+To make the coefficients easier to quote, we can ask for confidence
+intervals and rescale age to a more meaningful unit.
+
+```{r c5-lm-ci}
+tidy(lm_sbp, conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high, p.value) |>
+  mutate(across(estimate:conf.high, \(x) round(x, 3)),
+         p.value = signif(p.value, 2))
+
+# Per 10 years of age: multiply the age coefficient and its CI by 10
+age10 <- 10 * c(coef(lm_sbp)["age"], confint(lm_sbp)["age", ])
+round(age10, 2)
+```
+
+We would report: "Each 10-year increase in age was associated with a
+`r sprintf("%.1f", age10[1])` mmHg higher mean SBP (95% CI
+`r sprintf("%.1f", age10[2])` to `r sprintf("%.1f", age10[3])`), adjusted
+for BMI."
+
+### Assumptions and residual checks
+
+The inferences from a linear model (standard errors, confidence intervals,
+p-values) rely on four assumptions, conveniently remembered as **LINE**
+[@vittinghoff2012; @kirkwood2003]:
+
+1. **L**inearity: the mean of $y$ changes linearly with each continuous
+   predictor (given the others).
+2. **I**ndependence: the errors of different patients are independent.
+   This is a property of the study design; repeated measurements on the same
+   patient, or patients clustered within facilities, can violate it.
+3. **N**ormality: the errors are approximately normally distributed. With
+   large samples the central limit theorem makes the coefficients
+   approximately normal even if the errors are not, so this matters most in
+   small samples and for prediction intervals.
+4. **E**qual variance (homoscedasticity): the spread of the errors does not
+   change with the fitted value.
+
+We check these assumptions with the *residuals*,
+$e_i = y_i - \hat y_i$. Two plots are standard: residuals against fitted
+values (for linearity and equal variance) and a normal Q–Q plot of the
+residuals (for normality). `broom::augment()` returns the fitted values and
+residuals in a data frame that is convenient for `ggplot2`.
+
+```{r c5-lm-residuals, fig.cap="Residual diagnostics for the linear regression of systolic blood pressure on age and BMI. Left: residuals against fitted values, with a smooth curve; right: normal Q-Q plot of the residuals.", fig.height=3.6}
+lm_aug <- augment(lm_sbp)      # one row per patient used in the model
+
+p_resfit <- ggplot(lm_aug, aes(x = .fitted, y = .resid)) +
+  geom_point(alpha = 0.25, colour = "#0D7377") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_smooth(method = "loess", se = FALSE, colour = "#E07A1F") +
+  labs(title = "Residuals vs fitted",
+       x = "Fitted SBP (mmHg)", y = "Residual (mmHg)")
+
+p_qq <- ggplot(lm_aug, aes(sample = .std.resid)) +
+  stat_qq(alpha = 0.25, colour = "#0D7377") +
+  stat_qq_line(linetype = "dashed") +
+  labs(title = "Normal Q-Q plot",
+       x = "Theoretical quantiles", y = "Standardised residual")
+
+p_resfit + p_qq
+```
+
+In the left panel the points form a horizontal band of roughly constant
+width centred on zero, and the smooth curve is close to flat apart from a
+slight upturn at the highest fitted values, where there are few patients
+and the smoother is unstable. There is no convincing sign of curvature
+(which would suggest a missing non-linear term) or of a
+funnel shape (which would suggest unequal variance). In the right panel the
+points follow the reference line closely, with only slight departures in
+the extreme tails. The assumptions look reasonable.
+
+::: {.callout-tip title="Good practice"}
+Look at residual plots, do not test them. Formal tests of normality reject
+trivial departures in large samples and miss important ones in small
+samples [@altman1995normal]. If a plot shows a curved pattern, consider
+adding a non-linear term (for example a quadratic or spline in age); if it
+shows a funnel, consider transforming the outcome or using robust standard
+errors.
+:::
+
+## Binary outcomes: probability, odds and log-odds {#sec-odds}
+
+Our primary outcome, treatment uptake, is binary: each patient is either on
+treatment ($y = 1$) or not ($y = 0$). Linear regression is not appropriate
+here. A straight line in $x$ can predict "probabilities" below 0 or above 1,
+the variance of a binary variable depends on its mean (so the equal
+variance assumption fails), and the errors cannot be normal. We need a
+scale on which a linear model makes sense. That scale is the log-odds.
+
+### Three ways to express the same risk
+
+Let $p$ be the probability that a patient takes up treatment. The *odds*
+of uptake are the probability of uptake divided by the probability of no
+uptake,
+
+$$
+\text{odds} = \frac{p}{1-p},
+\qquad\text{and conversely}\qquad
+p = \frac{\text{odds}}{1+\text{odds}} .
+$$
+
+Odds are familiar from betting: odds of 3 ("3 to 1") mean the event is
+three times as likely to happen as not, which is a probability of
+$3/4 = 0.75$. While a probability is confined to $[0, 1]$, odds range from
+0 to infinity. Taking the natural logarithm gives the *log-odds* or
+*logit*,
+
+$$
+\operatorname{logit}(p) = \log\!\left(\frac{p}{1-p}\right),
+$$
+
+which ranges over the whole real line, from $-\infty$ to $+\infty$, and is
+symmetric around zero: a probability of 0.5 has odds 1 and log-odds 0.
+
+Table: The same risk expressed as a probability, odds and log-odds.
+
+| Probability $p$ | Odds $p/(1-p)$ | Log-odds | Interpretation |
+|---|---|---|---|
+| 0.10 | 0.11 | $-2.20$ | 1 success for every 9 failures |
+| 0.25 | 0.33 | $-1.10$ | 1 for every 3 |
+| 0.50 | 1.00 | 0.00 | Even chances |
+| 0.75 | 3.00 | 1.10 | 3 for every 1 |
+| 0.90 | 9.00 | 2.20 | 9 for every 1 |
+
+### The odds ratio
+
+To compare two groups we take the ratio of their odds. If $p_1$ is the
+probability of uptake among insured patients and $p_0$ among uninsured
+patients, the *odds ratio* (OR) is
+
+$$
+\text{OR} = \frac{p_1/(1-p_1)}{p_0/(1-p_0)} .
+$$
+
+An OR of 1 means no association; above 1, higher odds of the outcome in
+the first group; below 1, lower odds [@bland2000oddsratio]. Let us compute
+it by hand for health insurance.
+
+```{r c5-or-by-hand}
+tab_ins <- table(Insurance = dx$health_insurance,
+                 Uptake    = dx$treatment_uptake)
+tab_ins
+
+# Probability, odds and log-odds of uptake in each insurance group
+ins_summary <- dx |>
+  group_by(health_insurance) |>
+  summarise(n = n(),
+            p_uptake = mean(treatment_uptake == "Yes")) |>
+  mutate(odds = p_uptake / (1 - p_uptake),
+         log_odds = log(odds))
+kable(ins_summary, digits = 3,
+      caption = "Uptake by health insurance status (diagnosed patients).")
+
+# The crude odds ratio: odds among insured / odds among uninsured
+or_ins <- ins_summary$odds[2] / ins_summary$odds[1]
+round(or_ins, 2)
+```
+
+```{r c5-ins-values, include=FALSE}
+p0_ins <- ins_summary$p_uptake[1]     # risk of uptake, uninsured
+p1_ins <- ins_summary$p_uptake[2]     # risk of uptake, insured
+rr_ins <- p1_ins / p0_ins             # relative risk (risk ratio)
+```
+
+Among uninsured patients `r round(100 * p0_ins, 1)`% are on treatment
+(odds `r round(ins_summary$odds[1], 2)`); among insured patients
+`r round(100 * p1_ins, 1)`% (odds `r round(ins_summary$odds[2], 2)`). The
+odds of uptake are `r round(or_ins, 2)` times higher among the insured.
+Notice the last column of the table: the *difference* in log-odds,
+`r round(ins_summary$log_odds[2], 3)` $-$
+(`r round(ins_summary$log_odds[1], 3)`) $=$ `r round(log(or_ins), 3)`, is
+the log of the odds ratio. This is the key to logistic regression: a
+difference on the log-odds scale is a log odds ratio, and exponentiating it
+gives the odds ratio.
+
+### Odds ratios versus relative risks
+
+Clinicians usually think in terms of risks, and the *relative risk*
+(risk ratio, RR) $p_1 / p_0$ is the more intuitive measure. Here the RR is
+`r round(p1_ins, 3)` / `r round(p0_ins, 3)` $=$ `r round(rr_ins, 2)`,
+noticeably smaller than the OR of `r round(or_ins, 2)`. The two measures
+are close only when the outcome is rare (say, below 10%) in both groups,
+because then $1 - p \approx 1$ and the odds approximate the risk
+[@bland2000oddsratio; @rothman2008]. When the outcome is common, as here
+(almost half of patients are on treatment), the OR is always further from
+1 than the RR.
+
+@zhang1998 proposed a simple conversion from an OR to an approximate RR,
+given the risk $p_0$ in the reference group:
+
+$$
+\text{RR} \approx \frac{\text{OR}}{(1 - p_0) + p_0 \times \text{OR}} .
+$$
+
+With $p_0 = `r round(p0_ins, 3)`$ and OR $= `r round(or_ins, 2)`$, the
+formula returns `r round(or_ins / ((1 - p0_ins) + p0_ins * or_ins), 2)`,
+which reproduces the crude RR exactly. For adjusted odds ratios the
+conversion is only approximate, and other methods (such as log-binomial or
+Poisson regression with robust standard errors) are preferred if an
+adjusted RR is the target.
+
+::: {.callout-warning title="Common mistake"}
+Do not describe an odds ratio of 2.0 as "twice the risk" or "twice as
+likely" when the outcome is common. With an uptake of about 40% in the
+reference group, an OR of 2.0 corresponds to a risk ratio of only about 1.4.
+Say "twice the *odds*", and, if your readers need risks, report predicted
+probabilities or a risk ratio as well.
+:::
+
+Why, then, do we use odds ratios at all? There are three good reasons.
+First, the logistic model on which they are based always produces valid
+probabilities between 0 and 1. Second, the OR is symmetric: the OR for
+uptake is the reciprocal of the OR for non-uptake, which is not true of the
+RR. Third, the OR can be estimated from case–control studies, where risks
+cannot [@rothman2008; @hosmer2013].
+
+## The logistic regression model {#sec-logistic-model}
+
+### The model equation
+
+Logistic regression models the log-odds of the outcome as a linear
+function of the predictors [@hosmer2013; @agresti2013]:
+
+$$
+\operatorname{logit}(p_i) =
+\log\!\left(\frac{p_i}{1-p_i}\right) =
+\beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i} + \dots + \beta_k x_{ki},
+$$
+
+where $p_i = \Pr(y_i = 1 \mid x_{1i}, \dots, x_{ki})$ is the probability of
+uptake for patient $i$. Solving for $p_i$ gives the *logistic function*,
+
+$$
+p_i = \frac{\exp(\beta_0 + \beta_1 x_{1i} + \dots + \beta_k x_{ki})}
+{1 + \exp(\beta_0 + \beta_1 x_{1i} + \dots + \beta_k x_{ki})} ,
+$$
+
+an S-shaped curve that always lies between 0 and 1. There is no error term
+in the equation: the randomness lies in the outcome itself, which is
+assumed to follow a Bernoulli distribution with probability $p_i$.
+
+The figure below shows the two faces of the model for a single predictor, age.
+On the log-odds scale (left) the relationship is a straight line; on the
+probability scale (right) the same model is a gentle S-shaped curve.
+
+```{r c5-logit-curve, fig.cap="A logistic regression of treatment uptake on age, shown on the log-odds scale (left), where the model is linear, and on the probability scale (right), where it is S-shaped.", fig.height=3.4}
+glm_age <- glm(treatment_uptake ~ age, data = dx, family = binomial)
+
+# Predictions over a wide age range, on both scales
+age_grid <- tibble(age = seq(15, 100, by = 1))
+age_grid <- age_grid |>
+  mutate(log_odds = predict(glm_age, newdata = age_grid, type = "link"),
+         prob     = predict(glm_age, newdata = age_grid, type = "response"))
+
+p_link <- ggplot(age_grid, aes(age, log_odds)) +
+  geom_line(linewidth = 1, colour = "#0D7377") +
+  geom_hline(yintercept = 0, linetype = "dashed", colour = "grey50") +
+  labs(title = "Log-odds scale", x = "Age (years)",
+       y = "Log-odds of uptake")
+
+p_prob <- ggplot(age_grid, aes(age, prob)) +
+  geom_line(linewidth = 1, colour = "#0D7377") +
+  geom_hline(yintercept = 0.5, linetype = "dashed", colour = "grey50") +
+  scale_y_continuous(labels = percent, limits = c(0, 1)) +
+  labs(title = "Probability scale", x = "Age (years)",
+       y = "Probability of uptake")
+
+p_link + p_prob
+```
+
+### Estimation by maximum likelihood
+
+Least squares is not appropriate for a binary outcome. Instead the
+coefficients are estimated by *maximum likelihood*: we choose the values of
+$\boldsymbol\beta$ that make the observed data most probable. For patient
+$i$ the probability of the observed outcome is $p_i$ if $y_i = 1$ and
+$1 - p_i$ if $y_i = 0$, which can be written compactly as
+$p_i^{y_i}(1-p_i)^{1-y_i}$. Assuming independent patients, the likelihood
+is the product over all patients, and it is easier to work with its
+logarithm:
+
+$$
+\ell(\boldsymbol\beta) = \sum_{i=1}^{n}
+\Big[\, y_i \log p_i + (1-y_i)\log(1-p_i) \Big],
+$$
+
+where each $p_i$ depends on $\boldsymbol\beta$ through the logistic
+function. There is no closed-form solution; R maximises $\ell$ numerically
+with an algorithm called *iteratively reweighted least squares* (also known
+as Fisher scoring), which usually converges in a handful of iterations
+[@agresti2013; @hosmer2013].
+
+Two quantities derived from the likelihood appear in the R output and are
+used for testing.
+
+- The **deviance** of a model is $D = -2\ell(\hat{\boldsymbol\beta})$
+  (relative to a saturated model that fits every observation perfectly).
+  Smaller deviance means better fit. The *null deviance* is the deviance of
+  a model with only an intercept; the *residual deviance* is that of the
+  fitted model.
+- The **likelihood-ratio (LR) test** compares two *nested* models, where
+  the smaller model is a special case of the larger one. The difference in
+  deviance, $D_{\text{small}} - D_{\text{large}}$, follows approximately a
+  $\chi^2$ distribution with degrees of freedom equal to the number of extra
+  parameters in the larger model.
+
+Each individual coefficient is also accompanied by a **Wald test**,
+$z = \hat\beta_j / \text{SE}(\hat\beta_j)$, compared with the standard normal
+distribution. Wald and LR tests usually agree in large samples; when they
+differ (small samples, sparse categories, very large effects) the LR test
+is more reliable [@hosmer2013; @agresti2013].
+
+### Interpreting the coefficients as odds ratios
+
+Consider two patients who are identical in every predictor except $x_1$,
+which is one unit higher for the second. Subtracting their linear
+predictors, every term cancels except one:
+
+$$
+\operatorname{logit}(p_{\text{second}}) - \operatorname{logit}(p_{\text{first}})
+= \beta_1 .
+$$
+
+A difference in log-odds is the log of an odds ratio, so
+
+$$
+\text{OR}_{x_1} = \exp(\beta_1).
+$$
+
+This is the central result for interpretation [@hosmer2013]:
+**$\exp(\beta_j)$ is the odds ratio for a one-unit increase in $x_j$,
+holding the other predictors fixed.** Because the model is linear on the
+log-odds scale, this OR is the same whatever the starting value of $x_j$
+and whatever the values of the other predictors (unless an interaction is
+included; see Section 5.7).
+
+How "one unit" is defined depends on the type of predictor.
+
+- **Binary predictor** (for example diabetes, coded No = 0, Yes = 1).
+  $\exp(\beta)$ is the OR comparing patients with diabetes to those without,
+  the reference category.
+- **Categorical predictor with several levels** (for example education:
+  None, Primary, Secondary, Tertiary). R creates one indicator ("dummy")
+  variable for each non-reference level. Each $\exp(\beta)$ compares that
+  level with the reference level (None), not with the level below it.
+- **Continuous predictor** (for example age in years). $\exp(\beta)$ is the
+  OR per one-unit increase (per year). A one-year difference is rarely
+  clinically interesting, so we usually report the OR for a meaningful
+  increment $c$, such as 10 years:
+
+$$
+\text{OR}_{c\text{ units}} = \exp(c\,\beta) = \left[\exp(\beta)\right]^c ,
+$$
+
+with confidence interval $\exp\!\big(c\,\hat\beta \pm 1.96\, c\,
+\text{SE}(\hat\beta)\big)$. Note that the OR for 10 years is the per-year OR
+raised to the power 10, not multiplied by 10.
+
+### Assumptions of logistic regression
+
+Logistic regression makes fewer assumptions than linear regression, but
+they are not trivial [@hosmer2013; @vittinghoff2012]:
+
+1. **Correct link and linearity in the logit.** Each continuous predictor
+   is linearly related to the *log-odds* of the outcome (not to the
+   probability). This can be checked by adding non-linear terms.
+2. **Independence.** Outcomes of different patients are independent given
+   the predictors. Clustering of patients within facilities is a potential
+   violation that we discuss in Section 5.8.
+3. **No perfect separation.** No predictor (or combination) perfectly
+   predicts the outcome. If, say, every patient with diabetes were on
+   treatment, the maximum likelihood estimate of the diabetes coefficient
+   would be infinite; R warns that "fitted probabilities numerically 0 or 1
+   occurred" and reports a huge coefficient and standard error.
+4. **Adequate sample size.** Maximum likelihood estimates are only
+   approximately unbiased and normal in large samples; the number of
+   *events* relative to the number of parameters matters (Section 5.8).
+
+There is no assumption that the predictors are normally distributed, and
+no assumption of equal variance.
+
+## Fitting the logistic model in R {#sec-fit}
+
+### A first model with one predictor
+
+Logistic regression is fitted in R with `glm()`, the function for
+generalised linear models, by specifying `family = binomial` (the logit
+link is the default). The outcome can be a factor, in which case the first
+level is treated as 0 (failure) and every other level as 1 (success).
+We start with the crude model for health insurance and check that it
+reproduces the odds ratio we computed by hand.
+
+```{r c5-glm-crude}
+glm_ins <- glm(treatment_uptake ~ health_insurance,
+               data = dx, family = binomial(link = "logit"))
+coef(glm_ins)          # log-odds scale
+exp(coef(glm_ins))     # odds scale
+```
+
+The intercept, `r round(coef(glm_ins)[1], 3)`, is the log-odds of uptake in
+the reference group (uninsured); exponentiated, it is the odds
+`r round(exp(coef(glm_ins)[1]), 3)` that we saw in the table. The
+coefficient for `health_insuranceYes`, `r round(coef(glm_ins)[2], 3)`, is
+the difference in log-odds between insured and uninsured patients, and its
+exponential, `r round(exp(coef(glm_ins)[2]), 2)`, is exactly the crude OR
+computed by hand. A one-predictor logistic regression is simply a
+re-expression of a $2 \times 2$ table.
+
+### The multivariable model
+
+Now we fit the main model of the study. Its predictors were chosen *before*
+the analysis on clinical and public-health grounds (Section 5.8 explains
+why this matters):
+
+- demographic characteristics that commonly confound health-service use:
+  age, sex, education and residence;
+- clinical factors that increase contact with health services: diabetes
+  and a family history of hypertension;
+- the study's stated determinants: health insurance (financial access),
+  hypertension knowledge score (awareness) and distance to the facility
+  (geographical access).
+
+```{r c5-glm-full}
+model_full <- glm(
+  treatment_uptake ~ age + sex + education + residence + diabetes +
+    family_history_htn + health_insurance + knowledge_score +
+    distance_to_facility_km,
+  data   = dx,
+  family = binomial(link = "logit")
+)
+
+summary(model_full)
+```
+
+### Reading the summary output line by line
+
+This output contains a great deal of information, and it is worth reading
+slowly.
+
+- **Call.** The model formula, the family and the data set. Always check
+  that the formula is what you intended.
+- **Coefficients.** One row per estimated parameter, on the **log-odds
+  scale**.
+  - `Estimate` is $\hat\beta_j$. A positive value means higher odds of
+    uptake as the predictor increases (or in that category compared with
+    the reference); a negative value means lower odds.
+  - `Std. Error` is the standard error of $\hat\beta_j$, a measure of its
+    precision. Note how large it is for `diabetesYes` (0.474) compared with
+    the other binary predictors (about 0.14–0.15). Only 28 diagnosed
+    patients have diabetes, so this coefficient is estimated imprecisely.
+  - `z value` is the Wald statistic, Estimate / Std. Error.
+  - `Pr(>|z|)` is the two-sided Wald p-value for the null hypothesis that
+    $\beta_j = 0$ (OR $= 1$), adjusted for the other variables.
+- **Reading individual rows.**
+  - `(Intercept)` $-3.77$ is the log-odds of uptake for a hypothetical
+    patient with every predictor at zero or its reference level: aged 0,
+    female, no education, rural, no diabetes, no family history, uninsured,
+    knowledge score 0, living 0 km from the facility. It anchors the model
+    but has no clinical meaning.
+  - `age` 0.030: each additional year of age increases the log-odds of
+    uptake by 0.030, other variables held fixed.
+  - `sexMale` $-0.302$: men have lower log-odds of uptake than women of the
+    same age, education, residence and so on. The suffix `Male` tells you
+    that Female is the reference.
+  - `educationPrimary`, `educationSecondary`, `educationTertiary`: each
+    compares that level with no formal education. The coefficients
+    increase steadily (0.33, 0.65, 0.89), suggesting a gradient.
+  - `distance_to_facility_km` $-0.019$: lower odds with greater distance,
+    but the p-value (0.128) indicates that the data are compatible with no
+    association once the other variables are accounted for.
+- **Signif. codes.** The stars are a legend for p-value thresholds. They
+  encourage dichotomous thinking and should never be reported in a paper
+  [@wasserstein2016; @greenland2016].
+- **Dispersion parameter.** For a binomial model it is fixed at 1; this
+  line matters only for other families.
+- **Null deviance** (1369.1 on 991 degrees of freedom) is the deviance of an
+  intercept-only model; **residual deviance** (1221.9 on 980 df) is the
+  deviance after adding the 11 predictor terms. The drop of 147.2 on 11 df
+  is the LR statistic for the null hypothesis that *none* of the predictors
+  is associated with uptake, which is overwhelmingly rejected.
+- **`(97 observations deleted due to missingness)`.** This line is easy to
+  overlook and very important. `glm()` uses complete cases only: any patient
+  with a missing value in *any* model variable is dropped. The model was
+  fitted to 992 of the 1,089 diagnosed patients (degrees of freedom
+  991 + 1). This number must appear in your paper.
+- **AIC** (Akaike information criterion), $\text{AIC} = D + 2q$ where $q$ is
+  the number of parameters, balances fit against complexity. It is useful
+  for comparing models fitted to the *same* observations; on its own it has
+  no interpretation.
+- **Number of Fisher Scoring iterations** (4) shows that the algorithm
+  converged quickly. A large number (say, more than 20) is a warning sign,
+  often of separation.
+
+```{r c5-nobs}
+nobs(model_full)                          # observations used
+table(model_full$y)                       # outcome among those used (0/1)
+```
+
+::: {.callout-warning title="Common mistake"}
+Reporting the sample size of the data set rather than of the model. Here 97
+diagnosed patients (8.9%) were excluded from the model because of missing
+knowledge score, distance, education or age. Always report the number
+analysed, describe the missing data, and consider whether a complete-case
+analysis could be biased. When missingness is substantial, multiple
+imputation is usually preferable [@sterne2009; @little2019].
+:::
+
+### Odds ratios with confidence intervals
+
+The log-odds coefficients are needed for the mathematics, but readers need
+odds ratios. `broom::tidy()` with `exponentiate = TRUE` and
+`conf.int = TRUE` exponentiates the estimates and their confidence limits
+in one step.
+
+```{r c5-tidy-or}
+or_table <- tidy(model_full, exponentiate = TRUE, conf.int = TRUE)
+
+or_table |>
+  select(term, OR = estimate, lower = conf.low, upper = conf.high,
+         p = p.value) |>
+  mutate(across(c(OR, lower, upper), \(x) round(x, 2)),
+         p = format.pval(p, digits = 2, eps = 0.001))
+```
+
+The confidence limits returned by `tidy()` come from `confint()`, which for
+a `glm` uses the *profile likelihood*. These intervals are slightly
+asymmetric on the log scale and are more accurate than the Wald intervals
+$\exp(\hat\beta \pm 1.96\,\text{SE})$, particularly for imprecise
+estimates such as the diabetes OR [@hosmer2013]. Notice also that a
+standard error cannot simply be exponentiated: the `std.error` column of
+`tidy()` stays on the log-odds scale even when `exponentiate = TRUE`.
+
+Each odds ratio is interpreted as an *adjusted* association, holding the
+other variables in the model fixed.
+
+- **Age**, OR 1.03 per year (95% CI 1.02 to 1.04): each additional year is
+  associated with 3% higher odds of uptake.
+- **Sex**, OR 0.74 (0.56 to 0.97): men have about 26% lower odds of uptake
+  than women.
+- **Education**: compared with no formal education, the ORs are 1.39
+  (0.95 to 2.05) for primary, 1.92 (1.27 to 2.90) for secondary and 2.44
+  (1.48 to 4.06) for tertiary education, a clear gradient.
+- **Urban residence**, OR 1.87 (1.40 to 2.49) compared with rural.
+- **Diabetes**, OR 3.56 (1.46 to 9.61): the largest OR, but also by far the
+  widest interval, reflecting the small number of patients with diabetes.
+- **Family history of hypertension**, OR 1.91 (1.44 to 2.53).
+- **Health insurance**, OR 2.05 (1.54 to 2.74).
+- **Knowledge score**, OR 1.10 per point (1.06 to 1.14).
+- **Distance to facility**, OR 0.98 per km (0.96 to 1.01), p = 0.13.
+
+::: {.callout-note title="Clinical interpretation"}
+The width of a confidence interval tells you how much the data constrain
+the estimate. The diabetes interval runs from a modest 1.5-fold to an
+almost 10-fold increase in odds: we can be fairly confident the association
+is positive, but we know little about its size. In contrast, the interval
+for health insurance (1.5 to 2.7) is narrow enough to be useful for
+planning. A large point estimate with a wide interval is weaker evidence
+than a moderate estimate with a narrow one. (The data are simulated for
+teaching; these results illustrate methods, not real clinical findings.)
+:::
+
+### Odds ratios for clinically meaningful increments
+
+The per-unit ORs for age, knowledge and distance are close to 1 simply
+because one year, one point or one kilometre is a small change. We rescale
+them with $\exp(c\,\hat\beta)$, applying the same multiplication to the
+confidence limits on the log scale.
+
+```{r c5-rescale}
+# Increments that are meaningful for each continuous predictor
+increments <- tibble(
+  term = c("age", "knowledge_score", "distance_to_facility_km"),
+  unit = c("10 years", "5 points", "5 km"),
+  c    = c(10, 5, 5)
+)
+
+# Profile-likelihood CIs on the log-odds scale, then rescale by c
+ci_log <- confint(model_full)
+
+rescaled <- increments |>
+  mutate(beta  = coef(model_full)[term],
+         OR    = exp(c * beta),
+         lower = exp(c * ci_log[term, 1]),
+         upper = exp(c * ci_log[term, 2])) |>
+  select(term, unit, OR, lower, upper)
+
+kable(rescaled, digits = 2,
+      caption = "Adjusted odds ratios for clinically meaningful increments.")
+```
+
+Expressed this way the results become much easier to communicate: a
+10-year difference in age is associated with
+`r round(rescaled$OR[1], 2)` times the odds of uptake, a 5-point higher
+knowledge score with `r round(rescaled$OR[2], 2)` times the odds, and living
+5 km further away with `r round(rescaled$OR[3], 2)` times the odds (95% CI
+`r round(rescaled$lower[3], 2)` to `r round(rescaled$upper[3], 2)`). The
+increment should be chosen for clinical relevance (often the
+interquartile range or a familiar unit such as a decade), stated clearly,
+and decided before seeing the results.
+
+### Predicted probabilities
+
+Odds ratios are relative measures. To show what the model implies in
+absolute terms, we can compute predicted probabilities for representative
+patients with `predict(type = "response")`. Here we compare two
+55-year-old women from a rural area with primary education, no diabetes,
+no family history, an average knowledge score of 10 and living 6 km from
+the facility, who differ only in health insurance.
+
+```{r c5-predict}
+profiles <- tibble(
+  age = 55, sex = "Female", education = "Primary", residence = "Rural",
+  diabetes = "No", family_history_htn = "No",
+  health_insurance = c("No", "Yes"),
+  knowledge_score = 10, distance_to_facility_km = 6
+)
+
+profiles |>
+  mutate(p_uptake = predict(model_full, newdata = profiles,
+                            type = "response")) |>
+  select(health_insurance, p_uptake)
+```
+
+```{r c5-predict-values, include=FALSE}
+pp <- predict(model_full, newdata = profiles, type = "response")
+```
+
+The predicted probability of uptake rises from `r round(100 * pp[1])`% to
+`r round(100 * pp[2])`%, an absolute difference of
+`r round(100 * (pp[2] - pp[1]))` percentage points. The odds ratio is the
+same for every profile, but the absolute difference depends on the baseline
+probability, which is why predicted probabilities (or risk differences) are
+a valuable complement to ORs when communicating with clinicians and policy
+makers.
+
+### Testing a categorical predictor with several levels
+
+Education enters the model as three indicator variables, each with its own
+Wald p-value. These answer three separate questions (is Primary different
+from None? Secondary from None? Tertiary from None?) but not the overall
+question "is education associated with uptake?". For that we need a single
+test of the null hypothesis that all three coefficients are zero, and the
+likelihood-ratio test is the natural choice [@hosmer2013].
+
+`drop1()` removes each term in turn (all levels of a factor together) and
+compares the deviance with that of the full model.
+
+```{r c5-drop1}
+drop1(model_full, test = "LRT")
+```
+
+The row for education shows that removing it increases the deviance by
+16.3 on 3 degrees of freedom, $p = 0.001$: education as a whole is
+associated with uptake. The other rows give LR tests for each one-parameter
+term; their p-values are very close to the Wald p-values in `summary()`,
+as expected in a sample of this size.
+
+The same test can be obtained by fitting the model without education and
+comparing the two nested models directly with `anova()`. There is a trap
+here. Education has 24 missing values among the diagnosed patients, so a
+model *without* education, fitted to `dx`, would include patients who were
+excluded from `model_full`. The two deviances would then refer to different
+patients and could not be compared (R stops with the error "models were not
+all fitted to the same size of dataset"). We therefore extract the
+complete-case data used by the full model with `model.frame()` and fit the
+smaller model to exactly those patients.
+
+```{r c5-anova-lrt}
+cc <- model.frame(model_full)       # the 992 patients used by model_full
+nrow(cc)
+
+model_no_edu <- update(model_full, . ~ . - education, data = cc)
+lrt_edu <- anova(model_no_edu, model_full, test = "LRT")
+attr(lrt_edu, "heading") <- NULL   # omit the long model formulas
+lrt_edu
+```
+
+The LR statistic (the difference in deviance, 16.3 on 3 df) and its
+p-value are identical to the `drop1()` result, which performs the same
+comparison internally.
+
+::: {.callout-tip title="Good practice"}
+When you compare nested models, make sure both were fitted to exactly the
+same observations. The simplest way is to create the complete-case data set
+once, with `model.frame()` of the largest model or with `drop_na()` on all
+the candidate variables, and to fit every model to it.
+:::
+
+## Confounding: crude versus adjusted estimates {#sec-confounding}
+
+### What is confounding?
+
+A *confounder* is a variable that distorts the observed association
+between an exposure and an outcome because it is associated with both.
+The classical criteria are that a confounder (1) is a cause, or a proxy
+for a cause, of the outcome; (2) is associated with the exposure in the
+source population; and (3) is not an effect of the exposure, that is, it
+does not lie on the causal pathway from exposure to outcome
+[@rothman2008]. The *crude* (unadjusted) estimate mixes the effect of the
+exposure with that of the confounder; the *adjusted* estimate, from a model
+that includes the confounder, attempts to separate them.
+
+### Causal diagrams in words
+
+Causal diagrams, or directed acyclic graphs (DAGs), make these ideas
+precise [@greenland1999dag]. A DAG draws each variable as a node and each
+assumed direct causal effect as an arrow. Consider the question "is
+distance to the facility associated with treatment uptake?". Plausible
+assumptions are:
+
+- *Distance → Uptake*: patients who live far from a clinic face travel
+  costs and time, which may reduce uptake.
+- *Residence → Distance*: rural patients tend to live further from the
+  facility.
+- *Residence → Uptake*: independently of distance, urban areas may have
+  more pharmacies, more health information and different patterns of care.
+
+Residence therefore opens a "back-door path" from distance to uptake
+(Distance ← Residence → Uptake) that is not part of the effect of distance.
+To estimate the association of distance with uptake that is not due to
+residence, the back-door path must be blocked by adjusting for residence.
+In contrast, a variable caused by the exposure and lying on the path to the
+outcome (a *mediator*) should not be adjusted for if we want the total
+effect, and adjusting for a common *effect* of exposure and outcome (a
+*collider*) can create bias where none existed [@greenland1999dag;
+@vanderweele2019].
+
+@vanderweele2019 offers a practical rule for situations in which the full
+causal structure is uncertain, the *modified disjunctive cause criterion*:
+adjust for any pre-exposure variable that is a cause of the exposure, the
+outcome or both; exclude known instrumental variables (causes of the
+exposure only); and include good proxies for unmeasured common causes.
+
+### A worked example: distance and residence
+
+The data agree with the first two arrows: rural patients in the model
+sample live on average 9.6 km from their facility, urban patients 6.0 km.
+We now compare the crude odds ratio for distance with the odds ratio
+adjusted for residence alone and for all the variables in the full model.
+To make the comparison fair, all three models are fitted to the same 992
+complete cases.
+
+```{r c5-confounding}
+# cc: the complete-case data used by the full model (created above)
+with(cc, tapply(distance_to_facility_km, residence, mean))
+
+m_crude <- glm(treatment_uptake ~ distance_to_facility_km,
+               data = cc, family = binomial)
+m_res   <- glm(treatment_uptake ~ distance_to_facility_km + residence,
+               data = cc, family = binomial)
+
+# Extract the OR for distance (per 5 km) and its 95% CI from each model
+dist_or <- function(model, label) {
+  b  <- coef(model)["distance_to_facility_km"]
+  ci <- confint(model)["distance_to_facility_km", ]
+  p  <- summary(model)$coefficients["distance_to_facility_km", 4]
+  tibble(model = label, OR_5km = exp(5 * b),
+         lower = exp(5 * ci[1]), upper = exp(5 * ci[2]), p = p)
+}
+
+conf_tab <- bind_rows(
+  dist_or(m_crude,    "Crude"),
+  dist_or(m_res,      "Adjusted for residence"),
+  dist_or(model_full, "Fully adjusted")
+)
+kable(conf_tab, digits = 3,
+      caption = "OR for uptake per 5 km of distance: crude and adjusted.")
+```
+
+```{r c5-confounding-values, include=FALSE}
+chg <- 100 * (log(conf_tab$OR_5km[2]) - log(conf_tab$OR_5km[1])) /
+  abs(log(conf_tab$OR_5km[1]))
+```
+
+The crude analysis suggests that each additional 5 km is associated with
+`r round(100 * (1 - conf_tab$OR_5km[1]))`% lower odds of uptake, with a
+confidence interval that excludes 1 ($p = `r signif(conf_tab$p[1], 2)`$).
+After adjusting for residence alone, the OR moves towards 1
+(`r round(conf_tab$OR_5km[2], 2)`), the interval includes 1, and the
+p-value rises to `r round(conf_tab$p[2], 2)`. Expressed on the log-odds
+scale, the coefficient has shrunk by about `r round(abs(chg))`%. Much of the
+crude association between distance and uptake was due to residence: rural
+patients live further away *and*, for reasons other than distance, are less
+likely to be on treatment. Adjusting for the remaining variables changes
+the distance OR very little further.
+
+A common rule of thumb flags a variable as a confounder if adjusting for it
+changes the coefficient of the exposure by more than 10% (the
+*change-in-estimate* criterion). It is a useful screening tool, but it
+should not replace causal reasoning: a mediator or a collider can also
+change an estimate, and adjusting for it would introduce bias
+[@rothman2008; @vanderweele2019].
+
+::: {.callout-note title="Clinical interpretation"}
+The crude analysis might have led a health planner to conclude that distance
+itself is a major barrier to treatment. The adjusted analysis suggests a
+more nuanced picture: rural residence is associated with lower uptake, and
+distance carries little additional information once residence is known.
+Interventions targeting rural patients (for example outreach or community
+dispensing) might therefore matter more than simply reducing travel
+distance. In the real world this would need confirmation from better
+designed studies; these data are simulated.
+:::
+
+### Not every change is confounding: non-collapsibility
+
+Compare the crude and adjusted ORs for two other variables in the same 992
+patients.
+
+```{r c5-noncollapse}
+crude_or <- function(var) {
+  f <- reformulate(var, response = "treatment_uptake")
+  exp(coef(glm(f, data = cc, family = binomial)))[2]
+}
+tibble(variable = c("family_history_htn", "health_insurance"),
+       crude_OR = c(crude_or("family_history_htn"),
+                    crude_or("health_insurance")),
+       adjusted_OR = exp(coef(model_full)[c("family_history_htnYes",
+                                            "health_insuranceYes")])) |>
+  kable(digits = 2, caption = "Crude and adjusted ORs for two predictors.")
+```
+
+Both odds ratios move *away* from 1 after adjustment, from about 1.65 to
+about 2.0, although family history and insurance are only weakly related
+to the other predictors in these data. Only part of this change is
+confounding. The rest is a mathematical property of the odds ratio called
+*non-collapsibility*: when other variables that strongly predict the
+outcome are added to a logistic model, the OR for a given exposure
+generally moves away from the null *even in the complete absence of
+confounding* [@rothman2008; @vittinghoff2012]. The adjusted
+(*conditional*) OR compares patients with identical values of all the
+other predictors, whereas the crude (*marginal*) OR averages over the
+population, and with odds ratios these two quantities differ. Risk
+differences and risk ratios do not have this property. Exercise 5.4 shows
+how to separate the two components by standardisation. The practical
+lesson is that a change between crude and adjusted ORs is not, by itself,
+proof of confounding; your causal reasoning must come first.
+
+### The Table 2 fallacy
+
+It is tempting to interpret *every* adjusted OR in a multivariable model as
+the effect of that variable, as we did, with caveats, in the list above.
+@westreich2013 called this the *Table 2 fallacy* (since the main
+multivariable results are often in a paper's second table). The problem is
+that a model built to estimate the effect of one exposure is adjusted for
+that exposure's confounders, which are generally not the right set of
+adjustment variables for each of the other predictors.
+
+Take education and knowledge score. Education plausibly *causes* better
+knowledge of hypertension, which in turn increases uptake. In our model,
+which includes knowledge, the education OR estimates the association of
+education with uptake *among patients with the same knowledge score*: the
+part of the education effect that does not operate through knowledge (the
+*direct effect*). The total effect of education would be estimated by a
+model that omits its mediators. Similarly, the OR for age is adjusted for
+diabetes, which is itself partly a consequence of age.
+
+::: {.callout-warning title="Common mistake"}
+Interpreting each coefficient in a "determinants" model as a causal effect
+of equal standing. In a descriptive multivariable model, the ORs are
+*mutually adjusted associations*. If one particular exposure is of causal
+interest, build the model for that exposure (using a causal diagram) and
+report only its OR as the main result [@westreich2013].
+:::
+
+### Interaction (effect modification)
+
+So far we have assumed that the OR for each predictor is the same at every
+value of the other predictors. *Interaction*, or *effect modification*,
+occurs when the association of one variable with the outcome differs
+according to the level of another [@rothman2008; @kirkwood2003]. For
+example, the association of diabetes with uptake might be stronger in
+younger patients, for whom a diabetes diagnosis brings regular clinic
+contact. An interaction is modelled by adding the product of the two
+variables:
+
+$$
+\operatorname{logit}(p) = \beta_0 + \beta_1\,\text{age} +
+\beta_2\,\text{diabetes} + \beta_3\,(\text{age} \times \text{diabetes}) +
+\dots
+$$
+
+The OR for diabetes is then $\exp(\beta_2 + \beta_3 \times \text{age})$,
+which changes with age. We test $\beta_3 = 0$ with an LR test comparing
+the models with and without the product term.
+
+```{r c5-interaction}
+model_int <- update(model_full, . ~ . + diabetes:age)
+anova(model_full, model_int, test = "LRT")
+```
+
+The interaction term reduces the deviance by only 1.3 on 1 df ($p = 0.25$).
+There is no evidence that the diabetes OR varies with age, so we keep the
+simpler model without the interaction. Interactions should be specified in
+advance on clinical grounds and tested sparingly: tests of interaction have
+low power, and searching many possible interactions produces spurious
+findings.
+
+::: {.callout-warning title="Common mistake"}
+When an interaction term *is* kept in a model, the "main effect"
+coefficients change meaning. In the model above, `diabetesYes` would be the
+log OR for diabetes at age 0, a meaningless value. Report the OR for one
+variable at chosen values of the other (for example at ages 40, 55 and
+70), or centre the continuous variable before forming the product.
+:::
+
+## Building the model {#sec-model-building}
+
+### Pre-specification versus automated selection
+
+How should the predictors in a multivariable model be chosen? In an
+explanatory or descriptive analysis the answer is: from subject-matter
+knowledge, decided before looking at the association of each candidate
+with the outcome, and documented in a statistical analysis plan
+[@vittinghoff2012; @harrell2015; @heinze2018]. This is how
+`model_full` was built.
+
+The alternative, still common in clinical papers, is to let an algorithm
+choose: *forward selection* adds variables one at a time, *backward
+elimination* starts with all candidates and removes the least significant,
+and *stepwise* methods alternate between the two. A variant is the popular
+two-step approach of screening variables with univariable tests (for
+example keeping those with $p < 0.2$) and then running backward
+elimination. These procedures have well-documented problems
+[@harrell2015; @heinze2018]:
+
+- **Biased estimates.** Variables are selected *because* their estimated
+  effects happen to be large in this sample, so the selected coefficients
+  are biased away from zero.
+- **Invalid inference.** Standard errors, confidence intervals and
+  p-values of the final model ignore the selection process; intervals are
+  too narrow and p-values too small.
+- **Instability.** Small changes to the data (a different sample, a few
+  extra patients) often produce a different set of "selected" variables.
+- **Dropped confounders.** An important confounder may be removed because
+  its own p-value is above 0.05, reintroducing the bias that adjustment was
+  meant to remove.
+- **Univariable screening is misleading.** A variable can be unassociated
+  with the outcome on its own but important after adjustment (and vice
+  versa), so crude p-values are a poor guide to what belongs in a
+  multivariable model.
+
+R's `step()` function performs stepwise selection by AIC. For completeness,
+here is what it does with our model.
+
+```{r c5-step}
+model_step <- step(model_full, direction = "both", trace = 0)
+attr(terms(model_step), "term.labels")      # the variables it kept
+AIC(model_full, model_step)
+```
+
+In this data set `step()` keeps every variable, including distance with its
+p-value of 0.13, because removing distance would slightly increase the AIC.
+On a different data set it might drop several variables. Our decision does
+not depend on what `step()` says: the pre-specified model is the main
+analysis.
+
+::: {.callout-tip title="Good practice"}
+If you do use data-driven selection (for example in a prediction model),
+use methods designed for it, such as penalised regression, report the
+procedure fully, and assess the stability of the selection with
+bootstrap resampling [@heinze2018; @harrell2015]. Never present a model
+chosen by stepwise selection as if it had been specified in advance.
+:::
+
+### How many predictors can the data support?
+
+Every parameter in a logistic model "uses up" information. The relevant
+amount of information is not the total sample size but the number of
+patients in the *less frequent* outcome category, often called the number
+of events. @peduzzi1996 showed in simulations that with fewer than about
+10 *events per variable* (EPV, strictly per estimated parameter) the
+coefficients of a logistic model can be biased, their variances poorly
+estimated, and confidence intervals unreliable. The "10 EPV" rule is a
+rough guide rather than a law, and prediction models in particular may
+need considerably more [@harrell2015], but it is a useful sanity check.
+
+```{r c5-epv}
+n_events     <- min(table(model_full$y))     # less frequent category
+n_parameters <- length(coef(model_full)) - 1 # excluding the intercept
+c(events = n_events, parameters = n_parameters,
+  EPV = round(n_events / n_parameters, 1))
+```
+
+With `r n_events` events (patients on treatment) and `r n_parameters`
+parameters, the EPV is about `r round(n_events / n_parameters)`, well above
+10. The model is not overfitted. The imprecision of the diabetes estimate
+comes from a different problem: there are only 28 diagnosed patients with
+diabetes, and the precision of a binary predictor's OR depends on the
+number of patients in its smallest cell, not on the EPV of the whole
+model.
+
+### Collinearity
+
+*Collinearity* (or multicollinearity) occurs when predictors are strongly
+correlated with each other. The model then struggles to separate their
+individual contributions, standard errors become inflated, and estimates
+can change wildly when a variable is added or removed. The *variance
+inflation factor* (VIF) for predictor $j$ is
+
+$$
+\text{VIF}_j = \frac{1}{1 - R_j^2},
+$$
+
+where $R_j^2$ is the $R^2$ from regressing $x_j$ on all the other
+predictors. A VIF of 1 means no collinearity; values above 5, and
+especially above 10, indicate a problem [@vittinghoff2012]. For factors
+with several levels `car::vif()` reports the *generalised* VIF (GVIF) and
+$\text{GVIF}^{1/(2\,\text{df})}$, whose square is comparable with the usual
+VIF thresholds.
+
+```{r c5-vif}
+car::vif(model_full)
+```
+
+All values are close to 1 (the largest GVIF, for residence, is about 1.12).
+The predictors carry largely separate information, and collinearity is not
+a concern. In clinical data, collinearity typically arises from including
+two measures of the same thing (weight and BMI, systolic and mean arterial
+pressure) or a variable together with a transformation of it.
+
+### Missing data and clustering
+
+Two further design issues affect this model. First, as noted, 97 patients
+were excluded because of missing data. A complete-case analysis is unbiased
+if missingness does not depend on the outcome given the predictors, but can
+be biased otherwise; with about 9% of patients excluded it is reasonable to
+report the complete-case analysis as primary and, in a full study, to
+check it with multiple imputation [@sterne2009; @little2019].
+
+Second, patients were recruited from six facilities. Patients attending the
+same facility share staff, drug supplies and local policies, so their
+outcomes may be correlated, violating the independence assumption. Ignoring
+such clustering usually makes standard errors too small. Options include
+adding facility as a fixed effect (feasible with only six facilities; see
+Exercise 5.6), using cluster-robust standard errors, or fitting a mixed
+model with a random facility effect; the last two are beyond the scope of
+this book [@vittinghoff2012].
+
+## Checking the model {#sec-checking}
+
+A fitted model should be checked before its results are reported. For
+logistic regression the main checks concern the form of the continuous
+predictors, how well the model separates patients with and without the
+outcome (*discrimination*), how closely predicted probabilities match
+observed proportions (*calibration*), and whether a few observations unduly
+influence the results [@hosmer2013; @harrell2015].
+
+### Linearity of continuous predictors in the logit
+
+The model assumes that age, knowledge score and distance each have a
+linear relationship with the log-odds of uptake. A simple check is to add a
+quadratic term for each and test it with an LR test. If the quadratic term
+is unnecessary, the linear form is adequate.
+
+```{r c5-linearity}
+model_quad <- update(model_full, . ~ . + I(age^2) + I(knowledge_score^2) +
+                       I(distance_to_facility_km^2))
+anova(model_full, model_quad, test = "LRT")
+```
+
+The three quadratic terms together reduce the deviance by only a small
+amount ($p = `r round(anova(model_full, model_quad, test = "LRT")[2, 5], 2)`$),
+so there is no evidence of curvature and the linear terms are retained.
+More flexible checks use restricted cubic splines [@harrell2015].
+
+### Discrimination: the ROC curve and the AUC
+
+For each patient the model produces a predicted probability of uptake.
+If we classify a patient as a "predicted taker" whenever this probability
+exceeds a threshold $t$, we can compute the *sensitivity* (the proportion
+of actual takers classified correctly) and the *specificity* (the
+proportion of non-takers classified correctly). The *receiver operating
+characteristic* (ROC) curve plots sensitivity against $1 -$ specificity for
+every possible threshold.
+
+The *area under the ROC curve* (AUC, also called the $c$ statistic)
+summarises discrimination in a single number. @hanley1982 showed that it
+has a simple interpretation: the AUC is the probability that a randomly
+chosen patient *with* the outcome has a higher predicted probability than a
+randomly chosen patient *without* it. An AUC of 0.5 means the model
+discriminates no better than tossing a coin, and 1.0 means perfect
+separation. Common descriptive labels are 0.7–0.8 "acceptable", 0.8–0.9
+"excellent" and above 0.9 "outstanding" [@hosmer2013].
+
+```{r c5-roc}
+roc_obj <- roc(response  = model_full$y,       # observed 0/1 outcome
+               predictor = fitted(model_full),  # predicted probabilities
+               quiet     = TRUE)
+auc(roc_obj)
+ci.auc(roc_obj)           # DeLong 95% confidence interval
+```
+
+```{r c5-roc-plot, fig.cap="ROC curve for the multivariable logistic regression model of treatment uptake. The dashed diagonal shows a model with no discrimination (AUC = 0.5).", fig.width=5, fig.height=4.5}
+roc_df <- tibble(fpr = 1 - roc_obj$specificities,
+                 tpr = roc_obj$sensitivities) |>
+  arrange(fpr, tpr)
+
+ggplot(roc_df, aes(x = fpr, y = tpr)) +
+  geom_abline(intercept = 0, slope = 1, linetype = "dashed",
+              colour = "grey50") +
+  geom_step(linewidth = 0.9, colour = "#0D7377") +
+  annotate("text", x = 0.65, y = 0.25,
+           label = paste0("AUC = ", round(auc(roc_obj), 3))) +
+  coord_equal() +
+  labs(title = "ROC curve: treatment uptake model",
+       x = "1 - specificity (false positive rate)",
+       y = "Sensitivity (true positive rate)")
+```
+
+```{r c5-auc-values, include=FALSE}
+auc_val <- as.numeric(auc(roc_obj))
+auc_ci  <- as.numeric(ci.auc(roc_obj))
+```
+
+The AUC is `r round(auc_val, 2)` (95% CI `r round(auc_ci[1], 2)` to
+`r round(auc_ci[3], 2)`): if we pick at random one patient on treatment and
+one not on treatment, the model assigns the higher probability to the
+treated patient about `r round(100 * auc_val)`% of the time. This is
+acceptable discrimination for a model whose purpose is explanation rather
+than individual prediction.
+
+::: {.callout-note title="Clinical interpretation"}
+An AUC of about 0.71 means that the measured determinants explain part, but
+far from all, of why some patients take up treatment and others do not. The
+model is useful for understanding the population; it would not be good
+enough to decide which individual patients need extra support. Note also
+that the AUC is computed on the same data used to fit the model, so it is
+slightly optimistic; a prediction model would need internal validation, for
+example by bootstrapping [@harrell2015].
+:::
+
+### Calibration and the Hosmer–Lemeshow test
+
+Discrimination is about ranking; *calibration* is about agreement. A
+well-calibrated model that predicts a 30% probability of uptake for a group
+of patients should see about 30% of them on treatment. The classical check
+groups patients by their predicted probability, usually into ten groups
+("deciles of risk"), and compares the observed number of events $O_g$ in
+each group with the expected number $E_g = \sum_{i \in g} \hat p_i$.
+
+@hosmer1980 combined these comparisons into a goodness-of-fit statistic,
+
+$$
+\hat C = \sum_{g=1}^{G} \frac{(O_g - E_g)^2}{E_g\,(1 - E_g / n_g)},
+$$
+
+where $n_g$ is the number of patients in group $g$. If the model fits, $\hat
+C$ approximately follows a $\chi^2$ distribution with $G - 2$ degrees of
+freedom. A *small* p-value indicates poor fit. The test is available in
+add-on packages, but it is simple to compute directly, which also makes
+clear what it does.
+
+```{r c5-hosmer-lemeshow}
+calib <- tibble(y = model_full$y, p_hat = fitted(model_full)) |>
+  mutate(decile = ntile(p_hat, 10)) |>          # 10 groups of equal size
+  group_by(decile) |>
+  summarise(n         = n(),
+            mean_pred = mean(p_hat),            # mean predicted probability
+            obs_prop  = mean(y),                # observed proportion
+            expected  = sum(p_hat),             # E_g
+            observed  = sum(y))                 # O_g
+
+kable(calib, digits = 3,
+      caption = "Observed and expected uptake by decile of predicted risk.")
+
+hl_stat <- with(calib, sum((observed - expected)^2 /
+                             (expected * (1 - expected / n))))
+hl_df   <- nrow(calib) - 2
+hl_p    <- pchisq(hl_stat, df = hl_df, lower.tail = FALSE)
+c(statistic = round(hl_stat, 2), df = hl_df, p = round(hl_p, 3))
+```
+
+Across the ten groups, the observed and expected counts agree closely, and
+the Hosmer–Lemeshow statistic is `r round(hl_stat, 2)` on `r hl_df` df
+($p = `r round(hl_p, 2)`$): no evidence of poor calibration. The same
+information is easier to see in a calibration plot.
+
+```{r c5-calibration-plot, fig.cap="Calibration plot: observed proportion on treatment against mean predicted probability in ten groups of predicted risk. Points on the dashed line indicate perfect calibration.", fig.width=5, fig.height=4.5}
+ggplot(calib, aes(x = mean_pred, y = obs_prop)) +
+  geom_abline(intercept = 0, slope = 1, linetype = "dashed",
+              colour = "grey50") +
+  geom_line(colour = "#0D7377") +
+  geom_point(size = 2.5, colour = "#0D7377") +
+  scale_x_continuous(labels = percent, limits = c(0, 1)) +
+  scale_y_continuous(labels = percent, limits = c(0, 1)) +
+  coord_equal() +
+  labs(title = "Calibration by decile of predicted risk",
+       x = "Mean predicted probability of uptake",
+       y = "Observed proportion on treatment")
+```
+
+::: {.callout-warning title="Common mistake"}
+Treating a non-significant Hosmer–Lemeshow test as proof of a good model.
+The test has low power in small samples and, in very large samples, flags
+trivial miscalibration; its result also depends on the number of groups
+chosen [@hosmer2013]. Use it alongside a calibration plot, and remember
+that calibration in the data used to build the model says little about
+calibration in a new population.
+:::
+
+### Influential observations
+
+A single unusual patient, or a few, can noticeably change a regression
+estimate. *Cook's distance* measures how much all the fitted values change
+when observation $i$ is removed; `broom::augment()` computes it for every
+observation. A common screening threshold is $4/n$.
+
+```{r c5-cooks}
+aug_glm <- augment(model_full)                # one row per patient used
+cut_off <- 4 / nrow(aug_glm)
+sum(aug_glm$.cooksd > cut_off)                # number above the threshold
+max(aug_glm$.cooksd)                          # the largest Cook's distance
+
+# Who are the 10 most influential patients?
+top10 <- order(aug_glm$.cooksd, decreasing = TRUE)[1:10]
+count(cc[top10, ], diabetes, treatment_uptake)
+```
+
+`r sum(aug_glm$.cooksd > cut_off)` of the 992 patients exceed the
+threshold, but the largest Cook's distance is only
+`r round(max(aug_glm$.cooksd), 3)`, far below the value of 1 that is
+sometimes used to indicate a truly dominating observation. Who are the most
+influential patients? Most of the ten largest values belong to patients
+with diabetes who are *not* on treatment. This makes sense: only 7 of the
+28 diagnosed patients with diabetes are untreated, so each of them carries
+a great deal of the information about the diabetes coefficient.
+
+What happens if we remove these ten patients, as an over-zealous analyst
+might do to "clean" the model?
+
+```{r c5-influence-sensitivity}
+model_sens <- update(model_full, data = cc[-top10, ])
+tibble(term = names(coef(model_full))[-1],
+       full = exp(coef(model_full))[-1],
+       without_top10 = exp(coef(model_sens))[-1]) |>
+  mutate(full = round(full, 2), without_top10 = signif(without_top10, 3))
+```
+
+Most ORs barely change, but the diabetes OR explodes to an absurd value of
+about 15 million. Once the untreated patients with diabetes in the data are
+removed, *every* remaining patient with diabetes is on treatment: diabetes
+then predicts the outcome perfectly. This is *complete separation*
+(Section 5.5), and the maximum likelihood estimate of the diabetes
+coefficient no longer exists. The example teaches two lessons. First,
+influential observations are often genuine and informative patients, not
+errors; deleting them can destroy the very information a coefficient
+depends on. Second, flagged observations should be *inspected* (are they
+data-entry errors, or real but unusual patients?), and any sensitivity
+analysis should be reported alongside the main analysis rather than
+replacing it.
+
+## Presenting the results {#sec-presenting}
+
+### A publication-ready regression table
+
+The standard way to present a multivariable logistic regression in a paper
+is a table with, for each predictor, the crude (univariable) OR and the
+adjusted (multivariable) OR, each with its 95% CI and p-value. Showing
+both lets readers see how much adjustment changes each estimate. Copying
+numbers from the console into a word processor is slow and error-prone;
+`gtsummary` builds the table directly from the model objects
+[@sjoberg2021].
+
+`tbl_uvregression()` fits one univariable model per predictor,
+`tbl_regression()` formats the multivariable model, and `tbl_merge()` puts
+them side by side. We fit the univariable models to the same 992 complete
+cases (`cc`) so that crude and adjusted estimates are directly comparable.
+
+```{r c5-gtsummary-table}
+# Readable labels for the predictors
+labels_list <- list(
+  age ~ "Age (years)",
+  sex ~ "Sex",
+  education ~ "Education",
+  residence ~ "Residence",
+  diabetes ~ "Diabetes",
+  family_history_htn ~ "Family history of hypertension",
+  health_insurance ~ "Health insurance",
+  knowledge_score ~ "Knowledge score (per point)",
+  distance_to_facility_km ~ "Distance to facility (per km)"
+)
+
+# Univariable (crude) ORs, one model per predictor
+tbl_uni <- tbl_uvregression(
+  data         = cc,
+  method       = glm,
+  y            = treatment_uptake,
+  method.args  = list(family = binomial),
+  exponentiate = TRUE,
+  label        = labels_list,
+  hide_n       = TRUE
+) |>
+  modify_header(estimate ~ "**cOR**")
+
+# Multivariable (adjusted) ORs from the pre-specified model
+tbl_multi <- tbl_regression(model_full, exponentiate = TRUE,
+                            label = labels_list) |>
+  modify_header(estimate ~ "**aOR**")
+
+tbl_both <- tbl_merge(list(tbl_uni, tbl_multi),
+                      tab_spanner = c("**Crude**", "**Adjusted**"))
+
+tbl_both |>
+  as_kable(caption = paste("Crude and adjusted odds ratios for",
+                           "hypertension treatment uptake (n = 992)."))
+```
+
+The table has seven columns: the characteristic, then OR, 95% CI and
+p-value for the crude and adjusted analyses. Reference categories are shown
+with a dash, which reminds the reader what each OR is compared with. In a
+manuscript you would add a footnote: "cOR = crude odds ratio; aOR = odds
+ratio adjusted for all other variables in the table; CI = confidence
+interval. Complete-case analysis of 992 of 1,089 patients with diagnosed
+hypertension."
+
+::: {.callout-tip title="Good practice"}
+In a manuscript, export the same table to Word or HTML with
+`gtsummary::as_flex_table()` or `as_gt()`, so that the numbers in the paper
+come directly from the code. If the data change, re-run the script and the
+table updates itself. Report p-values to two significant figures (and
+"<0.001" for very small values), never as stars or as "NS".
+:::
+
+### A forest plot of adjusted odds ratios
+
+A *forest plot* displays each OR as a point with a horizontal line for its
+confidence interval, and a vertical reference line at OR = 1. Because ORs
+are ratios, the horizontal axis should be on a **logarithmic** scale: on a
+linear scale an OR of 0.5 (halving the odds) would appear much closer to 1
+than an OR of 2 (doubling), although the two effects are of the same
+magnitude, and confidence intervals would look artificially asymmetric.
+
+```{r c5-forest-plot, fig.cap="Forest plot of adjusted odds ratios (95% confidence intervals) for treatment uptake from the multivariable logistic regression model (n = 992). The horizontal axis is on a logarithmic scale; the dashed line marks OR = 1.", fig.height=4.8}
+# Readable labels for each model term
+term_labels <- c(
+  age                     = "Age (per year)",
+  sexMale                 = "Male (vs female)",
+  educationPrimary        = "Primary (vs none)",
+  educationSecondary      = "Secondary (vs none)",
+  educationTertiary       = "Tertiary (vs none)",
+  residenceUrban          = "Urban (vs rural)",
+  diabetesYes             = "Diabetes",
+  family_history_htnYes   = "Family history of HTN",
+  health_insuranceYes     = "Health insurance",
+  knowledge_score         = "Knowledge score (per point)",
+  distance_to_facility_km = "Distance (per km)"
+)
+
+forest_df <- or_table |>
+  filter(term != "(Intercept)") |>
+  mutate(label = factor(term_labels[term],
+                        levels = rev(term_labels)))  # keep model order
+
+ggplot(forest_df, aes(x = estimate, y = label)) +
+  geom_vline(xintercept = 1, linetype = "dashed", colour = "grey50") +
+  geom_errorbar(aes(xmin = conf.low, xmax = conf.high),
+                width = 0.25, colour = "#0D7377", orientation = "y") +
+  geom_point(size = 2.6, colour = "#0D7377") +
+  scale_x_log10(breaks = c(0.5, 0.75, 1, 1.5, 2, 3, 5, 10)) +
+  labs(title = "Adjusted odds ratios for treatment uptake",
+       x = "Adjusted odds ratio (log scale)", y = NULL)
+```
+
+The plot conveys the main messages at a glance: all the ORs except those
+for sex and distance lie to the right of 1; most intervals exclude 1; the
+diabetes interval is much the widest; and the distance OR sits just to the
+left of 1 with an interval that crosses it. Note that the per-unit ORs for
+continuous variables look small only because the units are small; a
+forest plot that mixes per-unit and per-category ORs should say so in its
+labels, or use rescaled ORs.
+
+## Writing the results {#sec-writing}
+
+### What to report
+
+The STROBE statement (*Strengthening the Reporting of Observational
+Studies in Epidemiology*) lists the items that reports of cohort,
+case–control and cross-sectional studies should contain [@vonelm2007].
+For a regression analysis, the most relevant are:
+
+- **Participants**: the number of individuals at each stage, including the
+  number eligible, the number analysed, and the reasons for exclusion (here
+  1,089 diagnosed patients, of whom 992 had complete data).
+- **Statistical methods**: the model, how variables were chosen, how
+  continuous variables were handled, how missing data were addressed, and
+  any sensitivity analyses.
+- **Main results**: crude and adjusted estimates with their precision (95%
+  CIs), making clear which confounders were adjusted for and why.
+- **Category boundaries and units**: for continuous predictors, the unit
+  to which each OR refers.
+- **Other analyses**: interactions examined and sensitivity analyses.
+
+### A Methods paragraph
+
+> We used multivariable logistic regression to estimate the association
+> of patient and access characteristics with treatment uptake among adults
+> with diagnosed hypertension. Predictors were specified before analysis on
+> the basis of the literature and clinical reasoning: age, sex, education,
+> residence, diabetes, family history of hypertension, health insurance,
+> hypertension knowledge score and distance to the facility. Continuous
+> predictors were modelled as linear terms after checking for non-linearity
+> with quadratic terms. Results are reported as odds ratios (ORs) with 95%
+> profile-likelihood confidence intervals; overall associations of
+> categorical variables were assessed with likelihood-ratio tests.
+> Discrimination was assessed with the area under the ROC curve and
+> calibration with the Hosmer–Lemeshow test. Analyses used complete cases
+> and were performed in R version 4.6.
+
+```{r c5-results-values, include=FALSE}
+n_dx      <- nrow(dx)
+n_uptake  <- sum(dx$treatment_uptake == "Yes")
+n_model   <- nobs(model_full)
+fmt_or <- function(term) {
+  r <- or_table[or_table$term == term, ]
+  sprintf("%.2f, 95%% CI %.2f to %.2f", r$estimate, r$conf.low, r$conf.high)
+}
+p_edu <- drop1(model_full, test = "LRT")["education", "Pr(>Chi)"]
+```
+
+### A Results paragraph
+
+The paragraph below is written with inline R code, so every number comes
+straight from the model objects created above.
+
+> Of the `r format(n_dx, big.mark = ",")` adults with diagnosed
+> hypertension, `r n_uptake` (`r round(100 * n_uptake / n_dx, 1)`%) were
+> receiving antihypertensive treatment; `r n_model` had complete data and
+> were included in the multivariable model. After mutual adjustment,
+> treatment uptake was associated with diabetes (OR
+> `r fmt_or("diabetesYes")`), health insurance (OR
+> `r fmt_or("health_insuranceYes")`), a family history of hypertension (OR
+> `r fmt_or("family_history_htnYes")`) and urban rather than rural
+> residence (OR `r fmt_or("residenceUrban")`). The odds of uptake increased
+> with educational attainment (likelihood-ratio $p =
+> `r round(p_edu, 3)`$; OR for tertiary versus no education
+> `r fmt_or("educationTertiary")`), with age (OR per 10 years
+> `r sprintf("%.2f, 95%% CI %.2f to %.2f", rescaled$OR[1], rescaled$lower[1], rescaled$upper[1])`)
+> and with hypertension knowledge (OR per 5 points
+> `r sprintf("%.2f, 95%% CI %.2f to %.2f", rescaled$OR[2], rescaled$lower[2], rescaled$upper[2])`).
+> Men had lower odds of uptake than women (OR `r fmt_or("sexMale")`).
+> Distance to the facility was associated with lower uptake in the crude
+> analysis, but after adjustment (mainly for residence) the association was
+> weaker and compatible with no association (OR per 5 km
+> `r sprintf("%.2f, 95%% CI %.2f to %.2f", rescaled$OR[3], rescaled$lower[3], rescaled$upper[3])`).
+> The model showed acceptable discrimination (AUC
+> `r sprintf("%.2f, 95%% CI %.2f to %.2f", auc_val, auc_ci[1], auc_ci[3])`)
+> and no evidence of poor calibration (Hosmer–Lemeshow $p =
+> `r round(hl_p, 2)`$).
+
+Notice the features of this paragraph. It starts with the participants and
+the number analysed. Every OR has a 95% CI, and the reference category is
+clear ("urban rather than rural", "men ... than women"). Continuous
+predictors are reported per meaningful increment. A multi-level variable
+is summarised by its overall LR test plus the most informative comparison.
+A non-significant result (distance) is reported with its estimate and
+interval, not as "not significant" alone. And the wording describes
+*associations*, not effects.
+
+::: {.callout-warning title="Common mistake"}
+Over-claiming causality. This is a cross-sectional study: exposure and
+outcome were measured at the same time, so we cannot tell whether, for
+example, knowledge led to treatment or treatment (and the counselling that
+accompanies it) led to knowledge. Words such as "effect", "impact",
+"leads to", "reduces" and "determines" imply causation. Prefer "was
+associated with", "had higher odds of" and "was more common among", and
+discuss reverse causation and residual confounding in the Discussion
+[@vonelm2007].
+:::
+
+::: {.callout-note title="Clinical interpretation"}
+If these findings were real, they would point to several groups at risk of
+not receiving treatment after diagnosis: men, rural residents, people
+without health insurance, those with little formal education and those with
+poor knowledge of hypertension. Some of these factors (insurance coverage,
+knowledge) are potentially modifiable through policy and health education.
+Remember, however, that the data in this book are simulated for teaching:
+the results illustrate methods, not real clinical findings.
+:::
+
+### Results, interpretation and discussion
+
+A Results section reports what was found: numbers, intervals, and neutral
+wording. The interpretation of those numbers (what they mean for patients
+and services), the comparison with previous studies, and the limitations
+belong in the Discussion. For this analysis the limitations section would
+mention the cross-sectional design (no temporal ordering), self-reported
+uptake, the complete-case analysis, possible residual confounding by
+unmeasured factors such as income or severity of hypertension, and the
+clustering of patients within six facilities. Finally, the Discussion
+should avoid the Table 2 fallacy: the adjusted ORs are mutually adjusted
+associations, not a ranking of causal effects [@westreich2013].
+
+## Reproducible reporting {#sec-reproducible}
+
+### Why reproducibility matters
+
+An analysis is *reproducible* if another person, given the same data and
+code, obtains the same results [@peng2011]. This is a lower bar than
+*replicability* (obtaining consistent results in new data), but it is
+surprisingly often not met. Numbers copied by hand from the console into a
+manuscript drift out of date as the analysis evolves; figures produced by
+clicking through menus cannot be regenerated; and a script that runs only
+on the author's computer, with files in `C:/Users/...`, cannot be checked by
+anyone else. In clinical research, where results may change practice, the
+ability to retrace every step from raw data to published number is part of
+scientific integrity.
+
+### Principles for a reproducible analysis
+
+@wilson2017 describe "good enough" practices that any researcher can adopt,
+and @peng2011 describes a spectrum from publication alone to fully linked
+and executable code and data. For an analysis like the one in this book,
+the essential practices are as follows.
+
+- **Keep raw data read-only.** Never edit the raw file by hand. All
+  cleaning is done by a script (Chapter 2) that writes a separate clean
+  file, as `analysis_data.rds` was created.
+- **Organise the project.** Use one folder per project, opened as an
+  RStudio Project, with sub-folders such as `Data/` (raw and clean data),
+  `Scripts/` (numbered analysis scripts), `Resources/` or `Output/`
+  (generated tables and figures), and `Reports/` (R Markdown or Quarto
+  documents).
+- **Use relative paths.** Refer to files relative to the project folder
+  (`"Data/analysis_data.rds"`), never with an absolute path; the
+  `here` package helps when scripts live in sub-folders.
+- **Script everything.** Every table and figure should be produced by code
+  that is saved, not by interactive commands typed and forgotten.
+- **Set the random seed.** Any analysis involving random numbers
+  (bootstrapping, multiple imputation, random splits, simulation) must call
+  `set.seed()` so that it gives identical results each time.
+- **Record the software environment.** Report the versions of R and of
+  the key packages, since results and defaults can change between
+  versions.
+- **Use version control** (such as Git) to keep a history of changes to
+  code and text.
+
+### Setting the seed: an example
+
+Maximum likelihood estimation is deterministic, so `model_full` gives the
+same coefficients every time. Resampling methods are not. A bootstrap
+confidence interval for the AUC, for example, draws random resamples of
+the patients.
+
+```{r c5-seed}
+set.seed(2026)
+ci.auc(roc_obj, method = "bootstrap", boot.n = 500, progress = "none")
+
+set.seed(2026)          # same seed, so exactly the same interval
+ci.auc(roc_obj, method = "bootstrap", boot.n = 500, progress = "none")
+```
+
+Run with the same seed, the two bootstrap intervals are identical; with a
+different seed (or none) they would differ slightly from run to run. Both
+are close to the analytical DeLong interval computed earlier.
+
+### From script to report: R Markdown and Quarto
+
+The most powerful tool for reproducible reporting is the *dynamic
+document*, which interleaves text and code in a single file
+[@xie2015]. In an R Markdown (`.Rmd`) or Quarto (`.qmd`) document, prose
+is written in Markdown and analysis code is placed in *chunks*. When the
+document is rendered ("knitted"), R runs every chunk in a fresh session
+and inserts the output (tables, figures and numbers) into a Word, PDF or
+HTML report. This book itself was produced in this way.
+
+A minimal analysis report has three parts:
+
+1. A *header* (written in YAML) with the title, author, date and output
+   format, for example `output: word_document` in R Markdown or
+   `format: docx` in Quarto.
+2. *Code chunks* that load the packages and data, fit the models and
+   produce the tables and figures exactly as in this chapter.
+3. *Text* with inline R code, so that numbers in sentences are computed
+   rather than typed. The Results paragraph in Section 5.11 was written
+   this way: an inline expression such as `nrow(dx)`, placed between
+   backticks after the letter `r`, is replaced by its value
+   (`r nrow(dx)`) when the document is rendered.
+
+Because the report is regenerated from the data each time, a correction to
+the cleaning script, or an updated data set, flows automatically into every
+number, table and figure. There is no step at which a number can be copied
+wrongly.
+
+The code below shows how outputs would be saved from a script. In a real
+project they would go to an output folder; here they are written to a
+temporary directory so that nothing in the project is changed.
+
+```{r c5-save-outputs}
+out_dir <- tempdir()     # in a project: "Resources" or "Output"
+
+# Regression table and forest plot data as CSV
+write_csv(or_table, file.path(out_dir, "regression_table.csv"))
+
+# The forest plot as a high-resolution PNG
+forest_plot <- ggplot(forest_df, aes(x = estimate, y = label)) +
+  geom_vline(xintercept = 1, linetype = "dashed") +
+  geom_errorbar(aes(xmin = conf.low, xmax = conf.high), width = 0.25,
+                orientation = "y") +
+  geom_point() +
+  scale_x_log10()
+ggsave(file.path(out_dir, "forest_plot.png"), forest_plot,
+       width = 7, height = 5, dpi = 300)
+
+list.files(out_dir, pattern = "regression_table|forest_plot")
+```
+
+### Recording the software environment
+
+`sessionInfo()` prints the R version, the operating system and every loaded
+package with its version. In a report, you would include it in an appendix
+or supplementary file, for example with
+`writeLines(capture.output(sessionInfo()), "session_info.txt")`. The full
+output is long; the essential information is shown below.
+
+```{r c5-session}
+R.version.string
+pkgs <- c("tidyverse", "broom", "gtsummary", "car", "pROC", "ggplot2")
+tibble(package = pkgs,
+       version = map_chr(pkgs, \(p) as.character(packageVersion(p))))
+```
+
+::: {.callout-tip title="Good practice"}
+Before submitting a paper, restart R, clear the workspace, and run (or
+render) the whole analysis from the raw data to the final report in one go.
+If it runs without error and reproduces every number in the manuscript,
+your analysis is reproducible. If it does not, it is better that you find
+out now than a reviewer later.
+:::
+
+## Summary {#sec-summary-ch5}
+
+This chapter brought together the skills of the previous chapters to answer
+the study's main question with regression models. Linear regression models
+the mean of a continuous outcome as a linear function of several
+predictors, estimated by least squares; its coefficients are differences in
+means, holding other predictors fixed, and its assumptions are checked with
+residual plots. For a binary outcome, logistic regression models the
+log-odds as a linear function of the predictors, estimated by maximum
+likelihood; exponentiated coefficients are odds ratios, which approximate
+risk ratios only when the outcome is rare.
+
+We fitted a pre-specified multivariable logistic regression for treatment
+uptake among 992 patients with diagnosed hypertension and complete data,
+read the `summary()` output line by line, converted coefficients to odds
+ratios with profile-likelihood confidence intervals, rescaled continuous
+predictors to meaningful increments, and tested education as a whole with a
+likelihood-ratio test. Comparing crude and adjusted estimates showed that
+the apparent association between distance and uptake was largely explained
+by residence, a clear example of confounding, while the changes in the ORs
+for family history and insurance partly reflected non-collapsibility. The model
+had adequate events per variable, no collinearity, no evidence of
+non-linearity or poor calibration, and acceptable discrimination. Finally,
+we presented the results as a merged crude and adjusted table and a forest
+plot, wrote Methods and Results paragraphs in line with STROBE, and saw how
+dynamic documents, seeds and a recorded software environment make the whole
+analysis reproducible.
+
+::: {.callout-important title="Key points"}
+- Decide the purpose of a model (description, prediction or explanation)
+  and its predictors before looking at the outcome data.
+- In logistic regression, $\exp(\beta)$ is the odds ratio for a one-unit
+  increase, holding the other predictors fixed; report continuous
+  predictors per clinically meaningful increment, $\exp(c\beta)$.
+- Odds ratios exaggerate risk ratios when the outcome is common; say "odds",
+  and add predicted probabilities or risk ratios when readers need risks.
+- Report the number of patients analysed: `glm()` silently drops anyone
+  with a missing value in any model variable.
+- Use likelihood-ratio tests (`drop1()`, `anova(test = "LRT")`) for
+  multi-level factors and for comparing nested models fitted to the same
+  patients.
+- A change from crude to adjusted OR may reflect confounding, but ORs are
+  non-collapsible; reason causally, and do not interpret every adjusted OR
+  as a causal effect (the Table 2 fallacy).
+- Avoid stepwise selection in explanatory models; check events per
+  variable, collinearity (VIF), linearity, discrimination (AUC),
+  calibration and influential observations.
+- Present crude and adjusted ORs with 95% CIs in a `gtsummary` table and a
+  log-scale forest plot; write results as associations, following STROBE.
+- Make the analysis reproducible: scripts, relative paths, `set.seed()`,
+  dynamic documents and a record of software versions.
+:::
+
+## Further reading {#sec-further-reading-ch5}
+
+- @hosmer2013, *Applied Logistic Regression*: the standard reference on
+  logistic regression, covering model building, interpretation of odds
+  ratios, goodness of fit and diagnostics in depth.
+- @vittinghoff2012, *Regression Methods in Biostatistics*: a clear,
+  example-driven account of linear, logistic, Poisson and Cox regression,
+  with an excellent chapter on choosing predictors for different purposes.
+- @harrell2015, *Regression Modeling Strategies*: the definitive guide to
+  building prediction models responsibly, including the case against
+  stepwise selection, splines, validation and calibration.
+- @westreich2013 and @vanderweele2019: two short, readable papers on how to
+  choose adjustment variables and how (not) to interpret a multivariable
+  model's coefficients.
+- @vonelm2007, the STROBE statement: the checklist to follow when writing up
+  any observational study.
+
+## Exercises {#sec-exercises-ch5}
+
+::: {.exercise title="Exercise 5.1"}
+Using the full `analysis_data` (all 1,500 adults), fit a linear regression
+of systolic blood pressure (`sbp_mmhg`) on `age`, `bmi` and `sex`.
+
+1. Report the coefficient for age per 10 years, with its 95% CI.
+2. Interpret the coefficient for `sexMale` in one sentence.
+3. How much of the variation in SBP does the model explain?
+4. Draw the residuals-versus-fitted plot. Are the assumptions reasonable?
+:::
+
+::: {.exercise title="Exercise 5.2"}
+Among the diagnosed patients (`dx`), cross-tabulate `family_history_htn`
+against `treatment_uptake`.
+
+1. Calculate by hand the proportion and the odds of uptake in each group,
+   and the crude odds ratio.
+2. Fit `glm(treatment_uptake ~ family_history_htn, family = binomial)` and
+   confirm that `exp(coef())` gives the same OR.
+3. Calculate the crude risk ratio and compare it with the OR. Why do they
+   differ? Check your answer with the Zhang and Yu formula.
+:::
+
+::: {.exercise title="Exercise 5.3"}
+From `model_full`, calculate the adjusted odds ratio and 95% CI for:
+
+1. a 10-year increase in age;
+2. a 5-point increase in knowledge score;
+3. a 10 km increase in distance to the facility.
+
+Which of these increments do you consider most clinically meaningful, and
+why should the increment be chosen before the analysis?
+:::
+
+::: {.exercise title="Exercise 5.4"}
+Investigate whether the association between health insurance and uptake is
+confounded.
+
+1. Using the complete-case data `cc`, fit the crude model for
+   `health_insurance` and compare its OR with the adjusted OR from
+   `model_full`. Calculate the percentage change in the log OR.
+2. Describe in words a causal diagram for insurance and uptake. Which of the
+   other model variables might be confounders, and could any be mediators?
+3. Is the change you observed best explained by confounding or by
+   non-collapsibility? Justify your answer.
+:::
+
+::: {.exercise title="Exercise 5.5"}
+Education is an ordered variable.
+
+1. Use `drop1()` to obtain the likelihood-ratio test for education in
+   `model_full`, and state the null hypothesis it tests.
+2. Create a numeric version of education (0 = None, 1 = Primary,
+   2 = Secondary, 3 = Tertiary) and refit the model with it in place of the
+   factor. Interpret the OR "per level of education".
+3. Compare the two models with AIC. Which would you report, and why?
+:::
+
+::: {.exercise title="Exercise 5.6"}
+Patients were recruited from six facilities.
+
+1. Add `facility` to `model_full` and test it with a likelihood-ratio test.
+2. Does adding facility change any of the other adjusted ORs by more than
+   10%?
+3. Compare the AUC of the two models. What do you conclude about the role
+   of facility in this analysis?
+:::
+
+::: {.exercise title="Exercise 5.7"}
+A health economist suggests that health insurance might matter more for
+rural patients, who face higher costs of travel.
+
+1. Add the interaction `health_insurance:residence` to `model_full` and test
+   it with a likelihood-ratio test.
+2. From the interaction model, calculate the OR for insurance separately in
+   rural and in urban patients.
+3. Write two sentences reporting the result, as you would in a paper.
+:::
+
+::: {.exercise title="Exercise 5.8"}
+A secondary outcome is blood pressure control (`bp_controlled`), defined
+only among patients on treatment.
+
+1. Restrict the data to diagnosed patients with `treatment_uptake == "Yes"`
+   and tabulate `bp_controlled`. How many events are there?
+2. Using the 10 events-per-variable guideline, how many parameters can a
+   logistic model for BP control support?
+3. Pre-specify and fit a model with no more than that number of parameters
+   (for example age, sex, BMI and adherence). Report the adjusted ORs with
+   95% CIs and the AUC.
+4. Write a short Results paragraph (about 100 words) that reports the
+   findings appropriately, including the limitations imposed by the small
+   number of events.
+:::

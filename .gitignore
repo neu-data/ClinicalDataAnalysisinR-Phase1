@@ -25,3 +25,7 @@ site/en/_site/
 site/vi/_site/
 site/_public/
 site/**/.quarto/
+
+# Book build output (the zip and PDF are kept)
+Book/overleaf/
+Book/_knit/**/*.pdf

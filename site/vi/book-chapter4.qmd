@@ -1,0 +1,2074 @@
+---
+title: "Chương 4: Các kiểm định thống kê thường dùng trong nghiên cứu y học"
+subtitle: "Giới thiệu R cho Nghiên cứu Lâm sàng"
+bibliography: references.bib
+link-citations: true
+---
+
+
+Ở Chương 3, chúng ta đã mô tả 1.500 bệnh nhân của mình: tuổi, huyết áp, số người có bảo
+hiểm y tế và số người đã tiếp nhận điều trị thuốc hạ áp. Mô tả là cần thiết, nhưng hiếm khi
+trả lời được câu hỏi mà người thầy thuốc hay nhà hoạch định y tế thực sự đặt ra. Họ muốn
+biết liệu những bệnh nhân tiếp nhận điều trị có *khác* những người không tiếp nhận hay
+không: lớn tuổi hơn, hiểu biết tốt hơn, sống gần cơ sở y tế hơn, hay có bảo hiểm y tế nhiều
+hơn. Trong mẫu của chúng ta, những bệnh nhân được điều trị trung bình lớn hơn khoảng năm
+tuổi so với những người không được điều trị. Đó có phải là một đặc điểm thực sự của bệnh
+nhân tăng huyết áp đến khám tại tuyến chăm sóc ban đầu, hay một chênh lệch cỡ đó hoàn toàn
+có thể xuất hiện do ngẫu nhiên, chỉ vì chúng ta tình cờ tuyển chọn đúng 1.089 bệnh nhân đã
+được chẩn đoán này mà không phải những người khác? Các kiểm định thống kê, cùng với "người
+họ hàng gần" của chúng là khoảng tin cậy, là những công cụ giúp chúng ta đi từ *mô tả một
+mẫu* đến *đưa ra những nhận định thận trọng về quần thể mà mẫu đó được rút ra*. Chương này
+giải thích logic đằng sau các kiểm định, trình bày một số ít kiểm định bao quát phần lớn các
+câu hỏi trong nghiên cứu y học, và — điều cũng quan trọng không kém — hướng dẫn cách đọc và
+báo cáo kết quả mà không rơi vào những cái bẫy đã khiến giá trị p trở thành một trong những
+con số bị hiểu sai nhiều nhất trong khoa học.
+
+::: {.callout-note .nb-objectives icon=false title="Mục tiêu học tập"}
+- Giải thích sự khác biệt giữa quần thể và mẫu, và vì sao các ước lượng thay đổi từ mẫu này sang mẫu khác (sai số chuẩn).
+- Mô tả logic của một kiểm định giả thuyết: giả thuyết không và giả thuyết đối, thống kê kiểm định, phân phối dưới giả thuyết không và giá trị p.
+- Phát biểu đúng giá trị p là gì và không phải là gì; giải thích sai lầm loại I, sai lầm loại II, lực thống kê và khoảng tin cậy.
+- Xác định quần thể phân tích một cách tường minh và lý giải lựa chọn đó.
+- Đánh giá tính chuẩn của một biến liên tục bằng biểu đồ tần suất (histogram), biểu đồ Q–Q và kiểm định Shapiro–Wilk, và giải thích vì sao các kiểm định chuẩn hình thức dễ gây hiểu lầm khi cỡ mẫu lớn.
+- So sánh một biến liên tục giữa hai nhóm (kiểm định t Student và Welch, kiểm định tổng hạng Wilcoxon) và giữa nhiều hơn hai nhóm (ANOVA một yếu tố, kiểm định Kruskal–Wallis), kèm các so sánh hậu kiểm (post-hoc) phù hợp.
+- Kiểm định mối liên quan giữa hai biến phân loại (kiểm định khi bình phương và kiểm định chính xác Fisher) và ước lượng hiệu số nguy cơ, nguy cơ tương đối và tỷ số chênh kèm khoảng tin cậy.
+- Đo lường mối liên quan giữa hai biến liên tục bằng hệ số tương quan Pearson và Spearman.
+- Chọn kiểm định phù hợp cho một câu hỏi nghiên cứu, nhận ra khi nào các kiểm định đơn biến là chưa đủ, và báo cáo kết quả bằng lời với một ước lượng, một khoảng tin cậy và một giá trị p.
+:::
+
+
+
+Chúng ta dùng các gói giống như ở những chương trước và nạp lại bộ dữ liệu sạch đã lưu ở
+cuối Chương 2. Mọi chương đều bắt đầu từ tệp đã lưu đó; không có gì phải làm sạch lại bằng
+tay.
+
+
+``` r
+library(tidyverse)   # dplyr để xử lý dữ liệu, ggplot2 để vẽ hình
+library(broom)       # tidy() đưa kết quả kiểm định, mô hình về data frame
+library(patchwork)   # đặt nhiều khung ggplot2 cạnh nhau
+library(gtsummary)   # bảng tóm tắt kèm giá trị p
+
+course_teal  <- "#0D7377"   # màu nhấn dùng cho các hình trong sách
+course_amber <- "#E8A33D"   # màu thứ hai cho các hình so sánh hai nhóm
+
+analysis_data <- readRDS("Data/analysis_data.rds")
+dim(analysis_data)
+```
+
+```
+#> [1] 1500   38
+```
+
+## 4.1 Từ mô tả đến suy luận {#sec-inference}
+
+### 4.1.1 Quần thể, mẫu, tham số và thống kê
+
+Hầu như mọi nghiên cứu lâm sàng đều quan sát một **mẫu** (sample) người để tìm hiểu về một
+**quần thể** (population) lớn hơn. Nghiên cứu của chúng ta tuyển chọn người trưởng thành đến
+khám tại sáu cơ sở chăm sóc sức khỏe ban đầu; quần thể quan tâm, nói rộng ra, là người
+trưởng thành đến khám tại các cơ sở chăm sóc ban đầu tương tự. Những đại lượng mô tả quần
+thể, chẳng hạn tỷ lệ thực sự bệnh nhân tăng huyết áp đã được chẩn đoán đang điều trị, hay
+tuổi trung bình thực sự của những người đang điều trị, được gọi là **tham số** (parameter).
+Chúng cố định nhưng chưa biết. Các đại lượng tương ứng tính từ dữ liệu của chúng ta, chẳng
+hạn tỷ lệ đang điều trị quan sát được, được gọi là **thống kê** (statistic) hay **ước
+lượng** (estimate). Chúng ta dùng chữ cái Hy Lạp cho tham số và chữ cái La-tinh cho ước
+lượng: $\mu$ là trung bình quần thể và $\bar{x}$ là trung bình mẫu dùng để ước lượng nó;
+$\pi$ là tỷ lệ quần thể và $p$ là tỷ lệ mẫu [@kirkwood2003; @altman1991].
+
+**Suy luận thống kê** (statistical inference) là công việc dùng các ước lượng để nói điều gì
+đó về các tham số, kèm theo một nhận định trung thực về mức độ không chắc chắn của chúng ta.
+Nó dựa trên một giả định then chốt: mẫu có thể được coi (gần đúng) là một mẫu ngẫu nhiên từ
+quần thể. Không kiểm định thống kê nào cứu được một mẫu thiếu tính đại diện nghiêm trọng.
+Ví dụ, nếu chỉ những bệnh nhân có động lực nhất đồng ý tham gia, tỷ lệ đang điều trị trong
+mẫu sẽ ước lượng quá cao tỷ lệ trong quần thể, và giá trị p sẽ hoàn toàn không cảnh báo
+chúng ta điều đó. Các kiểm định trong chương này xử lý **sai số ngẫu nhiên** (random error,
+tức tác động của may rủi); chúng không xử lý **sai số hệ thống** (systematic error — sai
+lệch trong chọn mẫu, đo lường hoặc nhiễu), vốn phải được giải quyết bằng thiết kế nghiên
+cứu và, như Chương 5 sẽ trình bày, một phần bằng hiệu chỉnh thống kê [@rothman2008].
+
+### 4.1.2 Biến thiên do chọn mẫu và sai số chuẩn
+
+Hãy tưởng tượng lặp lại nghiên cứu nhiều lần, mỗi lần tuyển chọn một tập bệnh nhân ngẫu
+nhiên khác nhau. Mỗi lần lặp sẽ cho một giá trị huyết áp tâm thu trung bình hơi khác nhau.
+**Biến thiên do chọn mẫu** (sampling variation) này là không thể tránh khỏi, và độ lớn của
+nó phụ thuộc vào hai yếu tố: phép đo biến thiên nhiều đến đâu giữa các cá nhân, và chúng ta
+đo bao nhiêu người. Phân phối của một ước lượng qua các lần lặp lại giả định của nghiên cứu
+được gọi là **phân phối mẫu** (sampling distribution) của nó, và độ lệch chuẩn của phân phối
+mẫu đó được gọi là **sai số chuẩn** (standard error, SE). Với trung bình mẫu, sai số chuẩn
+là
+
+$$
+\mathrm{SE}(\bar{x}) = \frac{\sigma}{\sqrt{n}} \approx \frac{s}{\sqrt{n}},
+$$
+
+trong đó $\sigma$ là độ lệch chuẩn của phép đo trong quần thể, được ước lượng bằng độ lệch
+chuẩn mẫu $s$, và $n$ là cỡ mẫu. Với một tỷ lệ $p$, sai số chuẩn là $\sqrt{p(1-p)/n}$. Sự
+phân biệt giữa hai đại lượng "chuẩn" này rất quan trọng và thường bị nhầm lẫn trong các bài
+báo đã công bố: **độ lệch chuẩn** mô tả mức độ biến thiên giữa các *cá nhân*, còn **sai số
+chuẩn** mô tả mức độ chính xác khi ta ước lượng một *đại lượng tóm tắt* như trung bình
+[@altman1991; @bland2015]. Độ lệch chuẩn không nhỏ đi khi ta tuyển thêm bệnh nhân; sai số
+chuẩn thì có, theo tỷ lệ $1/\sqrt{n}$. Muốn giảm sai số chuẩn đi một nửa, chúng ta cần số
+bệnh nhân gấp bốn lần.
+
+Chúng ta có thể quan sát trực tiếp biến thiên do chọn mẫu bằng một mô phỏng nhỏ. Ta coi
+1.088 bệnh nhân đã được chẩn đoán có ghi nhận huyết áp tâm thu như thể đó là toàn bộ quần
+thể, rút 2.000 mẫu ngẫu nhiên gồm 25 bệnh nhân và 2.000 mẫu gồm 100 bệnh nhân, rồi tính
+huyết áp tâm thu trung bình của từng mẫu.
+
+
+``` r
+dx_all <- filter(analysis_data, htn_diagnosed == "Yes")
+sbp_pop <- na.omit(dx_all$sbp_mmhg)   # "quần thể" giả định của chúng ta
+
+set.seed(2026)                         # giúp mô phỏng có thể tái lập
+sim_means <- tibble(
+  n = rep(c(25, 100), each = 2000),
+  sample_mean = c(replicate(2000, mean(sample(sbp_pop, 25))),
+                  replicate(2000, mean(sample(sbp_pop, 100))))
+)
+
+# Độ phân tán của 2.000 trung bình mẫu so với công thức sigma / sqrt(n)
+sim_means |>
+  group_by(n) |>
+  summarise(mean_of_means = mean(sample_mean),
+            sd_of_means   = sd(sample_mean),
+            formula_se    = sd(sbp_pop) / sqrt(first(n)))
+```
+
+```
+#> # A tibble: 2 × 4
+#>       n mean_of_means sd_of_means formula_se
+#>   <dbl>         <dbl>       <dbl>      <dbl>
+#> 1    25          145.        3.80       3.87
+#> 2   100          145.        1.80       1.94
+```
+
+Huyết áp tâm thu trung bình của quần thể là 144.9 mmHg và độ lệch
+chuẩn là 19.4 mmHg. Kết quả cho thấy ba điều. Thứ nhất, trung bình của
+2.000 trung bình mẫu (`mean_of_means`) về cơ bản bằng trung bình quần thể dù cỡ mẫu là bao
+nhiêu: trung bình mẫu là một ước lượng **không chệch** (unbiased). Thứ hai, các trung bình
+mẫu dao động ít hơn nhiều với mẫu 100 người so với mẫu 25 người: độ lệch chuẩn của các
+trung bình mô phỏng (`sd_of_means`) giảm khoảng một nửa khi $n$ tăng gấp bốn. Thứ ba, độ
+phân tán thực nghiệm đó rất khớp với công thức $\sigma/\sqrt{n}$ (`formula_se`); nó nhỏ hơn
+một chút với $n = 100$ chỉ vì chúng ta lấy mẫu không hoàn lại từ một "quần thể" hữu hạn gồm
+1.088 bệnh nhân. Trong một nghiên cứu thực tế, chúng ta chỉ có một mẫu duy nhất, nhưng công
+thức cho phép ước lượng sai số chuẩn từ chính mẫu đó. Hình 4.1 trình bày hai phân phối mẫu.
+
+
+``` r
+ggplot(sim_means, aes(x = sample_mean)) +
+  geom_histogram(binwidth = 1, fill = course_teal, colour = "white") +
+  geom_vline(xintercept = mean(sbp_pop), linetype = "dashed") +
+  facet_wrap(~ n, labeller = label_both) +
+  labs(x = "Huyết áp tâm thu trung bình trong mẫu (mmHg)",
+       y = "Số mẫu")
+```
+
+![Phân phối mẫu của huyết áp tâm thu trung bình trong 2.000 mẫu ngẫu nhiên gồm 25 và gồm 100 bệnh nhân đã được chẩn đoán. Mẫu lớn hơn cho các trung bình tập trung sát hơn quanh trung bình quần thể (đường nét đứt).](images/book/04-statistical-tests-c4-sampling-fig-1.png)
+
+Cũng cần lưu ý rằng cả hai biểu đồ tần suất đều có dạng đường cong chuẩn hình chuông quen
+thuộc, mặc dù huyết áp tâm thu ở từng cá nhân hơi lệch. Đây chính là **định lý giới hạn
+trung tâm** (central limit theorem) đang phát huy tác dụng: dù phân phối của các giá trị cá
+nhân có hình dạng thế nào, phân phối mẫu của một trung bình (hoặc một tỷ lệ) sẽ xấp xỉ phân
+phối chuẩn khi cỡ mẫu tăng lên [@kirkwood2003; @lumley2002]. Định lý này là lý do vì sao rất
+nhiều kiểm định dựa trên phân phối chuẩn hoạt động tốt với cỡ mẫu vừa và lớn, và chúng ta
+sẽ quay lại với nó khi bàn về tính chuẩn ở Mục 4.3.
+
+### 4.1.3 Logic của một kiểm định giả thuyết
+
+Một kiểm định giả thuyết (hypothesis test) đặt ra một câu hỏi hẹp: *nếu thực sự không có
+khác biệt (hay không có mối liên quan) trong quần thể, thì dữ liệu của chúng ta đáng ngạc
+nhiên đến mức nào?* Quy trình gồm năm bước [@kirkwood2003; @altman1991].
+
+1. Phát biểu **giả thuyết không** (null hypothesis), $H_0$, thường là "không có tác động":
+   ví dụ, khoảng cách trung bình đến cơ sở y tế là như nhau ở bệnh nhân tiếp nhận điều trị
+   và ở bệnh nhân không tiếp nhận, $H_0: \mu_{\text{Yes}} = \mu_{\text{No}}$.
+2. Phát biểu **giả thuyết đối** (alternative hypothesis), $H_1$, thường là có một khác biệt
+   nào đó theo bất kỳ hướng nào, $H_1: \mu_{\text{Yes}} \neq \mu_{\text{No}}$ (giả thuyết
+   đối *hai phía*).
+3. Tính một **thống kê kiểm định** (test statistic) từ dữ liệu: một con số duy nhất đo mức
+   độ dữ liệu khác với điều mà $H_0$ dự đoán, thường tính theo đơn vị sai số chuẩn,
+   $$
+   \text{thống kê kiểm định} = \frac{\text{ước lượng quan sát} - \text{giá trị theo } H_0}{\text{sai số chuẩn của ước lượng}}.
+   $$
+4. Xác định **phân phối dưới giả thuyết không** (null distribution): phân phối mà thống kê
+   kiểm định sẽ có nếu $H_0$ đúng. Với nhiều kiểm định, đây là một phân phối lý thuyết đã
+   biết (chuẩn, $t$, $\chi^2$ hoặc $F$).
+5. So sánh thống kê quan sát được với phân phối dưới giả thuyết không để thu được **giá trị
+   p** (p-value).
+
+Phân phối dưới giả thuyết không là trái tim khái niệm của kiểm định, và có thể xây dựng nó
+mà không cần đến bất kỳ lý thuyết nào. Giả sử việc tiếp nhận điều trị hoàn toàn không liên
+quan đến khoảng cách tới cơ sở y tế. Khi đó các nhãn `"Yes"` (có) và `"No"` (không) gắn với
+bệnh nhân là tùy ý, và việc xáo trộn chúng một cách ngẫu nhiên sẽ tạo ra những chênh lệch
+khoảng cách trung bình tương tự chênh lệch mà ta đã quan sát. Đây là một **kiểm định hoán
+vị** (permutation test). Chúng ta xáo trộn các nhãn 5.000 lần và ghi lại chênh lệch khoảng
+cách trung bình mỗi lần.
+
+
+``` r
+perm_data <- filter(dx_all, !is.na(distance_to_facility_km))
+
+# Chênh lệch khoảng cách trung bình quan sát được, No trừ Yes (km)
+obs_diff <- with(perm_data,
+  mean(distance_to_facility_km[treatment_uptake == "No"]) -
+  mean(distance_to_facility_km[treatment_uptake == "Yes"]))
+obs_diff
+```
+
+```
+#> [1] 1.0777
+```
+
+``` r
+set.seed(2026)
+perm_diffs <- replicate(5000, {
+  shuffled <- sample(perm_data$treatment_uptake)   # phá vỡ mọi liên kết thực
+  mean(perm_data$distance_to_facility_km[shuffled == "No"]) -
+    mean(perm_data$distance_to_facility_km[shuffled == "Yes"])
+})
+
+# Giá trị p hai phía: tỷ lệ các lần xáo trộn cực đoan ít nhất bằng quan sát
+mean(abs(perm_diffs) >= abs(obs_diff))
+```
+
+```
+#> [1] 0.0034
+```
+
+Bệnh nhân không được điều trị sống xa cơ sở y tế hơn trung bình khoảng 1,08 km so với bệnh
+nhân được điều trị. Trong 5.000 lần xáo trộn ngẫu nhiên, một chênh lệch ít nhất lớn như vậy
+theo bất kỳ hướng nào chỉ xảy ra vài lần, nên giá trị p hoán vị vào khoảng 0,003. Hình 4.2
+trình bày phân phối dưới giả thuyết không và vị trí của chênh lệch quan sát được.
+
+
+``` r
+tibble(diff = perm_diffs) |>
+  mutate(extreme = abs(diff) >= abs(obs_diff)) |>
+  ggplot(aes(x = diff, fill = extreme)) +
+  geom_histogram(binwidth = 0.05, colour = "white", linewidth = 0.1) +
+  geom_vline(xintercept = obs_diff, linewidth = 0.8) +
+  geom_vline(xintercept = -obs_diff, linetype = "dashed") +
+  scale_fill_manual(values = c(`FALSE` = "grey70", `TRUE` = course_amber),
+                    guide = "none") +
+  labs(x = "Chênh lệch khoảng cách trung bình theo H0 (km)",
+       y = "Số lần xáo trộn")
+```
+
+![Phân phối hoán vị dưới giả thuyết không của chênh lệch khoảng cách trung bình đến cơ sở y tế (không điều trị trừ có điều trị) khi các nhãn điều trị được xáo trộn ngẫu nhiên. Đường liền đánh dấu chênh lệch quan sát được và đường nét đứt là ảnh đối xứng của nó; các phần đuôi được tô màu chứa những lần xáo trộn cực đoan ít nhất bằng dữ liệu.](images/book/04-statistical-tests-c4-null-fig-1.png)
+
+Biểu đồ tần suất màu xám là những gì may rủi đơn thuần tạo ra: các chênh lệch tập trung
+quanh không, phần lớn nằm trong khoảng $\pm 0.7$ km. Chênh lệch quan sát được 1,08 km của
+chúng ta nằm rất xa ở đuôi phải. Hoặc chúng ta vừa chứng kiến một sự kiện hiếm gặp, hoặc giả
+thuyết không là sai. Kiểm định t ở Mục 4.4 đi đến cùng kết luận bằng cách dùng phân phối $t$
+lý thuyết thay cho việc xáo trộn, và cho giá trị p gần như y hệt (0,003).
+
+### 4.1.4 Giá trị p là gì và không phải là gì
+
+**Giá trị p** là xác suất — *được tính với giả định rằng giả thuyết không (và mọi giả định
+khác của kiểm định) là đúng* — thu được một thống kê kiểm định ít nhất cực đoan bằng thống
+kê đã quan sát. Giá trị p nhỏ nghĩa là dữ liệu sẽ bất thường nếu $H_0$ đúng; đó là bằng
+chứng chống lại $H_0$. Giá trị p càng nhỏ, bằng chứng càng mạnh [@kirkwood2003].
+
+Năm 2016, Hiệp hội Thống kê Hoa Kỳ (American Statistical Association) đã đưa ra một tuyên
+bố công khai hiếm có về giá trị p vì tình trạng sử dụng sai đã trở nên quá phổ biến
+[@wasserstein2016]. Sáu nguyên tắc của tuyên bố này, cùng với danh mục dài hơn về các cách
+hiểu sai do @greenland2016 tổng hợp, có thể tóm tắt như sau.
+
+- Giá trị p cho biết dữ liệu không tương thích đến mức nào với một mô hình thống kê xác
+  định (giả thuyết không cộng với các giả định của kiểm định).
+- Giá trị p **không** phải là xác suất để giả thuyết không đúng, cũng không phải là xác
+  suất để kết quả xuất hiện "chỉ do ngẫu nhiên". Giá trị p = 0,003 không có nghĩa là có
+  0,3% khả năng khoảng cách không liên quan đến việc tiếp nhận điều trị.
+- Các kết luận khoa học và quyết định lâm sàng không nên chỉ dựa vào việc giá trị p có
+  vượt qua một ngưỡng như 0,05 hay không.
+- Suy luận đúng đắn đòi hỏi báo cáo đầy đủ và minh bạch: thực hiện nhiều kiểm định rồi chỉ
+  báo cáo những kiểm định "có ý nghĩa" sẽ làm mất hiệu lực của các giá trị p.
+- Giá trị p **không** đo độ lớn của một tác động hay tầm quan trọng của một kết quả. Một
+  khác biệt rất nhỏ, không có ý nghĩa lâm sàng vẫn có thể có giá trị p rất nhỏ trong một
+  nghiên cứu lớn.
+- Tự thân giá trị p không phải là một thước đo tốt về bằng chứng cho một giả thuyết; nó cần
+  được đi kèm với một ước lượng tác động và khoảng tin cậy của ước lượng đó.
+
+::: {.callout-warning title="Lỗi thường gặp"}
+Viết "p = 0,003, vậy có 99,7% khả năng khác biệt là có thật" là sai. Giá trị p được tính
+*với giả định* giả thuyết không là đúng, nên nó không thể là xác suất để giả thuyết không
+đúng. Sai không kém là câu "p = 0,40, vậy không có khác biệt": một giá trị p lớn chỉ nói
+rằng dữ liệu tương thích với việc không có khác biệt; dữ liệu cũng có thể tương thích với
+một khác biệt lớn.
+:::
+
+### 4.1.5 Mức ý nghĩa, sai lầm loại I, sai lầm loại II và lực thống kê
+
+Nhiều nghiên cứu biến giá trị p thành một quyết định bằng cách so sánh nó với một **mức ý
+nghĩa** (significance level) $\alpha$ được chọn trước, theo quy ước là 0,05: nếu
+$p < \alpha$ thì kết quả được gọi là "có ý nghĩa thống kê" và $H_0$ bị "bác bỏ". Ngưỡng này
+là một quy ước, không phải một quy luật tự nhiên, và về bản chất không có gì khác biệt giữa
+$p = 0.049$ và $p = 0.051$ [@wasserstein2016]. Tuy nhiên, suy nghĩ theo hướng ra quyết định
+giúp làm rõ hai loại sai lầm mà một kiểm định có thể mắc phải (Bảng 4.1).
+
+Table: Bốn kết cục có thể xảy ra của một kiểm định giả thuyết.
+
+| Quyết định từ kiểm định | $H_0$ thực sự đúng | $H_0$ thực sự sai |
+|---|---|---|
+| Bác bỏ $H_0$ ("có ý nghĩa") | **Sai lầm loại I** (dương tính giả); xác suất $\alpha$ | Đúng; xác suất $1-\beta$ = **lực thống kê** |
+| Không bác bỏ $H_0$ | Đúng; xác suất $1-\alpha$ | **Sai lầm loại II** (âm tính giả); xác suất $\beta$ |
+
+**Sai lầm loại I** (Type I error) là kết luận có khác biệt khi thực tế không có; theo cách
+xây dựng, xác suất của nó là $\alpha$ đối với một kiểm định đơn lẻ. **Sai lầm loại II**
+(Type II error) là không phát hiện được một khác biệt có thật; xác suất của nó được ký hiệu
+là $\beta$. **Lực thống kê** (power) của một nghiên cứu, $1-\beta$, là xác suất nghiên cứu
+phát hiện được một tác động thực có độ lớn xác định. Lực thống kê tăng theo độ lớn của tác
+động thực, theo cỡ mẫu và theo mức ý nghĩa, và giảm khi độ biến thiên của biến kết cục tăng
+[@altman1991; @kirkwood2003]. Các nghiên cứu lâm sàng thường được thiết kế để có lực thống
+kê 80% hoặc 90% đối với tác động nhỏ nhất có ý nghĩa lâm sàng. Hàm `power.t.test()` của R
+thực hiện phép tính chuẩn cho việc so sánh hai trung bình.
+
+
+``` r
+# Số bệnh nhân cần cho mỗi nhóm để phát hiện chênh lệch 5 mmHg
+# về SBP trung bình,
+# với SD 19 mmHg (như trong dữ liệu), alpha hai phía = 0,05,
+# lực thống kê 80%
+power.t.test(delta = 5, sd = 19, sig.level = 0.05, power = 0.80)
+```
+
+```
+#> 
+#>      Two-sample t test power calculation 
+#> 
+#>               n = 227.64
+#>           delta = 5
+#>              sd = 19
+#>       sig.level = 0.05
+#>           power = 0.8
+#>     alternative = two.sided
+#> 
+#> NOTE: n is number in *each* group
+```
+
+Để phát hiện chênh lệch 5 mmHg về huyết áp tâm thu trung bình, với độ lệch chuẩn 19 mmHg,
+lực thống kê 80% ở mức ý nghĩa 5%, cần khoảng 228
+bệnh nhân cho mỗi nhóm (R báo cáo $n$ dưới dạng số thập phân, ta làm tròn lên). Nghiên cứu
+của chúng ta có hơn 500 bệnh nhân mỗi nhóm, nên có lực thống kê cao đối với những khác biệt
+cỡ đó; điều này cũng có nghĩa là nó sẽ đánh dấu cả những khác biệt khá nhỏ là có ý nghĩa
+thống kê.
+
+### 4.1.6 Khoảng tin cậy và giá trị p
+
+**Khoảng tin cậy** (confidence interval, CI; viết tắt tiếng Việt là KTC) cho một khoảng các giá trị của tham số quần thể
+tương thích với dữ liệu. Với một ước lượng có phân phối mẫu xấp xỉ chuẩn, khoảng tin cậy 95%
+là
+
+$$
+\text{ước lượng} \pm 1.96 \times \mathrm{SE}(\text{ước lượng}).
+$$
+
+Cách diễn giải liên quan đến quy trình: nếu chúng ta lặp lại nghiên cứu nhiều lần và mỗi lần
+tính một khoảng tin cậy 95%, thì khoảng 95% trong số các khoảng đó sẽ chứa tham số thực
+[@altman1991; @kirkwood2003]. Nói một cách không chính thức, khoảng tin cậy cho thấy dải các
+giá trị quần thể mà dữ liệu của chúng ta tương đối phù hợp.
+
+Khoảng tin cậy và giá trị p hai phía là hai góc nhìn của cùng một phép tính. Nếu khoảng tin
+cậy 95% của một hiệu số không chứa 0 (hoặc khoảng tin cậy 95% của một tỷ số không chứa 1),
+thì $p < 0.05$, và ngược lại. Nhưng khoảng tin cậy mang nhiều thông tin hơn hẳn giá trị p:
+nó cho thấy **độ lớn** của tác động, **hướng** của tác động và **độ chính xác** của ước
+lượng. Một khoảng rộng cảnh báo rằng nghiên cứu không xác định được rõ tác động; một khoảng
+hẹp nằm hoàn toàn trong vùng các giá trị không quan trọng về mặt lâm sàng cho biết mọi tác
+động đều quá nhỏ để có ý nghĩa. Vì lý do này, các tạp chí y học và hướng dẫn báo cáo yêu cầu
+tác giả báo cáo ước lượng tác động kèm khoảng tin cậy, và coi giá trị p là thông tin thứ yếu
+[@altman1991; @vonelm2007].
+
+### 4.1.7 Ý nghĩa thống kê và ý nghĩa lâm sàng
+
+"Có ý nghĩa thống kê" chỉ có nghĩa là dữ liệu khó dung hòa với giả thuyết không. Nó không có
+nghĩa là tác động lớn, quan trọng hay hữu ích. Trong một nghiên cứu lớn, chênh lệch 1 mmHg
+về huyết áp tâm thu trung bình có thể có ý nghĩa thống kê nhưng không có hệ quả lâm sàng nào
+với từng bệnh nhân. Ngược lại, trong một nghiên cứu nhỏ, mức giảm 10 mmHg có ý nghĩa lâm
+sàng quan trọng vẫn có thể không đạt ý nghĩa thống kê vì khoảng tin cậy rộng. Câu hỏi "có ý
+nghĩa không?" luôn cần được theo sau bởi câu hỏi "lớn đến đâu, và độ lớn đó có quan trọng
+với bệnh nhân không?" Trả lời câu hỏi thứ hai đòi hỏi kiến thức lâm sàng chứ không phải
+thống kê: ví dụ, biết rằng việc giảm bền vững 10 mmHg huyết áp tâm thu làm giảm đáng kể nguy
+cơ tim mạch [@who2021htn].
+
+### 4.1.8 Không có bằng chứng không phải là bằng chứng của sự không có
+
+Một kết quả không có ý nghĩa thống kê thường bị báo cáo sai thành "không có khác biệt" hoặc
+"điều trị không có tác dụng". @altman1995absence gọi đây là một trong những lỗi phổ biến
+nhất trong nghiên cứu y học. Một giá trị p lớn chỉ có nghĩa là nghiên cứu không tìm thấy
+bằng chứng thuyết phục về một khác biệt; có thể đơn giản là nghiên cứu quá nhỏ, hoặc biến
+kết cục biến thiên quá nhiều, để phát hiện được khác biệt. Khoảng tin cậy cho biết chúng ta
+đang ở tình huống nào. Nếu khoảng tin cậy hẹp và tập trung gần 0, ta có thể kết luận một
+cách hợp lý rằng mọi khác biệt đều nhỏ. Nếu khoảng rộng và bao gồm cả những giá trị quan
+trọng về mặt lâm sàng, nghiên cứu là chưa có kết luận và cách tóm tắt trung thực là "chúng
+ta không thể biết".
+
+::: {.callout-tip title="Thực hành tốt"}
+Hãy báo cáo mỗi phép so sánh bằng một **ước lượng**, **khoảng tin cậy 95%** của nó và **giá
+trị p chính xác** (ví dụ $p = 0.003$, không phải "$p < 0.05$" hay "NS"), và diễn giải ước
+lượng theo ngôn ngữ lâm sàng. Các giá trị p rất nhỏ có thể được ghi là $p < 0.001$.
+:::
+
+## 4.2 Xác định quần thể phân tích {#sec-analytic-population}
+
+Trước mọi kiểm định, chúng ta phải quyết định chính xác dữ liệu của *những ai* trả lời câu
+hỏi. Biến kết cục chính của nghiên cứu là **việc sử dụng điều trị** (tiếp nhận điều trị,
+treatment uptake): bệnh nhân hiện có đang dùng thuốc hạ áp hay không. Biến kết cục này chỉ có
+ý nghĩa với những bệnh nhân đã được chẩn đoán tăng huyết áp. Một bệnh nhân chưa bao giờ được
+thông báo rằng huyết áp của mình cao thì không thể "không tiếp nhận" điều trị; kết cục của họ
+không phải là "No" mà là không xác định. Đưa họ vào sẽ trộn lẫn hai câu hỏi khác nhau (ai
+được chẩn đoán, và ai được điều trị sau khi đã được chẩn đoán) và sẽ làm sai lệch mọi phép so
+sánh. Vì vậy, **quần thể phân tích** (analytic population) cho biến tiếp nhận điều trị là
+những bệnh nhân có `htn_diagnosed == "Yes"`, và chúng ta định nghĩa nó một lần, tường minh,
+rồi dùng cùng một đối tượng xuyên suốt chương.
+
+
+``` r
+# Quần thể phân tích: bệnh nhân đã được chẩn đoán tăng huyết áp
+dx <- analysis_data |>
+  filter(htn_diagnosed == "Yes")
+
+nrow(dx)                       # số bệnh nhân được phân tích
+```
+
+```
+#> [1] 1089
+```
+
+``` r
+dx |> count(treatment_uptake) |>
+  mutate(percent = round(100 * n / sum(n), 1))
+```
+
+```
+#> # A tibble: 2 × 3
+#>   treatment_uptake     n percent
+#>   <fct>            <int>   <dbl>
+#> 1 No                 581    53.4
+#> 2 Yes                508    46.6
+```
+
+Trong 1.500 bệnh nhân, 1.089 người đã được chẩn đoán tăng huyết áp, và 508 người trong số đó
+(46,6%) đang điều trị. Mọi kết quả trong phần còn lại của chương này đều đề cập đến 1.089
+bệnh nhân này. Lưu ý rằng một số biến có giá trị khuyết trong nhóm này (ví dụ 47 bệnh nhân
+không có ghi nhận khoảng cách đến cơ sở y tế); các hàm kiểm định của R loại bỏ giá trị khuyết
+một cách âm thầm, nên số bệnh nhân đóng góp vào mỗi kiểm định có thể ít hơn 1.089 một chút.
+Một báo cáo tốt nêu rõ số người được phân tích cho từng kết quả.
+
+::: {.callout-warning title="Lỗi thường gặp"}
+Thực hiện phân tích tiếp nhận điều trị trên toàn bộ 1.500 bệnh nhân. Khi đó 411 bệnh nhân
+chưa được chẩn đoán đều sẽ có giá trị "No" cho biến điều trị, làm tỷ lệ tiếp nhận thấp đi một
+cách giả tạo và làm sai lệch mọi phép so sánh (chẳng hạn, bất kỳ đặc điểm nào liên quan đến
+việc *được chẩn đoán* cũng sẽ có vẻ liên quan đến việc *được điều trị*). Hãy xác định quần
+thể phân tích trước tiên, ghi rõ trong phần phương pháp và sử dụng nó một cách nhất quán.
+:::
+
+Dữ liệu được mô phỏng cho mục đích giảng dạy. Các mối liên quan trong dữ liệu được cài sẵn để
+minh họa phương pháp; không nên đọc các con số trong chương này như những phát hiện lâm sàng
+thực tế về chăm sóc tăng huyết áp.
+
+## 4.3 Kiểm tra giả định phân phối chuẩn {#sec-normality}
+
+Một số kiểm định kinh điển, gọi là kiểm định **tham số** (parametric), được xây dựng dựa trên
+giả định rằng dữ liệu (hay chính xác hơn là phần dư, hoặc các giá trị trong từng nhóm) tuân
+theo **phân phối chuẩn** (normal distribution): kiểm định t, phân tích phương sai và hệ số
+tương quan Pearson. Các kiểm định **phi tham số** (non-parametric) tương ứng (kiểm định tổng
+hạng Wilcoxon, kiểm định Kruskal–Wallis và tương quan Spearman) thay các giá trị quan sát
+bằng thứ hạng của chúng và không cần giả định đó [@altman1991; @bland2015]. Để chọn giữa hai
+loại, chúng ta cần xem xét hình dạng của dữ liệu.
+
+Phân phối chuẩn đối xứng, có hình chuông, và được mô tả đầy đủ bởi trung bình $\mu$ và độ
+lệch chuẩn $\sigma$: khoảng 68% giá trị nằm trong phạm vi một độ lệch chuẩn quanh trung bình
+và 95% nằm trong phạm vi 1,96 độ lệch chuẩn [@altman1995normal]. Chúng ta xem xét ba biến
+liên tục trong quần thể phân tích: tuổi, huyết áp tâm thu và khoảng cách đến cơ sở y tế.
+
+### 4.3.1 Hãy nhìn trước: biểu đồ tần suất
+
+
+``` r
+p_age <- ggplot(dx, aes(x = age)) +
+  geom_histogram(binwidth = 4, fill = course_teal, colour = "white") +
+  labs(x = "Tuổi (năm)", y = "Số bệnh nhân")
+p_sbp <- ggplot(dx, aes(x = sbp_mmhg)) +
+  geom_histogram(binwidth = 6, fill = course_teal, colour = "white") +
+  labs(x = "HA tâm thu (mmHg)", y = NULL)
+p_dist <- ggplot(dx, aes(x = distance_to_facility_km)) +
+  geom_histogram(binwidth = 1.5, fill = course_teal, colour = "white") +
+  labs(x = "Khoảng cách (km)", y = NULL)
+
+p_age + p_sbp + p_dist     # patchwork đặt ba khung cạnh nhau
+```
+
+![Biểu đồ tần suất của tuổi, huyết áp tâm thu và khoảng cách đến cơ sở y tế ở bệnh nhân đã được chẩn đoán. Tuổi và huyết áp tâm thu gần đối xứng; khoảng cách lệch phải rõ rệt.](images/book/04-statistical-tests-c4-histograms-1.png)
+
+Biểu đồ tần suất cho thấy hình dạng tổng thể. Tuổi và huyết áp tâm thu gần đối xứng và có
+một đỉnh; huyết áp tâm thu có đuôi phải dài hơn một chút. Khoảng cách đến cơ sở y tế rõ ràng
+**lệch phải** (right-skewed): phần lớn bệnh nhân sống trong phạm vi khoảng 10 km nhưng một số
+ít sống xa hơn 25 km. Với một biến lệch, trung bình bị kéo về phía đuôi dài (ở đây khoảng
+cách trung bình là 7,7 km nhưng trung vị chỉ là 6,3 km), và trung vị cùng khoảng tứ phân vị
+là những đại lượng tóm tắt tốt hơn (Chương 3).
+
+### 4.3.2 Biểu đồ Q–Q
+
+**Biểu đồ phân vị–phân vị** (quantile–quantile plot, Q–Q plot) là một công cụ sắc bén hơn.
+Nó biểu diễn các giá trị dữ liệu đã sắp xếp theo các giá trị mà ta kỳ vọng nếu dữ liệu đến từ
+một phân phối chuẩn có cùng trung bình và độ lệch chuẩn. Nếu dữ liệu có phân phối chuẩn, các
+điểm nằm gần một đường thẳng. Độ cong có hệ thống cho thấy độ lệch; các điểm tách khỏi đường
+ở cả hai đầu theo hai hướng ngược nhau cho thấy đuôi dày hơn (hoặc mỏng hơn) so với phân phối
+chuẩn [@altman1995normal; @bland2015].
+
+
+``` r
+qq_panel <- function(var, label) {
+  ggplot(dx, aes(sample = .data[[var]])) +
+    stat_qq(size = 0.6, alpha = 0.5, colour = course_teal) +
+    stat_qq_line(colour = "black") +
+    labs(title = label, x = "Phân vị lý thuyết", y = "Phân vị mẫu")
+}
+
+qq_panel("age", "Tuổi") +
+  qq_panel("sbp_mmhg", "HA tâm thu") +
+  qq_panel("distance_to_facility_km", "Khoảng cách")
+```
+
+![Biểu đồ Q–Q chuẩn cho tuổi, huyết áp tâm thu và khoảng cách đến cơ sở y tế. Các điểm nằm gần đường tham chiếu cho thấy phân phối xấp xỉ chuẩn; đường cong của biến khoảng cách cho thấy lệch phải rõ rệt.](images/book/04-statistical-tests-c4-qqplots-1.png)
+
+Các điểm của biến tuổi bám theo đường thẳng gần như hoàn hảo, ngoại trừ một đoạn nằm ngang
+ngắn ở đầu dưới: nghiên cứu chỉ tuyển người trưởng thành, nên đuôi trái bị cắt ở 18 tuổi.
+Huyết áp tâm thu bám theo đường thẳng khá tốt ở phần giữa của phân phối, với một đoạn nằm
+ngang ở đầu dưới (một "sàn" các giá trị đo rất thấp) và một hình chữ S nhẹ; đây là những sai
+lệch khiêm tốn, chỉ ảnh hưởng đến vài phần trăm bệnh nhân ở hai cực. Khoảng cách cong lên
+thành hình quả chuối: các khoảng cách lớn nhất lớn hơn nhiều so với những gì một phân phối
+chuẩn tạo ra — dấu hiệu đặc trưng của lệch phải.
+
+### 4.3.3 Kiểm định chuẩn hình thức: Shapiro–Wilk
+
+**Kiểm định Shapiro–Wilk** [@shapiro1965] kiểm định giả thuyết không rằng dữ liệu đến từ một
+phân phối chuẩn. Thống kê $W$ của nó so sánh một tổ hợp có trọng số tối ưu của các quan sát
+đã sắp xếp với phương sai mẫu; $W$ gần bằng 1 với dữ liệu chuẩn và nhỏ hơn với dữ liệu không
+chuẩn. Trong R, `shapiro.test()` chấp nhận từ 3 đến 5.000 quan sát.
+
+
+``` r
+shapiro.test(dx$age)
+```
+
+```
+#> 
+#> 	Shapiro-Wilk normality test
+#> 
+#> data:  dx$age
+#> W = 0.997, p-value = 0.056
+```
+
+``` r
+shapiro.test(dx$sbp_mmhg)
+```
+
+```
+#> 
+#> 	Shapiro-Wilk normality test
+#> 
+#> data:  dx$sbp_mmhg
+#> W = 0.988, p-value = 7.5e-08
+```
+
+``` r
+shapiro.test(dx$distance_to_facility_km)
+```
+
+```
+#> 
+#> 	Shapiro-Wilk normality test
+#> 
+#> data:  dx$distance_to_facility_km
+#> W = 0.888, p-value <2e-16
+```
+
+Đọc kết quả: mỗi khối nêu tên kiểm định và dữ liệu, sau đó cho $W$ và giá trị p. Với tuổi,
+$W = 0.997$ và $p = 0.056$, nên không có bằng chứng mạnh chống lại tính chuẩn. Với khoảng
+cách, $W = 0.888$ và $p < 2.2 \times 10^{-16}$ (cách R nói "nhỏ hơn con số nhỏ nhất mà nó
+báo cáo"), xác nhận độ lệch hiển nhiên. Trường hợp đáng chú ý là huyết áp tâm thu:
+$W = 0.988$, rất gần 1, nhưng $p = 7.5 \times 10^{-8}$. Kiểm định "bác bỏ tính chuẩn" một
+cách dứt khoát đối với một biến có biểu đồ tần suất và biểu đồ Q–Q trông gần như chuẩn.
+
+### 4.3.4 Vì sao kiểm định chuẩn gây hiểu lầm khi cỡ mẫu lớn
+
+Đây là vấn đề chung của các kiểm định chuẩn. Như mọi kiểm định khác, kiểm định Shapiro–Wilk
+có lực thống kê tăng lên khi cỡ mẫu tăng. Với hơn một nghìn quan sát, nó phát hiện những sai
+lệch so với phân phối chuẩn quá nhỏ để có ý nghĩa cho bất kỳ mục đích thực tiễn nào. Với mẫu
+nhỏ thì ngược lại: kiểm định có lực thống kê thấp và có thể không phát hiện được độ lệch
+nghiêm trọng. Như vậy, kiểm định có khả năng bác bỏ tính chuẩn cao nhất chính khi tính chuẩn
+ít quan trọng nhất (mẫu lớn) và bỏ sót sự không chuẩn khi nó quan trọng nhất (mẫu nhỏ).
+
+Lý do tính chuẩn ít quan trọng nhất khi mẫu lớn là định lý giới hạn trung tâm. Kiểm định t
+và ANOVA so sánh các *trung bình*, và phân phối mẫu của một trung bình gần với phân phối
+chuẩn khi mẫu lớn, bất kể phân phối của các giá trị cá nhân ra sao, như Hình 4.1 đã cho
+thấy. @lumley2002 đã tổng quan các bằng chứng và cho thấy rằng với các bộ dữ liệu y tế công
+cộng có cỡ thông thường, kiểm định t và hồi quy tuyến tính cho kết quả hợp lệ ngay cả với
+những biến kết cục lệch rõ rệt; điều quan trọng hơn là trung bình phải là một đại lượng tóm
+tắt hợp lý cho câu hỏi nghiên cứu. Do đó, giả định phân phối chuẩn đáng được chú ý nhất khi
+mẫu nhỏ (chẳng hạn dưới 30 người mỗi nhóm) hoặc khi dữ liệu lệch cực độ hay chứa các giá trị
+ngoại lai lớn.
+
+
+``` r
+# Cùng kiểm định trên mẫu ngẫu nhiên chỉ 50 giá trị tuổi:
+# lực thống kê thấp hơn nhiều
+set.seed(1)
+shapiro.test(sample(dx$age, 50))
+```
+
+```
+#> 
+#> 	Shapiro-Wilk normality test
+#> 
+#> data:  sample(dx$age, 50)
+#> W = 0.97, p-value = 0.23
+```
+
+::: {.callout-tip title="Thực hành tốt"}
+Hãy quyết định giữa phương pháp tham số và phi tham số bằng cách **quan sát** (biểu đồ tần
+suất, biểu đồ Q–Q), bằng cách cân nhắc **cỡ mẫu** và bằng cách tự hỏi liệu **trung bình** có
+phải là đại lượng tóm tắt có ý nghĩa cho câu hỏi hay không. Đừng để một giá trị p của kiểm
+định Shapiro–Wilk tự mình đưa ra quyết định. Với mẫu lớn, dữ liệu gần đối xứng có thể được
+phân tích bằng kiểm định t và ANOVA; dữ liệu lệch mạnh, điểm số thứ bậc và mẫu nhỏ gợi ý dùng
+các phương pháp dựa trên thứ hạng (hoặc một phép biến đổi, chẳng hạn logarit, trước khi phân
+tích tham số).
+:::
+
+## 4.4 So sánh hai nhóm: biến kết cục liên tục {#sec-two-groups}
+
+Câu hỏi thực chất đầu tiên của chúng ta là liệu bệnh nhân tiếp nhận điều trị có khác về tuổi
+so với những người không tiếp nhận hay không. Biến được so sánh là một biến liên tục (tuổi)
+và biến phân nhóm có hai loại (tiếp nhận điều trị `"Yes"` hoặc `"No"`).
+
+### 4.4.1 Mẫu độc lập và mẫu bắt cặp
+
+Kiểm định phù hợp phụ thuộc vào cách thu được hai tập số đo.
+
+- **Mẫu độc lập** (independent samples): hai nhóm gồm những cá nhân khác nhau, không liên
+  quan với nhau, chẳng hạn bệnh nhân được điều trị và không được điều trị. Mỗi bệnh nhân đóng
+  góp một số đo.
+- **Mẫu bắt cặp** (paired samples): mỗi quan sát trong nhóm này được liên kết với một quan
+  sát cụ thể trong nhóm kia, chẳng hạn huyết áp đo trên cùng những bệnh nhân trước và sau khi
+  bắt đầu điều trị, hoặc trong các cặp bệnh–chứng được ghép cặp. Các cặp được phân tích thông
+  qua *hiệu số* của chúng, giúp loại bỏ biến thiên giữa các cá nhân và thường cho độ chính
+  xác cao hơn nhiều.
+
+Với dữ liệu bắt cặp, **kiểm định t bắt cặp** (paired t-test) đơn giản là một kiểm định t một
+mẫu trên các hiệu số trong cặp $d_i$, với thống kê $t = \bar{d}/(s_d/\sqrt{n})$ có $n-1$ bậc
+tự do, trong đó $n$ là số cặp; kiểm định tương ứng dựa trên thứ hạng là **kiểm định hạng có
+dấu Wilcoxon** (Wilcoxon signed-rank test) [@altman1991; @kirkwood2003]. Trong R, đó là
+`t.test(x, y, paired = TRUE)` và `wilcox.test(x, y, paired = TRUE)`. Nghiên cứu cắt ngang
+của chúng ta đo mỗi bệnh nhân một lần, nên mọi phép so sánh trong chương này đều là giữa các
+nhóm độc lập. Phân tích dữ liệu bắt cặp như thể chúng độc lập (hoặc ngược lại) là một lỗi
+nghiêm trọng, dẫn đến sai số chuẩn sai.
+
+### 4.4.2 Kiểm định t Student
+
+**Kiểm định t hai mẫu** (two-sample t-test) được W. S. Gosset xây dựng; ông viết dưới bút
+danh "Student" khi làm việc cho nhà máy bia Guinness [@student1908]. Với hai nhóm độc lập có
+trung bình $\bar{x}_1, \bar{x}_2$, độ lệch chuẩn $s_1, s_2$ và cỡ mẫu $n_1, n_2$, kiểm định
+giả định rằng biến kết cục có phân phối chuẩn trong mỗi nhóm *với cùng một phương sai*.
+Phương sai chung được ước lượng bằng cách gộp hai nhóm,
+
+$$
+s_p^2 = \frac{(n_1 - 1)s_1^2 + (n_2 - 1)s_2^2}{n_1 + n_2 - 2},
+$$
+
+và thống kê kiểm định là
+
+$$
+t = \frac{\bar{x}_1 - \bar{x}_2}{s_p\sqrt{\dfrac{1}{n_1} + \dfrac{1}{n_2}}},
+$$
+
+dưới $H_0: \mu_1 = \mu_2$, thống kê này tuân theo phân phối $t$ với $n_1 + n_2 - 2$ bậc tự do.
+Phân phối $t$ trông giống phân phối chuẩn nhưng có đuôi dày hơn, để tính đến độ không chắc
+chắn bổ sung do phải ước lượng độ lệch chuẩn; với hơn vài chục bậc tự do, nó thực tế giống
+hệt phân phối chuẩn. Khoảng tin cậy 95% cho hiệu số trung bình là
+$(\bar{x}_1 - \bar{x}_2) \pm t_{0.975,\,n_1+n_2-2} \times s_p\sqrt{1/n_1 + 1/n_2}$.
+
+### 4.4.3 Kiểm định t Welch
+
+Nếu hai nhóm có phương sai khác nhau, sai số chuẩn gộp sẽ không đúng, đặc biệt khi hai nhóm
+còn khác nhau về cỡ mẫu. @welch1947 đề xuất dùng các phương sai riêng,
+
+$$
+t = \frac{\bar{x}_1 - \bar{x}_2}{\sqrt{\dfrac{s_1^2}{n_1} + \dfrac{s_2^2}{n_2}}},
+$$
+
+và so sánh với một phân phối $t$ có số bậc tự do được cho bởi xấp xỉ Welch–Satterthwaite,
+
+$$
+\nu \approx \frac{\left(\dfrac{s_1^2}{n_1} + \dfrac{s_2^2}{n_2}\right)^2}
+{\dfrac{(s_1^2/n_1)^2}{n_1 - 1} + \dfrac{(s_2^2/n_2)^2}{n_2 - 1}},
+$$
+
+con số này thường không phải là số nguyên. Kiểm định Welch mất rất ít khi các phương sai thực
+ra bằng nhau và bảo vệ khỏi sai lầm khi chúng không bằng nhau, vì vậy R dùng nó làm mặc định
+và đây là lựa chọn thường quy hợp lý.
+
+### 4.4.4 Kiểm định t trong R
+
+Trước hết, một bảng tóm tắt số liệu của tuổi theo nhóm, để biết kiểm định đang so sánh điều
+gì.
+
+
+``` r
+dx |>
+  group_by(treatment_uptake) |>
+  summarise(n    = sum(!is.na(age)),
+            mean = mean(age, na.rm = TRUE),
+            sd   = sd(age, na.rm = TRUE))
+```
+
+```
+#> # A tibble: 2 × 4
+#>   treatment_uptake     n  mean    sd
+#>   <fct>            <int> <dbl> <dbl>
+#> 1 No                 580  51.1  13.4
+#> 2 Yes                508  56.3  14.1
+```
+
+Bệnh nhân được điều trị trung bình lớn hơn khoảng 5 tuổi (56,3 so với 51,1 tuổi), và độ lệch
+chuẩn tương tự nhau (13,4 và 14,1 năm). Bây giờ là kiểm định. Công thức
+`age ~ treatment_uptake` được đọc là "tuổi theo việc tiếp nhận điều trị".
+
+
+``` r
+t.test(age ~ treatment_uptake, data = dx)
+```
+
+```
+#> 
+#> 	Welch Two Sample t-test
+#> 
+#> data:  age by treatment_uptake
+#> t = -6.18, df = 1050, p-value = 8.9e-10
+#> alternative hypothesis: true difference in means between group No and group
+#>   Yes is not equal to 0
+#> 95 percent confidence interval:
+#>  -6.8184 -3.5338
+#> sample estimates:
+#>  mean in group No mean in group Yes 
+#>            51.103            56.280
+```
+
+Đọc kết quả từng dòng:
+
+- **Welch Two Sample t-test**: R dùng phiên bản Welch (cho phép phương sai không bằng nhau).
+- **data: age by treatment_uptake**: biến kết cục và biến phân nhóm.
+- **t = -6.18**: thống kê kiểm định. Hiệu số trung bình cách 0 khoảng 6,2 sai số chuẩn. Giá
+  trị âm vì R trừ theo thứ tự các mức của factor, "No" trừ "Yes", và nhóm "No" trẻ hơn.
+- **df = 1050**: số bậc tự do Welch–Satterthwaite, được làm tròn khi in (giá trị chính xác là
+  1049,6; số bậc tự do Welch thường không phải là số nguyên).
+- **p-value = 8.9e-10**: $8.9 \times 10^{-10}$, tức là $p < 0.001$. Nếu tuổi trung bình thực
+  sự giống hệt nhau ở hai quần thể, một chênh lệch lớn như vậy gần như không bao giờ xảy ra do
+  ngẫu nhiên.
+- **alternative hypothesis**: xác nhận đây là kiểm định hai phía về việc hiệu số (No trừ Yes)
+  có khác 0 hay không.
+- **95 percent confidence interval: -6.82 -3.53**: hiệu số tuổi trung bình (No trừ Yes) được
+  ước lượng nằm trong khoảng từ $-6.8$ đến $-3.5$ tuổi. Nói cách khác, bệnh nhân được điều
+  trị trung bình lớn hơn từ 3,5 đến 6,8 tuổi.
+- **sample estimates**: trung bình của hai nhóm, 51,1 và 56,3 tuổi.
+
+Để so sánh, phiên bản Student với phương sai gộp được yêu cầu bằng `var.equal = TRUE`.
+
+
+``` r
+t.test(age ~ treatment_uptake, data = dx, var.equal = TRUE)
+```
+
+```
+#> 
+#> 	Two Sample t-test
+#> 
+#> data:  age by treatment_uptake
+#> t = -6.21, df = 1086, p-value = 7.7e-10
+#> alternative hypothesis: true difference in means between group No and group
+#>   Yes is not equal to 0
+#> 95 percent confidence interval:
+#>  -6.8125 -3.5397
+#> sample estimates:
+#>  mean in group No mean in group Yes 
+#>            51.103            56.280
+```
+
+Với các nhóm lớn và độ lệch chuẩn tương tự, hai phiên bản cho kết quả giống nhau đến chữ số
+thập phân đầu tiên: $t = -6.21$ với 1.086 bậc tự do, cùng khoảng tin cậy và cùng kết luận.
+Chúng chỉ khác nhau khi phương sai và cỡ nhóm khác nhau đáng kể, và trong tình huống đó kiểm
+định Welch là kiểm định đáng tin cậy.
+
+Hàm `broom::tidy()` chuyển kết quả kiểm định thành một data frame một dòng, rất tiện cho việc
+xây dựng bảng kết quả.
+
+
+``` r
+t.test(age ~ treatment_uptake, data = dx) |>
+  tidy() |>
+  select(estimate, estimate1, estimate2, statistic, p.value,
+         conf.low, conf.high)
+```
+
+```
+#> # A tibble: 1 × 7
+#>   estimate estimate1 estimate2 statistic  p.value conf.low conf.high
+#>      <dbl>     <dbl>     <dbl>     <dbl>    <dbl>    <dbl>     <dbl>
+#> 1    -5.18      51.1      56.3     -6.18 8.92e-10    -6.82     -3.53
+```
+
+### 4.4.5 Độ lớn tác động: hiệu số trung bình
+
+Độ lớn tác động (effect size) hữu ích nhất cho một biến kết cục liên tục được đo bằng đơn vị
+có ý nghĩa lâm sàng đơn giản là **hiệu số trung bình kèm khoảng tin cậy 95%**: bệnh nhân được
+điều trị trung bình lớn hơn 5,2 tuổi (KTC 95% từ 3,5 đến 6,8 tuổi). Con số này có thể diễn
+giải trực tiếp. Các độ lớn tác động chuẩn hóa, chẳng hạn $d$ của Cohen (hiệu số trung bình
+chia cho độ lệch chuẩn gộp, ở đây khoảng $5.2/13.7 \approx 0.38$), hữu ích khi so sánh các
+biến kết cục đo trên những thang đo khác nhau hoặc khi lập kế hoạch cỡ mẫu, nhưng chúng kém
+minh bạch hơn với người đọc lâm sàng và nên bổ sung chứ không thay thế hiệu số thô
+[@kirkwood2003].
+
+::: {.callout-note title="Diễn giải lâm sàng"}
+Trong số bệnh nhân tăng huyết áp đã được chẩn đoán, những người đang điều trị trung bình lớn
+hơn 5,2 tuổi so với những người không điều trị (KTC 95% từ 3,5 đến 6,8 tuổi; $p < 0.001$).
+Bệnh nhân lớn tuổi hơn có nhiều khả năng tiếp xúc thường xuyên với dịch vụ y tế và đã tích
+lũy nguy cơ tim mạch, nên khuôn mẫu này là hợp lý. Đây là một mối liên quan trong một mẫu cắt
+ngang, không phải bằng chứng cho thấy tuổi tác *gây ra* việc tiếp nhận điều trị, và các yếu
+tố khác thay đổi theo tuổi có thể giải thích một phần mối liên quan này (Mục 4.9).
+:::
+
+### 4.4.6 Kiểm định tổng hạng Wilcoxon (Mann–Whitney)
+
+Khi biến kết cục bị lệch, có tính thứ bậc, hoặc khi mẫu nhỏ, một kiểm định dựa trên thứ hạng
+là lựa chọn tốt hơn. **Kiểm định tổng hạng Wilcoxon** (Wilcoxon rank-sum test), tương đương
+với **kiểm định U Mann–Whitney** [@mann1947], gộp hai nhóm lại, xếp hạng tất cả các quan sát
+từ nhỏ nhất đến lớn nhất (các giá trị bằng nhau nhận hạng trung bình), rồi so sánh thứ hạng
+giữa các nhóm. Nếu $R_1$ là tổng hạng trong nhóm 1, thống kê kiểm định là
+
+$$
+W = R_1 - \frac{n_1(n_1 + 1)}{2},
+$$
+
+đại lượng này đếm số cặp (mỗi nhóm một bệnh nhân) trong đó giá trị của nhóm 1 lớn hơn giá
+trị của nhóm 2. Dưới $H_0$ rằng hai phân phối giống hệt nhau, $W$ có một phân phối đã biết với
+trung bình $n_1 n_2 / 2$; với mẫu lớn, người ta dùng xấp xỉ chuẩn. Vì chỉ dùng thứ hạng, kiểm
+định không bị ảnh hưởng bởi độ lớn của các giá trị cực đoan. Nó kiểm định xem các giá trị
+trong một nhóm có xu hướng lớn hơn nhóm kia hay không; nó chỉ là kiểm định về trung vị nếu
+hai phân phối có cùng hình dạng [@altman1991; @bland2015].
+
+Khoảng cách đến cơ sở y tế lệch mạnh, nên chúng ta so sánh biến này giữa hai nhóm tiếp nhận
+điều trị bằng kiểm định tổng hạng. Trước hết là trung vị và các tứ phân vị:
+
+
+``` r
+dx |>
+  group_by(treatment_uptake) |>
+  summarise(n      = sum(!is.na(distance_to_facility_km)),
+            median = median(distance_to_facility_km, na.rm = TRUE),
+            q1     = quantile(distance_to_facility_km, 0.25, na.rm = TRUE),
+            q3     = quantile(distance_to_facility_km, 0.75, na.rm = TRUE))
+```
+
+```
+#> # A tibble: 2 × 5
+#>   treatment_uptake     n median    q1    q3
+#>   <fct>            <int>  <dbl> <dbl> <dbl>
+#> 1 No                 561    6.8   4.3  10.7
+#> 2 Yes                481    5.8   3.1   9.6
+```
+
+
+``` r
+wilcox.test(distance_to_facility_km ~ treatment_uptake, data = dx,
+            conf.int = TRUE)
+```
+
+```
+#> 
+#> 	Wilcoxon rank sum test with continuity correction
+#> 
+#> data:  distance_to_facility_km by treatment_uptake
+#> W = 151283, p-value = 0.00073
+#> alternative hypothesis: true location shift is not equal to 0
+#> 95 percent confidence interval:
+#>  0.39997 1.50000
+#> sample estimates:
+#> difference in location 
+#>                0.99998
+```
+
+Đọc kết quả:
+
+- **Wilcoxon rank sum test with continuity correction**: R dùng xấp xỉ chuẩn (kèm một hiệu
+  chỉnh liên tục nhỏ) vì mẫu lớn và có các giá trị bằng nhau.
+- **W = 151283**: thống kê tổng hạng cho nhóm thứ nhất ("No"). Độ lớn tuyệt đối của nó tự
+  thân không có ý nghĩa diễn giải.
+- **p-value = 0.00073**: bằng chứng mạnh cho thấy khoảng cách có xu hướng khác nhau giữa hai
+  nhóm.
+- **95 percent confidence interval: 0.40 1.50** và **difference in location 1.00** (in ra là
+  0.39997, 1.50000 và 0.99998, vì ước lượng được tìm bằng phương pháp số): do chúng ta yêu cầu
+  `conf.int = TRUE`, R còn báo cáo **ước lượng Hodges–Lehmann**, tức trung vị của mọi hiệu số
+  từng cặp giữa một bệnh nhân "No" và một bệnh nhân "Yes". Bệnh nhân không được điều trị
+  thường sống xa hơn khoảng 1,0 km (KTC 95% từ 0,4 đến 1,5 km).
+
+Các trung vị cho thấy cùng một câu chuyện: 6,8 km (IQR 4,3 đến 10,7) ở nhóm không điều trị và
+5,8 km (IQR 3,1 đến 9,6) ở nhóm được điều trị. Ước lượng Hodges–Lehmann dựa trên thứ hạng là
+độ lớn tác động tự nhiên để báo cáo cùng với kiểm định này. Để so sánh, đây là kiểm định t
+Welch trên cùng biến lệch đó:
+
+
+``` r
+t.test(distance_to_facility_km ~ treatment_uptake, data = dx) |>
+  tidy() |>
+  select(estimate, statistic, p.value, conf.low, conf.high)
+```
+
+```
+#> # A tibble: 1 × 5
+#>   estimate statistic p.value conf.low conf.high
+#>      <dbl>     <dbl>   <dbl>    <dbl>     <dbl>
+#> 1     1.08      2.95 0.00326    0.361      1.79
+```
+
+Kiểm định t ước lượng hiệu số *trung bình* là 1,08 km (KTC 95% từ 0,36 đến 1,79 km,
+$p = 0.003$), cùng giá trị p với kiểm định hoán vị ở Mục 4.1. Với hơn 500 bệnh nhân mỗi nhóm,
+định lý giới hạn trung tâm bảo vệ kiểm định t ngay cả với một biến lệch, và cả hai kiểm định
+đi đến cùng một kết luận. Vì vậy, việc lựa chọn giữa chúng phần nào phụ thuộc vào điều chúng
+ta muốn mô tả: một hiệu số *trung bình* (chẳng hạn liên quan đến gánh nặng đi lại trung bình)
+hay một *sự dịch chuyển* điển hình của phân phối.
+
+
+``` r
+# Kiểm định tổng hạng cho tuổi, để so sánh với kiểm định t
+wilcox.test(age ~ treatment_uptake, data = dx)
+```
+
+```
+#> 
+#> 	Wilcoxon rank sum test with continuity correction
+#> 
+#> data:  age by treatment_uptake
+#> W = 117011, p-value = 4.5e-09
+#> alternative hypothesis: true location shift is not equal to 0
+```
+
+Với tuổi, vốn gần chuẩn, kiểm định tổng hạng ($p = 4.5 \times 10^{-9}$) thống nhất với kiểm
+định t. Khi kiểm định tham số và phi tham số thống nhất, hãy báo cáo kiểm định phù hợp với
+thống kê tóm tắt của bạn (trung bình với kiểm định t, trung vị với kiểm định tổng hạng). Khi
+chúng không thống nhất, hãy xem lại dữ liệu: thường là độ lệch hoặc giá trị ngoại lai đang
+chi phối kiểm định t.
+
+::: {.callout-warning title="Lỗi thường gặp"}
+Chỉ báo cáo "Mann–Whitney $p < 0.001$" mà không có độ lớn tác động nào. Một kiểm định thứ hạng
+trả lời câu hỏi "có khác biệt không?", chứ không phải "khác biệt lớn đến đâu?". Hãy báo cáo
+trung vị (và IQR) của cả hai nhóm và, lý tưởng nhất, hiệu số Hodges–Lehmann kèm khoảng tin
+cậy của nó.
+:::
+
+## 4.5 So sánh nhiều hơn hai nhóm {#sec-anova}
+
+Kiến thức về tăng huyết áp, được đo bằng một điểm số từ 0 đến 20, có thể khác nhau theo trình
+độ học vấn. Với bốn mức học vấn (`None` — không đi học, `Primary` — tiểu học, `Secondary` —
+trung học, `Tertiary` — cao đẳng/đại học) có sáu cặp nhóm có thể so sánh. Thực hiện sáu kiểm
+định t sẽ làm tăng khả năng có ít nhất một kết quả dương tính giả (Mục 4.5.5). Thay vào đó,
+**phân tích phương sai một yếu tố** (one-way analysis of variance, ANOVA) đặt ra một câu hỏi
+duy nhất: tất cả các trung bình nhóm có bằng nhau không?
+
+### 4.5.1 Ý tưởng của phân tích phương sai
+
+ANOVA, do R. A. Fisher phát triển, so sánh hai ước lượng về độ biến thiên [@altman1991;
+@kirkwood2003]. Giả sử có $k$ nhóm, nhóm $j$ có $n_j$ quan sát với trung bình $\bar{x}_j$,
+trung bình chung là $\bar{x}$ và tổng số quan sát là $N$. Tổng biến thiên của các quan sát
+quanh trung bình chung được chia thành hai phần:
+
+$$
+\underbrace{\sum_{j}\sum_{i}(x_{ij} - \bar{x})^2}_{\text{SS toàn phần}}
+= \underbrace{\sum_{j} n_j(\bar{x}_j - \bar{x})^2}_{\text{SS giữa các nhóm}}
++ \underbrace{\sum_{j}\sum_{i}(x_{ij} - \bar{x}_j)^2}_{\text{SS trong nhóm}}.
+$$
+
+Mỗi **tổng bình phương** (sum of squares, SS) được chia cho số bậc tự do của nó để cho ra một
+**bình phương trung bình** (mean square, MS):
+$\text{MS}_{\text{between}} = \text{SS}_{\text{between}}/(k-1)$ và
+$\text{MS}_{\text{within}} = \text{SS}_{\text{within}}/(N-k)$ (between: giữa các nhóm;
+within: trong nhóm). Bình phương trung bình trong nhóm ước lượng phương sai của các cá nhân
+quanh trung bình nhóm của họ, bất kể sự thật về các trung bình nhóm là gì. Bình phương trung
+bình giữa các nhóm ước lượng cùng phương sai đó *nếu* $H_0$ đúng, nhưng sẽ lớn lên nếu các
+trung bình nhóm khác nhau. Tỷ số của chúng là **thống kê F**,
+
+$$
+F = \frac{\text{MS}_{\text{between}}}{\text{MS}_{\text{within}}},
+$$
+
+thống kê này gần bằng 1 dưới $H_0$ và được so sánh với phân phối $F$ có $k-1$ và $N-k$ bậc tự
+do. Với hai nhóm, ANOVA một yếu tố giống hệt kiểm định t Student ($F = t^2$). Các giả định là
+những giả định của kiểm định t Student mở rộng cho $k$ nhóm: các quan sát độc lập, giá trị
+trong mỗi nhóm có phân phối xấp xỉ chuẩn (ít quan trọng hơn khi mẫu lớn), và phương sai tương
+tự nhau giữa các nhóm.
+
+### 4.5.2 Hãy xem xét các nhóm trước
+
+
+``` r
+dx |>
+  filter(!is.na(education), !is.na(knowledge_score)) |>
+  group_by(education) |>
+  summarise(n = n(), mean = mean(knowledge_score),
+            sd = sd(knowledge_score), median = median(knowledge_score))
+```
+
+```
+#> # A tibble: 4 × 5
+#>   education     n  mean    sd median
+#>   <ord>     <int> <dbl> <dbl>  <dbl>
+#> 1 None        197 10.4   3.15     11
+#> 2 Primary     432  9.85  3.37     10
+#> 3 Secondary   285 10.8   3.64     11
+#> 4 Tertiary    122 11.3   3.41     11
+```
+
+
+``` r
+dx |>
+  filter(!is.na(education), !is.na(knowledge_score)) |>
+  ggplot(aes(x = education, y = knowledge_score)) +
+  geom_jitter(width = 0.2, height = 0.2, alpha = 0.15, size = 0.8,
+              colour = course_teal) +
+  geom_boxplot(fill = NA, outlier.shape = NA, width = 0.5) +
+  stat_summary(fun = mean, geom = "point", shape = 23, size = 3,
+               fill = course_amber) +
+  labs(x = "Trình độ học vấn cao nhất", y = "Điểm kiến thức (0-20)")
+```
+
+![Điểm kiến thức về tăng huyết áp theo trình độ học vấn cao nhất ở bệnh nhân đã được chẩn đoán. Hộp thể hiện trung vị và khoảng tứ phân vị; các điểm là từng bệnh nhân (được làm nhiễu nhẹ vị trí); hình thoi đánh dấu trung bình nhóm.](images/book/04-statistical-tests-c4-boxplot-fig-1.png)
+
+Việc thể hiện từng điểm dữ liệu bên cạnh các hộp, như @weissgerber2015 khuyến nghị, giúp
+người đọc thấy được cỡ mẫu và độ phân tán trong từng nhóm. Điểm kiến thức trung bình dao động
+từ 9,9 (`Primary`) đến 11,3 (`Tertiary`), với độ lệch chuẩn từ 3,2 đến 3,6 ở mọi nhóm: chênh
+lệch giữa các nhóm là nhỏ so với biến thiên trong từng nhóm, nhưng các nhóm có cỡ lớn.
+
+### 4.5.3 ANOVA một yếu tố trong R
+
+`aov()` ước lượng mô hình phân tích phương sai; `summary()` in ra bảng ANOVA.
+
+
+``` r
+aov_know <- aov(knowledge_score ~ education, data = dx)
+summary(aov_know)
+```
+
+```
+#>               Df Sum Sq Mean Sq F value  Pr(>F)    
+#> education      3    274    91.2    7.84 3.5e-05 ***
+#> Residuals   1032  12008    11.6                    
+#> ---
+#> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#> 53 observations deleted due to missingness
+```
+
+Đọc bảng ANOVA:
+
+- Dòng **education**: dòng giữa các nhóm. **Df = 3** ($k - 1 = 4 - 1$), **Sum Sq = 274** (SS
+  giữa các nhóm), **Mean Sq = 91.2** ($274/3$).
+- Dòng **Residuals**: dòng trong nhóm (phần dư). **Df = 1032** ($N - k = 1036 - 4$),
+  **Sum Sq = 12008**, **Mean Sq = 11.6**, tức phương sai gộp trong nhóm (căn bậc hai của nó,
+  3,4, là độ lệch chuẩn gộp).
+- **F value = 7.84**: $91.2 / 11.6$. Biến thiên giữa các nhóm học vấn lớn gần gấp tám lần mức
+  ta kỳ vọng nếu chỉ có biến thiên trong nhóm.
+- **Pr(>F) = 3.5e-05**: giá trị p, $p < 0.001$. Có bằng chứng mạnh cho thấy kiến thức trung
+  bình khác nhau giữa ít nhất một số mức học vấn.
+- Các dấu sao và dòng "Signif. codes" là chú giải cho giá trị p; chúng không bổ sung thông
+  tin gì và tốt nhất nên bỏ qua.
+- **53 observations deleted due to missingness**: các bệnh nhân thiếu thông tin học vấn hoặc
+  điểm kiến thức đã bị loại, nên $N = 1{,}036$. Luôn ghi nhận dòng này.
+
+### 4.5.4 Kiểm tra các giả định
+
+Giả định phương sai bằng nhau có thể được xem xét một cách không chính thức bằng cách so sánh
+các độ lệch chuẩn (ở đây từ 3,2 đến 3,6, rất tương tự) hoặc bằng **kiểm định Levene**
+(Levene's test), có trong gói `car`. Nếu các phương sai khác nhau rõ rệt, **ANOVA Welch**
+(`oneway.test()`) mở rộng kiểm định t Welch cho nhiều nhóm.
+
+
+``` r
+# Kiểm định Levene: H0 = phương sai bằng nhau ở mọi nhóm.
+# education là factor có thứ tự; ở đây car cần một factor thông thường.
+car::leveneTest(knowledge_score ~ factor(education, ordered = FALSE),
+                data = dx)
+```
+
+```
+#> Levene's Test for Homogeneity of Variance (center = median)
+#>         Df F value Pr(>F)
+#> group    3    1.88   0.13
+#>       1032
+```
+
+``` r
+# ANOVA Welch không giả định phương sai bằng nhau
+oneway.test(knowledge_score ~ education, data = dx)
+```
+
+```
+#> 
+#> 	One-way analysis of means (not assuming equal variances)
+#> 
+#> data:  knowledge_score and education
+#> F = 7.74, num df = 3, denom df = 405, p-value = 4.9e-05
+```
+
+Kiểm định Levene cho $p = 0.13$: không có bằng chứng cho thấy các phương sai khác nhau. ANOVA
+Welch cho $F = 7.74$ với 3 và 404,5 bậc tự do, $p < 0.001$, về cơ bản cùng câu trả lời với
+ANOVA kinh điển. Điểm kiến thức là một số đếm bị chặn từ 0 đến 20 và không hoàn toàn chuẩn,
+nhưng với hơn 100 bệnh nhân mỗi nhóm, định lý giới hạn trung tâm khiến điều này không quan
+trọng; chúng ta sẽ xác nhận bằng kiểm định Kruskal–Wallis ở phần dưới.
+
+### 4.5.5 So sánh hậu kiểm và vấn đề kiểm định bội
+
+Một kiểm định F có ý nghĩa cho biết các trung bình nhóm không bằng nhau hết, nhưng không cho
+biết những nhóm nào khác nhau. Để tìm ra, chúng ta so sánh từng cặp nhóm, và lúc này xuất
+hiện vấn đề **kiểm định bội** (multiple testing). Nếu mỗi kiểm định có 5% khả năng cho kết
+quả dương tính giả, thì với $m$ kiểm định độc lập, khả năng có ít nhất một kết quả dương tính
+giả khi mọi giả thuyết không đều đúng là $1 - 0.95^m$: 26% với sáu kiểm định và 64% với hai
+mươi kiểm định. Lục lọi qua nhiều phép so sánh rồi báo cáo những phép so sánh có ý nghĩa là
+một cách chắc chắn để tạo ra những phát hiện sai.
+
+Biện pháp đơn giản nhất là **hiệu chỉnh Bonferroni** (Bonferroni correction)
+[@bland1995multiple]: để giữ tỷ lệ sai lầm chung (family-wise error rate) ở mức $\alpha$, hãy
+kiểm định mỗi phép so sánh trong $m$ phép so sánh ở mức $\alpha/m$, hoặc tương đương, nhân
+mỗi giá trị p với $m$ (tối đa bằng 1). Phương pháp này đơn giản và luôn hợp lệ nhưng bảo thủ,
+đặc biệt khi $m$ lớn hoặc các kiểm định có tương quan với nhau. Phương pháp **khác biệt có ý
+nghĩa thực sự của Tukey** (Tukey's honestly significant difference, HSD) được thiết kế riêng
+cho mọi phép so sánh từng cặp sau ANOVA và cho các khoảng tin cậy đồng thời cho mọi hiệu số
+từng cặp [@altman1991].
+
+
+``` r
+TukeyHSD(aov_know)
+```
+
+```
+#>   Tukey multiple comparisons of means
+#>     95% family-wise confidence level
+#> 
+#> Fit: aov(formula = knowledge_score ~ education, data = dx)
+#> 
+#> $education
+#>                        diff       lwr     upr   p adj
+#> Primary-None       -0.54685 -1.301448 0.20775 0.24398
+#> Secondary-None      0.37442 -0.438846 1.18769 0.63668
+#> Tertiary-None       0.92685 -0.084373 1.93808 0.08591
+#> Secondary-Primary   0.92127  0.251447 1.59110 0.00237
+#> Tertiary-Primary    1.47370  0.573791 2.37361 0.00016
+#> Tertiary-Secondary  0.55243 -0.397215 1.50208 0.43971
+```
+
+Mỗi dòng trong kết quả Tukey là một phép so sánh từng cặp. **diff** là hiệu số điểm kiến thức
+trung bình (nhóm được nêu trước trừ nhóm được nêu sau); **lwr** và **upr** là các giới hạn
+của khoảng tin cậy 95% đã được hiệu chỉnh cho việc thực hiện sáu phép so sánh; **p adj** là
+giá trị p đã hiệu chỉnh. Có hai phép so sánh nổi bật: `Secondary` so với `Primary` (hiệu số
+0,92 điểm, KTC 95% từ 0,25 đến 1,59, $p$ hiệu chỉnh $= 0.002$) và `Tertiary` so với
+`Primary` (1,47 điểm, từ 0,57 đến 2,37, $p < 0.001$). Các khoảng tin cậy còn lại đều chứa 0.
+Điều thú vị là nhóm `None` có điểm cao hơn một chút so với nhóm `Primary`, nên khuôn mẫu
+không phải là một gradient đều đặn; với dữ liệu mô phỏng, chúng ta không nên diễn giải quá
+mức điều này.
+
+Các kiểm định t từng cặp được hiệu chỉnh Bonferroni cho cùng một bức tranh:
+
+
+``` r
+pairwise.t.test(dx$knowledge_score, dx$education,
+                p.adjust.method = "bonferroni")
+```
+
+```
+#> 
+#> 	Pairwise comparisons using t tests with pooled SD 
+#> 
+#> data:  dx$knowledge_score and dx$education 
+#> 
+#>           None  Primary Secondary
+#> Primary   0.375 -       -        
+#> Secondary 1.000 0.003   -        
+#> Tertiary  0.111 2e-04   0.808    
+#> 
+#> P value adjustment method: bonferroni
+```
+
+Kết quả này là một tam giác các giá trị p đã hiệu chỉnh, mỗi giá trị cho một cặp. Một lần
+nữa, chỉ có `Secondary`–`Primary` ($p = 0.003$) và `Tertiary`–`Primary` ($p < 0.001$) nhỏ
+hơn 0,05.
+
+::: {.callout-tip title="Thực hành tốt"}
+Hãy quyết định những phép so sánh bạn quan tâm *trước khi* xem dữ liệu, giữ cho số lượng của
+chúng ít, và nêu rõ trong phần phương pháp cách xử lý vấn đề so sánh bội. Một vài phép so
+sánh được xác định trước cần ít hoặc không cần hiệu chỉnh; một cuộc "rà lưới" thăm dò qua
+hàng chục biến thì cần hiệu chỉnh và nên được mô tả là mang tính thăm dò. Đừng chạy các kiểm
+định hậu kiểm sau một kiểm định F không có ý nghĩa để cố tìm ra điều gì đó có ý nghĩa.
+:::
+
+### 4.5.6 Kiểm định Kruskal–Wallis
+
+Kiểm định tương ứng dựa trên thứ hạng của ANOVA một yếu tố là **kiểm định Kruskal–Wallis**
+[@kruskal1952]. Tất cả $N$ quan sát được xếp hạng chung; nếu $\bar{R}_j$ là hạng trung bình
+trong nhóm $j$, thống kê
+
+$$
+H = \frac{12}{N(N+1)}\sum_{j=1}^{k} n_j\left(\bar{R}_j - \frac{N+1}{2}\right)^2
+$$
+
+đo mức độ các hạng trung bình của các nhóm cách xa hạng trung bình chung $(N+1)/2$. Dưới
+$H_0$ rằng mọi nhóm đến từ cùng một phân phối, $H$ tuân theo xấp xỉ phân phối $\chi^2$ với
+$k-1$ bậc tự do. Với hai nhóm, kiểm định này tương đương với kiểm định tổng hạng Wilcoxon.
+
+
+``` r
+kruskal.test(knowledge_score ~ education, data = dx)
+```
+
+```
+#> 
+#> 	Kruskal-Wallis rank sum test
+#> 
+#> data:  knowledge_score by education
+#> Kruskal-Wallis chi-squared = 24.4, df = 3, p-value = 2e-05
+```
+
+Kết quả cho thống kê kiểm định (**Kruskal-Wallis chi-squared = 24.4**), số bậc tự do
+(**df = 3**) và giá trị p ($2.0 \times 10^{-5}$). Phân tích dựa trên thứ hạng thống nhất với
+ANOVA. Nếu cần so sánh từng cặp sau kiểm định Kruskal–Wallis, hãy dùng các kiểm định
+Wilcoxon từng cặp có hiệu chỉnh, ví dụ
+`pairwise.wilcox.test(x, g, p.adjust.method = "bonferroni")`.
+
+::: {.callout-note title="Diễn giải lâm sàng"}
+Kiến thức về tăng huyết áp khác nhau theo trình độ học vấn ($F = 7.8$ với 3 và 1.032 bậc tự
+do, $p < 0.001$), chủ yếu vì bệnh nhân có trình độ trung học hoặc cao đẳng/đại học đạt điểm
+cao hơn khoảng 1 đến 1,5 điểm (trên thang 20) so với những người có trình độ tiểu học. Các
+khác biệt này là có thật theo nghĩa thống kê nhưng có độ lớn khiêm tốn so với độ phân tán của
+điểm số (SD khoảng 3,4): học vấn chỉ giải thích một phần nhỏ lý do vì sao bệnh nhân khác nhau
+về kiến thức. Giáo dục sức khỏe cần tiếp cận bệnh nhân ở mọi trình độ học vấn.
+:::
+
+## 4.6 Hai biến phân loại {#sec-categorical}
+
+Các câu hỏi trọng tâm của nghiên cứu liên quan đến một biến kết cục nhị phân, việc tiếp nhận
+điều trị, và các yếu tố quyết định dạng phân loại như bảo hiểm y tế, nơi cư trú và đái tháo
+đường. Việc tiếp nhận điều trị có liên quan đến việc có bảo hiểm y tế hay không?
+
+### 4.6.1 Bảng tiếp liên và tỷ lệ phần trăm phù hợp
+
+Dữ liệu về hai biến phân loại được tóm tắt trong một **bảng tiếp liên** (contingency table,
+hay bảng chéo — cross-tabulation) gồm các số đếm. Khi đặt yếu tố quyết định tiềm năng ở các
+dòng và biến kết cục ở các cột, **tỷ lệ phần trăm theo dòng** trả lời câu hỏi tự nhiên về mặt
+lâm sàng: bao nhiêu phần trăm bệnh nhân có bảo hiểm, và bao nhiêu phần trăm bệnh nhân không có
+bảo hiểm, tiếp nhận điều trị?
+
+
+``` r
+tab_ins <- table(Insurance = dx$health_insurance,
+                 Uptake    = dx$treatment_uptake)
+addmargins(tab_ins)                     # số đếm kèm tổng
+```
+
+```
+#>          Uptake
+#> Insurance   No  Yes  Sum
+#>       No   419  306  725
+#>       Yes  162  202  364
+#>       Sum  581  508 1089
+```
+
+``` r
+# Tỷ lệ phần trăm theo dòng: tiếp nhận điều trị trong từng nhóm bảo hiểm
+round(100 * prop.table(tab_ins, margin = 1), 1)
+```
+
+```
+#>          Uptake
+#> Insurance   No  Yes
+#>       No  57.8 42.2
+#>       Yes 44.5 55.5
+```
+
+Trong số 364 bệnh nhân có bảo hiểm, 55,5% đang điều trị, so với 42,2% trong số 725 bệnh nhân
+không có bảo hiểm. Hình 4.6 trình bày cùng phép so sánh này dưới dạng đồ thị, cùng với trình
+độ học vấn.
+
+
+``` r
+bar_data <- bind_rows(
+  dx |> count(group = health_insurance, treatment_uptake) |>
+    mutate(variable = "Bảo hiểm y tế"),
+  dx |> filter(!is.na(education)) |>
+    count(group = as.character(education), treatment_uptake) |>
+    mutate(variable = "Học vấn")
+) |>
+  mutate(group = factor(group, levels = c("No", "Yes", "None", "Primary",
+                                          "Secondary", "Tertiary")),
+         variable = factor(variable, levels = c("Bảo hiểm y tế",
+                                                "Học vấn")))
+
+ggplot(bar_data, aes(x = group, y = n, fill = treatment_uptake)) +
+  geom_col(position = "fill", width = 0.7) +
+  geom_text(aes(label = n), position = position_fill(vjust = 0.5),
+            colour = "white", size = 3) +
+  facet_grid(~ variable, scales = "free_x", space = "free_x") +
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = c(No = "grey60", Yes = course_teal),
+                    name = "Tiếp nhận điều trị") +
+  labs(x = NULL, y = "Tỷ lệ bệnh nhân")
+```
+
+![Tỷ lệ phần trăm bệnh nhân đã được chẩn đoán đang dùng thuốc hạ áp theo tình trạng bảo hiểm y tế và theo trình độ học vấn. Mỗi cột có tổng bằng 100%; các con số bên trong cột là số bệnh nhân.](images/book/04-statistical-tests-c4-percent-bar-fig-1.png)
+
+### 4.6.2 Kiểm định khi bình phương Pearson
+
+Nếu bảo hiểm và việc tiếp nhận điều trị **độc lập** với nhau, tỷ lệ tiếp nhận điều trị sẽ như
+nhau ở bệnh nhân có và không có bảo hiểm, và bằng tỷ lệ chung. Khi đó **số đếm kỳ vọng**
+(expected count) trong ô ở dòng $i$ và cột $j$ sẽ là
+
+$$
+E_{ij} = \frac{(\text{tổng dòng } i) \times (\text{tổng cột } j)}{\text{tổng chung}}.
+$$
+
+**Thống kê khi bình phương Pearson** (Pearson's chi-square statistic) [@pearson1900] cộng các
+bình phương chênh lệch giữa số đếm quan sát $O_{ij}$ và số đếm kỳ vọng, chia cho số đếm kỳ
+vọng:
+
+$$
+X^2 = \sum_{i}\sum_{j}\frac{(O_{ij} - E_{ij})^2}{E_{ij}}.
+$$
+
+Dưới $H_0$ về tính độc lập, $X^2$ tuân theo xấp xỉ phân phối $\chi^2$ với $(r-1)(c-1)$ bậc tự
+do, trong đó $r$ và $c$ là số dòng và số cột; một bảng 2×2 có một bậc tự do. Giá trị $X^2$ lớn
+cho thấy bảng quan sát được khác xa so với điều mà giả thuyết độc lập dự đoán [@kirkwood2003;
+@agresti2013]. Phép tính đủ đơn giản để làm bằng tay, giúp logic của nó trở nên minh bạch.
+
+
+``` r
+observed <- tab_ins
+expected <- outer(rowSums(observed), colSums(observed)) / sum(observed)
+round(expected, 1)
+```
+
+```
+#>        No   Yes
+#> No  386.8 338.2
+#> Yes 194.2 169.8
+```
+
+``` r
+x2 <- sum((observed - expected)^2 / expected)   # thống kê Pearson
+x2
+```
+
+```
+#> [1] 17.192
+```
+
+``` r
+pchisq(x2, df = 1, lower.tail = FALSE)          # giá trị p từ chi-square(1)
+```
+
+```
+#> [1] 3.3789e-05
+```
+
+Nếu độc lập, chúng ta kỳ vọng có 169,8 bệnh nhân có bảo hiểm đang điều trị; chúng ta quan sát
+được 202. Thống kê kiểm định là 17,2 với một bậc tự do, $p = 3.4 \times 10^{-5}$. Hàm có sẵn
+của R cho kết quả tương tự, với một điểm tinh chỉnh:
+
+
+``` r
+chisq.test(tab_ins)
+```
+
+```
+#> 
+#> 	Pearson's Chi-squared test with Yates' continuity correction
+#> 
+#> data:  tab_ins
+#> X-squared = 16.7, df = 1, p-value = 4.5e-05
+```
+
+- **Pearson's Chi-squared test with Yates' continuity correction**: với bảng 2×2, R mặc định
+  áp dụng **hiệu chỉnh Yates** (Yates' correction), trừ 0,5 khỏi mỗi $|O - E|$ trước khi bình
+  phương. Hiệu chỉnh này làm kiểm định hơi bảo thủ.
+- **X-squared = 16.7, df = 1**: thống kê đã hiệu chỉnh, nhỏ hơn một chút so với giá trị 17,2
+  của chúng ta.
+- **p-value = 4.5e-05**: bằng chứng mạnh cho thấy tiếp nhận điều trị và bảo hiểm không độc lập
+  với nhau.
+
+Với mẫu lớn, kiểm định có hiệu chỉnh và không hiệu chỉnh cho kết quả rất gần nhau;
+`chisq.test(tab_ins, correct = FALSE)` tái tạo đúng phép tính bằng tay của chúng ta. Cả thống
+kê kiểm định lẫn giá trị p đều không cho biết *hướng* hay *độ lớn* của mối liên quan: để biết
+điều đó, chúng ta cần tỷ lệ phần trăm theo dòng và các thước đo tác động ở Mục 4.6.4.
+
+### 4.6.3 Giả định về số đếm kỳ vọng và kiểm định chính xác Fisher
+
+Phân phối khi bình phương là một xấp xỉ cho mẫu lớn. Một quy tắc được dùng rộng rãi, do
+Cochran đề xuất, là xấp xỉ này phù hợp khi không có số đếm kỳ vọng nào nhỏ hơn 1 và không quá
+20% số đếm kỳ vọng nhỏ hơn 5; với bảng 2×2, mọi số đếm kỳ vọng nên ít nhất bằng 5
+[@kirkwood2003; @agresti2013]. Lưu ý rằng quy tắc này áp dụng cho số đếm *kỳ vọng*, không phải
+số đếm quan sát. Khi quy tắc không được thỏa mãn, **kiểm định chính xác Fisher** (Fisher's
+exact test) tính xác suất chính xác của bảng quan sát được, và của mọi bảng cực đoan hơn, với
+điều kiện các tổng dòng và tổng cột cố định, dựa trên phân phối siêu bội (hypergeometric).
+Kiểm định này không dùng xấp xỉ cho mẫu lớn và hợp lệ với mọi cỡ mẫu [@agresti2013].
+
+Đái tháo đường là một ví dụ hữu ích, vì chỉ có 28 bệnh nhân đã được chẩn đoán tăng huyết áp
+mắc đái tháo đường.
+
+
+``` r
+tab_diab <- table(Diabetes = dx$diabetes, Uptake = dx$treatment_uptake)
+addmargins(tab_diab)
+```
+
+```
+#>         Uptake
+#> Diabetes   No  Yes  Sum
+#>      No   574  487 1061
+#>      Yes    7   21   28
+#>      Sum  581  508 1089
+```
+
+``` r
+chisq.test(tab_diab)$expected     # kiểm tra các số đếm kỳ vọng
+```
+
+```
+#>         Uptake
+#> Diabetes      No     Yes
+#>      No  566.062 494.938
+#>      Yes  14.938  13.062
+```
+
+Số đếm kỳ vọng nhỏ nhất là 13,1, nên thực ra kiểm định khi bình phương vẫn chấp nhận được ở
+đây, nhưng có hai ô quan sát nhỏ (7 và 21), và kiểm định Fisher là một phép kiểm tra tự
+nhiên.
+
+
+``` r
+fisher.test(tab_diab)
+```
+
+```
+#> 
+#> 	Fisher's Exact Test for Count Data
+#> 
+#> data:  tab_diab
+#> p-value = 0.0033
+#> alternative hypothesis: true odds ratio is not equal to 1
+#> 95 percent confidence interval:
+#>  1.4313 9.9226
+#> sample estimates:
+#> odds ratio 
+#>     3.5321
+```
+
+- **p-value = 0.0033**: bằng chứng mạnh về mối liên quan giữa đái tháo đường và việc tiếp nhận
+  điều trị.
+- **odds ratio 3.53** với **95 percent confidence interval 1.43 to 9.92**: kiểm định Fisher
+  báo cáo một ước lượng *hợp lý cực đại có điều kiện* (conditional maximum likelihood) của tỷ
+  số chênh, có thể hơi khác so với tỷ số tích chéo đơn giản được mô tả dưới đây. Khoảng tin
+  cậy rộng vì chỉ có 28 bệnh nhân mắc đái tháo đường.
+
+Trong R, `fisher.test()` cũng áp dụng được cho các bảng lớn hơn 2×2, dù có thể chạy chậm với
+bảng lớn; `simulate.p.value = TRUE` cho một xấp xỉ Monte Carlo.
+
+::: {.callout-warning title="Lỗi thường gặp"}
+Áp dụng quy tắc "ít nhất 5 trong mỗi ô" cho số đếm *quan sát*. Một ô có số đếm quan sát bằng 2
+vẫn ổn nếu số đếm kỳ vọng của nó, chẳng hạn, là 8. Hãy kiểm tra `chisq.test(tab)$expected`,
+và chuyển sang kiểm định chính xác Fisher khi số đếm kỳ vọng nhỏ.
+:::
+
+### 4.6.4 Các thước đo tác động từ bảng 2×2
+
+Một kiểm định trả lời câu hỏi "có mối liên quan không?" Người đọc lâm sàng muốn biết "mạnh đến
+đâu?". Hãy viết bảng 2×2 như sau
+
+| | Kết cục Có | Kết cục Không | Tổng |
+|---|---|---|---|
+| Có phơi nhiễm | $a$ | $b$ | $n_1 = a + b$ |
+| Không phơi nhiễm | $c$ | $d$ | $n_0 = c + d$ |
+
+với nguy cơ (tỷ lệ có biến kết cục) $p_1 = a/n_1$ ở nhóm có phơi nhiễm và $p_0 = c/n_0$ ở
+nhóm không phơi nhiễm. Có ba thước đo được dùng phổ biến [@kirkwood2003; @agresti2013;
+@bland2000oddsratio].
+
+- **Hiệu số nguy cơ** (risk difference) $\mathrm{RD} = p_1 - p_0$, với sai số chuẩn
+  $\sqrt{p_1(1-p_1)/n_1 + p_0(1-p_0)/n_0}$. Đây là thước đo trên thang tuyệt đối và hữu ích
+  nhất cho việc lập kế hoạch dịch vụ (thêm bao nhiêu bệnh nhân trên 100 người sẽ được điều
+  trị).
+- **Nguy cơ tương đối** (relative risk, hay tỷ số nguy cơ — risk ratio)
+  $\mathrm{RR} = p_1/p_0$. Khoảng tin cậy của nó được tính trên thang logarit,
+  $\mathrm{SE}(\ln \mathrm{RR}) = \sqrt{1/a - 1/n_1 + 1/c - 1/n_0}$.
+- **Tỷ số chênh** (odds ratio, OR) $\mathrm{OR} = \dfrac{a/b}{c/d} = \dfrac{ad}{bc}$, tức tỷ
+  số giữa odds của biến kết cục ở hai nhóm, với
+  $\mathrm{SE}(\ln \mathrm{OR}) = \sqrt{1/a + 1/b + 1/c + 1/d}$.
+
+Với các thước đo dạng tỷ số, KTC 95% là
+$\exp\{\ln(\text{tỷ số}) \pm 1.96 \times \mathrm{SE}\}$, khoảng này không đối xứng quanh ước
+lượng trên thang đo gốc. "Không có mối liên quan" tương ứng với RD = 0, RR = 1 và OR = 1.
+Chúng ta tính cả ba thước đo cho bảo hiểm y tế (có phơi nhiễm = có bảo hiểm) và việc tiếp
+nhận điều trị.
+
+
+``` r
+# Các ô được đặt tên như trong bảng trên (tránh đặt tên một ô là "c",
+# vì sẽ che khuất hàm c() của R)
+a  <- tab_ins["Yes", "Yes"]; b  <- tab_ins["Yes", "No"]   # có bảo hiểm
+cc <- tab_ins["No",  "Yes"]; dd <- tab_ins["No",  "No"]   # không có bảo hiểm
+n1 <- a + b; n0 <- cc + dd
+p1 <- a / n1; p0 <- cc / n0
+
+rd <- p1 - p0
+se_rd <- sqrt(p1 * (1 - p1) / n1 + p0 * (1 - p0) / n0)
+
+rr <- p1 / p0
+se_log_rr <- sqrt(1 / a - 1 / n1 + 1 / cc - 1 / n0)
+
+or <- (a * dd) / (b * cc)
+se_log_or <- sqrt(1 / a + 1 / b + 1 / cc + 1 / dd)
+
+effects <- tibble(
+  measure  = c("Hiệu số nguy cơ", "Nguy cơ tương đối", "Tỷ số chênh"),
+  estimate = c(rd, rr, or),
+  lower    = c(rd - 1.96 * se_rd, exp(log(rr) - 1.96 * se_log_rr),
+               exp(log(or) - 1.96 * se_log_or)),
+  upper    = c(rd + 1.96 * se_rd, exp(log(rr) + 1.96 * se_log_rr),
+               exp(log(or) + 1.96 * se_log_or))
+)
+knitr::kable(effects, digits = 3,
+             col.names = c("Thước đo", "Ước lượng", "Cận dưới", "Cận trên"),
+             caption = "Mối liên quan giữa bảo hiểm y tế và việc tiếp nhận điều trị: ba thước đo tác động kèm khoảng tin cậy 95%.")
+```
+
+
+
+Table: Mối liên quan giữa bảo hiểm y tế và việc tiếp nhận điều trị: ba thước đo tác động kèm khoảng tin cậy 95%.
+
+|Thước đo          | Ước lượng| Cận dưới| Cận trên|
+|:-----------------|---------:|--------:|--------:|
+|Hiệu số nguy cơ   |     0.133|    0.070|    0.195|
+|Nguy cơ tương đối |     1.315|    1.160|    1.490|
+|Tỷ số chênh       |     1.707|    1.325|    2.201|
+
+Đọc bảng: bệnh nhân có bảo hiểm có khả năng đang điều trị cao hơn 13,3 điểm phần trăm (KTC 95%
+từ 7,0 đến 19,5); xác suất tiếp nhận điều trị của họ bằng 1,31 lần so với bệnh nhân không có
+bảo hiểm (KTC 95% từ 1,16 đến 1,49); và odds tiếp nhận điều trị của họ cao gấp 1,71 lần (KTC
+95% từ 1,32 đến 2,20). Cả ba khoảng tin cậy đều không chứa giá trị "không tác động", phù hợp
+với giá trị p của kiểm định khi bình phương.
+
+Vì sao lại có ba thước đo, và vì sao tỷ số chênh (1,71) cách xa 1 hơn nhiều so với nguy cơ
+tương đối (1,31)? Odds và nguy cơ chỉ gần nhau khi biến kết cục hiếm gặp (chẳng hạn dưới
+10%). Việc tiếp nhận điều trị là phổ biến (47%), nên ở đây tỷ số chênh phóng đại đáng kể nguy
+cơ tương đối nếu bị đọc nhầm thành nguy cơ tương đối [@zhang1998; @bland2000oddsratio]. Dù vậy,
+tỷ số chênh vẫn quan trọng: đó là thước đo có thể ước lượng từ các nghiên cứu bệnh–chứng, nó
+có tính đối xứng (tỷ số chênh cho "không tiếp nhận điều trị" đơn giản là $1/1.71$), và đó là
+đại lượng mà **hồi quy logistic** ước lượng, vì vậy nó chiếm ưu thế trong phân tích các biến
+kết cục nhị phân (Mục 4.9 và Chương 5).
+
+::: {.callout-note title="Diễn giải lâm sàng"}
+Trong mẫu (mô phỏng) này, 55,5% bệnh nhân đã được chẩn đoán có bảo hiểm và 42,2% bệnh nhân
+không có bảo hiểm đang điều trị, chênh lệch 13 điểm phần trăm (KTC 95% từ 7 đến 20;
+$p < 0.001$). Nếu mối liên quan này là nhân quả, cứ mỗi 100 bệnh nhân sẽ có thêm khoảng 13
+người được điều trị nếu bệnh nhân không có bảo hiểm đạt được tỷ lệ tiếp nhận của bệnh nhân có
+bảo hiểm. Đó là một khác biệt lớn xét về mặt y tế công cộng, nhưng tình trạng bảo hiểm có liên
+quan đến các đặc điểm khác (thu nhập, học vấn, nơi cư trú), nên phép so sánh thô này có thể
+phản ánh một phần các yếu tố đó.
+:::
+
+### 4.6.5 Các bảng lớn hơn
+
+Kiểm định khi bình phương áp dụng tương tự cho các bảng lớn hơn. Với học vấn (bốn mức) theo
+việc tiếp nhận điều trị:
+
+
+``` r
+tab_edu <- table(Education = dx$education, Uptake = dx$treatment_uptake)
+round(100 * prop.table(tab_edu, margin = 1), 1)
+```
+
+```
+#>            Uptake
+#> Education     No  Yes
+#>   None      62.7 37.3
+#>   Primary   56.8 43.2
+#>   Secondary 46.9 53.1
+#>   Tertiary  43.0 57.0
+```
+
+``` r
+chisq.test(tab_edu)
+```
+
+```
+#> 
+#> 	Pearson's Chi-squared test
+#> 
+#> data:  tab_edu
+#> X-squared = 19.5, df = 3, p-value = 0.00022
+```
+
+Tỷ lệ tiếp nhận điều trị tăng từ 37,3% ở bệnh nhân không đi học lên 57,0% ở những người có
+trình độ cao đẳng/đại học (Hình 4.6). Thống kê khi bình phương là 19,5 với $(4-1)(2-1) = 3$
+bậc tự do, $p < 0.001$. Hiệu chỉnh Yates không được dùng cho các bảng lớn hơn 2×2. Lưu ý rằng
+kiểm định này bỏ qua *thứ tự* của học vấn: nó sẽ cho cùng một kết quả nếu các dòng bị xáo
+trộn. Khi các nhóm có thứ tự, một kiểm định xu hướng (ví dụ kiểm định khi bình phương cho xu
+hướng, hoặc hồi quy logistic với học vấn được mã hóa thành điểm số; xem Chương 5) có lực thống
+kê cao hơn và trả lời câu hỏi cụ thể hơn về một gradient [@altman1991; @agresti2013].
+
+### 4.6.6 Thực hiện kiểm định cho cả một bảng
+
+Trong một bản thảo, việc so sánh các đặc điểm giữa các nhóm kết cục thường được trình bày trong
+một bảng. Gói `gtsummary` [@sjoberg2021] bổ sung giá trị p bằng `add_p()`, tự chọn một kiểm
+định cho từng biến. Điều quan trọng là phải biết gói dùng những kiểm định nào: theo mặc định là
+kiểm định tổng hạng Wilcoxon cho các biến liên tục, và kiểm định khi bình phương (hoặc kiểm
+định chính xác Fisher khi số đếm kỳ vọng nhỏ) cho các biến phân loại.
+
+
+``` r
+dx |>
+  select(treatment_uptake, age, distance_to_facility_km,
+         health_insurance, residence, diabetes) |>
+  tbl_summary(by = treatment_uptake, missing = "no",
+              label = list(age ~ "Tuổi (năm)",
+                           distance_to_facility_km ~ "Khoảng cách (km)",
+                           health_insurance ~ "Bảo hiểm y tế",
+                           residence ~ "Nơi cư trú",
+                           diabetes ~ "Đái tháo đường")) |>
+  add_p() |>
+  modify_header(label = "**Đặc điểm**", p.value = "**Giá trị p**") |>
+  as_kable(caption = "Đặc điểm của bệnh nhân đã được chẩn đoán theo việc tiếp nhận điều trị, với giá trị p từ các kiểm định mặc định của gtsummary.")
+```
+
+
+
+Table: Đặc điểm của bệnh nhân đã được chẩn đoán theo việc tiếp nhận điều trị, với giá trị p từ các kiểm định mặc định của gtsummary.
+
+|**Đặc điểm**     | **No**  N = 581 | **Yes**  N = 508 | **Giá trị p** |
+|:----------------|:---------------:|:----------------:|:-------------:|
+|Tuổi (năm)       |   51 (41, 60)   |   56 (47, 66)    |    <0.001     |
+|Khoảng cách (km) | 6.8 (4.3, 10.7) |  5.8 (3.1, 9.6)  |    <0.001     |
+|Bảo hiểm y tế    |    162 (28%)    |    202 (40%)     |    <0.001     |
+|Nơi cư trú       |                 |                  |    <0.001     |
+|Rural            |    306 (53%)    |    195 (38%)     |               |
+|Urban            |    275 (47%)    |    313 (62%)     |               |
+|Đái tháo đường   |    7 (1.2%)     |    21 (4.1%)     |     0.002     |
+
+::: {.callout-warning title="Lỗi thường gặp"}
+Đưa giá trị p vào bảng đặc điểm ban đầu của một thử nghiệm ngẫu nhiên có đối chứng. Trong thử
+nghiệm, mọi khác biệt ban đầu đều do ngẫu nhiên theo thiết kế, nên việc kiểm định chúng là vô
+nghĩa; giá trị p trong một bảng như bảng này chỉ phù hợp trong các nghiên cứu quan sát, nơi
+chúng mô tả các mối liên quan, và ngay cả khi đó, các ước lượng vẫn quan trọng hơn giá trị p.
+:::
+
+## 4.7 Tương quan giữa hai biến liên tục {#sec-correlation}
+
+Huyết áp tâm thu có liên quan đến chỉ số khối cơ thể (BMI) không? Khi cả hai biến đều liên tục
+và không biến nào rõ ràng là "biến kết cục", chúng ta có thể đo mức độ mạnh của mối liên quan
+giữa chúng bằng một **hệ số tương quan** (correlation coefficient).
+
+### 4.7.1 Hệ số tương quan Pearson
+
+**Hệ số tương quan tích–mômen Pearson** (Pearson's product–moment correlation coefficient)
+cho $n$ cặp $(x_i, y_i)$ là
+
+$$
+r = \frac{\sum_{i}(x_i - \bar{x})(y_i - \bar{y})}
+{\sqrt{\sum_{i}(x_i - \bar{x})^2\,\sum_{i}(y_i - \bar{y})^2}}.
+$$
+
+Hệ số này nằm trong khoảng từ $-1$ (quan hệ đường thẳng nghịch biến hoàn hảo), qua 0 (không có
+quan hệ *tuyến tính*), đến $+1$ (quan hệ đường thẳng đồng biến hoàn hảo). Kiểm định
+$H_0: \rho = 0$ dùng $t = r\sqrt{(n-2)/(1-r^2)}$ với $n-2$ bậc tự do, và khoảng tin cậy được
+tính thông qua phép biến đổi $z$ của Fisher. Hệ số $r$ Pearson chỉ đo mối liên quan *tuyến
+tính*, nhạy cảm với giá trị ngoại lai, và kiểm định của nó giả định rằng ít nhất một trong hai
+biến có phân phối xấp xỉ chuẩn [@altman1991; @bland2015].
+
+### 4.7.2 Hệ số tương quan hạng Spearman
+
+**Hệ số tương quan hạng Spearman** (Spearman's rank correlation coefficient) $r_s$ (thường
+được viết là $\rho$) là hệ số Pearson được tính trên thứ hạng của $x$ và $y$ thay vì giá trị
+của chúng [@spearman1904]. Khi không có giá trị bằng nhau, công thức rút gọn thành
+
+$$
+r_s = 1 - \frac{6\sum_{i} d_i^2}{n(n^2 - 1)},
+$$
+
+trong đó $d_i$ là hiệu số giữa thứ hạng của $x_i$ và của $y_i$. Hệ số này đo mối liên quan
+**đơn điệu** (monotonic — biến này có xu hướng tăng khi biến kia tăng, không nhất thiết theo
+một đường thẳng), vững trước giá trị ngoại lai và phù hợp với dữ liệu thứ bậc hoặc dữ liệu
+lệch.
+
+### 4.7.3 Hãy xem biểu đồ phân tán
+
+Luôn vẽ dữ liệu trước khi tính một hệ số tương quan. Một con số duy nhất không thể phân biệt
+một quan hệ tuyến tính thực sự với một đường cong, một cụm giá trị ngoại lai hay hai phân nhóm
+tách biệt.
+
+
+``` r
+ggplot(dx, aes(x = bmi, y = sbp_mmhg)) +
+  geom_point(alpha = 0.3, size = 1, colour = course_teal) +
+  geom_smooth(method = "lm", formula = y ~ x, colour = "black") +
+  labs(x = "Chỉ số khối cơ thể (kg/m²)", y = "HA tâm thu (mmHg)")
+```
+
+![Huyết áp tâm thu theo chỉ số khối cơ thể ở bệnh nhân đã được chẩn đoán, với đường thẳng bình phương tối thiểu và dải tin cậy 95% của nó.](images/book/04-statistical-tests-c4-scatter-fig-1.png)
+
+Đám mây điểm dốc lên: bệnh nhân có BMI cao hơn có xu hướng có huyết áp tâm thu cao hơn, nhưng
+các điểm phân tán rất nhiều quanh đường thẳng.
+
+### 4.7.4 Tương quan trong R
+
+
+``` r
+cor.test(dx$bmi, dx$sbp_mmhg, method = "pearson")
+```
+
+```
+#> 
+#> 	Pearson's product-moment correlation
+#> 
+#> data:  dx$bmi and dx$sbp_mmhg
+#> t = 11.8, df = 1053, p-value <2e-16
+#> alternative hypothesis: true correlation is not equal to 0
+#> 95 percent confidence interval:
+#>  0.28742 0.39407
+#> sample estimates:
+#>     cor 
+#> 0.34185
+```
+
+Đọc kết quả:
+
+- **t = 11.8, df = 1053**: thống kê kiểm định cho $H_0: \rho = 0$; có 1.055 bệnh nhân có cả hai
+  số đo ($n - 2 = 1053$).
+- **p-value < 2.2e-16**: bằng chứng áp đảo rằng hệ số tương quan khác 0.
+- **95 percent confidence interval: 0.29 0.39**: khoảng giá trị hợp lý cho hệ số tương quan
+  trong quần thể.
+- **cor 0.34185**: $r = 0.34$ của Pearson, một mối liên quan tuyến tính đồng biến ở mức trung
+  bình.
+
+
+``` r
+cor.test(dx$bmi, dx$sbp_mmhg, method = "spearman", exact = FALSE)
+```
+
+```
+#> 
+#> 	Spearman's rank correlation rho
+#> 
+#> data:  dx$bmi and dx$sbp_mmhg
+#> S = 1.35e+08, p-value <2e-16
+#> alternative hypothesis: true rho is not equal to 0
+#> sample estimates:
+#>     rho 
+#> 0.31132
+```
+
+Hệ số Spearman $r_s = 0.31$ là tương tự, như dự kiến khi mối quan hệ gần tuyến tính và không có
+giá trị ngoại lai cực đoan. Thống kê `S` là tổng bình phương các hiệu số thứ hạng;
+`exact = FALSE` yêu cầu giá trị p thông thường cho mẫu lớn (giá trị p chính xác không tính được
+khi có các giá trị bằng nhau). R không đưa ra khoảng tin cậy cho hệ số Spearman.
+
+Bình phương của hệ số Pearson, $r^2 = 0.34^2 \approx 0.12$, là tỷ lệ phương sai của một biến
+được "giải thích" bởi quan hệ đường thẳng với biến kia: BMI giải thích khoảng 12% biến thiên
+của huyết áp tâm thu trong mẫu này. Đôi khi người ta dùng các nhãn mô tả ước lệ (dưới 0,3 là
+yếu, từ 0,3 đến 0,7 là trung bình, trên 0,7 là mạnh), nhưng bối cảnh lâm sàng quan trọng hơn
+nhãn.
+
+Hãy xem xét thêm tương quan giữa tuổi và huyết áp tâm thu.
+
+
+``` r
+cor.test(dx$age, dx$sbp_mmhg) |> tidy() |>
+  select(estimate, statistic, p.value, conf.low, conf.high)
+```
+
+```
+#> # A tibble: 1 × 5
+#>   estimate statistic    p.value conf.low conf.high
+#>      <dbl>     <dbl>      <dbl>    <dbl>     <dbl>
+#> 1    0.142      4.72 0.00000263   0.0832     0.200
+```
+
+Ở đây $r = 0.14$ với $p < 0.001$: rất "có ý nghĩa", nhưng tuổi chỉ giải thích khoảng 2% biến
+thiên của huyết áp tâm thu ($0.14^2$). Với một nghìn bệnh nhân, hầu như mọi hệ số tương quan
+khác 0 đều có ý nghĩa thống kê; điều quan trọng là độ lớn của $r$ và khoảng tin cậy của nó.
+
+::: {.callout-warning title="Lỗi thường gặp"}
+Diễn giải một hệ số tương quan như bằng chứng của quan hệ nhân quả, hoặc một giá trị p có ý
+nghĩa như bằng chứng của một mối quan hệ mạnh. Tương quan chỉ đo lường mối liên quan: BMI và
+huyết áp có thể tương quan với nhau vì cả hai cùng chịu ảnh hưởng của chế độ ăn, hoạt động thể
+lực và tuổi. Tương quan cũng không nói gì về sự phù hợp (agreement): hai máy đo huyết áp có
+thể tương quan rất cao nhưng lại lệch nhau một cách hệ thống 10 mmHg [@altman1991; @bland2015].
+:::
+
+## 4.8 Chọn kiểm định phù hợp với câu hỏi {#sec-choosing}
+
+Việc chọn phương pháp xuất phát từ câu hỏi nghiên cứu và từ loại của các biến liên quan, chứ
+không phải từ việc kiểm định nào cho giá trị p nhỏ nhất. Bảng dưới đây tóm tắt các phương pháp
+trong chương này.
+
+Table: Chọn kiểm định thống kê cho một phép so sánh hoặc một mối liên quan giữa hai biến.
+
+| Câu hỏi | Loại biến kết cục | Phương pháp tham số | Phi tham số / chính xác | Thước đo tác động |
+|---|---|---|---|---|
+| Hai nhóm độc lập có khác nhau? | Liên tục | Kiểm định t Welch, `t.test()` | Tổng hạng Wilcoxon, `wilcox.test()` | Hiệu số trung bình (hoặc độ dịch chuyển Hodges–Lehmann) kèm KTC |
+| Hai số đo bắt cặp có khác nhau? | Liên tục | Kiểm định t bắt cặp, `t.test(paired = TRUE)` | Hạng có dấu Wilcoxon | Hiệu số trung bình kèm KTC |
+| Nhiều hơn hai nhóm có khác nhau? | Liên tục | ANOVA một yếu tố, `aov()`; ANOVA Welch, `oneway.test()` | Kruskal–Wallis, `kruskal.test()` | Hiệu số từng cặp (Tukey, Bonferroni) |
+| Hai biến phân loại có liên quan? | Phân loại | Khi bình phương, `chisq.test()` | Chính xác Fisher, `fisher.test()` | RD, RR, OR kèm KTC |
+| Hai biến liên tục có liên quan? | Liên tục | Pearson, `cor.test()` | Spearman, `cor.test(method = "spearman")` | Hệ số tương quan kèm KTC |
+| Biến kết cục nhị phân và một hay nhiều biến dự báo | Nhị phân | Hồi quy logistic, `glm(family = binomial)` | — | Tỷ số chênh kèm KTC |
+
+Ba câu hỏi thực tiễn định hướng lựa chọn:
+
+1. **Biến kết cục thuộc loại nào?** Liên tục, nhị phân hoặc phân loại, thứ bậc, thời gian đến
+   sự kiện.
+2. **Có bao nhiêu nhóm, và các nhóm độc lập hay bắt cặp?**
+3. **Các giả định của kiểm định tham số có hợp lý không?** Hãy cân nhắc hình dạng phân phối,
+   cỡ mẫu và liệu trung bình có phải là đại lượng tóm tắt hợp lý hay không.
+
+## 4.9 Cầu nối sang hồi quy: vì sao xem xét từng biến một là chưa đủ {#sec-bridge}
+
+Mọi kiểm định trong chương này đều xem xét **hai biến cùng một lúc**. Trong nghiên cứu quan
+sát, đây là một hạn chế nghiêm trọng, vì các nhóm được so sánh thường khác nhau về nhiều mặt
+cùng lúc. Bệnh nhân đái tháo đường trong dữ liệu của chúng ta lớn tuổi hơn bệnh nhân không mắc
+đái tháo đường (tuổi trung bình 59,7 so với 53,4), và bệnh nhân lớn tuổi hơn có nhiều khả năng
+đang điều trị hơn. Vậy khi thấy tỷ lệ tiếp nhận điều trị cao hơn ở bệnh nhân đái tháo đường,
+bao nhiêu phần là do đái tháo đường và bao nhiêu phần là do tuổi? Một biến như tuổi, vừa liên
+quan đến phơi nhiễm vừa liên quan đến biến kết cục và không nằm trên con đường nhân quả giữa
+chúng, là một **yếu tố gây nhiễu** (confounder) [@rothman2008; @greenland1999dag]. Các kiểm
+định hai biến không thể tách tác động của nó khỏi tác động của phơi nhiễm. Phân tầng (lặp lại
+kiểm định trong từng nhóm tuổi) nhanh chóng cạn dữ liệu khi số yếu tố gây nhiễu tăng lên. **Các
+mô hình hồi quy** giải quyết vấn đề này bằng cách ước lượng tác động của từng biến trong khi giữ
+các biến khác không đổi.
+
+Với một biến kết cục nhị phân, mô hình chuẩn là **hồi quy logistic** (logistic regression),
+được trình bày đầy đủ ở Chương 5 [@hosmer2013]. Mô hình này mô tả log-odds của biến kết cục
+như một hàm tuyến tính của các biến dự báo,
+
+$$
+\ln\left(\frac{\pi}{1 - \pi}\right) = \beta_0 + \beta_1 x_1 + \dots + \beta_k x_k,
+$$
+
+trong đó $\pi$ là xác suất tiếp nhận điều trị. Với một biến dự báo nhị phân duy nhất,
+$e^{\beta_1}$ chính xác bằng tỷ số chênh của bảng 2×2. Chúng ta có thể xác nhận điều này với
+biến bảo hiểm y tế.
+
+
+``` r
+m_ins <- glm(treatment_uptake ~ health_insurance, data = dx,
+             family = binomial)
+tidy(m_ins, exponentiate = TRUE, conf.int = TRUE) |>
+  select(term, estimate, p.value, conf.low, conf.high)
+```
+
+```
+#> # A tibble: 2 × 5
+#>   term                estimate   p.value conf.low conf.high
+#>   <chr>                  <dbl>     <dbl>    <dbl>     <dbl>
+#> 1 (Intercept)            0.730 0.0000292    0.630     0.846
+#> 2 health_insuranceYes    1.71  0.0000363    1.33      2.20
+```
+
+``` r
+# Tỷ số chênh tích chéo từ bảng 2x2, để so sánh
+or
+```
+
+```
+#> [1] 1.7074
+```
+
+Đối số `family = binomial` cho `glm()` biết biến kết cục là nhị phân; vì nhóm tham chiếu của
+`treatment_uptake` là `"No"`, mô hình mô tả odds của `"Yes"`. `exponentiate = TRUE` chuyển các
+hệ số từ log-odds sang tỷ số chênh. Dòng `health_insuranceYes` cho tỷ số chênh 1,707, giống
+hệt giá trị $ad/bc$ mà chúng ta đã tính bằng tay. KTC 95% của nó (1,33 đến 2,20) là một khoảng
+*hợp lý hồ sơ* (profile-likelihood), loại khoảng mà `glm()` dùng theo mặc định; nó gần như
+giống hệt khoảng tin cậy trên thang logarit (Wald) của chúng ta, từ 1,32 đến 2,20. Giá trị p
+($3.6 \times 10^{-5}$) rất gần với giá trị p của kiểm định khi bình phương. Dòng `(Intercept)`
+là odds tiếp nhận điều trị ở nhóm không có bảo hiểm ($306/419 = 0.73$). Như vậy, hồi quy
+logistic với một biến dự báo chỉ là một cách khác để phân tích bảng 2×2; sức mạnh của nó nằm ở
+chỗ có thể thêm các biến dự báo khác. Hãy xem qua điều này đạt được gì đối với đái tháo đường:
+
+
+``` r
+crude    <- glm(treatment_uptake ~ diabetes, data = dx, family = binomial)
+adjusted <- glm(treatment_uptake ~ diabetes + age, data = dx,
+                family = binomial)
+
+# Tỷ số chênh của đái tháo đường trước và sau khi tính đến tuổi
+exp(c(crude        = coef(crude)[["diabetesYes"]],
+      age_adjusted = coef(adjusted)[["diabetesYes"]]))
+```
+
+```
+#>        crude age_adjusted 
+#>       3.5359       3.0995
+```
+
+Tỷ số chênh thô của đái tháo đường là 3,54; sau khi tính đến tuổi, nó giảm xuống còn 3,10. Một
+phần tác động biểu kiến của đái tháo đường thực ra là tác động của việc lớn tuổi hơn. Chương 5
+sẽ phát triển nội dung này một cách đầy đủ: chọn yếu tố gây nhiễu, xây dựng và kiểm tra các mô
+hình đa biến, và báo cáo tỷ số chênh hiệu chỉnh.
+
+## 4.10 Báo cáo kết quả đúng cách {#sec-reporting}
+
+Một kết quả thống kê chỉ hữu ích nếu người đọc hiểu được nó. Hướng dẫn của tuyên bố STROBE cho
+các nghiên cứu quan sát [@vonelm2007], và của các sách thống kê được trích dẫn xuyên suốt chương
+này, quy về một vài nguyên tắc.
+
+- **Mô tả trước khi kiểm định.** Đưa ra các thống kê tóm tắt cho từng nhóm (trung bình và độ
+  lệch chuẩn, trung vị và IQR, hoặc số lượng và tỷ lệ phần trăm), kèm số bệnh nhân được phân
+  tích.
+- **Đặt ước lượng và khoảng tin cậy của nó lên đầu**, theo đơn vị của biến kết cục, và đưa giá
+  trị p chính xác như thông tin bổ trợ.
+- **Nêu tên kiểm định** trong phần phương pháp, và cho biết các giả định đã được kiểm tra như
+  thế nào và vấn đề so sánh bội đã được xử lý ra sao.
+- **Diễn giải độ lớn** của tác động theo ngôn ngữ lâm sàng, và không diễn giải một kết quả
+  không có ý nghĩa thống kê như bằng chứng của việc không có tác động.
+- **Đừng phóng đại.** Các mối liên quan cắt ngang không phải là tác động nhân quả, và các mối
+  liên quan thô có thể bị nhiễu.
+
+Dưới đây là cách các kết quả chính của chương này có thể được trình bày trong phần kết quả của
+một bài báo.
+
+*Trong số 1.089 bệnh nhân đã được chẩn đoán tăng huyết áp, 508 người (46,6%) đang dùng thuốc
+hạ áp. Bệnh nhân đang điều trị lớn tuổi hơn những người không điều trị (trung bình 56,3 so với
+51,1 tuổi; chênh lệch 5,2 tuổi, KTC 95% từ 3,5 đến 6,8; kiểm định t Welch $p < 0.001$) và sống
+gần cơ sở y tế hơn (trung vị 5,8 so với 6,8 km; hiệu số Hodges–Lehmann 1,0 km, KTC 95% từ 0,4
+đến 1,5; kiểm định tổng hạng Wilcoxon $p < 0.001$). Tỷ lệ tiếp nhận điều trị cao hơn ở bệnh
+nhân có bảo hiểm so với bệnh nhân không có bảo hiểm (55,5% so với 42,2%; hiệu số nguy cơ 13,3
+điểm phần trăm, KTC 95% từ 7,0 đến 19,5; tỷ số chênh 1,71, KTC 95% từ 1,32 đến 2,20;
+$\chi^2 = 16.7$, 1 bậc tự do, $p < 0.001$).*
+
+::: {.callout-tip title="Thực hành tốt"}
+Tránh viết "có khác biệt có ý nghĩa thống kê (p < 0,05)" mà không có con số nào. Thay vào đó,
+hãy viết khác biệt là bao nhiêu, được ước lượng chính xác đến đâu và bằng chứng mạnh đến mức
+nào: "bệnh nhân được điều trị trung bình lớn hơn 5,2 tuổi (KTC 95% từ 3,5 đến 6,8; p < 0,001)".
+:::
+
+## 4.11 Tóm tắt
+
+Chương này đã đi từ việc mô tả dữ liệu đến việc rút ra suy luận về quần thể mà dữ liệu được lấy
+từ đó. Mọi ước lượng đều chịu biến thiên do chọn mẫu, được định lượng bằng sai số chuẩn của nó.
+Một kiểm định giả thuyết đo mức độ tương thích của dữ liệu với một giả thuyết không về việc
+không có tác động, được tóm tắt bằng giá trị p; một khoảng tin cậy cho thấy dải các độ lớn tác
+động tương thích với dữ liệu và thường cung cấp nhiều thông tin hơn. Với biến kết cục liên tục
+ở hai nhóm độc lập, chúng ta dùng kiểm định t Welch hoặc kiểm định tổng hạng Wilcoxon; với
+nhiều nhóm, dùng ANOVA một yếu tố hoặc kiểm định Kruskal–Wallis, theo sau (nếu cần) là các phép
+so sánh từng cặp có tính đến vấn đề kiểm định bội. Với hai biến phân loại, chúng ta dùng kiểm
+định khi bình phương hoặc kiểm định chính xác Fisher và ước lượng hiệu số nguy cơ, nguy cơ
+tương đối hoặc tỷ số chênh. Với hai biến liên tục, chúng ta dùng tương quan Pearson hoặc
+Spearman, sau khi đã vẽ dữ liệu. Tất cả các phương pháp này đều xem xét hai biến cùng một lúc
+và không thể xử lý nhiễu — đó là nhiệm vụ của các mô hình hồi quy ở Chương 5.
+
+::: {.callout-important title="Điểm chính"}
+- Xác định quần thể phân tích một cách tường minh; với việc tiếp nhận điều trị, chỉ phân tích những bệnh nhân đã được chẩn đoán (`htn_diagnosed == "Yes"`, $n = 1{,}089$).
+- Sai số chuẩn đo độ chính xác của một ước lượng và giảm theo $\sqrt{n}$; độ lệch chuẩn đo biến thiên giữa các cá nhân.
+- Giá trị p là xác suất thu được dữ liệu ít nhất cực đoan bằng dữ liệu quan sát *nếu giả thuyết không là đúng*. Nó không phải là xác suất để giả thuyết không đúng và không phải là thước đo độ lớn tác động.
+- Báo cáo ước lượng kèm khoảng tin cậy 95% và giá trị p chính xác; phân biệt ý nghĩa thống kê với ý nghĩa lâm sàng; không có bằng chứng không phải là bằng chứng của sự không có.
+- Đánh giá tính chuẩn bằng biểu đồ tần suất và biểu đồ Q–Q, cỡ mẫu và câu hỏi nghiên cứu, chứ không chỉ bằng giá trị p của kiểm định Shapiro–Wilk; định lý giới hạn trung tâm bảo vệ các kiểm định về trung bình khi mẫu lớn.
+- Hai nhóm: `t.test()` (Welch) hoặc `wilcox.test()`. Nhiều hơn hai nhóm: `aov()` hoặc `kruskal.test()`, kèm so sánh hậu kiểm Tukey hoặc Bonferroni.
+- Hai biến phân loại: `chisq.test()` (kiểm tra số đếm kỳ vọng) hoặc `fisher.test()`; báo cáo RD, RR hoặc OR kèm KTC. Khi biến kết cục phổ biến, OR cách xa 1 hơn RR.
+- Tương quan (`cor.test()`, Pearson hoặc Spearman) đo mối liên quan, không phải quan hệ nhân quả hay sự phù hợp; luôn vẽ đồ thị trước.
+- Các kiểm định đơn biến không thể xử lý nhiễu; tỷ số chênh từ hồi quy logistic với một biến dự báo bằng tỷ số chênh của bảng 2×2, và việc thêm biến dự báo cho các ước lượng hiệu chỉnh (Chương 5).
+:::
+
+## 4.12 Đọc thêm
+
+- @kirkwood2003, *Essential Medical Statistics*, các chương về khoảng tin cậy, kiểm định giả
+  thuyết, so sánh trung bình và tỷ lệ: trình bày rõ ràng và chặt chẽ mọi nội dung của chương
+  này, được viết cho các nhà nghiên cứu y học.
+- @altman1991, *Practical Statistics for Medical Research*: cuốn sách ứng dụng kinh điển, với
+  những hướng dẫn đặc biệt tốt về chọn kiểm định, kiểm tra giả định và trình bày kết quả.
+- @greenland2016, "Statistical tests, P values, confidence intervals, and power: a guide to
+  misinterpretations": danh sách 25 cách hiểu sai phổ biến, cần đọc trước khi viết bất kỳ phần
+  kết quả nào.
+- @wasserstein2016, tuyên bố của ASA về giá trị p: một tuyên bố ngắn gọn, có thẩm quyền về
+  những gì giá trị p có thể và không thể cho bạn biết.
+- @agresti2013, *Categorical Data Analysis*: tài liệu tham khảo về bảng tiếp liên, kiểm định
+  chính xác và các thước đo mối liên quan, dành cho người đọc muốn tìm hiểu sâu về lý thuyết.
+
+## 4.13 Bài tập
+
+Tất cả các bài tập đều dùng nhóm bệnh nhân đã được chẩn đoán, `dx <- filter(analysis_data,
+htn_diagnosed == "Yes")`, trừ khi có ghi chú khác. Lời giải chi tiết được trình bày trong phụ
+lục.
+
+::: {.callout-tip .nb-exercise icon=false title="Bài tập 4.1"}
+Nạp `Data/analysis_data.rds` và tạo quần thể phân tích `dx`.
+
+1. Có bao nhiêu bệnh nhân trong `dx`, và bao nhiêu phần trăm trong số họ đang điều trị?
+2. Tính tỷ lệ phần trăm đang điều trị trong *toàn bộ* 1.500 bệnh nhân. Giải thích trong hai câu vì sao không nên báo cáo con số này như tỷ lệ tiếp nhận điều trị.
+3. Dùng `dx`, tính trung bình, độ lệch chuẩn và sai số chuẩn của điểm kiến thức. Giải thích sự khác biệt giữa độ lệch chuẩn và sai số chuẩn.
+:::
+
+::: {.callout-tip .nb-exercise icon=false title="Bài tập 4.2"}
+Đánh giá xem chỉ số khối cơ thể (`bmi`) có phân phối xấp xỉ chuẩn trong `dx` hay không.
+
+1. Vẽ biểu đồ tần suất và biểu đồ Q–Q chuẩn của `bmi`.
+2. Chạy `shapiro.test()` cho `bmi`. Giá trị p cho biết điều gì, và bạn nên coi trọng nó đến mức nào với cỡ mẫu này?
+3. Dựa trên đánh giá của bạn, hãy chọn một kiểm định để so sánh BMI giữa bệnh nhân có và không tiếp nhận điều trị, thực hiện kiểm định và diễn giải kết quả.
+:::
+
+::: {.callout-tip .nb-exercise icon=false title="Bài tập 4.3"}
+So sánh huyết áp tâm thu (`sbp_mmhg`) giữa bệnh nhân đang điều trị và bệnh nhân không điều trị.
+
+1. Cho biết trung bình và SD của từng nhóm.
+2. Chạy kiểm định t Welch và báo cáo trong một câu hiệu số trung bình kèm khoảng tin cậy 95% và giá trị p.
+3. Độ lớn của khác biệt có quan trọng về mặt lâm sàng không? Bệnh nhân được điều trị có huyết áp *cao hơn*: hãy đưa ra một lý do vì sao điều này hợp lý trong một nghiên cứu cắt ngang.
+:::
+
+::: {.callout-tip .nb-exercise icon=false title="Bài tập 4.4"}
+Huyết áp tâm thu có khác nhau giữa các nhóm BMI (`bmi_cat`: `Underweight` — thiếu cân, `Normal` — bình thường, `Overweight` — thừa cân, `Obese` — béo phì) không?
+
+1. Vẽ biểu đồ hộp của `sbp_mmhg` theo `bmi_cat` và lập bảng trung bình và SD của từng nhóm.
+2. Thực hiện ANOVA một yếu tố và đọc bảng ANOVA: số bậc tự do, thống kê F và giá trị p. Bao nhiêu bệnh nhân bị loại do giá trị khuyết?
+3. Chạy kiểm định Kruskal–Wallis để kiểm tra lại.
+4. Dùng các kiểm định t từng cặp có hiệu chỉnh Bonferroni để xác định những nhóm nào khác nhau.
+:::
+
+::: {.callout-tip .nb-exercise icon=false title="Bài tập 4.5"}
+Việc tiếp nhận điều trị có liên quan đến nơi cư trú (`residence`) không?
+
+1. Lập bảng 2×2 và tỷ lệ phần trăm tiếp nhận điều trị theo dòng trong từng nhóm nơi cư trú.
+2. Chạy kiểm định khi bình phương và kiểm tra các số đếm kỳ vọng.
+3. Lấy việc cư trú ở thành thị làm "phơi nhiễm", tính hiệu số nguy cơ, nguy cơ tương đối và tỷ số chênh kèm khoảng tin cậy 95%.
+4. Giải thích vì sao tỷ số chênh cách xa 1 hơn nguy cơ tương đối.
+:::
+
+::: {.callout-tip .nb-exercise icon=false title="Bài tập 4.6"}
+Quay lại với đái tháo đường và việc tiếp nhận điều trị.
+
+1. Tính tỷ số chênh của việc tiếp nhận điều trị (có so với không có đái tháo đường) từ bảng 2×2 theo công thức $ad/bc$, và bằng hồi quy logistic `glm(treatment_uptake ~ diabetes, family = binomial)`. Hai kết quả có trùng nhau không?
+2. So sánh chúng với tỷ số chênh do `fisher.test()` báo cáo. Vì sao nó hơi khác?
+3. Vì sao khoảng tin cậy của tỷ số chênh này rộng hơn nhiều so với khoảng tin cậy của biến bảo hiểm y tế?
+:::
+
+::: {.callout-tip .nb-exercise icon=false title="Bài tập 4.7"}
+Điểm kiến thức về tăng huyết áp có liên quan đến tuổi hoặc đến khoảng cách tới cơ sở y tế không?
+
+1. Vẽ biểu đồ phân tán của `knowledge_score` theo `age`.
+2. Tính hệ số tương quan Pearson và Spearman bằng `cor.test()` và diễn giải chúng, bao gồm cả khoảng tin cậy của $r$ Pearson.
+3. Lặp lại với `knowledge_score` và `distance_to_facility_km`. Hệ số nào phù hợp hơn cho biến khoảng cách, và vì sao?
+4. Một đồng nghiệp viết "kiến thức không liên quan đến tuổi (p = 0,73), nên giáo dục sức khỏe nhắm theo nhóm tuổi là không cần thiết". Hãy nhận xét về nhận định này.
+:::
+
+::: {.callout-tip .nb-exercise icon=false title="Bài tập 4.8"}
+Kiểm định bội trong thực tế. Xét tám biến phân loại `sex`, `residence`, `education`, `occupation`, `marital_status`, `smoking`, `alcohol` và `facility`.
+
+1. Với mỗi biến, chạy kiểm định khi bình phương về mối liên quan với `treatment_uptake` và tập hợp tám giá trị p vào một data frame (gợi ý: dùng `lapply()` hoặc `purrr::map()` và `chisq.test(table(...))$p.value`).
+2. Hiệu chỉnh các giá trị p bằng `p.adjust()` theo phương pháp Bonferroni và Holm. Những mối liên quan nào vẫn nhỏ hơn 0,05?
+3. Giả sử cả tám giả thuyết không đều đúng và các kiểm định độc lập với nhau, xác suất có ít nhất một giá trị p nhỏ hơn 0,05 là bao nhiêu? Điều này hàm ý gì đối với một bài báo chỉ báo cáo những kết quả có ý nghĩa từ một cuộc sàng lọc như vậy?
+:::
+
+
+---
+
+[← Trước: Chương 3: Thống kê mô tả, bảng và hình](book-chapter3.qmd) · [Mục lục](handbook.qmd) · [Tiếp: Chương 5: Mô hình hồi quy và báo cáo kết quả →](book-chapter5.qmd)

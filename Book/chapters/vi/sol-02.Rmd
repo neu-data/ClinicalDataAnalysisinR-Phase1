@@ -1,0 +1,430 @@
+## Chương 2: Tìm hiểu và làm sạch dữ liệu lâm sàng
+
+```{r s2-setup, include=FALSE}
+library(tidyverse)
+library(lubridate)
+options(pillar.sigfig = 5, width = 77, pillar.width = 77)
+```
+
+Các lời giải dưới đây bắt đầu từ tệp thô hoặc từ tệp phân tích đã làm sạch, tùy theo yêu cầu của
+từng bài tập. Chúng ta nạp các gói và cả hai bộ dữ liệu một lần.
+
+```{r s2-load}
+library(tidyverse)
+library(lubridate)
+
+na_codes <- c("", "NA", "999", "-99")
+raw_default  <- read_csv("Data/hypertension_phc_raw.csv")
+raw          <- read_csv("Data/hypertension_phc_raw.csv", na = na_codes)
+analysis_data <- readRDS("Data/analysis_data.rds")
+
+# Hàm trợ giúp Yes/No từ Mục 2.6
+to_yesno <- function(x) {
+  x <- str_to_lower(str_trim(as.character(x)))
+  case_when(
+    x %in% c("yes", "y", "1", "true")  ~ "Yes",
+    x %in% c("no",  "n", "0", "false") ~ "No",
+    TRUE ~ NA_character_
+  )
+}
+```
+
+### Bài tập 2.1
+
+Chúng ta viết một hàm tóm tắt nhỏ và áp dụng nó cho cả hai lần nhập, để hai dòng của kết quả có thể
+so sánh trực tiếp với nhau.
+
+```{r s2-ex1}
+# 1-2. Glucose lúc đói theo hai cách nhập
+glucose_summary <- function(d) {
+  summarise(d,
+            mean = mean(fasting_glucose_mmol_l, na.rm = TRUE),
+            median = median(fasting_glucose_mmol_l, na.rm = TRUE),
+            max = max(fasting_glucose_mmol_l, na.rm = TRUE),
+            n_missing = sum(is.na(fasting_glucose_mmol_l)))
+}
+bind_rows(default = glucose_summary(raw_default),
+          declared = glucose_summary(raw), .id = "import")
+```
+
+Với cách nhập mặc định, 40 giá trị được mã hóa `999` bị coi là nồng độ glucose thật. **Trung bình**
+là thống kê tóm tắt bị ảnh hưởng nhiều nhất: nó tăng từ 5,4 lên 32,5 mmol/L, vì trung bình sử dụng
+độ lớn của mọi giá trị và một vài giá trị cực lớn chi phối nó. **Giá trị lớn nhất** cũng sai (999
+thay vì 10,1). **Trung vị** không thay đổi, vẫn là 5,4, vì 40 giá trị canh gác, dù cực trị, chỉ
+chiếm 2,7 phần trăm số giá trị và không làm dịch chuyển phần giữa của phân phối; tính vững này là
+một lý do khiến trung vị được ưu tiên với dữ liệu lệch. Cách nhập mặc định báo cáo 35 giá trị khuyết
+và cách nhập có khai báo mã báo cáo 75, chênh lệch chính là 40 giá trị canh gác.
+
+Với câu hỏi 3, chúng ta nhập dữ liệu chỉ với các mã khuyết tiêu chuẩn và chuyển `999` thành `NA`
+riêng trong cột glucose, bằng `na_if()`.
+
+
+```{r s2-ex1-selective}
+# 3. Chỉ coi 999 là khuyết trong cột mà nó là giá trị canh gác
+raw_selective <- read_csv("Data/hypertension_phc_raw.csv",
+                          na = c("", "NA")) |>
+  mutate(fasting_glucose_mmol_l = na_if(fasting_glucose_mmol_l, 999))
+
+sum(is.na(raw_selective$fasting_glucose_mmol_l))
+max(raw_selective$creatinine_umol_l)   # creatinine không bị động đến
+```
+
+Glucose giờ có cùng 75 giá trị khuyết như trước, trong khi creatinine không bị động đến (giá trị lớn
+nhất của nó, 141 µmol/L, cho thấy không có cột nào bị thay đổi do nhầm lẫn; trong một bộ dữ liệu mà
+creatinine thực sự đạt 999, giá trị đó sẽ được giữ lại). Cách tiếp cận có chọn lọc này là lựa chọn
+mặc định an toàn bất cứ khi nào một mã có thể là giá trị thật ở một số cột.
+
+
+### Bài tập 2.2
+
+Chúng ta liệt kê các mã bị lặp lại, hiển thị các bản ghi của chúng bằng `janitor::get_dupes()`, và
+so sánh số dòng trùng lặp hoàn toàn với số mã thừa.
+
+```{r s2-ex2}
+# 1. Các mã xuất hiện nhiều hơn một lần, và các bản ghi của chúng
+raw |> count(patient_id) |> filter(n > 1)
+
+janitor::get_dupes(raw, patient_id) |>
+  select(patient_id, dupe_count, facility, age, sex, sbp_mmhg)
+
+# 2. Số dòng trùng lặp hoàn toàn so với số mã thừa
+sum(duplicated(raw))
+nrow(raw) - n_distinct(raw$patient_id)
+```
+
+Ba mã (`PHC-0011`, `PHC-0251` và `PHC-0881`) xuất hiện hai lần, và `get_dupes()` hiển thị hai bản
+ghi của mỗi mã cạnh nhau, kèm theo cột `dupe_count`. Có 3 dòng trùng lặp hoàn toàn và 3 mã thừa
+(1.503 dòng trừ 1.500 mã khác nhau). Vì hai con số này khớp nhau, mọi mã bị lặp lại đều là bản sao
+chính xác, và không có bản ghi mâu thuẫn nào cần được đối chiếu với tài liệu gốc.
+
+Một câu phù hợp cho phần phương pháp: *"Bộ dữ liệu thô gồm 1.503 bản ghi; ba bản ghi là bản sao
+hoàn toàn của các bản ghi khác (giống nhau ở mọi biến) và đã được loại bỏ, còn lại 1.500 người
+tham gia với mã định danh duy nhất."*
+
+
+### Bài tập 2.3
+
+Chúng ta lập bảng tần số các mã thô, sau đó áp dụng hàm trợ giúp sau khi đã loại bỏ bản ghi trùng
+lặp, và kiểm tra phép ánh xạ bằng bảng chéo giữa giá trị cũ và giá trị mới.
+
+```{r s2-ex3}
+# 1. Các mã được dùng trước khi làm sạch
+table(raw$health_insurance, useNA = "ifany")
+table(raw$htn_diagnosed, useNA = "ifany")
+
+# 2. Áp dụng hàm trợ giúp và kiểm tra phép ánh xạ
+clean_bin <- distinct(raw) |>
+  mutate(health_insurance_new = to_yesno(health_insurance),
+         htn_diagnosed_new = to_yesno(htn_diagnosed))
+
+table(before = clean_bin$health_insurance,
+      after = clean_bin$health_insurance_new)
+table(before = clean_bin$htn_diagnosed,
+      after = clean_bin$htn_diagnosed_new)
+```
+
+Cả hai biến đều dùng sáu mã: `0`/`1`, `N`/`Y` và `No`/`Yes`. Các bảng chéo cho thấy mỗi mã được ánh
+xạ đến đúng một giá trị sạch (mọi mã `0`, `N` và `No` thành "No", mọi mã `1`, `Y` và `Yes` thành
+"Yes") và không có giá trị nào trở thành khuyết. Các con số hơi nhỏ hơn so với hai bảng đầu tiên vì
+ba bản ghi trùng lặp đã bị loại bỏ.
+
+
+```{r s2-ex3-prop}
+# 3. Tỷ lệ trong dữ liệu sạch
+analysis_data |>
+  summarise(insured_pct = round(100 * mean(health_insurance == "Yes"), 1),
+            diagnosed_pct = round(100 * mean(htn_diagnosed == "Yes"), 1))
+```
+
+Trong dữ liệu sạch, 34,1 phần trăm bệnh nhân có bảo hiểm y tế và 72,6 phần trăm (1.089 trong số
+1.500) đã được chẩn đoán tăng huyết áp. Vì `health_insurance` và `htn_diagnosed` không có giá trị
+khuyết, `mean(x == "Yes")` cho ra tỷ lệ một cách trực tiếp; nếu có giá trị khuyết, bạn sẽ cần
+`na.rm = TRUE` và nên báo cáo mẫu số.
+
+
+### Bài tập 2.4
+
+Các phép kiểm tra giữa các biến so sánh những biến phải có một mối quan hệ cố định với nhau.
+
+```{r s2-ex4}
+# 1. Huyết áp tâm trương cao bằng hoặc hơn huyết áp tâm thu
+analysis_data |>
+  summarise(dbp_ge_sbp = sum(dbp_mmhg >= sbp_mmhg, na.rm = TRUE))
+
+# 2. Hiệu áp
+analysis_data <- analysis_data |>
+  mutate(pulse_pressure = sbp_mmhg - dbp_mmhg)
+summary(analysis_data$pulse_pressure)
+sum(analysis_data$pulse_pressure < 20, na.rm = TRUE)
+```
+
+Mười một bệnh nhân có huyết áp tâm trương bằng hoặc cao hơn huyết áp tâm thu. Điều này không thể xảy
+ra về mặt sinh lý với một số đo huyết áp cánh tay được đo đúng cách: theo định nghĩa, huyết áp tâm
+thu là áp lực đỉnh của chu chuyển tim. Mỗi bản ghi này đều đã vượt qua các phép kiểm tra khoảng giá
+trị của từng biến riêng lẻ, và đó chính là lý do cần có các phép kiểm tra giữa các biến. Bản tóm tắt
+hiệu áp xác nhận vấn đề từ một góc độ khác: giá trị nhỏ nhất là -18 mmHg. Thêm 92 bệnh nhân có hiệu
+áp dưới 20 mmHg, điều bất thường (hiệu áp bình thường vào khoảng 40 mmHg) và có thể phản ánh các số
+đo bị đảo chỗ hoặc gõ nhầm. Trong một nghiên cứu thực tế, những bản ghi này sẽ được gửi lại cho các
+cơ sở để xác minh. Dữ liệu trong cuốn sách này là dữ liệu mô phỏng và các số đo được giữ nguyên trong
+`analysis_data`, nhưng nếu bạn làm sạch dữ liệu này để công bố, bạn sẽ thêm một quy tắc (ví dụ, chuyển
+cả hai số đo huyết áp thành `NA` khi huyết áp tâm trương lớn hơn hoặc bằng tâm thu) vào script làm
+sạch và báo cáo quy tắc đó.
+
+
+```{r s2-ex4-rules}
+# 3. Các quy tắc nhất quán từ từ điển dữ liệu
+analysis_data |>
+  group_by(htn_diagnosed) |>
+  summarise(n = n(),
+            min_months = min(months_since_diagnosis),
+            max_months = max(months_since_diagnosis))
+
+analysis_data |>
+  count(treatment_uptake, adherence_recorded = !is.na(adherence))
+```
+
+Cả hai quy tắc đều được thỏa mãn. Tất cả 411 bệnh nhân chưa được chẩn đoán đều có
+`months_since_diagnosis` bằng 0, và 1.089 bệnh nhân đã được chẩn đoán có giá trị từ 1 đến 119
+tháng. Tuân thủ điều trị được ghi nhận cho cả 508 bệnh nhân đang điều trị và không cho bệnh nhân nào
+trong số 992 bệnh nhân không điều trị.
+
+
+### Bài tập 2.5
+
+Thêm `right = FALSE` làm cho mỗi khoảng bao gồm giới hạn dưới của nó, ví dụ `[18.5, 25)`, khớp với
+định nghĩa của WHO.
+
+```{r s2-ex5}
+# 1. Phân loại theo đúng WHO: các khoảng đóng bên trái
+analysis_data <- analysis_data |>
+  mutate(bmi_cat_who = cut(bmi,
+                           breaks = c(-Inf, 18.5, 25, 30, Inf),
+                           labels = c("Underweight", "Normal",
+                                      "Overweight", "Obese"),
+                           right = FALSE))
+
+# 2. So sánh hai phiên bản
+table(default = analysis_data$bmi_cat, who = analysis_data$bmi_cat_who)
+
+analysis_data |>
+  filter(bmi_cat != bmi_cat_who) |>
+  count(bmi, bmi_cat, bmi_cat_who)
+```
+
+Bảng chéo gần như nằm hoàn toàn trên đường chéo: 21 bệnh nhân thay đổi nhóm, tất cả đều chuyển lên
+một nhóm. Bảng thứ hai cho thấy lý do: họ chính là những bệnh nhân có BMI, khi làm tròn đến một chữ
+số thập phân, nằm đúng trên một điểm cắt. Hai bệnh nhân có BMI 18,5 chuyển từ "Underweight" (thiếu
+cân) sang "Normal" (bình thường), mười bệnh nhân có BMI 25,0 chuyển từ "Normal" sang "Overweight"
+(thừa cân) và chín bệnh nhân có BMI 30,0 chuyển từ "Overweight" sang "Obese" (béo phì). Ở đây sự khác
+biệt là nhỏ, nhưng trong một nghiên cứu báo cáo tỷ lệ hiện mắc béo phì, nó sẽ làm thay đổi ước lượng,
+và làm cho kết quả không khớp với các nghiên cứu đã áp dụng đúng định nghĩa của WHO.
+
+
+```{r s2-ex5-age}
+# 3. Nhóm tuổi, được đối chiếu với tuổi
+analysis_data <- analysis_data |>
+  mutate(age_group = cut(age, breaks = c(18, 40, 60, Inf),
+                         labels = c("18-39", "40-59", "60+"),
+                         right = FALSE))
+
+analysis_data |>
+  group_by(age_group) |>
+  summarise(n = n(), min_age = min(age), max_age = max(age))
+```
+
+Cùng ý tưởng `right = FALSE` đó giúp định nghĩa các nhóm tuổi có nhãn đúng với ý nghĩa của chúng:
+`[18, 40)` là từ 18 đến 39 tuổi. Tuổi nhỏ nhất và lớn nhất trong mỗi nhóm xác nhận định nghĩa
+(18–39, 40–59 và 60–95), và hai bệnh nhân có tuổi bị chuyển thành khuyết trong quá trình kiểm định
+được gán đúng một nhóm tuổi khuyết.
+
+
+### Bài tập 2.6
+
+Biểu thức chính quy (regular expression) mô tả từng định dạng: `\\d{4}` (với dấu gạch chéo ngược
+được viết hai lần bên trong một chuỗi R) là bốn chữ số và `[A-Za-z]{3}` là ba chữ cái; `^` và `$`
+neo mẫu vào đầu và cuối của giá trị.
+
+```{r s2-ex6}
+# 1. Đếm từng định dạng ngày
+dates <- distinct(raw)$enroll_date
+c(iso = sum(str_detect(dates, "^\\d{4}-\\d{2}-\\d{2}$")),
+  slash = sum(str_detect(dates, "^\\d{2}/\\d{2}/\\d{4}$")),
+  month_name = sum(str_detect(dates, "^\\d{2}-[A-Za-z]{3}-\\d{4}$")))
+
+# 2. Hiểu định dạng gạch chéo theo kiểu tháng trước
+wrong <- parse_date_time(dates, orders = c("ymd", "mdy", "d-b-Y")) |>
+  as_date()
+sum(is.na(wrong))                                  # số lỗi phân tích
+sum(wrong != analysis_data$enroll_date, na.rm = TRUE) # khác biệt âm thầm
+```
+
+Ba định dạng bao gồm toàn bộ 1.500 ngày (1.050 + 347 + 103). Khi phân tích định dạng gạch chéo theo
+kiểu tháng trước, 221 ngày không phân tích được: chúng có số đầu tiên lớn hơn 12 (chẳng hạn
+`18/02/2024`), không thể là một tháng. Ít ra thì lỗi này còn nhìn thấy được. Nguy hiểm hơn là 137
+ngày được phân tích thành công nhưng khác với ngày đúng. Phần lớn trong số đó (115) là các ngày dạng
+gạch chéo có cả hai số đều nhỏ hơn hoặc bằng 12, khiến `01/02/2024` trở thành ngày 2 tháng 1 thay vì
+ngày 1 tháng 2; 22 ngày còn lại là các ngày có tên tháng mà `parse_date_time()` đã khớp với một thứ
+tự khác khi danh sách thứ tự thay đổi. Nếu không so sánh với các ngày được phân tích đúng, không lỗi
+nào trong số 137 lỗi này được phát hiện. Đó là lý do thứ tự phải được chọn dựa trên hiểu biết về dữ
+liệu, và kết quả phải được kiểm tra.
+
+
+```{r s2-ex6-quarter}
+# 3. Số lượt tuyển chọn mỗi quý
+analysis_data |>
+  mutate(enroll_quarter = quarter(enroll_date)) |>
+  count(enroll_quarter)
+```
+
+Việc tuyển chọn được phân bố đều trong ba quý đầu (từ 392 đến 421 bệnh nhân) và thấp hơn trong quý
+thứ tư (275), vì việc tuyển chọn kết thúc vào ngày 2 tháng 12.
+
+
+### Bài tập 2.7
+
+Chúng ta tạo một biến chỉ thị việc bị khuyết và so sánh nó giữa các nhóm của các biến quan sát được.
+
+```{r s2-ex7}
+analysis_data <- analysis_data |>
+  mutate(chol_missing = is.na(total_chol_mmol_l))
+
+# 1. Tỷ lệ phần trăm bị khuyết theo chẩn đoán và theo nơi cư trú
+analysis_data |>
+  group_by(htn_diagnosed) |>
+  summarise(n = n(), pct_missing = round(100 * mean(chol_missing), 1))
+
+analysis_data |>
+  group_by(residence) |>
+  summarise(n = n(), pct_missing = round(100 * mean(chol_missing), 1))
+
+# 2. Tuổi trung bình theo tình trạng bị khuyết
+analysis_data |>
+  group_by(chol_missing) |>
+  summarise(n = n(), mean_age = round(mean(age, na.rm = TRUE), 1))
+```
+
+Cholesterol bị khuyết ở 6,8 phần trăm bệnh nhân đã được chẩn đoán và 3,9 phần trăm bệnh nhân chưa
+được chẩn đoán, và ở 6,5 phần trăm người sống ở thành thị so với 5,4 phần trăm người sống ở nông
+thôn. Những bệnh nhân bị khuyết cholesterol trung bình lớn tuổi hơn khoảng bốn năm (55,9 so với 52,0
+tuổi). Các chênh lệch này không lớn, và Chương 4 sẽ trình bày cách kiểm định xem những chênh lệch cỡ
+này có thể do ngẫu nhiên hay không, nhưng chúng chỉ về một hướng nhất quán: việc bị khuyết dường như
+liên quan đến các đặc điểm quan sát được (chẩn đoán, tuổi). Nếu vậy, dữ liệu không phải là MCAR, và
+một phân tích giới hạn ở những bệnh nhân có kết quả cholesterol sẽ có hơi nhiều bệnh nhân trẻ tuổi,
+chưa được chẩn đoán hơn so với thực tế. MAR, với việc bị khuyết phụ thuộc vào tuổi và chẩn đoán, là
+một giả định làm việc hợp lý hơn, và mọi phân tích có sử dụng cholesterol ít nhất nên đưa các biến
+này vào mô hình hoặc vào mô hình quy nạp.
+
+Dữ liệu không thể cho chúng ta biết cholesterol có phải là MNAR hay không. Điều đó đòi hỏi phải biết
+liệu những bệnh nhân có giá trị khuyết có xu hướng có cholesterol cao hơn hay thấp hơn những bệnh
+nhân được quan sát cùng tuổi và cùng tình trạng chẩn đoán hay không, mà cholesterol của họ lại chính
+là thứ chúng ta không quan sát được. Các nhận định về MNAR dựa trên hiểu biết về cách dữ liệu được
+thu thập (ví dụ, liệu máu chỉ được lấy từ những bệnh nhân trông có vẻ không khỏe hay không) và được
+tìm hiểu bằng các phân tích độ nhạy. Vì dữ liệu này là dữ liệu mô phỏng, quy luật ở đây minh họa cho
+cách lập luận chứ không phải là một phát hiện lâm sàng thực tế.
+
+
+### Bài tập 2.8
+
+Hàm này tập hợp các bước của chương theo đúng thứ tự. Nó sử dụng hàm trợ giúp `to_yesno()` được định
+nghĩa ở đầu phụ lục này; trong một dự án thực tế, bạn sẽ đặt cả hai hàm trong cùng một tệp script.
+
+```{r s2-ex8}
+clean_htn <- function(path) {
+  # Nhập với các mã giá trị khuyết; bỏ trùng lặp hoàn toàn; cắt khoảng trắng
+  dat <- read_csv(path, na = c("", "NA", "999", "-99"),
+                  show_col_types = FALSE) |>
+    distinct() |>
+    mutate(across(where(is.character), str_trim))
+
+  # Danh mục: giới tính và các biến Yes/No
+  dat <- dat |>
+    mutate(
+      sex = case_when(
+        str_to_lower(sex) %in% c("female", "f") ~ "Female",
+        str_to_lower(sex) %in% c("male", "m")   ~ "Male",
+        TRUE ~ NA_character_),
+      across(c(diabetes, family_history_htn, health_insurance,
+               htn_diagnosed, treatment_uptake), to_yesno)
+    )
+
+  # Kiểm định: các giá trị không thể xảy ra trở thành NA
+  dat <- dat |>
+    mutate(
+      age       = if_else(between(age, 18, 110), age, NA_real_),
+      sbp_mmhg  = if_else(between(sbp_mmhg, 70, 260), sbp_mmhg, NA_real_),
+      dbp_mmhg  = if_else(between(dbp_mmhg, 40, 150), dbp_mmhg, NA_real_),
+      height_cm = if_else(between(height_cm, 120, 210), height_cm, NA_real_),
+      weight_kg = if_else(between(weight_kg, 30, 200), weight_kg, NA_real_)
+    )
+
+  # Biến dẫn xuất và ngày tháng
+  dat <- dat |>
+    mutate(
+      bmi = round(weight_kg / (height_cm / 100)^2, 1),
+      bmi_cat = cut(bmi, breaks = c(-Inf, 18.5, 25, 30, Inf),
+                    labels = c("Underweight", "Normal",
+                               "Overweight", "Obese")),
+      bp_category = case_when(
+        is.na(sbp_mmhg) | is.na(dbp_mmhg) ~ NA_character_,
+        sbp_mmhg >= 140 | dbp_mmhg >= 90  ~ "Hypertension",
+        sbp_mmhg >= 130 | dbp_mmhg >= 80  ~ "Elevated",
+        TRUE                              ~ "Normal"),
+      enroll_date = as_date(parse_date_time(
+        enroll_date, orders = c("ymd", "dmy", "d-b-Y")))
+    )
+
+  # Factor với các mức được chọn có chủ đích
+  yn <- c("No", "Yes")
+  dat <- dat |>
+    mutate(
+      facility = factor(facility),
+      sex = factor(sex, levels = c("Female", "Male")),
+      residence = factor(residence, levels = c("Rural", "Urban")),
+      education = factor(education, ordered = TRUE,
+                         levels = c("None", "Primary", "Secondary",
+                                    "Tertiary")),
+      occupation = factor(occupation),
+      marital_status = factor(marital_status),
+      physical_activity = factor(physical_activity, ordered = TRUE,
+                                 levels = c("Low", "Moderate", "High")),
+      smoking = factor(smoking, levels = c("Never", "Former", "Current")),
+      alcohol = factor(alcohol, levels = c("None", "Moderate", "Heavy")),
+      bp_category = factor(bp_category,
+                           levels = c("Normal", "Elevated", "Hypertension")),
+      health_insurance = factor(health_insurance, levels = yn),
+      family_history_htn = factor(family_history_htn, levels = yn),
+      diabetes = factor(diabetes, levels = yn),
+      htn_diagnosed = factor(htn_diagnosed, levels = yn),
+      treatment_uptake = factor(treatment_uptake, levels = yn),
+      adherence = factor(na_if(adherence, ""), levels = c("Poor", "Good")),
+      bp_controlled = factor(na_if(bp_controlled, ""), levels = yn)
+    )
+
+  # Khẳng định: dừng lại rõ ràng nếu xuất hiện một vấn đề mới
+  stopifnot(
+    n_distinct(dat$patient_id) == nrow(dat),
+    !anyNA(dat$sex),
+    !anyNA(dat$enroll_date),
+    !anyNA(dat$treatment_uptake),
+    all(between(dat$sbp_mmhg, 70, 260), na.rm = TRUE)
+  )
+  dat
+}
+
+my_clean <- clean_htn("Data/hypertension_phc_raw.csv")
+all.equal(my_clean, readRDS("Data/analysis_data.rds"))
+```
+
+`all.equal()` trả về `TRUE`: hàm tái tạo chính xác bộ dữ liệu phân tích. Các khẳng định ở cuối hàm
+kiểm tra rằng mã bệnh nhân là duy nhất, rằng giới tính, ngày tuyển chọn và biến kết cục không có giá
+trị khuyết, và rằng huyết áp tâm thu nằm trong khoảng hợp lý; nếu một phiên bản tương lai của tệp
+thô chứa, chẳng hạn, một cách viết giới tính mới hoặc một định dạng ngày mới, hàm sẽ dừng lại với
+một thông báo lỗi nêu rõ điều kiện không thỏa mãn thay vì âm thầm trả về dữ liệu có sai sót.
+
+Một hàm hữu ích hơn một script dài khi nhận được một tệp thô đã được sửa vì ba lý do. Nó có thể được
+chạy lại trên tệp mới chỉ bằng một dòng lệnh, không cần chỉnh sửa gì. Nó có thể được áp dụng cho
+nhiều tệp (ví dụ, một lần xuất dữ liệu giữa kỳ và một lần xuất cuối cùng) và so sánh các kết quả. Và
+vì mọi thứ diễn ra bên trong hàm, không có đối tượng trung gian nào bị để lại trong không gian làm
+việc để có thể bị nhầm lẫn với dữ liệu sạch. Đóng gói một quy trình làm sạch thành một hàm là một
+bước nhỏ hướng tới các quy trình làm việc có thể tái lập mà @wilson2017 khuyến nghị.
+
