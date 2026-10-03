@@ -2,7 +2,7 @@
 
 ## Final Take-Home Assignment — Clinical Data Analysis in R, Phase I
 
-**Course:** Clinical Data Analysis in R — Phase I — Bernard Isekah Osang'ir (Senior Biostatistician) and My Luong Vuong (Biostatistician and Epidemiologist), Neudata (*#ClearDataClearImpact*)
+**Course:** Clinical Data Analysis in R — Phase I — Vương Mỹ Lượng (Senior Biostatistician, lead trainer) and Bernard Isekah Osang'ir (Senior Biostatistician), Neudata (*#ClearDataClearImpact*)
 **Total:** 100 marks
 
 This guide gives a weighted rubric, an answer key with canonical results, a common-errors penalty list, and grade bands. Mark on **correct method and sound interpretation**, not on exact second-decimal matches — package and R versions shift decimals trivially. Reward justified, well-documented decisions even where they differ slightly from the model answer.

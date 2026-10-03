@@ -42,7 +42,8 @@ SLIDES_ASSIGN = [
             "3. A one-page Results section (about 250-400 words)."]},
         {"header": "Format", "lines": [
             "Use an RStudio Project with relative paths.",
-            "Name files clearly: Surname_Phase1_Assignment.R"]},
+            "Name files clearly: Surname_Phase1_Assignment.R",
+            "Email the .zip to the lead trainer, Vương Mỹ Lượng: myluong.1710@gmail.com"]},
         {"callout": "warning", "header": "Academic integrity",
          "lines": ["Work independently. You may use the course scripts and notes, but the analysis and writing must be your own."]},
      ],
@@ -108,13 +109,13 @@ SLIDES_ASSIGN = [
                "Key teaching point: the reference sheet answers 80% of day-to-day questions.\n"
                "Clinical interpretation: applying R to their OWN data is the real test of learning.\n"
                "Audience question: what will you analyse first after the course? Expected: an audit or a stalled project.\n"
-               "Demo tip: mention Phase II (survival analysis, mixed models) as the next step.")},
+               "Demo tip: mention Phase II as the next step - its topics (potentially survival analysis, mixed models or prediction) will follow the participant survey.")},
 
     {"type": "divider", "title": "Thank You & Questions",
      "plan_title": "Stay in touch",
      "agenda": ["You can now import, clean, analyse and report clinical data in R",
                 "Practise on your own datasets",
-                "Phase II: survival analysis, mixed models and prediction",
+                "Phase II: potentially survival analysis, mixed models or prediction - shaped by your survey answers",
                 "Contact: Neudata  -  #ClearDataClearImpact"],
      "notes": ("Close warmly and open the floor.\n"
                "Key teaching point: celebrate that everyone went from zero to a full analysis in five days.\n"

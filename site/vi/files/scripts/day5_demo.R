@@ -7,7 +7,7 @@
 # Primary outcome: treatment_uptake (Yes/No), reference = "No"
 # Analytic population: patients with diagnosed hypertension (htn_diagnosed == "Yes")
 #
-# Author: Bernard Isekah Osang'ir & My Luong Vuong | Neudata | #ClearDataClearImpact
+# Author: Vương Mỹ Lượng & Bernard Isekah Osang'ir | Neudata | #ClearDataClearImpact
 # =============================================================================
 
 # -----------------------------------------------------------------------------

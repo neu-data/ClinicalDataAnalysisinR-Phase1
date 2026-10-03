@@ -46,14 +46,14 @@ the practice dataset, and the software are free to use and keep.
 
 ---
 
-## 👩‍🏫 Who is leading the course
+## 🧑‍🏫 Who is leading the course
 
 Your two trainers guide every session and help you hands-on during the exercises:
 
 | Trainer | Role |
 |---------|------|
-| **Bernard Osang'ir** | Senior Biostatistician — *lead trainer* |
-| **My Luong Vuong** | Biostatistician and Epidemiologist |
+| **Vương Mỹ Lượng** | Senior Biostatistician — *lead trainer* |
+| **Bernard Osang'ir** | Senior Biostatistician |
 
 ---
 
@@ -112,7 +112,7 @@ set it up the week before we start.
 
 Places are limited — register early to reserve your seat.
 
-- ✉️ **Email:** [myluong1710@gmail.com](mailto:myluong1710@gmail.com) — *My Luong Vuong*
+- ✉️ **Email:** [myluong.1710@gmail.com](mailto:myluong.1710@gmail.com) — *Vương Mỹ Lượng*
 - 🌐 **Website:** [www.neu-data.com](https://www.neu-data.com/)
 - 📱 **Or scan the QR code** on the course poster to register.
 

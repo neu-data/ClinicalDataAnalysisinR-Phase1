@@ -10,8 +10,8 @@ Welcome, and thank you for joining us. This short pack is your gentle head start
 - **Course:** Clinical Data Analysis in R — Phase I — Introduction to R for Clinical Research
 - **Format:** 5 evening sessions, every Tuesday at 8:00 pm, 90 minutes each
 - **Dates:** 8 September – 6 October 2026
-- **Trainers:** Bernard Isekah Osang'ir (Senior Biostatistician) and My Luong Vuong (Biostatistician and Epidemiologist)
-- **Registration / enquiries:** My Luong Vuong — myluong1710@gmail.com — www.neu-data.com
+- **Trainers:** Vương Mỹ Lượng (Senior Biostatistician, lead trainer) and Bernard Isekah Osang'ir (Senior Biostatistician)
+- **Registration / enquiries:** Vương Mỹ Lượng — myluong.1710@gmail.com — www.neu-data.com
 
 ## What this week is for
 
@@ -69,7 +69,7 @@ If an evening runs short, just stop — you can always pick up where you left of
 Please do not worry — getting stuck is completely normal, and it happens to everyone at first. A few reassurances:
 
 - Folder `01_Install_R_and_RStudio/` has a **troubleshooting section** for the most common installation snags.
-- If you are still stuck, reach out to **My Luong Vuong** at **myluong1710@gmail.com** for help.
+- If you are still stuck, reach out to **Vương Mỹ Lượng** at **myluong.1710@gmail.com** for help.
 - It is perfectly fine to arrive with your installation only **half-working** — there will be help on the first evening. But trying beforehand makes that first session go far more smoothly, so do give it a go.
 
 ## See you soon
@@ -77,4 +77,4 @@ Please do not worry — getting stuck is completely normal, and it happens to ev
 That is everything. Take your time, be kind to yourself, and remember there are no silly questions. We are looking forward to learning together.
 
 Warm regards,
-**Bernard Isekah Osang'ir** and the **Neudata** team
+**Vương Mỹ Lượng**, **Bernard Isekah Osang'ir** and the **Neudata** team

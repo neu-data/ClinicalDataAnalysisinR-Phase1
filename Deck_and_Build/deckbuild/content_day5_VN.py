@@ -279,16 +279,16 @@ SLIDES_DAY5 = [
 
     {"type": "content", "title": "Giai Đoạn II Có Thể Bao Gồm Những Gì",
      "blocks": [
-        {"header": "Mô hình hóa sâu hơn", "lines": [
+        {"header": "Có thể: mô hình hóa sâu hơn", "lines": [
             "Nhiễu, tương tác và biến đổi hiệu ứng một cách chuyên sâu.",
             "Chẩn đoán mô hình: đa cộng tuyến, độ khớp và khả năng phân biệt (AUC).",
             "Lựa chọn biến và cách xây dựng một mô hình có trách nhiệm."]},
-        {"header": "Phương pháp và kỹ năng mới", "lines": [
+        {"header": "Có thể: phương pháp và kỹ năng mới", "lines": [
             "Phân tích sống còn: Kaplan-Meier và mô hình Cox cho dữ liệu thời gian-đến-biến cố.",
             "Mô hình hiệu ứng hỗn hợp: bệnh nhân được phân cụm trong các cơ sở.",
             "Dữ liệu khuyết (đa quy nạp) và báo cáo Quarto tự động."]},
-        {"callout": "tip", "header": "Tiếp tục luyện tập",
-         "lines": ["Mang bộ dữ liệu của chính bạn tới Giai đoạn II và phân tích nó từ đầu đến cuối."]},
+        {"callout": "tip", "header": "Bạn quyết định",
+         "lines": ["Nội dung Giai đoạn II sẽ chủ yếu dựa trên kết quả khảo sát học viên - các chủ đề được quan tâm nhiều nhất. Trong lúc chờ, hãy tiếp tục luyện tập trên dữ liệu của bạn."]},
      ],
-     "notes": "Điểm dạy chính: mô hình logistic hôm nay là nền tảng; Giai đoạn II tổng quát hóa nó.\nDiễn giải lâm sàng: nghiên cứu 6 cơ sở của họ tự nhiên được phân cụm, điều này thúc đẩy các mô hình hỗn hợp trong Giai đoạn II.\nHiểu lầm thường gặp: rằng phân tích sống còn và hồi quy logistic không liên quan - cả hai đều là hồi quy, chỉ khác loại biến kết cục.\nCâu hỏi cho học viên: chủ đề Giai đoạn II nào phù hợp với một nghiên cứu theo dõi bệnh nhân theo thời gian? Trả lời mong đợi: phân tích sống còn, vì biến kết cục là thời gian-đến-biến cố.\nMẹo trình diễn: cảm ơn lớp học, chỉ tới References/ để đọc thêm, và kết thúc bằng #ClearDataClearImpact."},
+     "notes": "Điểm dạy chính: mô hình logistic hôm nay là nền tảng; Giai đoạn II tổng quát hóa nó.\nDiễn giải lâm sàng: nghiên cứu 6 cơ sở của họ tự nhiên được phân cụm, điều này có thể dẫn đến các mô hình hỗn hợp trong Giai đoạn II.\nHiểu lầm thường gặp: rằng phân tích sống còn và hồi quy logistic không liên quan - cả hai đều là hồi quy, chỉ khác loại biến kết cục.\nNhấn mạnh rằng đây chỉ là các chủ đề tiềm năng: khảo sát học viên sẽ quyết định nội dung Giai đoạn II, vì vậy hãy mời mọi người hoàn thành khảo sát.\nCâu hỏi cho học viên: chủ đề Giai đoạn II nào phù hợp với một nghiên cứu theo dõi bệnh nhân theo thời gian? Trả lời mong đợi: phân tích sống còn, vì biến kết cục là thời gian-đến-biến cố.\nMẹo trình diễn: cảm ơn lớp học, chỉ tới References/ để đọc thêm, và kết thúc bằng #ClearDataClearImpact."},
 ]

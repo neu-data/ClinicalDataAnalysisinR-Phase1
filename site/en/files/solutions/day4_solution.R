@@ -16,7 +16,7 @@
 # PRIMARY OUTCOME: treatment_uptake (Yes/No), reference = "No".
 # ANALYTIC POPULATION: htn_diagnosed == "Yes" (about 1089 patients).
 #
-# Author:  Bernard Isekah Osang'ir & My Luong Vuong | Neudata | #ClearDataClearImpact
+# Author:  Vương Mỹ Lượng & Bernard Isekah Osang'ir | Neudata | #ClearDataClearImpact
 # ============================================================================
 
 # ----------------------------------------------------------------------------

@@ -7,7 +7,7 @@ title: "Bài tập cuối khóa"
 ## Phân tích Dữ liệu Lâm sàng trong R — Giai đoạn I
 
 **Khóa học:** Phân tích Dữ liệu Lâm sàng trong R — Giai đoạn I
-**Giảng viên:** Bernard Isekah Osang'ir (Chuyên gia Thống kê Sinh học Cao cấp, giảng viên chính) và My Luong Vuong (Nhà thống kê sinh học và dịch tễ học)
+**Giảng viên:** Vương Mỹ Lượng (Chuyên gia Thống kê Sinh học Cao cấp, giảng viên chính) và Bernard Isekah Osang'ir (Chuyên gia Thống kê Sinh học Cao cấp)
 **Tổ chức:** Neudata — *#ClearDataClearImpact*
 **Hình thức đánh giá:** Bài tập lớn làm tại nhà theo cá nhân (được mở tài liệu, mở ghi chú)
 **Trọng số:** 100 điểm (xem hướng dẫn chấm điểm riêng)
@@ -87,7 +87,7 @@ Hoàn thành **tất cả** các nhiệm vụ sau. Đánh số các phần mã c
 - Nộp **một** tệp phân tích: một tập lệnh `.R` **hoặc** một tài liệu `.qmd` / `.Rmd`.
 - **Quy ước đặt tên tệp:** `Surname_Phase1_Assignment.R` (hoặc `.qmd` / `.Rmd`). Ví dụ: `Osangir_Phase1_Assignment.R`.
 - Đóng gói tệp của bạn cùng với các kết quả xuất ra (Bảng 1 và các hình) và phần Kết quả vào một tệp `.zip` duy nhất được đặt tên `Surname_Phase1_Assignment.zip`.
-- Nộp qua cổng thông tin khóa học trước hạn chót đã nêu (một tuần sau khóa học).
+- Gửi tệp `.zip` qua email cho giảng viên chính, **Vương Mỹ Lượng**, tại **myluong.1710@gmail.com** trước hạn chót đã nêu (một tuần sau khóa học).
 
 ## 7. Những gì cần nộp — Danh sách kiểm tra
 

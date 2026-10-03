@@ -11,7 +11,7 @@
 # Study: Determinants of Hypertension Treatment Uptake among Adults attending
 #        Primary Healthcare Facilities (multicentre cross-sectional, n = 1500).
 #
-# Author:  Bernard Isekah Osang'ir & My Luong Vuong | Neudata | #ClearDataClearImpact
+# Author:  Vương Mỹ Lượng & Bernard Isekah Osang'ir | Neudata | #ClearDataClearImpact
 # ============================================================================
 
 # ----------------------------------------------------------------------------

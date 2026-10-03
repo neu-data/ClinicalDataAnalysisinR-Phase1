@@ -1,7 +1,7 @@
 # Phân tích Dữ liệu Lâm sàng bằng R — Giai đoạn I
 ### Nhập môn R cho Nghiên cứu Lâm sàng · Khóa học ngắn hạn buổi tối gồm năm buổi học
 
-**Giảng viên:** Bernard Osang'ir (Chuyên gia Thống kê Sinh học cao cấp, giảng viên chính) · My Luong Vuong (Nhà thống kê sinh học và dịch tễ học)
+**Giảng viên:** Vương Mỹ Lượng (Chuyên gia Thống kê Sinh học Cao cấp, giảng viên chính) · Bernard Osang'ir (Chuyên gia Thống kê Sinh học Cao cấp)
 **Lịch học:** Năm buổi học buổi tối · mỗi Thứ Ba, 20:00 (giờ Việt Nam), 90 phút · 8 tháng 9 – 6 tháng 10 năm 2026
 **Thương hiệu:** Neudata · *#ClearDataClearImpact*
 

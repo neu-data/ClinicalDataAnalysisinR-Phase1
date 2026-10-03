@@ -1,7 +1,7 @@
 ---
 title: "Clinical Data Analysis in R"
 subtitle: "Phase I  -  Introduction to R for Clinical Research"
-author: "Bernard Osang'ir & My Luong Vuong"
+author: "Vương Mỹ Lượng & Bernard Osang'ir"
 institute: "Neudata Consulting Ltd"
 date: "08-09-2026"
 lang: en
@@ -264,12 +264,12 @@ Demo tip: revisit this pipeline diagram at each session's start.
 
 ### Your trainers
 
-| Bernard Osang'ir - Senior Biostatistician (lead trainer).
-| My Luong Vuong - Biostatistician & Epidemiologist.
+| Vương Mỹ Lượng - Senior Biostatistician (lead trainer).
+| Bernard Osang'ir - Senior Biostatistician.
 
 ::: {.callout-tip}
 ## Register / enquire
-My Luong Vuong  -  myluong1710\@gmail.com  -  www.neu-data.com  -  scan the poster QR code to register.
+Vương Mỹ Lượng  -  myluong.1710\@gmail.com  -  www.neu-data.com  -  scan the poster QR code to register.
 :::
 
 ::: {.notes}

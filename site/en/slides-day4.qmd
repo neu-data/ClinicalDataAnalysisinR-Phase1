@@ -1,7 +1,7 @@
 ---
 title: "Day 4: Common Medical Statistical Tests"
 subtitle: "Clinical Data Analysis in R — Phase I"
-author: "Bernard Osang'ir & My Luong Vuong"
+author: "Vương Mỹ Lượng & Bernard Osang'ir"
 institute: "Neudata Consulting Ltd"
 date: "29-09-2026"
 lang: en

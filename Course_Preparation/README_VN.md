@@ -17,8 +17,8 @@ lâm sàng thực tế, và đến buổi học đầu tiên trong tư thế s�
 
 - **Khóa học:** Clinical Data Analysis in R — Giai đoạn I — Introduction to R for Clinical Research (Neudata)
 - **Hình thức:** 5 buổi học buổi tối · mỗi Thứ Ba · 20:00 (giờ Việt Nam) · 90 phút · 8 tháng 9 – 6 tháng 10 năm 2026
-- **Giảng viên:** Bernard Isekah Osang'ir (Chuyên gia Thống kê Sinh học Cao cấp, giảng viên chính) và My Luong Vuong (Nhà thống kê sinh học và dịch tễ học)
-- **Hỏi đáp / đăng ký:** My Luong Vuong — myluong1710@gmail.com — www.neu-data.com
+- **Giảng viên:** Vương Mỹ Lượng (Chuyên gia Thống kê Sinh học Cao cấp, giảng viên chính) và Bernard Isekah Osang'ir (Chuyên gia Thống kê Sinh học Cao cấp)
+- **Hỏi đáp / đăng ký:** Vương Mỹ Lượng — myluong.1710@gmail.com — www.neu-data.com
 - **Đối tượng:** bác sĩ, điều dưỡng, dược sĩ, cán bộ y tế công cộng, và học viên cao học/nghiên cứu sinh — **không cần kinh nghiệm lập trình**
 
 ## Bắt đầu nhanh (3 bước)

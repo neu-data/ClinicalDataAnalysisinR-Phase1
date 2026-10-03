@@ -279,16 +279,16 @@ SLIDES_DAY5 = [
 
     {"type": "content", "title": "What Phase II Might Cover",
      "blocks": [
-        {"header": "Deeper modelling", "lines": [
+        {"header": "Potentially: deeper modelling", "lines": [
             "Confounding, interaction and effect modification in depth.",
             "Model diagnostics: multicollinearity, fit and discrimination (AUC).",
             "Variable selection and how to build a model responsibly."]},
-        {"header": "New methods and skills", "lines": [
+        {"header": "Potentially: new methods and skills", "lines": [
             "Survival analysis: Kaplan-Meier and Cox models for time-to-event data.",
             "Mixed-effects models: patients clustered within facilities.",
             "Missing data (multiple imputation) and automated Quarto reporting."]},
-        {"callout": "tip", "header": "Keep practising",
-         "lines": ["Bring your own dataset to Phase II and analyse it end to end."]},
+        {"callout": "tip", "header": "You choose",
+         "lines": ["Phase II topics will be decided mainly by the participant survey - the topics you want most. Keep practising on your own data meanwhile."]},
      ],
-     "notes": "Key teaching point: today's logistic model is the foundation; Phase II generalises it.\nClinical interpretation: their 6-facility study is naturally clustered, which motivates mixed models in Phase II.\nCommon misconception: that survival and logistic regression are unrelated - both are regression, just for different outcome types.\nAudience question: which Phase II topic fits a study following patients over time? Expected answer: survival analysis, because the outcome is time-to-event.\nDemonstration tip: thank the class, point to References/ for further reading, and close with #ClearDataClearImpact."},
+     "notes": "Key teaching point: today's logistic model is the foundation; Phase II generalises it.\nClinical interpretation: their 6-facility study is naturally clustered, which could motivate mixed models in Phase II.\nCommon misconception: that survival and logistic regression are unrelated - both are regression, just for different outcome types.\nStress that these are potential topics: the participant survey will decide what Phase II covers, so ask everyone to complete it.\nAudience question: which Phase II topic fits a study following patients over time? Expected answer: survival analysis, because the outcome is time-to-event.\nDemonstration tip: thank the class, point to References/ for further reading, and close with #ClearDataClearImpact."},
 ]

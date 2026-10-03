@@ -1,7 +1,7 @@
 ---
 title: "Day 2: Understanding & Cleaning Clinical Data"
 subtitle: "Clinical Data Analysis in R — Phase I"
-author: "Bernard Osang'ir & My Luong Vuong"
+author: "Vương Mỹ Lượng & Bernard Osang'ir"
 institute: "Neudata Consulting Ltd"
 date: "15-09-2026"
 lang: en

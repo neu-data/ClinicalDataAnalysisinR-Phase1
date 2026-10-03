@@ -213,7 +213,7 @@ wrap(CM, by + 72,
 fy = H - 118
 rule(CM, W - CM, fy, ACCENT, 0.9)
 tcaps_c(fy + 30, "ENQUIRIES & REGISTRATION", 13, ACCENTD, 3.0)
-text(W/2, fy + 56, "My Luong Vuong   ·   myluong1710@gmail.com", SB, 14.5, INK)
+text(W/2, fy + 56, "Vương Mỹ Lượng   ·   myluong.1710@gmail.com", SB, 14.5, INK)
 text(W/2, fy + 78, "www.neu-data.com", SR, 13.5, ACCENT)
 
 c.showPage(); c.save()

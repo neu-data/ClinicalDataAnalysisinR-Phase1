@@ -2,7 +2,7 @@
 
 ## Bài tập lớn cuối khóa (làm tại nhà) — Phân tích Dữ liệu Lâm sàng trong R, Giai đoạn I
 
-**Khóa học:** Phân tích Dữ liệu Lâm sàng trong R — Giai đoạn I — Bernard Isekah Osang'ir (Chuyên gia Thống kê Sinh học Cao cấp, giảng viên chính) và My Luong Vuong (Nhà thống kê sinh học và dịch tễ học), Neudata (*#ClearDataClearImpact*)
+**Khóa học:** Phân tích Dữ liệu Lâm sàng trong R — Giai đoạn I — Vương Mỹ Lượng (Chuyên gia Thống kê Sinh học Cao cấp, giảng viên chính) và Bernard Isekah Osang'ir (Chuyên gia Thống kê Sinh học Cao cấp), Neudata (*#ClearDataClearImpact*)
 **Tổng:** 100 điểm
 
 Hướng dẫn này cung cấp một khung chấm điểm có trọng số, một bảng đáp án với các kết quả chuẩn, một danh sách trừ điểm cho các lỗi thường gặp, và các dải xếp loại. Hãy chấm dựa trên **phương pháp đúng và diễn giải hợp lý**, chứ không phải trên việc khớp chính xác đến chữ số thập phân thứ hai — phiên bản gói và R khác nhau sẽ làm dịch chuyển các chữ số thập phân một cách không đáng kể. Hãy tưởng thưởng cho các quyết định được biện giải và ghi chép tốt, ngay cả khi chúng khác biệt đôi chút so với đáp án mẫu.

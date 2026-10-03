@@ -27,9 +27,9 @@ To make the first session smooth, please spend about **2–3 hours this week** o
 It's **not graded** — it just means you'll arrive ready. It's fine if your setup is only
 half-working; we'll help on the first evening. Bring a laptop (Windows or macOS).
 
-Questions? Reply here or email **myluong1710@gmail.com**. See you on 8 September!
+Questions? Reply here or email **myluong.1710@gmail.com**. See you on 8 September!
 
-*Bernard & My Luong — Neudata*
+*Vương Mỹ Lượng & Bernard — Neudata*
 
 ### Tiếng Việt
 
@@ -52,9 +52,9 @@ gia: **[join link]**
 Phần này **không chấm điểm** — chỉ giúp bạn đến buổi học đã sẵn sàng. Nếu cài đặt còn dang
 dở cũng không sao, sẽ có người hỗ trợ vào buổi đầu. Hãy mang theo laptop (Windows hoặc macOS).
 
-Có thắc mắc? Trả lời email này hoặc gửi tới **myluong1710@gmail.com**. Hẹn gặp bạn ngày 8/9!
+Có thắc mắc? Trả lời email này hoặc gửi tới **myluong.1710@gmail.com**. Hẹn gặp bạn ngày 8/9!
 
-*Bernard & My Luong — Neudata*
+*Vương Mỹ Lượng & Bernard — Neudata*
 
 ---
 
@@ -75,7 +75,7 @@ your laptop ready. If anything isn't working, don't worry — come anyway and we
 
 See you tomorrow evening!
 
-*Bernard & My Luong — Neudata*
+*Vương Mỹ Lượng & Bernard — Neudata*
 
 ### Tiếng Việt
 
@@ -92,4 +92,4 @@ Nếu có gì chưa chạy được, đừng lo — cứ đến, chúng ta sẽ 
 
 Hẹn gặp bạn tối mai!
 
-*Bernard & My Luong — Neudata*
+*Vương Mỹ Lượng & Bernard — Neudata*

@@ -6,7 +6,7 @@ title: "Participant handbook"
 
 ## Clinical Data Analysis in R - Phase I: Introduction to R for Clinical Research
 
-**Trainers:** Bernard Osang'ir (Senior Biostatistician, lead) & My Luong Vuong (Biostatistician and Epidemiologist)
+**Trainers:** Vương Mỹ Lượng (Senior Biostatistician, lead trainer) & Bernard Osang'ir (Senior Biostatistician)
 **Schedule:** Five evening sessions · every Tuesday, 8:00 PM, 90 minutes · 8 September – 6 October 2026
 **Organisation:** Neudata
 **Hashtag:** #ClearDataClearImpact

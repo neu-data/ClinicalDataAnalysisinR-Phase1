@@ -8,7 +8,7 @@
 # THIS SCRIPT DEFINES THE CLEANING CONTRACT for Days 3-5.
 # Output: Data/analysis_data.rds  and  Data/analysis_data.csv
 #
-# Author: Bernard Isekah Osang'ir & My Luong Vuong | Neudata | #ClearDataClearImpact
+# Author: Vương Mỹ Lượng & Bernard Isekah Osang'ir | Neudata | #ClearDataClearImpact
 # ============================================================================
 #install.packages("tidyverse")
 library(tidyverse)                   # Load tidyverse for data import, cleaning, transformation and export

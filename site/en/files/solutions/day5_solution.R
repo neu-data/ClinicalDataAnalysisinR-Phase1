@@ -10,7 +10,7 @@
 # Primary outcome: treatment_uptake (Yes/No), reference = "No"
 # Analytic population: htn_diagnosed == "Yes" (~1089)
 #
-# Author: Bernard Isekah Osang'ir & My Luong Vuong | Neudata | #ClearDataClearImpact
+# Author: Vương Mỹ Lượng & Bernard Isekah Osang'ir | Neudata | #ClearDataClearImpact
 # =============================================================================
 
 # -----------------------------------------------------------------------------

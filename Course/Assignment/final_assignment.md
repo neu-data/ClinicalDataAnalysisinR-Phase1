@@ -3,7 +3,7 @@
 ## Clinical Data Analysis in R — Phase I
 
 **Course:** Clinical Data Analysis in R — Phase I
-**Trainers:** Bernard Isekah Osang'ir (Senior Biostatistician) and My Luong Vuong (Biostatistician and Epidemiologist)
+**Trainers:** Vương Mỹ Lượng (Senior Biostatistician, lead trainer) and Bernard Isekah Osang'ir (Senior Biostatistician)
 **Organisation:** Neudata — *#ClearDataClearImpact*
 **Assessment type:** Individual take-home assignment (open-book, open-notes)
 **Weighting:** 100 marks (see separate marking guide)
@@ -83,7 +83,7 @@ Complete **all** of the following. Number your code sections to match.
 - Submit **one** analysis file: a `.R` script **or** a `.qmd` / `.Rmd` document.
 - **File-naming convention:** `Surname_Phase1_Assignment.R` (or `.qmd` / `.Rmd`). Example: `Osangir_Phase1_Assignment.R`.
 - Bundle your file together with exported outputs (Table 1 and the figures) and the Results section into a single `.zip` named `Surname_Phase1_Assignment.zip`.
-- Submit via the course portal by the stated deadline (one week after the course).
+- Email your `.zip` file to the lead trainer, **Vương Mỹ Lượng**, at **myluong.1710@gmail.com** by the stated deadline (one week after the course).
 
 ## 7. What to Submit — Checklist
 

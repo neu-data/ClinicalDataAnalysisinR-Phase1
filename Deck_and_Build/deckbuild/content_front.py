@@ -7,7 +7,7 @@ SLIDES_FRONT = [
      "title_sz": 4000,
      "subtitle": ["Phase I  -  Introduction to R for Clinical Research",
                   "A five-session evening short course  -  Tuesdays, 8:00 PM",
-                  "Trainers: Bernard Osang'ir & My Luong Vuong"],
+                  "Trainers: Vương Mỹ Lượng & Bernard Osang'ir"],
      "date": "8 September - 6 October 2026",
      "notes": ("TITLE SLIDE.\n"
                "Welcome participants to Phase I of Clinical Data Analysis in R.\n"
@@ -175,10 +175,10 @@ SLIDES_FRONT = [
             "8 September to 6 October 2026.",
             "Online delivery - join from anywhere with a laptop."]},
         {"header": "Your trainers", "lines": [
-            "Bernard Osang'ir - Senior Biostatistician (lead trainer).",
-            "My Luong Vuong - Biostatistician & Epidemiologist."]},
+            "Vương Mỹ Lượng - Senior Biostatistician (lead trainer).",
+            "Bernard Osang'ir - Senior Biostatistician."]},
         {"callout": "tip", "header": "Register / enquire",
-         "lines": ["My Luong Vuong  -  myluong1710@gmail.com  -  www.neu-data.com  -  scan the poster QR code to register."]},
+         "lines": ["Vương Mỹ Lượng  -  myluong.1710@gmail.com  -  www.neu-data.com  -  scan the poster QR code to register."]},
      ],
      "notes": ("Use this slide to confirm logistics and introduce the teaching team.\n"
                "Key teaching point: three trainers means plenty of help during the guided exercises.\n"

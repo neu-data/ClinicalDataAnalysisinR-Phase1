@@ -1,7 +1,7 @@
 ---
 title: "Day 5: Introduction to Regression & Interpreting Output"
 subtitle: "Clinical Data Analysis in R — Phase I"
-author: "Bernard Osang'ir & My Luong Vuong"
+author: "Vương Mỹ Lượng & Bernard Osang'ir"
 institute: "Neudata Consulting Ltd"
 date: "06-10-2026"
 lang: en
@@ -718,29 +718,31 @@ Demonstration tip: invite one or two participants to share what surprised them m
 
 ## What Phase II Might Cover {.smaller}
 
-### Deeper modelling
+### Potentially: deeper modelling
 
 | Confounding, interaction and effect modification in depth.
 | Model diagnostics: multicollinearity, fit and discrimination (AUC).
 | Variable selection and how to build a model responsibly.
 
-### New methods and skills
+### Potentially: new methods and skills
 
 | Survival analysis: Kaplan-Meier and Cox models for time-to-event data.
 | Mixed-effects models: patients clustered within facilities.
 | Missing data (multiple imputation) and automated Quarto reporting.
 
 ::: {.callout-tip}
-## Keep practising
-Bring your own dataset to Phase II and analyse it end to end.
+## You choose
+Phase II topics will be decided mainly by the participant survey - the topics you want most. Keep practising on your own data meanwhile.
 :::
 
 ::: {.notes}
 Key teaching point: today's logistic model is the foundation; Phase II generalises it.
 
-Clinical interpretation: their 6-facility study is naturally clustered, which motivates mixed models in Phase II.
+Clinical interpretation: their 6-facility study is naturally clustered, which could motivate mixed models in Phase II.
 
 Common misconception: that survival and logistic regression are unrelated - both are regression, just for different outcome types.
+
+Stress that these are potential topics: the participant survey will decide what Phase II covers, so ask everyone to complete it.
 
 Audience question: which Phase II topic fits a study following patients over time? Expected answer: survival analysis, because the outcome is time-to-event.
 

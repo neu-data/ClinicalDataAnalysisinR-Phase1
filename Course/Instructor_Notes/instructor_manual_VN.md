@@ -2,7 +2,7 @@
 
 ## Phân tích Dữ liệu Lâm sàng trong R — Giai đoạn I: Nhập môn R cho Nghiên cứu Lâm sàng
 
-**Giảng viên:** Bernard Osang'ir (Chuyên gia Thống kê Sinh học cao cấp, giảng viên chính) · My Luong Vuong (Nhà thống kê sinh học và dịch tễ học)
+**Giảng viên:** Vương Mỹ Lượng (Chuyên gia Thống kê Sinh học Cao cấp, giảng viên chính) · Bernard Osang'ir (Chuyên gia Thống kê Sinh học Cao cấp)
 **Đơn vị cung cấp:** Neudata · **#ClearDataClearImpact**
 **Hình thức:** 5 buổi học buổi tối · mỗi Thứ Ba, 20:00 (giờ Việt Nam), 90 phút (~7,5 giờ tiếp xúc) · 8 tháng 9 – 6 tháng 10 năm 2026 · workshop lập trình trực tiếp (live-coding)
 **Nghiên cứu trường hợp:** *Các yếu tố quyết định việc Tiếp nhận Điều trị Tăng huyết áp ở Người trưởng thành khám tại các Cơ sở Chăm sóc Sức khỏe Ban đầu* (nghiên cứu cắt ngang đa trung tâm mô phỏng, 1.500 người trưởng thành, 6 cơ sở PHC)
@@ -449,4 +449,4 @@ Chạy các script trình diễn **từng dòng một** bằng `Ctrl+Enter` (Win
 
 ---
 
-*Được chuẩn bị cho các giảng viên của* **Phân tích Dữ liệu Lâm sàng trong R — Giai đoạn I** *· Giảng viên: Bernard Osang'ir (Chuyên gia Thống kê Sinh học Cao cấp) & My Luong Vuong (Nhà thống kê sinh học và dịch tễ học) · Neudata · #ClearDataClearImpact*
+*Được chuẩn bị cho các giảng viên của* **Phân tích Dữ liệu Lâm sàng trong R — Giai đoạn I** *· Giảng viên: Vương Mỹ Lượng (Chuyên gia Thống kê Sinh học Cao cấp, giảng viên chính) & Bernard Osang'ir (Chuyên gia Thống kê Sinh học Cao cấp) · Neudata · #ClearDataClearImpact*

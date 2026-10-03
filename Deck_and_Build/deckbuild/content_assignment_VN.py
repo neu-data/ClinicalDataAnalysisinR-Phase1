@@ -42,7 +42,8 @@ SLIDES_ASSIGN = [
             "3. Một mục Kết quả một trang (khoảng 250-400 từ)."]},
         {"header": "Định dạng", "lines": [
             "Dùng một RStudio Project với đường dẫn tương đối.",
-            "Đặt tên tệp rõ ràng: Surname_Phase1_Assignment.R"]},
+            "Đặt tên tệp rõ ràng: Surname_Phase1_Assignment.R",
+            "Gửi tệp .zip qua email cho giảng viên chính Vương Mỹ Lượng: myluong.1710@gmail.com"]},
         {"callout": "warning", "header": "Liêm chính học thuật",
          "lines": ["Làm việc độc lập. Bạn có thể dùng các script và ghi chú của khóa học, nhưng phần phân tích và viết phải là của riêng bạn."]},
      ],
@@ -108,13 +109,13 @@ SLIDES_ASSIGN = [
                "Điểm giảng dạy chính: bảng tra cứu trả lời 80% câu hỏi hằng ngày.\n"
                "Diễn giải lâm sàng: áp dụng R vào dữ liệu của CHÍNH họ là bài kiểm tra thực sự của việc học.\n"
                "Câu hỏi cho học viên: sau khóa học bạn sẽ phân tích gì đầu tiên? Dự kiến: một cuộc kiểm toán hoặc một dự án đang dang dở.\n"
-               "Mẹo demo: nhắc đến Giai đoạn II (phân tích sống còn, mô hình hỗn hợp) như bước tiếp theo.")},
+               "Mẹo demo: nhắc đến Giai đoạn II như bước tiếp theo - chủ đề (có thể là phân tích sống còn, mô hình hỗn hợp hoặc dự báo) sẽ dựa trên khảo sát học viên.")},
 
     {"type": "divider", "title": "Cảm ơn & Hỏi đáp",
      "plan_title": "Giữ liên lạc",
      "agenda": ["Bạn giờ đã có thể nhập, làm sạch, phân tích và báo cáo dữ liệu lâm sàng bằng R",
                 "Luyện tập trên các bộ dữ liệu của riêng bạn",
-                "Giai đoạn II: phân tích sống còn, mô hình hỗn hợp và dự báo",
+                "Giai đoạn II: có thể là phân tích sống còn, mô hình hỗn hợp hoặc dự báo - tùy theo kết quả khảo sát của bạn",
                 "Liên hệ: Neudata  -  #ClearDataClearImpact"],
      "notes": ("Kết thúc ấm áp và mở lời cho thảo luận.\n"
                "Điểm giảng dạy chính: chúc mừng rằng mọi người đã đi từ số không đến một phân tích hoàn chỉnh trong năm ngày.\n"

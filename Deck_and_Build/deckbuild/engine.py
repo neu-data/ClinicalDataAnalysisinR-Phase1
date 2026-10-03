@@ -66,7 +66,14 @@ def esc(s):
 # ----------------------------------------------------------------------------
 # Low-level run / paragraph builders
 # ----------------------------------------------------------------------------
+def _has_vietnamese(text):
+    """True if text uses letters Century Gothic lacks (e.g. the name Vương Mỹ Lượng)."""
+    return any(ch in "ĂăĐđƠơƯư" or "Ạ" <= ch <= "ỹ" for ch in str(text or ""))
+
+
 def run(text, sz=1600, color=BLACK, bold=False, italic=False, font=CG):
+    if font == "Century Gothic" and _has_vietnamese(text):
+        font = "Segoe UI"            # Vietnamese-safe, as in the VN deck
     b = ' b="1"' if bold else ""
     i = ' i="1"' if italic else ""
     return (

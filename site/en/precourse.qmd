@@ -19,8 +19,8 @@ clinical dataset, and arrive ready for Session 1.
 
 - **Course:** Clinical Data Analysis in R — Phase I — Introduction to R for Clinical Research (Neudata)
 - **Format:** 5 evening sessions · every Tuesday · 8:00 pm · 90 minutes · 8 September – 6 October 2026
-- **Trainers:** Bernard Isekah Osang'ir (Senior Biostatistician) and My Luong Vuong (Biostatistician and Epidemiologist)
-- **Enquiries / registration:** My Luong Vuong — myluong1710@gmail.com — www.neu-data.com
+- **Trainers:** Vương Mỹ Lượng (Senior Biostatistician, lead trainer) and Bernard Isekah Osang'ir (Senior Biostatistician)
+- **Enquiries / registration:** Vương Mỹ Lượng — myluong.1710@gmail.com — www.neu-data.com
 - **Audience:** doctors, nurses, pharmacists, public-health workers, and MSc/PhD students — **no programming experience needed**
 
 ## Quick start (3 steps)

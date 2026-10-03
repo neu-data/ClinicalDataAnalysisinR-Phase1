@@ -17,6 +17,28 @@ from reportlab.platypus import (BaseDocTemplate, PageTemplate, Frame, Paragraph,
                                 Spacer, Table, TableStyle, Preformatted, HRFlowable,
                                 ListFlowable, ListItem)
 
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.lib.fonts import addMapping
+import os
+
+# The built-in Helvetica/Courier cannot show Vietnamese (e.g. "Vương Mỹ Lượng"), so use
+# Arial / Courier New when available; fall back to the built-ins otherwise.
+SANS, SANSB, MONO = "Helvetica", "Helvetica-Bold", "Courier"
+_FD = os.environ.get("WINDIR", "C:/Windows") + "/Fonts/"
+try:
+    for name, f in [("NDSans", "arial.ttf"), ("NDSans-Bold", "arialbd.ttf"), ("NDSans-Italic", "ariali.ttf"),
+                    ("NDSans-BoldItalic", "arialbi.ttf"), ("NDMono", "cour.ttf"), ("NDMono-Bold", "courbd.ttf")]:
+        pdfmetrics.registerFont(TTFont(name, _FD + f))
+    for base in ("NDSans", "NDMono"):
+        bold = base + "-Bold"
+        addMapping(base, 0, 0, base); addMapping(base, 1, 0, bold)
+        addMapping(base, 0, 1, base + "-Italic" if base == "NDSans" else base)
+        addMapping(base, 1, 1, base + "-BoldItalic" if base == "NDSans" else bold)
+    SANS, SANSB, MONO = "NDSans", "NDSans-Bold", "NDMono"
+except Exception:
+    pass
+
 TEAL = colors.HexColor("#0D7377")
 TEALD = colors.HexColor("#0A5557")
 STEEL = colors.HexColor("#2E7E96")
@@ -29,25 +51,25 @@ def S(name, **kw):
     kw.setdefault("parent", styles["Normal"])
     return ParagraphStyle(name, **kw)
 
-BODY = S("body", fontName="Helvetica", fontSize=10.5, leading=15, spaceAfter=6,
+BODY = S("body", fontName=SANS, fontSize=10.5, leading=15, spaceAfter=6,
          textColor=colors.HexColor("#1A1A1A"))
-H1 = S("h1", fontName="Helvetica-Bold", fontSize=20, leading=24, textColor=TEAL,
+H1 = S("h1", fontName=SANSB, fontSize=20, leading=24, textColor=TEAL,
        spaceBefore=14, spaceAfter=8)
-H2 = S("h2", fontName="Helvetica-Bold", fontSize=15, leading=19, textColor=TEALD,
+H2 = S("h2", fontName=SANSB, fontSize=15, leading=19, textColor=TEALD,
        spaceBefore=12, spaceAfter=5)
-H3 = S("h3", fontName="Helvetica-Bold", fontSize=12, leading=16, textColor=STEEL,
+H3 = S("h3", fontName=SANSB, fontSize=12, leading=16, textColor=STEEL,
        spaceBefore=9, spaceAfter=3)
 BUL = S("bul", parent=BODY, leftIndent=14, spaceAfter=3)
-CELL = S("cell", fontName="Helvetica", fontSize=8.8, leading=11.5,
+CELL = S("cell", fontName=SANS, fontSize=8.8, leading=11.5,
          textColor=colors.HexColor("#1A1A1A"))
-CELLH = S("cellh", fontName="Helvetica-Bold", fontSize=8.8, leading=11.5,
+CELLH = S("cellh", fontName=SANSB, fontSize=8.8, leading=11.5,
           textColor=colors.white)
 
 
 def inline(t):
     t = html.escape(t)
     t = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", t)
-    t = re.sub(r"`(.+?)`", r'<font name="Courier" size="9.5">\1</font>', t)
+    t = re.sub(r"`(.+?)`", r'<font name="%s" size="9.5">\1</font>' % MONO, t)
     t = re.sub(r"(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)", r"<i>\1</i>", t)
     return t
 
@@ -79,7 +101,7 @@ def make_pdf(md_path, pdf_path, title):
                 buf.append(lines[i]); i += 1
             i += 1
             code = "\n".join(buf) if buf else " "
-            pre = Preformatted(code, S("code", fontName="Courier", fontSize=8.5,
+            pre = Preformatted(code, S("code", fontName=MONO, fontSize=8.5,
                                        leading=11, textColor=colors.HexColor("#10303A")))
             tbl = Table([[pre]], colWidths=[16.0*cm])
             tbl.setStyle(TableStyle([("BACKGROUND",(0,0),(-1,-1),CODEBG),
@@ -147,13 +169,13 @@ def make_pdf(md_path, pdf_path, title):
     def on_page(canv, doc):
         canv.saveState()
         canv.setFillColor(TEAL)
-        canv.setFont("Helvetica-Bold", 9)
+        canv.setFont(SANSB, 9)
         canv.drawString(2.0*cm, A4[1]-1.15*cm, "Clinical Data Analysis in R  -  Phase I")
-        canv.setFillColor(GREY); canv.setFont("Helvetica", 8)
+        canv.setFillColor(GREY); canv.setFont(SANS, 8)
         canv.drawRightString(A4[0]-2.0*cm, A4[1]-1.15*cm, title)
         canv.setStrokeColor(TEAL); canv.setLineWidth(0.8)
         canv.line(2.0*cm, A4[1]-1.3*cm, A4[0]-2.0*cm, A4[1]-1.3*cm)
-        canv.setFillColor(STEEL); canv.setFont("Helvetica", 8)
+        canv.setFillColor(STEEL); canv.setFont(SANS, 8)
         canv.drawCentredString(A4[0]/2, 1.0*cm, "Neudata  |  #ClearDataClearImpact")
         canv.setFillColor(GREY)
         canv.drawRightString(A4[0]-2.0*cm, 1.0*cm, "Page %d" % doc.page)
@@ -162,7 +184,7 @@ def make_pdf(md_path, pdf_path, title):
     doc = BaseDocTemplate(pdf_path, pagesize=A4,
                           leftMargin=2.0*cm, rightMargin=2.0*cm,
                           topMargin=1.7*cm, bottomMargin=1.6*cm, title=title,
-                          author="Bernard Isekah Osang'ir | Neudata")
+                          author="Vương Mỹ Lượng & Bernard Isekah Osang'ir | Neudata")
     frame = Frame(2.0*cm, 1.5*cm, A4[0]-4.0*cm, A4[1]-3.3*cm, id="main")
     doc.addPageTemplates([PageTemplate(id="t", frames=[frame], onPage=on_page)])
     doc.build(story)

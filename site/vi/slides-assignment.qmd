@@ -1,7 +1,7 @@
 ---
 title: "Bài tập lớn Cuối khóa"
 subtitle: "Phân tích Dữ liệu Lâm sàng bằng R — Giai đoạn I"
-author: "Bernard Osang'ir & My Luong Vuong"
+author: "Vương Mỹ Lượng & Bernard Osang'ir"
 institute: "Neudata Consulting Ltd"
 date: "06-10-2026"
 lang: vi
@@ -62,7 +62,7 @@ Câu hỏi cho học viên: điều gì khiến một script có khả năng tá
 Mẹo demo: chỉ họ tới bản nháp kết quả Buổi 5 như một mẫu.
 :::
 
-## Bài tập lớn Cuối khóa - Sản phẩm & Nộp bài
+## Bài tập lớn Cuối khóa - Sản phẩm & Nộp bài {.smaller}
 
 ### Nộp
 
@@ -74,6 +74,7 @@ Mẹo demo: chỉ họ tới bản nháp kết quả Buổi 5 như một mẫu.
 
 | Dùng một RStudio Project với đường dẫn tương đối.
 | Đặt tên tệp rõ ràng: Surname\_Phase1\_Assignment.R
+| Gửi tệp .zip qua email cho giảng viên chính Vương Mỹ Lượng: myluong.1710\@gmail.com
 
 ::: {.callout-warning}
 ## Liêm chính học thuật
@@ -187,7 +188,7 @@ Diễn giải lâm sàng: áp dụng R vào dữ liệu của CHÍNH họ là b�
 
 Câu hỏi cho học viên: sau khóa học bạn sẽ phân tích gì đầu tiên? Dự kiến: một cuộc kiểm toán hoặc một dự án đang dang dở.
 
-Mẹo demo: nhắc đến Giai đoạn II (phân tích sống còn, mô hình hỗn hợp) như bước tiếp theo.
+Mẹo demo: nhắc đến Giai đoạn II như bước tiếp theo - chủ đề (có thể là phân tích sống còn, mô hình hỗn hợp hoặc dự báo) sẽ dựa trên khảo sát học viên.
 :::
 
 # Cảm ơn & Hỏi đáp
@@ -196,7 +197,7 @@ Mẹo demo: nhắc đến Giai đoạn II (phân tích sống còn, mô hình h�
 
 - Bạn giờ đã có thể nhập, làm sạch, phân tích và báo cáo dữ liệu lâm sàng bằng R
 - Luyện tập trên các bộ dữ liệu của riêng bạn
-- Giai đoạn II: phân tích sống còn, mô hình hỗn hợp và dự báo
+- Giai đoạn II: có thể là phân tích sống còn, mô hình hỗn hợp hoặc dự báo - tùy theo kết quả khảo sát của bạn
 - Liên hệ: Neudata  -  \#ClearDataClearImpact
 
 ::: {.notes}

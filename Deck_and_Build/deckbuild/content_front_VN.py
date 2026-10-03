@@ -7,7 +7,7 @@ SLIDES_FRONT = [
      "title_sz": 4000,
      "subtitle": ["Giai đoạn I  -  Nhập môn R cho Nghiên cứu Lâm sàng",
                   "Khóa học ngắn buổi tối gồm năm buổi  -  các Thứ Ba, 20:00",
-                  "Giảng viên: Bernard Osang'ir & My Luong Vuong"],
+                  "Giảng viên: Vương Mỹ Lượng & Bernard Osang'ir"],
      "date": "8 tháng 9 - 6 tháng 10 năm 2026",
      "notes": ("TITLE SLIDE.\n"
                "Chào mừng học viên đến với Giai đoạn I của khóa Phân tích Dữ liệu Lâm sàng bằng R.\n"
@@ -175,10 +175,10 @@ SLIDES_FRONT = [
             "8 tháng 9 đến 6 tháng 10 năm 2026.",
             "Giảng dạy trực tuyến - tham gia từ bất cứ đâu với một laptop."]},
         {"header": "Giảng viên của bạn", "lines": [
-            "Bernard Osang'ir - Chuyên gia Thống kê Sinh học Cao cấp (giảng viên chính).",
-            "My Luong Vuong - Nhà thống kê sinh học & Dịch tễ học."]},
+            "Vương Mỹ Lượng - Chuyên gia Thống kê Sinh học Cao cấp (giảng viên chính).",
+            "Bernard Osang'ir - Chuyên gia Thống kê Sinh học Cao cấp."]},
         {"callout": "tip", "header": "Đăng ký / hỏi thông tin",
-         "lines": ["My Luong Vuong  -  myluong1710@gmail.com  -  www.neu-data.com  -  quét mã QR trên poster để đăng ký."]},
+         "lines": ["Vương Mỹ Lượng  -  myluong.1710@gmail.com  -  www.neu-data.com  -  quét mã QR trên poster để đăng ký."]},
      ],
      "notes": ("Dùng slide này để xác nhận hậu cần và giới thiệu đội ngũ giảng dạy.\n"
                "Điểm giảng dạy chính: ba giảng viên nghĩa là có nhiều hỗ trợ trong các bài tập có hướng dẫn.\n"

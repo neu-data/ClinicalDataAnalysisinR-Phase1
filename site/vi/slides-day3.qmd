@@ -1,7 +1,7 @@
 ---
 title: "Ngày 3: Thống kê mô tả, Bảng và Hình"
 subtitle: "Phân tích Dữ liệu Lâm sàng bằng R — Giai đoạn I"
-author: "Bernard Osang'ir & My Luong Vuong"
+author: "Vương Mỹ Lượng & Bernard Osang'ir"
 institute: "Neudata Consulting Ltd"
 date: "22-09-2026"
 lang: vi

@@ -1,7 +1,7 @@
 ---
 title: "Final Assignment"
 subtitle: "Clinical Data Analysis in R — Phase I"
-author: "Bernard Osang'ir & My Luong Vuong"
+author: "Vương Mỹ Lượng & Bernard Osang'ir"
 institute: "Neudata Consulting Ltd"
 date: "06-10-2026"
 lang: en
@@ -62,7 +62,7 @@ Audience question: what makes a script reproducible? Expected: relative paths, l
 Demo tip: point them to the Day 5 results draft as a template.
 :::
 
-## Final Assignment - Deliverables & Submission
+## Final Assignment - Deliverables & Submission {.smaller}
 
 ### Submit
 
@@ -74,6 +74,7 @@ Demo tip: point them to the Day 5 results draft as a template.
 
 | Use an RStudio Project with relative paths.
 | Name files clearly: Surname\_Phase1\_Assignment.R
+| Email the .zip to the lead trainer, Vương Mỹ Lượng: myluong.1710\@gmail.com
 
 ::: {.callout-warning}
 ## Academic integrity
@@ -187,7 +188,7 @@ Clinical interpretation: applying R to their OWN data is the real test of learni
 
 Audience question: what will you analyse first after the course? Expected: an audit or a stalled project.
 
-Demo tip: mention Phase II (survival analysis, mixed models) as the next step.
+Demo tip: mention Phase II as the next step - its topics (potentially survival analysis, mixed models or prediction) will follow the participant survey.
 :::
 
 # Thank You & Questions
@@ -196,7 +197,7 @@ Demo tip: mention Phase II (survival analysis, mixed models) as the next step.
 
 - You can now import, clean, analyse and report clinical data in R
 - Practise on your own datasets
-- Phase II: survival analysis, mixed models and prediction
+- Phase II: potentially survival analysis, mixed models or prediction - shaped by your survey answers
 - Contact: Neudata  -  \#ClearDataClearImpact
 
 ::: {.notes}

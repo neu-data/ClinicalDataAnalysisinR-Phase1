@@ -10,8 +10,8 @@ Chào mừng bạn, và cảm ơn bạn đã tham gia cùng chúng tôi. Bộ t�
 - **Khóa học:** Clinical Data Analysis in R — Giai đoạn I — Introduction to R for Clinical Research
 - **Hình thức:** 5 buổi học buổi tối, mỗi Thứ Ba lúc 20:00 (giờ Việt Nam), mỗi buổi 90 phút
 - **Thời gian:** 8 tháng 9 – 6 tháng 10 năm 2026
-- **Giảng viên:** Bernard Isekah Osang'ir (Chuyên gia Thống kê Sinh học Cao cấp, giảng viên chính) và My Luong Vuong (Nhà thống kê sinh học và dịch tễ học)
-- **Đăng ký / hỏi đáp:** My Luong Vuong — myluong1710@gmail.com — www.neu-data.com
+- **Giảng viên:** Vương Mỹ Lượng (Chuyên gia Thống kê Sinh học Cao cấp, giảng viên chính) và Bernard Isekah Osang'ir (Chuyên gia Thống kê Sinh học Cao cấp)
+- **Đăng ký / hỏi đáp:** Vương Mỹ Lượng — myluong.1710@gmail.com — www.neu-data.com
 
 ## Tuần này để làm gì
 
@@ -69,7 +69,7 @@ Nếu một buổi tối bị rút ngắn, cứ dừng lại — bạn luôn có
 Xin đừng lo lắng — gặp khó khăn là hoàn toàn bình thường, và ai lúc đầu cũng vậy. Vài lời trấn an:
 
 - Thư mục `01_Install_R_and_RStudio/` có một **phần khắc phục sự cố** cho những trục trặc cài đặt thường gặp nhất.
-- Nếu bạn vẫn gặp khó khăn, hãy liên hệ **My Luong Vuong** qua **myluong1710@gmail.com** để được giúp đỡ.
+- Nếu bạn vẫn gặp khó khăn, hãy liên hệ **Vương Mỹ Lượng** qua **myluong.1710@gmail.com** để được giúp đỡ.
 - Đến buổi học với phần cài đặt mới **hoàn thành một nửa** cũng hoàn toàn ổn — sẽ có người hỗ trợ trong buổi tối đầu tiên. Nhưng việc thử trước sẽ giúp buổi học đầu tiên diễn ra suôn sẻ hơn nhiều, nên hãy thử nhé.
 
 ## Hẹn sớm gặp lại
@@ -77,4 +77,4 @@ Xin đừng lo lắng — gặp khó khăn là hoàn toàn bình thường, và 
 Vậy là xong. Hãy thong thả, nhẹ nhàng với bản thân, và nhớ rằng không có câu hỏi nào là ngớ ngẩn. Chúng tôi rất mong được cùng nhau học tập.
 
 Trân trọng,
-**Bernard Isekah Osang'ir** và đội ngũ **Neudata**
+**Vương Mỹ Lượng**, **Bernard Isekah Osang'ir** và đội ngũ **Neudata**

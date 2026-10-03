@@ -2,7 +2,7 @@
 
 ## Clinical Data Analysis in R — Phase I: Introduction to R for Clinical Research
 
-**Trainers:** Bernard Osang'ir (Senior Biostatistician, lead) · My Luong Vuong (Biostatistician and Epidemiologist)
+**Trainers:** Vương Mỹ Lượng (Senior Biostatistician, lead trainer) · Bernard Osang'ir (Senior Biostatistician)
 **Provider:** Neudata · **#ClearDataClearImpact**
 **Format:** 5 evening sessions · every Tuesday, 8:00 PM, 90 minutes (~7.5 contact hours) · 8 September – 6 October 2026 · live-coding workshop
 **Case study:** *Determinants of Hypertension Treatment Uptake among Adults attending Primary Healthcare Facilities* (simulated multicentre cross-sectional study, 1,500 adults, 6 PHC facilities)
@@ -449,4 +449,4 @@ Run demo scripts **line by line** with `Ctrl+Enter` (Windows) / `Cmd+Enter` (Mac
 
 ---
 
-*Prepared for instructors of* **Clinical Data Analysis in R — Phase I** *· Trainers: Bernard Osang'ir (Senior Biostatistician) & My Luong Vuong (Biostatistician and Epidemiologist) · Neudata · #ClearDataClearImpact*
+*Prepared for instructors of* **Clinical Data Analysis in R — Phase I** *· Trainers: Vương Mỹ Lượng (Senior Biostatistician, lead trainer) & Bernard Osang'ir (Senior Biostatistician) · Neudata · #ClearDataClearImpact*

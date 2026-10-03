@@ -26,7 +26,7 @@ COURSE = ROOT / "Course"
 PREP = ROOT / "Course_Preparation"
 
 SESSION_DATES = ["08-09-2026", "15-09-2026", "22-09-2026", "29-09-2026", "06-10-2026"]
-TRAINERS = "Bernard Osang'ir & My Luong Vuong"
+TRAINERS = "Vương Mỹ Lượng & Bernard Osang'ir"
 REPO_URL = "https://github.com/neu-data/ClinicalDataAnalysisinR-Phase1"
 SITE_URL = "https://neu-data.github.io/ClinicalDataAnalysisinR-Phase1"
 # Certificate portal (Google Apps Script web app URL), embedded on the Certificate page.
@@ -59,7 +59,7 @@ L = {
         hero_promise="A free, hands-on short course for health professionals and researchers in Vietnam",
         cert_title="Certificate of completion",
         cert_body=("Participants who attend **3 to 5 of the 5 sessions** receive a Neudata certificate "
-                   "of completion, signed by the trainers My Luong Vuong and Bernard Isekah Osang'ir.\n\n"
+                   "of completion, signed by the trainers Vương Mỹ Lượng and Bernard Isekah Osang'ir.\n\n"
                    "**How to get it:** in the form below, enter the email you registered with, "
                    "then the 6-digit code we email you and your official full name. Your certificate is "
                    "emailed to you as a PDF. Each certificate has a unique ID and a QR code that anyone "
@@ -97,7 +97,7 @@ L = {
         hero_promise="Khóa học ngắn miễn phí, thực hành cho nhân viên y tế và nhà nghiên cứu tại Việt Nam",
         cert_title="Chứng nhận hoàn thành",
         cert_body=("Học viên tham dự **từ 3 đến 5 trên 5 buổi học** sẽ nhận chứng nhận hoàn thành của "
-                   "Neudata, do giảng viên My Luong Vuong và Bernard Isekah Osang'ir ký.\n\n"
+                   "Neudata, do giảng viên Vương Mỹ Lượng và Bernard Isekah Osang'ir ký.\n\n"
                    "**Cách nhận:** trong biểu mẫu bên dưới, nhập email bạn đã đăng ký, sau đó nhập mã 6 chữ số "
                    "chúng tôi gửi qua email và họ tên chính thức của bạn. Chứng nhận sẽ được gửi đến email "
                    "của bạn dưới dạng PDF. Mỗi chứng nhận có mã số riêng và mã QR để bất kỳ ai cũng có thể "

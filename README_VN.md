@@ -46,14 +46,14 @@ khóa học, bộ dữ liệu thực hành cùng phần mềm đều miễn phí
 
 ---
 
-## 👩‍🏫 Giảng viên của khóa học
+## 🧑‍🏫 Giảng viên của khóa học
 
 Hai giảng viên đồng hành cùng bạn trong mỗi buổi học và hỗ trợ trực tiếp khi thực hành:
 
 | Giảng viên | Vai trò |
 |------------|---------|
-| **Bernard Osang'ir** | Chuyên gia Thống kê Sinh học Cao cấp — *giảng viên chính* |
-| **My Luong Vuong** | Nhà thống kê sinh học và dịch tễ học |
+| **Vương Mỹ Lượng** | Chuyên gia Thống kê Sinh học Cao cấp — *giảng viên chính* |
+| **Bernard Osang'ir** | Chuyên gia Thống kê Sinh học Cao cấp |
 
 ---
 
@@ -113,7 +113,7 @@ trước khóa học sẽ giúp bạn cài đặt trong tuần trước khi khai
 
 Số lượng chỗ có hạn — hãy đăng ký sớm để giữ chỗ.
 
-- ✉️ **Email:** [myluong1710@gmail.com](mailto:myluong1710@gmail.com) — *My Luong Vuong*
+- ✉️ **Email:** [myluong.1710@gmail.com](mailto:myluong.1710@gmail.com) — *Vương Mỹ Lượng*
 - 🌐 **Website:** [www.neu-data.com](https://www.neu-data.com/)
 - 📱 **Hoặc quét mã QR** trên áp phích khóa học để đăng ký.
 

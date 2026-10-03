@@ -1,7 +1,7 @@
 ---
 title: "Ngày 5: Giới Thiệu Hồi Quy & Diễn Giải Kết Quả"
 subtitle: "Phân tích Dữ liệu Lâm sàng bằng R — Giai đoạn I"
-author: "Bernard Osang'ir & My Luong Vuong"
+author: "Vương Mỹ Lượng & Bernard Osang'ir"
 institute: "Neudata Consulting Ltd"
 date: "06-10-2026"
 lang: vi
@@ -718,29 +718,31 @@ Mẹo trình diễn: mời một hoặc hai học viên chia sẻ điều gì kh
 
 ## Giai Đoạn II Có Thể Bao Gồm Những Gì {.smaller}
 
-### Mô hình hóa sâu hơn
+### Có thể: mô hình hóa sâu hơn
 
 | Nhiễu, tương tác và biến đổi hiệu ứng một cách chuyên sâu.
 | Chẩn đoán mô hình: đa cộng tuyến, độ khớp và khả năng phân biệt (AUC).
 | Lựa chọn biến và cách xây dựng một mô hình có trách nhiệm.
 
-### Phương pháp và kỹ năng mới
+### Có thể: phương pháp và kỹ năng mới
 
 | Phân tích sống còn: Kaplan-Meier và mô hình Cox cho dữ liệu thời gian-đến-biến cố.
 | Mô hình hiệu ứng hỗn hợp: bệnh nhân được phân cụm trong các cơ sở.
 | Dữ liệu khuyết (đa quy nạp) và báo cáo Quarto tự động.
 
 ::: {.callout-tip}
-## Tiếp tục luyện tập
-Mang bộ dữ liệu của chính bạn tới Giai đoạn II và phân tích nó từ đầu đến cuối.
+## Bạn quyết định
+Nội dung Giai đoạn II sẽ chủ yếu dựa trên kết quả khảo sát học viên - các chủ đề được quan tâm nhiều nhất. Trong lúc chờ, hãy tiếp tục luyện tập trên dữ liệu của bạn.
 :::
 
 ::: {.notes}
 Điểm dạy chính: mô hình logistic hôm nay là nền tảng; Giai đoạn II tổng quát hóa nó.
 
-Diễn giải lâm sàng: nghiên cứu 6 cơ sở của họ tự nhiên được phân cụm, điều này thúc đẩy các mô hình hỗn hợp trong Giai đoạn II.
+Diễn giải lâm sàng: nghiên cứu 6 cơ sở của họ tự nhiên được phân cụm, điều này có thể dẫn đến các mô hình hỗn hợp trong Giai đoạn II.
 
 Hiểu lầm thường gặp: rằng phân tích sống còn và hồi quy logistic không liên quan - cả hai đều là hồi quy, chỉ khác loại biến kết cục.
+
+Nhấn mạnh rằng đây chỉ là các chủ đề tiềm năng: khảo sát học viên sẽ quyết định nội dung Giai đoạn II, vì vậy hãy mời mọi người hoàn thành khảo sát.
 
 Câu hỏi cho học viên: chủ đề Giai đoạn II nào phù hợp với một nghiên cứu theo dõi bệnh nhân theo thời gian? Trả lời mong đợi: phân tích sống còn, vì biến kết cục là thời gian-đến-biến cố.
 

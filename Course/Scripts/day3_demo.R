@@ -12,7 +12,7 @@
 # This script READS the clean data produced on Day 2 (Data/analysis_data.rds).
 # Every figure is SAVED to the Resources/ folder at 300 dpi.
 #
-# Author:  Bernard Isekah Osang'ir & My Luong Vuong | Neudata | #ClearDataClearImpact
+# Author:  Vương Mỹ Lượng & Bernard Isekah Osang'ir | Neudata | #ClearDataClearImpact
 # ============================================================================
 
 # ----------------------------------------------------------------------------
