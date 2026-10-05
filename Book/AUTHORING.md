@@ -1,6 +1,6 @@
-# Authoring guide — *Introduction to R for Clinical Research*
+# Authoring guide — *Introduction to Clinical Data Analysis in R*
 
-**Book:** *Introduction to R for Clinical Research* — subtitle *Clinical Data Analysis in R*
+**Book:** *Introduction to Clinical Data Analysis in R* — subtitle *A Practical Guide to Data Management, Statistical Analysis, and Interpretation*
 **Authors:** Bernard Isekah Osang'ir and Vương Mỹ Lượng (Neudata)
 
 This is a **book**, not course material. Each chapter is a self-contained, well-explained

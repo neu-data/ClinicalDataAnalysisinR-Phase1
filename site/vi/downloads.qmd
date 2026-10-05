@@ -47,9 +47,9 @@ Toàn bộ tài liệu dùng trong khóa học, sẵn sàng để tải xuống.
 
 - [Course_Orientation_EN.pdf](files/docs/Course_Orientation_EN.pdf)
 - [Final_Assignment.pdf](files/docs/Final_Assignment.pdf)
-- [Introduction_to_R_for_Clinical_Research_EN.pdf](files/docs/Introduction_to_R_for_Clinical_Research_EN.pdf)
-- [Introduction_to_R_for_Clinical_Research_VN.pdf](files/docs/Introduction_to_R_for_Clinical_Research_VN.pdf)
-- [Introduction_to_R_for_Clinical_Research_VN_overleaf.zip](files/docs/Introduction_to_R_for_Clinical_Research_VN_overleaf.zip)
+- [Introduction_to_Clinical_Data_Analysis_in_R_EN.pdf](files/docs/Introduction_to_Clinical_Data_Analysis_in_R_EN.pdf)
+- [Introduction_to_Clinical_Data_Analysis_in_R_VN.pdf](files/docs/Introduction_to_Clinical_Data_Analysis_in_R_VN.pdf)
+- [Introduction_to_Clinical_Data_Analysis_in_R_VN_overleaf.zip](files/docs/Introduction_to_Clinical_Data_Analysis_in_R_VN_overleaf.zip)
 - [Package_Installation_Guide.pdf](files/docs/Package_Installation_Guide.pdf)
 - [Participant_Handbook.pdf](files/docs/Participant_Handbook.pdf)
 - [R_Command_Reference_Sheet.pdf](files/docs/R_Command_Reference_Sheet.pdf)

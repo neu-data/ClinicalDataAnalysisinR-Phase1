@@ -1,6 +1,6 @@
 ---
 title: "Chương 5: Mô hình hồi quy và báo cáo kết quả"
-subtitle: "Giới thiệu R cho Nghiên cứu Lâm sàng"
+subtitle: "Nhập môn Phân tích Dữ liệu Lâm sàng bằng R"
 bibliography: references.bib
 link-citations: true
 ---

@@ -2,7 +2,7 @@
 % neudatabook.cls — Neudata Consulting Ltd book class
 % Books and long training texts in the Neudata house style (the "style 1" look of
 % neudata.cls: teal strip, navy cover band, navy headings over teal rules).
-% Compile with XeLaTeX (Overleaf: Menu > Compiler > XeLaTeX) and biber.
+% Compile with LuaLaTeX (Overleaf: Menu > Compiler > LuaLaTeX) or XeLaTeX, and biber.
 %
 % \documentclass[options]{neudatabook}
 %   en | vi     language of the fixed labels (Chapter / Chương, Contents / Mục lục ...)
@@ -29,7 +29,7 @@
   ItalicFont=*-italic, BoldItalicFont=*-bolditalic]
 \setsansfont{texgyreheros}[Extension=.otf, UprightFont=*-regular, BoldFont=*-bold,
   ItalicFont=*-italic, BoldItalicFont=*-bolditalic]
-\newfontfamily\nb@display{texgyreadventor}[Extension=.otf, WordSpace=1.7, UprightFont=*-regular,
+\newfontfamily\nb@display{texgyreadventor}[Extension=.otf, UprightFont=*-regular,
   BoldFont=*-bold, ItalicFont=*-italic, BoldItalicFont=*-bolditalic]
 \setmonofont{SourceCodePro}[Extension=.otf, UprightFont=*-Regular, BoldFont=*-Semibold,
   ItalicFont=*-RegularIt, BoldItalicFont=*-SemiboldIt, Scale=0.88]
@@ -185,10 +185,16 @@
         {\includegraphics[width=4.6cm]{\nb@logo}};
       \fill[NeudataNavy] ([yshift=-9.2cm]current page.north west) rectangle ([yshift=-18.6cm]current page.north east);
       \fill[NeudataDeepTeal] ([yshift=-18.6cm]current page.north west) rectangle ([yshift=-18.85cm]current page.north east);
-      \node[anchor=west, text width=16.4cm, align=left, inner sep=0, text=white]
-        at ([xshift=2.3cm, yshift=-13.9cm]current page.north west) {%
-          {\nb@display\fontsize{36}{42}\selectfont\bfseries\@title\par}
-          \ifx\nb@subtitle\@empty\else\vspace{1.0em}{\nb@display\fontsize{19}{24}\selectfont\color{NeudataSeafoam}\nb@subtitle\par}\fi};
+      % Fonts are set with the node's font= key: switching font inside an aligned TikZ
+      % node keeps the default font's word spacing and squeezes the words together.
+      \node[anchor=south west, text width=16.4cm, align=left, inner sep=0, text=white,
+            font={\nb@display\fontsize{34}{41}\selectfont\bfseries}]
+        at ([xshift=2.3cm, yshift=-14.3cm]current page.north west) {\@title};
+      \ifx\nb@subtitle\@empty\else
+      \node[anchor=north west, text width=16.4cm, align=left, inner sep=0, text=NeudataSeafoam,
+            font={\nb@display\fontsize{17}{22}\selectfont}]
+        at ([xshift=2.3cm, yshift=-15.1cm]current page.north west) {\nb@subtitle};
+      \fi
       \node[anchor=north west, text width=16.4cm, align=left, inner sep=0, text=NeudataNavy]
         at ([xshift=2.3cm, yshift=-20.4cm]current page.north west) {%
           {\large\bfseries\nb@authorlist\par}};
@@ -201,9 +207,10 @@
   % Title page
   \thispagestyle{empty}
   \vspace*{3cm}
-  {\nb@display\fontsize{28}{34}\selectfont\bfseries\color{NeudataHeading}\@title\par}
-  \vspace{0.8em}
-  {\nb@display\Large\color{NeudataTeal}\nb@subtitle\par}
+  {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000
+   {\nb@display\fontsize{28}{34}\selectfont\bfseries\color{NeudataHeading}\@title\par}
+   \vspace{0.8em}
+   {\nb@display\Large\color{NeudataTeal}\nb@subtitle\par}}
   \vspace{1.6em}{\color{NeudataTeal}\rule{\textwidth}{1.2pt}}\par
   \vspace{2.2em}
   {\large\nb@authorlist\par}

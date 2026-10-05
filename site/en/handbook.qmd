@@ -1,16 +1,16 @@
 ---
-title: "Introduction to R for Clinical Research"
-subtitle: "Clinical Data Analysis in R"
+title: "Introduction to Clinical Data Analysis in R"
+subtitle: "A Practical Guide to Data Management, Statistical Analysis, and Interpretation"
 ---
 
 *Bernard Isekah Osang'ir and Vương Mỹ Lượng* · Neudata
 
-The participant handbook is our book **Introduction to R for Clinical Research** — *Clinical Data Analysis in R*. Each chapter explains the theory behind a method, shows the R code and its real output on the case-study data, with figures and tables, and ends with exercises. Worked solutions are at the end of the book.
+The participant handbook is our book **Introduction to Clinical Data Analysis in R** — *A Practical Guide to Data Management, Statistical Analysis, and Interpretation*. Each chapter explains the theory behind a method, shows the R code and its real output on the case-study data, with figures and tables, and ends with exercises. Worked solutions are at the end of the book.
 
 | | |
 |---|---|
-| 📥 **PDF** | [Download the book (PDF, English)](files/docs/Introduction_to_R_for_Clinical_Research_EN.pdf) · [Tiếng Việt (PDF)](files/docs/Introduction_to_R_for_Clinical_Research_VN.pdf) |
-| 🧾 **Overleaf** | [LaTeX source for Overleaf (zip)](files/docs/Introduction_to_R_for_Clinical_Research_EN_overleaf.zip) |
+| 📥 **PDF** | [Download the book (PDF, English)](files/docs/Introduction_to_Clinical_Data_Analysis_in_R_EN.pdf) · [Tiếng Việt (PDF)](files/docs/Introduction_to_Clinical_Data_Analysis_in_R_VN.pdf) |
+| 🧾 **Overleaf** | [LaTeX source for Overleaf (zip)](files/docs/Introduction_to_Clinical_Data_Analysis_in_R_EN_overleaf.zip) |
 
 ## Read online
 

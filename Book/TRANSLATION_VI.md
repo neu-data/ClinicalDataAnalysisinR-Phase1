@@ -24,8 +24,7 @@ professionals and researchers — not word-for-word. Keep the meaning, depth and
   Exercises → **Bài tập**; Learning objectives box needs no title (added automatically).
 * Cross-references: "Chapter 3" → "Chương 3", "Section 3.4" → "Mục 3.4", "Figure 3.2" → "Hình 3.2",
   "Table 3.1" → "Bảng 3.1", "the appendix" → "phụ lục".
-* Book title in text: *Giới thiệu R cho Nghiên cứu Lâm sàng* (subtitle *Phân tích Dữ liệu Lâm sàng
-  bằng R*), but keep the English title the first time with the Vietnamese in brackets if helpful.
+* Book title in text: *Nhập môn Phân tích Dữ liệu Lâm sàng bằng R* (subtitle *Hướng dẫn thực hành về quản lý dữ liệu, phân tích thống kê và diễn giải kết quả*), but keep the English title the first time with the Vietnamese in brackets if helpful.
 
 ## Terminology (use consistently)
 

@@ -1,6 +1,6 @@
 ---
 title: "Chương 4: Các kiểm định thống kê thường dùng trong nghiên cứu y học"
-subtitle: "Giới thiệu R cho Nghiên cứu Lâm sàng"
+subtitle: "Nhập môn Phân tích Dữ liệu Lâm sàng bằng R"
 bibliography: references.bib
 link-citations: true
 ---

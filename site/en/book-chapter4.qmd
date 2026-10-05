@@ -1,6 +1,6 @@
 ---
 title: "Chapter 4: Common Statistical Tests in Medical Research"
-subtitle: "Introduction to R for Clinical Research"
+subtitle: "Introduction to Clinical Data Analysis in R"
 bibliography: references.bib
 link-citations: true
 ---

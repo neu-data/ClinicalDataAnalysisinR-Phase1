@@ -299,10 +299,12 @@ def copy(src, dest):
     shutil.copy2(src, dest)
 
 
-# ----- The book: "Introduction to R for Clinical Research" as the handbook -------------------
+# ----- The book: "Introduction to Clinical Data Analysis in R" as the handbook -------------------
 BOOK = ROOT / "Book"
-BOOK_TITLE = {"en": ("Introduction to R for Clinical Research", "Clinical Data Analysis in R"),
-              "vi": ("Giới thiệu R cho Nghiên cứu Lâm sàng", "Phân tích Dữ liệu Lâm sàng bằng R")}
+BOOK_TITLE = {"en": ("Introduction to Clinical Data Analysis in R",
+                     "A Practical Guide to Data Management, Statistical Analysis, and Interpretation"),
+              "vi": ("Nhập môn Phân tích Dữ liệu Lâm sàng bằng R",
+                     "Hướng dẫn thực hành về quản lý dữ liệu, phân tích thống kê và diễn giải kết quả")}
 BOOK_CHAPTERS = ["01-r-basics", "02-data-cleaning", "03-descriptive", "04-statistical-tests", "05-regression"]
 BOOK_S = {
     "en": dict(chapter="Chapter", solutions="Solutions to the exercises", objectives="Learning objectives",
@@ -371,10 +373,10 @@ def build_book_pages(lang, out, S):
     copy(BOOK / "references.bib", out / "references.bib")
     docs = out / "files" / "docs"
     for c in (code, other):
-        pdf = BOOK / f"Introduction_to_R_for_Clinical_Research_{c}.pdf"
+        pdf = BOOK / f"Introduction_to_Clinical_Data_Analysis_in_R_{c}.pdf"
         if pdf.exists():
             copy(pdf, docs / pdf.name)
-    zipf = BOOK / f"Introduction_to_R_for_Clinical_Research_{code}_overleaf.zip"
+    zipf = BOOK / f"Introduction_to_Clinical_Data_Analysis_in_R_{code}_overleaf.zip"
     if zipf.exists():
         copy(zipf, docs / zipf.name)
 
@@ -408,8 +410,8 @@ def build_book_pages(lang, out, S):
         (out / fname).write_text(head + book_md_to_qmd(md, B) + "\n\n---\n\n" + " · ".join(nav) + "\n",
                                  encoding="utf-8")
 
-    links = [f"| 📥 **PDF** | [{B['pdf']}](files/docs/Introduction_to_R_for_Clinical_Research_{code}.pdf)"
-             f" · [{B['pdf_other']}](files/docs/Introduction_to_R_for_Clinical_Research_{other}.pdf) |",
+    links = [f"| 📥 **PDF** | [{B['pdf']}](files/docs/Introduction_to_Clinical_Data_Analysis_in_R_{code}.pdf)"
+             f" · [{B['pdf_other']}](files/docs/Introduction_to_Clinical_Data_Analysis_in_R_{other}.pdf) |",
              f"| 🧾 **Overleaf** | [{B['overleaf']}](files/docs/{zipf.name}) |"]
     toc = "\n".join(f"{i + 1}. [{p[1]}]({p[0]})" for i, p in enumerate(pages))
     landing = (f"---\ntitle: {yaml_str(t)}\nsubtitle: {yaml_str(s)}\n---\n\n"

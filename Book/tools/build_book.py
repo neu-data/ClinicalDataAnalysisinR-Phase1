@@ -1,14 +1,14 @@
-"""Build "Introduction to R for Clinical Research" (EN and VN).
+"""Build "Introduction to Clinical Data Analysis in R" (EN and VN).
 
     python Book/tools/build_book.py              # knit changed chapters, build both editions
     python Book/tools/build_book.py en --force   # re-knit everything, English only
-    python Book/tools/build_book.py --no-pdf     # skip the local XeLaTeX compile
+    python Book/tools/build_book.py --no-pdf     # skip the local LuaLaTeX compile
 
 For each language:
   1. knit Book/chapters/<lang>/*.Rmd -> Book/_knit/<lang>/*.md (real R output + figures)
   2. convert to LaTeX -> Book/overleaf/<lang>/ (a complete Overleaf project)
-  3. zip it -> Book/Introduction_to_R_for_Clinical_Research_<EN|VN>_overleaf.zip
-  4. compile with latexmk/XeLaTeX -> Book/Introduction_to_R_for_Clinical_Research_<EN|VN>.pdf
+  3. zip it -> Book/Introduction_to_Clinical_Data_Analysis_in_R_<EN|VN>_overleaf.zip
+  4. compile with latexmk/LuaLaTeX -> Book/Introduction_to_Clinical_Data_Analysis_in_R_<EN|VN>.pdf
 Run from the repository root.
 """
 import re
@@ -26,8 +26,8 @@ from md2tex import convert  # noqa: E402
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 RSCRIPT = r"C:/Program Files/R/R-4.6.1/bin/Rscript.exe"
 CHAPTERS = ["01-r-basics", "02-data-cleaning", "03-descriptive", "04-statistical-tests", "05-regression"]
-TITLE = "Introduction to R for Clinical Research"
-SUBTITLE = "Clinical Data Analysis in R"
+TITLE = "Introduction to Clinical Data Analysis in R"
+SUBTITLE = "A Practical Guide to Data Management, Statistical Analysis, and Interpretation"
 AUTHORS = r"Bernard Isekah Osang'ir \\[0.35em] Vương Mỹ Lượng"
 
 TEXT = {
@@ -41,20 +41,19 @@ TEXT = {
                          "real multicentre study of hypertension care, but the results illustrate methods "
                          "and are not clinical findings.\\par\\medskip Every result, table and figure in this "
                          "book was produced by the R code printed alongside it, using R, knitr and the "
-                         "tidyverse, and the book was typeset with XeLaTeX.")),
-    "vi": dict(code="VN", title="Giới thiệu R cho Nghiên cứu Lâm sàng",
-               subtitle="Phân tích Dữ liệu Lâm sàng bằng R", references="Tài liệu tham khảo",
+                         "tidyverse, and the book was typeset with LuaLaTeX.")),
+    "vi": dict(code="VN", title="Nhập môn Phân tích Dữ liệu Lâm sàng bằng R",
+               subtitle="Hướng dẫn thực hành về quản lý dữ liệu, phân tích thống kê và diễn giải kết quả", references="Tài liệu tham khảo",
                solutions="Lời giải bài tập",
                solutions_intro=("Phụ lục này trình bày lời giải chi tiết cho các bài tập ở cuối mỗi chương. "
                                 "Hãy tự làm từng bài trước khi đọc lời giải: thường có nhiều cách viết mã "
                                 "đúng, và việc so sánh cách làm của bạn với cách làm của chúng tôi là một "
                                 "phần của quá trình học."),
-               colophon=("Bản tiếng Việt của \\textit{Introduction to R for Clinical Research: Clinical Data "
-                         "Analysis in R}.\\par\\medskip Dữ liệu dùng trong cuốn sách này là dữ liệu mô phỏng phục vụ giảng dạy: chúng "
+               colophon=("Bản tiếng Việt của \\textit{Introduction to Clinical Data Analysis in R: A Practical Guide to Data Management, Statistical Analysis, and Interpretation}.\\par\\medskip Dữ liệu dùng trong cuốn sách này là dữ liệu mô phỏng phục vụ giảng dạy: chúng "
                          "giống một nghiên cứu đa trung tâm thực tế về chăm sóc tăng huyết áp, nhưng các kết "
                          "quả chỉ minh họa phương pháp, không phải phát hiện lâm sàng.\\par\\medskip Mọi kết "
                          "quả, bảng và hình trong sách đều được tạo ra từ mã R in kèm, sử dụng R, knitr và "
-                         "tidyverse; sách được dàn trang bằng XeLaTeX.")),
+                         "tidyverse; sách được dàn trang bằng LuaLaTeX.")),
 }
 
 
@@ -119,11 +118,11 @@ def build(lang, force=False, pdf=True):
     shutil.copy2(BOOK / "latex" / "neudata-logo.png", proj / "figures" / "neudata-logo.png")
     shutil.copy2(BOOK / "latex" / "neudatabook.cls", proj / "neudatabook.cls")
     shutil.copy2(BOOK / "references.bib", proj / "references.bib")
-    (proj / "latexmkrc").write_text("$pdf_mode = 5;\n$postscript_mode = $dvi_mode = 0;\n", encoding="utf-8")
+    (proj / "latexmkrc").write_text("$pdf_mode = 4;\n$postscript_mode = $dvi_mode = 0;\n", encoding="utf-8")
 
     appendix = "\\appendix\n\\include{chapters/solutions}\n" if sol_parts else ""
     main = rf"""% {T['title']} — {T['subtitle']}
-% Compile with XeLaTeX and biber (Overleaf: Menu > Compiler > XeLaTeX).
+% Compile with LuaLaTeX and biber (Overleaf: Menu > Compiler > LuaLaTeX).
 \documentclass[{lang}]{{neudatabook}}
 \usepackage[backend=biber, style=authoryear, maxcitenames=2, maxbibnames=10, giveninits=true,
             uniquename=false, uniquelist=false, dashed=false, doi=true, url=false]{{biblatex}}
@@ -152,10 +151,10 @@ def build(lang, force=False, pdf=True):
     (proj / "main.tex").write_text(main, encoding="utf-8")
     (proj / "README.md").write_text(
         f"# {T['title']} ({T['code']})\n\nOverleaf project. Upload this folder (or the zip) to Overleaf, then set "
-        "**Menu → Compiler → XeLaTeX**. `main.tex` is the main document; chapters are in `chapters/`, "
+        "**Menu → Compiler → LuaLaTeX**. `main.tex` is the main document; chapters are in `chapters/`, "
         "figures in `figures/`, references in `references.bib` (biber).\n", encoding="utf-8")
 
-    zpath = BOOK / f"Introduction_to_R_for_Clinical_Research_{T['code']}_overleaf.zip"
+    zpath = BOOK / f"Introduction_to_Clinical_Data_Analysis_in_R_{T['code']}_overleaf.zip"
     with zipfile.ZipFile(zpath, "w", zipfile.ZIP_DEFLATED) as z:
         for f in sorted(proj.rglob("*")):
             if f.is_file():
@@ -163,14 +162,22 @@ def build(lang, force=False, pdf=True):
     print(f"[{lang}] Overleaf project -> {zpath.name}")
 
     if pdf:
-        print(f"[{lang}] compiling with XeLaTeX")
-        r = subprocess.run(["latexmk", "-xelatex", "-interaction=nonstopmode", "-halt-on-error", "main.tex"],
-                           cwd=proj, capture_output=True, text=True, encoding="utf-8", errors="replace")
-        log = (proj / "main.log").read_text(encoding="utf-8", errors="replace") if (proj / "main.log").exists() else ""
+        print(f"[{lang}] compiling with LuaLaTeX")
+        # XeTeX on some Windows/TinyTeX setups crashes at random while loading fonts (no LaTeX
+        # error in the log); retry a few times, starting clean after a crash.
+        for attempt in range(6):
+            r = subprocess.run(["latexmk", "-lualatex", "-interaction=nonstopmode", "-halt-on-error", "main.tex"],
+                               cwd=proj, capture_output=True, text=True, encoding="utf-8", errors="replace")
+            log = (proj / "main.log").read_text(encoding="utf-8", errors="replace") if (proj / "main.log").exists() else ""
+            if r.returncode == 0 or any(l.startswith("!") for l in log.splitlines()):
+                break
+            print(f"[{lang}] TeX engine crashed, retrying ({attempt + 1})")
+            for f in proj.glob("main.xdv"):
+                f.unlink()
         if r.returncode != 0 or not (proj / "main.pdf").exists():
             errs = [l for l in log.splitlines() if l.startswith("!")][:10]
             sys.exit(f"LaTeX failed for {lang}:\n" + "\n".join(errs) + "\n" + r.stdout[-2500:])
-        out = BOOK / f"Introduction_to_R_for_Clinical_Research_{T['code']}.pdf"
+        out = BOOK / f"Introduction_to_Clinical_Data_Analysis_in_R_{T['code']}.pdf"
         shutil.copy2(proj / "main.pdf", out)
         missing = sorted(set(re.findall(r"Missing character: There is no (.) ", log)))
         print(f"[{lang}] PDF -> {out.name}" + (f"  (missing glyphs: {''.join(missing)})" if missing else ""))

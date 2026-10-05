@@ -1,6 +1,6 @@
 ---
 title: "Chapter 3: Descriptive Statistics, Tables and Figures"
-subtitle: "Introduction to R for Clinical Research"
+subtitle: "Introduction to Clinical Data Analysis in R"
 bibliography: references.bib
 link-citations: true
 ---

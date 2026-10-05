@@ -1,6 +1,6 @@
 ---
 title: "Chương 2: Tìm hiểu và làm sạch dữ liệu lâm sàng"
-subtitle: "Giới thiệu R cho Nghiên cứu Lâm sàng"
+subtitle: "Nhập môn Phân tích Dữ liệu Lâm sàng bằng R"
 bibliography: references.bib
 link-citations: true
 ---

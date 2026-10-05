@@ -1,6 +1,6 @@
 ---
 title: "Chương 1: Bắt đầu với R và RStudio"
-subtitle: "Giới thiệu R cho Nghiên cứu Lâm sàng"
+subtitle: "Nhập môn Phân tích Dữ liệu Lâm sàng bằng R"
 bibliography: references.bib
 link-citations: true
 ---

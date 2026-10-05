@@ -1,16 +1,16 @@
 ---
-title: "Giới thiệu R cho Nghiên cứu Lâm sàng"
-subtitle: "Phân tích Dữ liệu Lâm sàng bằng R"
+title: "Nhập môn Phân tích Dữ liệu Lâm sàng bằng R"
+subtitle: "Hướng dẫn thực hành về quản lý dữ liệu, phân tích thống kê và diễn giải kết quả"
 ---
 
 *Bernard Isekah Osang'ir và Vương Mỹ Lượng* · Neudata
 
-Sổ tay học viên là cuốn sách **Giới thiệu R cho Nghiên cứu Lâm sàng** — *Phân tích Dữ liệu Lâm sàng bằng R*. Mỗi chương giải thích lý thuyết của phương pháp, trình bày mã R và kết quả thực tế trên dữ liệu nghiên cứu tình huống, kèm hình và bảng, và kết thúc bằng bài tập. Lời giải chi tiết nằm ở cuối sách.
+Sổ tay học viên là cuốn sách **Nhập môn Phân tích Dữ liệu Lâm sàng bằng R** — *Hướng dẫn thực hành về quản lý dữ liệu, phân tích thống kê và diễn giải kết quả*. Mỗi chương giải thích lý thuyết của phương pháp, trình bày mã R và kết quả thực tế trên dữ liệu nghiên cứu tình huống, kèm hình và bảng, và kết thúc bằng bài tập. Lời giải chi tiết nằm ở cuối sách.
 
 | | |
 |---|---|
-| 📥 **PDF** | [Tải sách (PDF, tiếng Việt)](files/docs/Introduction_to_R_for_Clinical_Research_VN.pdf) · [English (PDF)](files/docs/Introduction_to_R_for_Clinical_Research_EN.pdf) |
-| 🧾 **Overleaf** | [Mã nguồn LaTeX cho Overleaf (zip)](files/docs/Introduction_to_R_for_Clinical_Research_VN_overleaf.zip) |
+| 📥 **PDF** | [Tải sách (PDF, tiếng Việt)](files/docs/Introduction_to_Clinical_Data_Analysis_in_R_VN.pdf) · [English (PDF)](files/docs/Introduction_to_Clinical_Data_Analysis_in_R_EN.pdf) |
+| 🧾 **Overleaf** | [Mã nguồn LaTeX cho Overleaf (zip)](files/docs/Introduction_to_Clinical_Data_Analysis_in_R_VN_overleaf.zip) |
 
 ## Đọc trực tuyến
 
