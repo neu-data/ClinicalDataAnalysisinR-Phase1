@@ -11,25 +11,33 @@ A free, hands-on short course for health professionals and researchers in Vietna
 [FREE]{} [Beginner-friendly]{} [Online]{} [No coding experience required]{}
 :::
 
-[Schedule](schedule.qmd){.btn .btn-light role="button"}
+[Schedule](schedule.qmd){.btn .btn-light role="button"} [Get your free access code](access.qmd){.btn .btn-light role="button"}
 :::
 
 ![](images/course-poster.png){.float-end width="34%" style="margin:0 0 1rem 1.5rem"}
 
-## 🎯 About this course
+> **The course has ended.** Phase I ran online from 8 September to 6 October 2026. Thank you to
+> everyone who took part! All course materials remain freely available on this website for
+> self-study: [request a free access code](https://neu-data.github.io/ClinicalDataAnalysisinR-Phase1/en/access.html) — it is sent to your email (we only
+> count how many people use the materials; your email is not stored). For further questions, or anything else about the course, please contact
+> **Vương Mỹ Lượng** at [myluong.1710@gmail.com](mailto:myluong.1710@gmail.com).
+
+---
+
+## About this course
 
 Many clinicians and researchers collect valuable data every day — but never get the
-chance to analyse it themselves. **Phase I** changes that. Over five friendly evening
-sessions you will go from *never having opened R* to running a real clinical analysis:
+chance to analyse it themselves. **Phase I** changes that. Over five evening sessions,
+participants went from *never having opened R* to running a real clinical analysis:
 importing data, cleaning it, describing it, testing hypotheses, and interpreting a
 regression model — the way it is actually done for a thesis, report, or manuscript.
 
 > **You do not need any programming or statistics background.** If you can use a
-> computer and you care about your data, this course is for you.
+> computer and you care about your data, these materials are for you.
 
 ---
 
-## 💚 It's completely free
+## It's completely free
 
 This is a **no-cost training** offered to build data-analysis capacity among health
 professionals and researchers in Vietnam. There are no fees, and all course materials,
@@ -37,21 +45,21 @@ the practice dataset, and the software are free to use and keep.
 
 ---
 
-## 🗓️ When & where
+## 🗓️ When it ran
 
 | | |
 |---|---|
-| **Format** | 5 online evening sessions |
-| **Day & time** | Every **Tuesday, 8:00 PM** (Vietnam time, ICT) |
+| **Format** | 5 online evening sessions (completed) |
+| **Day & time** | Tuesdays, 8:00 PM (Vietnam time, ICT) |
 | **Duration** | 90 minutes per session |
-| **Dates** | **8 September – 6 October 2026** |
-| **Where** | Online — join from anywhere with a laptop |
+| **Dates** | 8 September – 6 October 2026 |
+| **Where** | Online |
 
 ---
 
 ## 🧑‍🏫 Who is leading the course
 
-Your two trainers guide every session and help you hands-on during the exercises:
+The course was led by two trainers, who guided every session and the hands-on exercises:
 
 | Trainer | Role |
 |---------|------|
@@ -60,7 +68,7 @@ Your two trainers guide every session and help you hands-on during the exercises
 
 ---
 
-## 🧑‍⚕️ Who should join
+## 🧑‍⚕️ Who the materials are for
 
 Health and research professionals with little or no R experience:
 
@@ -75,7 +83,8 @@ Health and research professionals with little or no R experience:
 
 ## 📚 What you will learn
 
-Five sessions that build on each other — one real clinical dataset all the way through:
+Five sessions that build on each other — one real clinical dataset all the way through. All
+slides, scripts, exercises and the handbook are available on this website:
 
 | Session | Theme | You will be able to… |
 |:---:|-------|----------------------|
@@ -85,39 +94,38 @@ Five sessions that build on each other — one real clinical dataset all the way
 | **4** | Common Medical Statistical Tests | Choose and run the right test (t-test, chi-square, non-parametric) |
 | **5** | Introduction to Regression & Interpreting Output | Fit and read a regression, and write a short **Results** section |
 
-By the end you will be able to **analyse a clean clinical dataset from start to finish
+Working through the materials, you will be able to **analyse a clean clinical dataset from start to finish
 and report it in plain, scientific language.**
 
 ---
 
-## 🛠️ What you need (all free)
+## What you need (all free)
 
-Everything is free and works on **Windows** or **macOS**. A pre-course pack helps you
-set it up the week before we start.
+Everything is free and works on **Windows** or **macOS**. The pre-course pack on this
+website helps you set it up.
 
 | Tool | What it's for | Cost |
 |------|---------------|:----:|
 | **R** (version 4.x) | The analysis engine | Free |
 | **RStudio Desktop** | The friendly workspace for R | Free |
 | **A laptop** | Windows or macOS, ~1 GB free space | — |
-| **Internet** | To install the software and join sessions | — |
+| **Internet** | To install the software and download the materials | — |
 
 **R packages used** (installed in one step during setup):
 `tidyverse` · `readxl` · `gtsummary` · `broom` · `survival` · `survminer`
 
-> 📦 **Get ready before Session 1:** a **Course Preparation pack** is sent about one
-> week ahead. It walks you through installing R and RStudio, learning the interface,
-> and practising with the course data — so you arrive ready and confident.
+> 📦 **Start here:** the **Course Preparation pack** on this website walks you through
+> installing R and RStudio, learning the interface, and practising with the course data.
 
 ---
 
-## ✍️ How to register
+## ✉️ Questions and contact
 
-Places are limited — register early to reserve your seat.
+The course has ended, but you are welcome to get in touch for further questions
+or anything else about the course:
 
 - ✉️ **Email:** [myluong.1710@gmail.com](mailto:myluong.1710@gmail.com) — *Vương Mỹ Lượng*
 - 🌐 **Website:** [www.neu-data.com](https://www.neu-data.com/)
-- 📱 **Or scan the QR code** on the course poster to register.
 
 ---
 
@@ -125,7 +133,7 @@ Places are limited — register early to reserve your seat.
 
 **No prior programming experience required — just curiosity.**
 
-*See you on 8 September!* 🎉
+*Thank you to everyone who took part!* 🎉
 
 Neudata · **#ClearDataClearImpact**
 

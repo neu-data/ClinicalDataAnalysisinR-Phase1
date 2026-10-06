@@ -1,0 +1,72 @@
+---
+title: "Free access to the course materials"
+toc: false
+---
+
+All course materials are **free**. To open them, request a free access code: enter your email and we send you a code. We only count how many people use the materials — **your email address is not stored**.
+
+```{=html}
+<div class="access-box">
+  <h3>1. Get your free access code</h3>
+  <form id="acc-req" class="acc-row">
+    <input id="acc-email" type="email" required autocomplete="email" placeholder="Your email address" aria-label="Your email address">
+    <button id="acc-send" class="btn btn-primary" type="submit">Send me a code</button>
+  </form>
+  <h3>2. Enter your access code</h3>
+  <form id="acc-ver" class="acc-row">
+    <input id="acc-code" type="text" required autocomplete="one-time-code" placeholder="Access code (e.g. ABCD-2345)" aria-label="Access code (e.g. ABCD-2345)" style="text-transform:uppercase">
+    <button id="acc-unlock" class="btn btn-primary" type="submit">Open the materials</button>
+  </form>
+  <p class="acc-hint">Forgot your code? Request a new one above — it is free.</p>
+  <div id="acc-msg" class="acc-msg" role="status"></div>
+</div>
+<style>
+.access-box { max-width: 560px; }
+.acc-row { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1rem; }
+.acc-row input { flex:1 1 260px; padding:.55rem .7rem; border:1.5px solid #c9d6dc; border-radius:8px; font-size:1rem; }
+.acc-hint { color:#5f6f78; font-size:.92rem; }
+.acc-msg { display:none; padding:.7rem .9rem; border-radius:8px; margin-top:.5rem; }
+.acc-msg.ok { display:block; background:#EAF2F5; border-left:5px solid #055F56; }
+.acc-msg.err { display:block; background:#FEF3F2; border-left:5px solid #B42318; color:#7A271A; }
+</style>
+<script>
+(function () {
+  var API = "https://script.google.com/macros/s/AKfycbyo0gY-ilc-g2PXHmEszcxyaCy6T1r7cqGhvq6hJSajmUnmvfWfexv5OKcGlbpRVSjaBA/exec";
+  var KEY = "neudata-cdar-access";
+  var M = {"CODE_SENT": "Your access code has been sent. Check your inbox (and spam folder), then enter it below.", "TOO_SOON": "A code was sent less than a minute ago. Please check your inbox.", "BAD_EMAIL": "Please enter a valid email address.", "BAD_CODE": "That code is not valid. Check it, or request a new one.", "ERROR": "Something went wrong. Please try again in a moment.", "done": "Access granted — opening the materials…", "sending": "Sending…", "checking": "Checking…", "send": "Send me a code", "unlock": "Open the materials"};
+  var lang = "en";
+  function show(kind, key) { var m = document.getElementById("acc-msg"); m.className = "acc-msg " + kind; m.textContent = M[key] || M.ERROR; }
+  function call(body) {
+    return fetch(API, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json(); });
+  }
+  function go() {
+    var next = new URLSearchParams(location.search).get("next") || "index.html";
+    if (!/^[\w.\-]+\.html/.test(next)) next = "index.html";
+    location.replace(next);
+  }
+  try { if (localStorage.getItem(KEY) && new URLSearchParams(location.search).get("next")) go(); } catch (e) {}
+  document.getElementById("acc-req").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var b = document.getElementById("acc-send"); b.disabled = true; b.textContent = M.sending;
+    call({ action: "request", email: document.getElementById("acc-email").value.trim(), lang: lang })
+      .then(function (r) { show(r.ok ? "ok" : "err", r.code); if (r.ok) document.getElementById("acc-code").focus(); })
+      .catch(function () { show("err", "ERROR"); })
+      .finally(function () { b.disabled = false; b.textContent = M.send; });
+  });
+  document.getElementById("acc-ver").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var b = document.getElementById("acc-unlock"); b.disabled = true; b.textContent = M.checking;
+    var code = document.getElementById("acc-code").value.trim().toUpperCase();
+    call({ action: "verify", code: code })
+      .then(function (r) {
+        if (!r.ok) { show("err", r.code); return; }
+        try { localStorage.setItem(KEY, JSON.stringify({ code: code, t: Date.now() })); } catch (e) {}
+        show("ok", "done"); setTimeout(go, 700);
+      })
+      .catch(function () { show("err", "ERROR"); })
+      .finally(function () { b.disabled = false; b.textContent = M.unlock; });
+  });
+})();
+</script>
+```

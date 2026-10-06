@@ -111,3 +111,4 @@ format:
     code-copy: true
     code-overflow: wrap
     include-after-body: lang-switch.html
+    include-in-header: access-gate.html

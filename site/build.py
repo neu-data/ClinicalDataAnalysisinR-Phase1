@@ -299,6 +299,115 @@ def copy(src, dest):
     shutil.copy2(src, dest)
 
 
+# ----- Free access codes (access.html; checked by the Apps Script portal) --------------------
+# The materials are free; a code per person lets us count how many people use them. Emails are
+# only used to send the code and are not stored by the portal.
+ACCESS_S = {
+    "en": dict(title="Free access to the course materials",
+               intro=("All course materials are **free**. To open them, request a free access code: enter your "
+                      "email and we send you a code. We only count how many people use the materials — "
+                      "**your email address is not stored**."),
+               step1="1. Get your free access code", email="Your email address", send="Send me a code",
+               step2="2. Enter your access code", code="Access code (e.g. ABCD-2345)", unlock="Open the materials",
+               forgot="Forgot your code? Request a new one above — it is free.",
+               sending="Sending…", checking="Checking…",
+               CODE_SENT="Your access code has been sent. Check your inbox (and spam folder), then enter it below.",
+               TOO_SOON="A code was sent less than a minute ago. Please check your inbox.",
+               BAD_EMAIL="Please enter a valid email address.",
+               BAD_CODE="That code is not valid. Check it, or request a new one.",
+               ERROR="Something went wrong. Please try again in a moment.",
+               done="Access granted — opening the materials…"),
+    "vi": dict(title="Truy cập miễn phí tài liệu khóa học",
+               intro=("Toàn bộ tài liệu khóa học đều **miễn phí**. Để mở tài liệu, hãy yêu cầu mã truy cập miễn "
+                      "phí: nhập email và chúng tôi sẽ gửi mã cho bạn. Chúng tôi chỉ đếm số người sử dụng tài "
+                      "liệu — **địa chỉ email của bạn không được lưu lại**."),
+               step1="1. Nhận mã truy cập miễn phí", email="Địa chỉ email của bạn", send="Gửi mã cho tôi",
+               step2="2. Nhập mã truy cập", code="Mã truy cập (ví dụ ABCD-2345)", unlock="Mở tài liệu",
+               forgot="Quên mã? Hãy yêu cầu mã mới ở trên — hoàn toàn miễn phí.",
+               sending="Đang gửi…", checking="Đang kiểm tra…",
+               CODE_SENT="Mã truy cập đã được gửi. Vui lòng kiểm tra hộp thư (và thư rác), rồi nhập mã bên dưới.",
+               TOO_SOON="Mã vừa được gửi chưa đầy một phút trước. Vui lòng kiểm tra hộp thư.",
+               BAD_EMAIL="Vui lòng nhập địa chỉ email hợp lệ.",
+               BAD_CODE="Mã không hợp lệ. Vui lòng kiểm tra lại hoặc yêu cầu mã mới.",
+               ERROR="Đã xảy ra lỗi. Vui lòng thử lại sau giây lát.",
+               done="Đã cấp quyền truy cập — đang mở tài liệu…"),
+}
+
+
+def access_page(lang, out):
+    A = ACCESS_S[lang]
+    msgs = {k: A[k] for k in ("CODE_SENT", "TOO_SOON", "BAD_EMAIL", "BAD_CODE", "ERROR", "done",
+                               "sending", "checking", "send", "unlock")}
+    import json
+    html = f"""```{{=html}}
+<div class="access-box">
+  <h3>{A['step1']}</h3>
+  <form id="acc-req" class="acc-row">
+    <input id="acc-email" type="email" required autocomplete="email" placeholder="{A['email']}" aria-label="{A['email']}">
+    <button id="acc-send" class="btn btn-primary" type="submit">{A['send']}</button>
+  </form>
+  <h3>{A['step2']}</h3>
+  <form id="acc-ver" class="acc-row">
+    <input id="acc-code" type="text" required autocomplete="one-time-code" placeholder="{A['code']}" aria-label="{A['code']}" style="text-transform:uppercase">
+    <button id="acc-unlock" class="btn btn-primary" type="submit">{A['unlock']}</button>
+  </form>
+  <p class="acc-hint">{A['forgot']}</p>
+  <div id="acc-msg" class="acc-msg" role="status"></div>
+</div>
+<style>
+.access-box {{ max-width: 560px; }}
+.acc-row {{ display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1rem; }}
+.acc-row input {{ flex:1 1 260px; padding:.55rem .7rem; border:1.5px solid #c9d6dc; border-radius:8px; font-size:1rem; }}
+.acc-hint {{ color:#5f6f78; font-size:.92rem; }}
+.acc-msg {{ display:none; padding:.7rem .9rem; border-radius:8px; margin-top:.5rem; }}
+.acc-msg.ok {{ display:block; background:#EAF2F5; border-left:5px solid #055F56; }}
+.acc-msg.err {{ display:block; background:#FEF3F2; border-left:5px solid #B42318; color:#7A271A; }}
+</style>
+<script>
+(function () {{
+  var API = "{CERT_PORTAL_URL}";
+  var KEY = "neudata-cdar-access";
+  var M = {json.dumps(msgs, ensure_ascii=False)};
+  var lang = "{lang}";
+  function show(kind, key) {{ var m = document.getElementById("acc-msg"); m.className = "acc-msg " + kind; m.textContent = M[key] || M.ERROR; }}
+  function call(body) {{
+    return fetch(API, {{ method: "POST", headers: {{ "Content-Type": "text/plain;charset=utf-8" }}, body: JSON.stringify(body) }})
+      .then(function (r) {{ return r.json(); }});
+  }}
+  function go() {{
+    var next = new URLSearchParams(location.search).get("next") || "index.html";
+    if (!/^[\\w.\\-]+\\.html/.test(next)) next = "index.html";
+    location.replace(next);
+  }}
+  try {{ if (localStorage.getItem(KEY) && new URLSearchParams(location.search).get("next")) go(); }} catch (e) {{}}
+  document.getElementById("acc-req").addEventListener("submit", function (ev) {{
+    ev.preventDefault();
+    var b = document.getElementById("acc-send"); b.disabled = true; b.textContent = M.sending;
+    call({{ action: "request", email: document.getElementById("acc-email").value.trim(), lang: lang }})
+      .then(function (r) {{ show(r.ok ? "ok" : "err", r.code); if (r.ok) document.getElementById("acc-code").focus(); }})
+      .catch(function () {{ show("err", "ERROR"); }})
+      .finally(function () {{ b.disabled = false; b.textContent = M.send; }});
+  }});
+  document.getElementById("acc-ver").addEventListener("submit", function (ev) {{
+    ev.preventDefault();
+    var b = document.getElementById("acc-unlock"); b.disabled = true; b.textContent = M.checking;
+    var code = document.getElementById("acc-code").value.trim().toUpperCase();
+    call({{ action: "verify", code: code }})
+      .then(function (r) {{
+        if (!r.ok) {{ show("err", r.code); return; }}
+        try {{ localStorage.setItem(KEY, JSON.stringify({{ code: code, t: Date.now() }})); }} catch (e) {{}}
+        show("ok", "done"); setTimeout(go, 700);
+      }})
+      .catch(function () {{ show("err", "ERROR"); }})
+      .finally(function () {{ b.disabled = false; b.textContent = M.unlock; }});
+  }});
+}})();
+</script>
+```"""
+    (out / "access.qmd").write_text(
+        f"---\ntitle: {yaml_str(A['title'])}\ntoc: false\n---\n\n{A['intro']}\n\n{html}\n", encoding="utf-8")
+
+
 # ----- Final-assignment submission form (Apps Script web app, ?page=submit) ----------------
 SUBMIT_S = {
     "en": dict(title="Submit your assignment",
@@ -457,6 +566,8 @@ def build(lang):
     copy(SHARED / "course.scss", out / "course.scss")
     copy(SHARED / "neudata-logo.png", out / "images" / "neudata-logo.png")
     copy(SHARED / "lang-switch.html", out / "lang-switch.html")
+    copy(SHARED / "access-gate.html", out / "access-gate.html")
+    access_page(lang, out)
     for png in (COURSE / "Resources").glob("*.png"):
         copy(png, out / "images" / "resources" / png.name)
     copy(COURSE / "Images" / "Course_Poster.png", out / "images" / "course-poster.png")
@@ -508,7 +619,8 @@ def build(lang):
         "::: {.badges}\n"
         f"[{S['free']}]{{}} [{S['beginner']}]{{}} [{S['online']}]{{}} [{S['nocode']}]{{}}\n"
         ":::\n\n"
-        f"[{S['schedule']}](schedule.qmd){{.btn .btn-light role=\"button\"}}\n"
+        f"[{S['schedule']}](schedule.qmd){{.btn .btn-light role=\"button\"}}"
+        f" [{ACCESS_S[lang]['step1'][3:]}](access.qmd){{.btn .btn-light role=\"button\"}}\n"
         ":::\n\n"
     )
     readme = ROOT / ("README_VN.md" if lang == "vi" else "README.md")
@@ -707,6 +819,7 @@ format:
     code-copy: true
     code-overflow: wrap
     include-after-body: lang-switch.html
+    include-in-header: access-gate.html
 """
     (out / "_quarto.yml").write_text(cfg, encoding="utf-8")
     print(f"{lang}: {len(list(out.glob('*.qmd')))} pages")
