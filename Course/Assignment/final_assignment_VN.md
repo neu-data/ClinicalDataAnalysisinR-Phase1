@@ -6,7 +6,7 @@
 **Giảng viên:** Vương Mỹ Lượng (Chuyên gia Thống kê Sinh học Cao cấp, giảng viên chính) và Bernard Isekah Osang'ir (Chuyên gia Thống kê Sinh học Cao cấp)
 **Tổ chức:** Neudata — *#ClearDataClearImpact*
 **Hình thức đánh giá:** Bài tập lớn làm tại nhà theo cá nhân (được mở tài liệu, mở ghi chú)
-**Trọng số:** 100 điểm (xem hướng dẫn chấm điểm riêng)
+**Trọng số:** 100 điểm
 
 ---
 

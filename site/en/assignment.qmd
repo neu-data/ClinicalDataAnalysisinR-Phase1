@@ -10,7 +10,7 @@ title: "Final assignment"
 **Trainers:** Vương Mỹ Lượng (Senior Biostatistician, lead trainer) and Bernard Isekah Osang'ir (Senior Biostatistician)
 **Organisation:** Neudata — *#ClearDataClearImpact*
 **Assessment type:** Individual take-home assignment (open-book, open-notes)
-**Weighting:** 100 marks (see separate marking guide)
+**Weighting:** 100 marks
 
 ---
 
