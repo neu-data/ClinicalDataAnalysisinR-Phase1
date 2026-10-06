@@ -83,7 +83,7 @@ Hoàn thành **tất cả** các nhiệm vụ sau. Đánh số các phần mã c
 - Nộp **một** tệp phân tích: một tập lệnh `.R` **hoặc** một tài liệu `.qmd` / `.Rmd`.
 - **Quy ước đặt tên tệp:** `Surname_Phase1_Assignment.R` (hoặc `.qmd` / `.Rmd`). Ví dụ: `Osangir_Phase1_Assignment.R`.
 - Đóng gói tệp của bạn cùng với các kết quả xuất ra (Bảng 1 và các hình) và phần Kết quả vào một tệp `.zip` duy nhất được đặt tên `Surname_Phase1_Assignment.zip`.
-- Gửi tệp `.zip` qua email cho giảng viên chính, **Vương Mỹ Lượng**, tại **myluong.1710@gmail.com** trước hạn chót đã nêu (một tuần sau khóa học).
+- Nộp tệp `.zip` bằng biểu mẫu **Nộp bài** trên trang *Bài tập cuối khóa* của website khóa học trước hạn chót đã nêu (một tuần sau khóa học). Bài được gửi trực tiếp đến các giảng viên, và bạn sẽ nhận email xác nhận kèm mã bài nộp. Nếu biểu mẫu không hoạt động, hãy gửi tệp qua email đến **b.osangir@gmail.com**.
 
 ## 7. Những gì cần nộp — Danh sách kiểm tra
 

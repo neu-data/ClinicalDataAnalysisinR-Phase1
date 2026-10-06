@@ -1,6 +1,12 @@
 ---
 title: "Final assignment"
 ---
+::: {.callout-tip title="Submit your assignment"}
+When your analysis is ready, upload it with the form at the bottom of this page. It goes straight to the trainers, and you receive a confirmation email.
+
+[Submit](#submit){.btn .btn-primary .btn-lg role="button"}
+:::
+
 
 📥 [PDF](files/docs/Final_Assignment.pdf) · 🎞️ [Slides](slides-assignment.qmd)
 
@@ -87,7 +93,7 @@ Complete **all** of the following. Number your code sections to match.
 - Submit **one** analysis file: a `.R` script **or** a `.qmd` / `.Rmd` document.
 - **File-naming convention:** `Surname_Phase1_Assignment.R` (or `.qmd` / `.Rmd`). Example: `Osangir_Phase1_Assignment.R`.
 - Bundle your file together with exported outputs (Table 1 and the figures) and the Results section into a single `.zip` named `Surname_Phase1_Assignment.zip`.
-- Email your `.zip` file to the lead trainer, **Vương Mỹ Lượng**, at **myluong.1710@gmail.com** by the stated deadline (one week after the course).
+- Submit your `.zip` file with the **Submit** form on the *Final assignment* page of the course website by the stated deadline (one week after the course). It is delivered directly to the trainers, and you receive a confirmation email with a submission number. If the form does not work for you, email the file to **b.osangir@gmail.com**.
 
 ## 7. What to Submit — Checklist
 
@@ -116,3 +122,14 @@ This is an **individual** assessment. You may consult the course materials, the 
 > - **Data dictionary:** `Course/Data/data_dictionary.md` defines every variable, its coding, and its role — read it before you start.
 >
 > *Tip:* think about your analysis as a pipeline — import → clean → derive → restrict → describe → test → model → interpret. Get each stage right before moving on, and re-run from the top often.
+
+
+## Submit your assignment {#submit}
+
+Upload one `.zip` file (`Surname_Phase1_Assignment.zip`) containing your script or Quarto/R Markdown file, Table 1, figures and Results section. Maximum 20 MB.
+
+```{=html}
+<iframe src="https://script.google.com/macros/s/AKfycbyo0gY-ilc-g2PXHmEszcxyaCy6T1r7cqGhvq6hJSajmUnmvfWfexv5OKcGlbpRVSjaBA/exec?page=submit&lang=en" title="Submit your assignment" style="width:100%;height:1050px;border:1px solid #d6e2e7;border-radius:12px;" loading="lazy"></iframe>
+```
+
+[Form not showing? Open the submission page in a new tab](https://script.google.com/macros/s/AKfycbyo0gY-ilc-g2PXHmEszcxyaCy6T1r7cqGhvq6hJSajmUnmvfWfexv5OKcGlbpRVSjaBA/exec?page=submit&lang=en){target="_blank"}

@@ -1,6 +1,12 @@
 ---
 title: "Bài tập cuối khóa"
 ---
+::: {.callout-tip title="Nộp bài tập"}
+Khi bài phân tích đã sẵn sàng, hãy tải lên bằng biểu mẫu ở cuối trang này. Bài được gửi thẳng đến các giảng viên, và bạn sẽ nhận email xác nhận.
+
+[Nộp bài](#submit){.btn .btn-primary .btn-lg role="button"}
+:::
+
 
 📥 [PDF](files/docs/Final_Assignment.pdf) · 🎞️ [Bài giảng](slides-assignment.qmd)
 
@@ -87,7 +93,7 @@ Hoàn thành **tất cả** các nhiệm vụ sau. Đánh số các phần mã c
 - Nộp **một** tệp phân tích: một tập lệnh `.R` **hoặc** một tài liệu `.qmd` / `.Rmd`.
 - **Quy ước đặt tên tệp:** `Surname_Phase1_Assignment.R` (hoặc `.qmd` / `.Rmd`). Ví dụ: `Osangir_Phase1_Assignment.R`.
 - Đóng gói tệp của bạn cùng với các kết quả xuất ra (Bảng 1 và các hình) và phần Kết quả vào một tệp `.zip` duy nhất được đặt tên `Surname_Phase1_Assignment.zip`.
-- Gửi tệp `.zip` qua email cho giảng viên chính, **Vương Mỹ Lượng**, tại **myluong.1710@gmail.com** trước hạn chót đã nêu (một tuần sau khóa học).
+- Nộp tệp `.zip` bằng biểu mẫu **Nộp bài** trên trang *Bài tập cuối khóa* của website khóa học trước hạn chót đã nêu (một tuần sau khóa học). Bài được gửi trực tiếp đến các giảng viên, và bạn sẽ nhận email xác nhận kèm mã bài nộp. Nếu biểu mẫu không hoạt động, hãy gửi tệp qua email đến **b.osangir@gmail.com**.
 
 ## 7. Những gì cần nộp — Danh sách kiểm tra
 
@@ -116,3 +122,14 @@ Hoàn thành **tất cả** các nhiệm vụ sau. Đánh số các phần mã c
 > - **Từ điển dữ liệu:** `Course/Data/data_dictionary.md` định nghĩa từng biến, cách mã hóa, và vai trò của nó — hãy đọc nó trước khi bạn bắt đầu.
 >
 > *Mẹo:* hãy hình dung phân tích của bạn như một chuỗi xử lý (pipeline) — nhập → làm sạch → tạo biến dẫn xuất → giới hạn → mô tả → kiểm định → mô hình hóa → diễn giải. Hãy làm đúng từng giai đoạn trước khi chuyển tiếp, và thường xuyên chạy lại từ đầu.
+
+
+## Nộp bài tập {#submit}
+
+Tải lên một tệp `.zip` (`Surname_Phase1_Assignment.zip`) gồm script hoặc tệp Quarto/R Markdown, Bảng 1, các hình và phần Kết quả. Tối đa 20 MB.
+
+```{=html}
+<iframe src="https://script.google.com/macros/s/AKfycbyo0gY-ilc-g2PXHmEszcxyaCy6T1r7cqGhvq6hJSajmUnmvfWfexv5OKcGlbpRVSjaBA/exec?page=submit&lang=vi" title="Nộp bài tập" style="width:100%;height:1050px;border:1px solid #d6e2e7;border-radius:12px;" loading="lazy"></iframe>
+```
+
+[Không thấy biểu mẫu? Mở trang nộp bài trong thẻ mới](https://script.google.com/macros/s/AKfycbyo0gY-ilc-g2PXHmEszcxyaCy6T1r7cqGhvq6hJSajmUnmvfWfexv5OKcGlbpRVSjaBA/exec?page=submit&lang=vi){target="_blank"}

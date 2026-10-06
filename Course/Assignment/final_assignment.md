@@ -83,7 +83,7 @@ Complete **all** of the following. Number your code sections to match.
 - Submit **one** analysis file: a `.R` script **or** a `.qmd` / `.Rmd` document.
 - **File-naming convention:** `Surname_Phase1_Assignment.R` (or `.qmd` / `.Rmd`). Example: `Osangir_Phase1_Assignment.R`.
 - Bundle your file together with exported outputs (Table 1 and the figures) and the Results section into a single `.zip` named `Surname_Phase1_Assignment.zip`.
-- Email your `.zip` file to the lead trainer, **Vương Mỹ Lượng**, at **myluong.1710@gmail.com** by the stated deadline (one week after the course).
+- Submit your `.zip` file with the **Submit** form on the *Final assignment* page of the course website by the stated deadline (one week after the course). It is delivered directly to the trainers, and you receive a confirmation email with a submission number. If the form does not work for you, email the file to **b.osangir@gmail.com**.
 
 ## 7. What to Submit — Checklist
 

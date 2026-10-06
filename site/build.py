@@ -299,7 +299,26 @@ def copy(src, dest):
     shutil.copy2(src, dest)
 
 
-# ----- The book: "Introduction to Clinical Data Analysis in R" as the handbook -------------------
+# ----- Final-assignment submission form (Apps Script web app, ?page=submit) ----------------
+SUBMIT_S = {
+    "en": dict(title="Submit your assignment",
+               lead=("When your analysis is ready, upload it with the form at the bottom of this page. It goes "
+                     "straight to the trainers, and you receive a confirmation email."),
+               button="Submit",
+               intro=("Upload one `.zip` file (`Surname_Phase1_Assignment.zip`) containing your script or "
+                      "Quarto/R Markdown file, Table 1, figures and Results section. Maximum 20 MB."),
+               newtab="Form not showing? Open the submission page in a new tab"),
+    "vi": dict(title="Nộp bài tập",
+               lead=("Khi bài phân tích đã sẵn sàng, hãy tải lên bằng biểu mẫu ở cuối trang này. Bài được gửi "
+                     "thẳng đến các giảng viên, và bạn sẽ nhận email xác nhận."),
+               button="Nộp bài",
+               intro=("Tải lên một tệp `.zip` (`Surname_Phase1_Assignment.zip`) gồm script hoặc tệp "
+                      "Quarto/R Markdown, Bảng 1, các hình và phần Kết quả. Tối đa 20 MB."),
+               newtab="Không thấy biểu mẫu? Mở trang nộp bài trong thẻ mới"),
+}
+
+
+# ----- The book:"Introduction to Clinical Data Analysis in R" as the handbook -------------------
 BOOK = ROOT / "Book"
 BOOK_TITLE = {"en": ("Introduction to Clinical Data Analysis in R",
                      "A Practical Guide to Data Management, Statistical Analysis, and Interpretation"),
@@ -540,6 +559,18 @@ def build(lang):
             f"📥 [PDF](files/docs/Package_Installation_Guide.pdf)\n\n")
     md_page(COURSE / "Assignment" / f"final_assignment{sfx}.md", out / "assignment.qmd", S["assignment"],
             f"📥 [PDF](files/docs/Final_Assignment.pdf) · 🎞️ [{S['slides']}](slides-assignment.qmd)\n\n")
+    if CERT_PORTAL_URL:                                   # submission form (same Apps Script web app)
+        submit_url = f"{CERT_PORTAL_URL}?page=submit&lang={lang}"
+        A = SUBMIT_S[lang]
+        _, head, body = (out / "assignment.qmd").read_text(encoding="utf-8").split("---\n", 2)
+        box = (f"::: {{.callout-tip title=\"{A['title']}\"}}\n{A['lead']}\n\n"
+               f"[{A['button']}](#submit){{.btn .btn-primary .btn-lg role=\"button\"}}\n:::\n\n")
+        form = (f"\n\n## {A['title']} {{#submit}}\n\n{A['intro']}\n\n"
+                f'```{{=html}}\n<iframe src="{submit_url}" title="{A["title"]}" '
+                'style="width:100%;height:1050px;border:1px solid #d6e2e7;border-radius:12px;" '
+                'loading="lazy"></iframe>\n```\n\n'
+                f"[{A['newtab']}]({submit_url}){{target=\"_blank\"}}\n")
+        (out / "assignment.qmd").write_text("---\n" + head + "---\n" + box + body + form, encoding="utf-8")
     md_page(COURSE / "Data" / "data_dictionary.md", out / "data.qmd", S["data"],
             "📥 " + " · ".join(f"[{f.name}](files/data/{f.name})" for f in sorted((F / "data").iterdir())) + "\n\n")
 
