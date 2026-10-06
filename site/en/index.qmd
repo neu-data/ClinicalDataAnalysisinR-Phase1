@@ -19,7 +19,7 @@ A free, hands-on short course for health professionals and researchers in Vietna
 > **The course has ended.** Phase I ran online from 8 September to 6 October 2026. Thank you to
 > everyone who took part! All course materials remain freely available on this website for
 > self-study: [request a free access code](https://neu-data.github.io/ClinicalDataAnalysisinR-Phase1/en/access.html) — it is sent to your email (we only
-> count how many people use the materials; your email is not stored). For further questions, or anything else about the course, please contact
+> count how many people use the materials and roughly where from; your email is not stored). For further questions, or anything else about the course, please contact
 > **Vương Mỹ Lượng** at [myluong.1710@gmail.com](mailto:myluong.1710@gmail.com).
 
 ---

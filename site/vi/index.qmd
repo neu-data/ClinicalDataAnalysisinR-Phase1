@@ -19,7 +19,7 @@ Khóa học ngắn miễn phí, thực hành cho nhân viên y tế và nhà ngh
 > **Khóa học đã kết thúc.** Giai đoạn I diễn ra trực tuyến từ ngày 8 tháng 9 đến ngày 6 tháng 10
 > năm 2026. Xin cảm ơn tất cả các học viên đã tham gia! Toàn bộ tài liệu khóa học vẫn được cung
 > cấp miễn phí trên website này để bạn tự học: [nhận mã truy cập miễn phí](https://neu-data.github.io/ClinicalDataAnalysisinR-Phase1/vi/access.html) — mã được gửi
-> qua email (chúng tôi chỉ đếm số người sử dụng tài liệu; email của bạn không được lưu lại). Mọi thắc mắc hoặc yêu cầu khác về khóa học, vui
+> qua email (chúng tôi chỉ đếm số người sử dụng tài liệu và khu vực của họ; email của bạn không được lưu lại). Mọi thắc mắc hoặc yêu cầu khác về khóa học, vui
 > lòng liên hệ **Vương Mỹ Lượng** qua [myluong.1710@gmail.com](mailto:myluong.1710@gmail.com).
 
 ---
