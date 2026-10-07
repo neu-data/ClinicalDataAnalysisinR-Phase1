@@ -4,7 +4,7 @@ title: "Chứng nhận hoàn thành"
 
 Học viên tham dự **từ 3 đến 5 trên 5 buổi học** sẽ nhận chứng nhận hoàn thành của Neudata, do giảng viên Vương Mỹ Lượng và Bernard Isekah Osang'ir ký.
 
-**Cách nhận:** trong biểu mẫu bên dưới, nhập email bạn đã đăng ký, sau đó nhập mã 6 chữ số chúng tôi gửi qua email và họ tên chính thức của bạn. Chứng nhận sẽ được gửi đến email của bạn dưới dạng PDF. Mỗi chứng nhận có mã số riêng và mã QR để bất kỳ ai cũng có thể quét để xác minh.
+**Cách nhận:** trước tiên, hãy hoàn thành [khảo sát ý kiến học viên](https://docs.google.com/forms/d/e/1FAIpQLSc6si0HLATTrUOayWTquPoTHDEcetL15qYjl_vFsKTRlxX-sQ/viewform){target="_blank"} (khoảng 3 phút, ẩn danh). Sau khi gửi, bạn sẽ thấy mã hoàn thành khảo sát. Sau đó, trong biểu mẫu bên dưới, nhập mã đó và email bạn đã đăng ký, sau đó nhập mã 6 chữ số chúng tôi gửi qua email và họ tên chính thức của bạn. Chứng nhận sẽ được gửi đến email của bạn dưới dạng PDF. Mỗi chứng nhận có mã số riêng và mã QR để bất kỳ ai cũng có thể quét để xác minh.
 
 [Tạo chứng nhận của tôi](https://script.google.com/macros/s/AKfycbyo0gY-ilc-g2PXHmEszcxyaCy6T1r7cqGhvq6hJSajmUnmvfWfexv5OKcGlbpRVSjaBA/exec?lang=vi){.btn .btn-primary .btn-lg role="button" target="_blank"}
 

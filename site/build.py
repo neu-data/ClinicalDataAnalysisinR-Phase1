@@ -60,7 +60,10 @@ L = {
         cert_title="Certificate of completion",
         cert_body=("Participants who attend **3 to 5 of the 5 sessions** receive a Neudata certificate "
                    "of completion, signed by the trainers Vương Mỹ Lượng and Bernard Isekah Osang'ir.\n\n"
-                   "**How to get it:** in the form below, enter the email you registered with, "
+                   "**How to get it:** first complete the short [participant feedback survey]"
+                   "(https://docs.google.com/forms/d/e/1FAIpQLSc6si0HLATTrUOayWTquPoTHDEcetL15qYjl_vFsKTRlxX-sQ/viewform)"
+                   "{target=\"_blank\"} (about 3 minutes, anonymous). When you submit it, you will see a survey "
+                   "completion code. Then, in the form below, enter that code and the email you registered with, "
                    "then the 6-digit code we email you and your official full name. Your certificate is "
                    "emailed to you as a PDF. Each certificate has a unique ID and a QR code that anyone "
                    "can scan to verify it."),
@@ -98,7 +101,10 @@ L = {
         cert_title="Chứng nhận hoàn thành",
         cert_body=("Học viên tham dự **từ 3 đến 5 trên 5 buổi học** sẽ nhận chứng nhận hoàn thành của "
                    "Neudata, do giảng viên Vương Mỹ Lượng và Bernard Isekah Osang'ir ký.\n\n"
-                   "**Cách nhận:** trong biểu mẫu bên dưới, nhập email bạn đã đăng ký, sau đó nhập mã 6 chữ số "
+                   "**Cách nhận:** trước tiên, hãy hoàn thành [khảo sát ý kiến học viên]"
+                   "(https://docs.google.com/forms/d/e/1FAIpQLSc6si0HLATTrUOayWTquPoTHDEcetL15qYjl_vFsKTRlxX-sQ/viewform)"
+                   "{target=\"_blank\"} (khoảng 3 phút, ẩn danh). Sau khi gửi, bạn sẽ thấy mã hoàn thành khảo sát. "
+                   "Sau đó, trong biểu mẫu bên dưới, nhập mã đó và email bạn đã đăng ký, sau đó nhập mã 6 chữ số "
                    "chúng tôi gửi qua email và họ tên chính thức của bạn. Chứng nhận sẽ được gửi đến email "
                    "của bạn dưới dạng PDF. Mỗi chứng nhận có mã số riêng và mã QR để bất kỳ ai cũng có thể "
                    "quét để xác minh."),

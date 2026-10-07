@@ -4,7 +4,7 @@ title: "Certificate of completion"
 
 Participants who attend **3 to 5 of the 5 sessions** receive a Neudata certificate of completion, signed by the trainers Vương Mỹ Lượng and Bernard Isekah Osang'ir.
 
-**How to get it:** in the form below, enter the email you registered with, then the 6-digit code we email you and your official full name. Your certificate is emailed to you as a PDF. Each certificate has a unique ID and a QR code that anyone can scan to verify it.
+**How to get it:** first complete the short [participant feedback survey](https://docs.google.com/forms/d/e/1FAIpQLSc6si0HLATTrUOayWTquPoTHDEcetL15qYjl_vFsKTRlxX-sQ/viewform){target="_blank"} (about 3 minutes, anonymous). When you submit it, you will see a survey completion code. Then, in the form below, enter that code and the email you registered with, then the 6-digit code we email you and your official full name. Your certificate is emailed to you as a PDF. Each certificate has a unique ID and a QR code that anyone can scan to verify it.
 
 [Generate my certificate](https://script.google.com/macros/s/AKfycbyo0gY-ilc-g2PXHmEszcxyaCy6T1r7cqGhvq6hJSajmUnmvfWfexv5OKcGlbpRVSjaBA/exec?lang=en){.btn .btn-primary .btn-lg role="button" target="_blank"}
 
