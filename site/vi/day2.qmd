@@ -16,9 +16,9 @@ title: "Ngày 2: Hiểu & Làm sạch dữ liệu lâm sàng"
 
 | | |
 |:--|:--|
-| 🎞️ **Bài giảng** | [Mở bài giảng](slides-day2.qmd) — Nhấn **F** để toàn màn hình, **S** để xem ghi chú, **E** để in. |
-| 📥 **PowerPoint** | [Tải bài giảng (PowerPoint)](files/slides/Clinical_Data_Analysis_in_R_Phase1_VN.pptx) |
-| 💻 **Mã minh họa trực tiếp** | [day2_demo.R](files/scripts/day2_demo.R) |
-| 🧪 **Bài thực hành** | [day2_exercise.R](files/practicals/day2_exercise.R) |
-| ✅ **Lời giải mẫu** | [day2_solution.R](files/solutions/day2_solution.R) |
-| 📁 **Dữ liệu khóa học** | [Dữ liệu khóa học](data.qmd) |
+| **Bài giảng** | [Mở bài giảng](slides-day2.qmd), Nhấn **F** để toàn màn hình, **S** để xem ghi chú, **E** để in. |
+| **PowerPoint** | [Tải bài giảng (PowerPoint)](files/slides/Clinical_Data_Analysis_in_R_Phase1_VN.pptx) |
+| **Mã minh họa trực tiếp** | [day2_demo.R](files/scripts/day2_demo.R) |
+| **Bài thực hành** | [day2_exercise.R](files/practicals/day2_exercise.R) |
+| **Lời giải mẫu** | [day2_solution.R](files/solutions/day2_solution.R) |
+| **Dữ liệu khóa học** | [Dữ liệu khóa học](data.qmd) |

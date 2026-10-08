@@ -2,7 +2,7 @@
 title: "Course data"
 ---
 
-📥 [analysis_data.csv](files/data/analysis_data.csv) · [analysis_data.rds](files/data/analysis_data.rds) · [data_dictionary.csv](files/data/data_dictionary.csv) · [Data_Dictionary.pdf](files/data/Data_Dictionary.pdf) · [hypertension_phc_clean.csv](files/data/hypertension_phc_clean.csv) · [hypertension_phc_raw.csv](files/data/hypertension_phc_raw.csv) · [hypertension_phc_raw.xlsx](files/data/hypertension_phc_raw.xlsx)
+[analysis_data.csv](files/data/analysis_data.csv) · [analysis_data.rds](files/data/analysis_data.rds) · [data_dictionary.csv](files/data/data_dictionary.csv) · [Data_Dictionary.pdf](files/data/Data_Dictionary.pdf) · [hypertension_phc_clean.csv](files/data/hypertension_phc_clean.csv) · [hypertension_phc_raw.csv](files/data/hypertension_phc_raw.csv) · [hypertension_phc_raw.xlsx](files/data/hypertension_phc_raw.xlsx)
 
 **Study:** Determinants of Hypertension Treatment Uptake among Adults attending Primary Healthcare Facilities
 

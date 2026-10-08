@@ -3,7 +3,7 @@
 Real clinical data is **never** clean. To make the cleaning lessons realistic, we
 deliberately introduced the problems below into `clinical_data_raw.csv`. Every
 one of them is a *teaching example*: you will learn to **find** it and **fix** it
-in lesson **04 — Data Management**.
+in lesson **04: Data Management**.
 
 `clinical_data_clean.csv` is the tidy reference file with all of these resolved.
 
@@ -20,7 +20,7 @@ in lesson **04 — Data Management**.
   `glucose` (22), `cholesterol` (18), `alcohol_use` (12), `BMI` (9),
   `followup_date` (7), `diastolic_bp` (5).
 - **Detect:** `colSums(is.na(clinical_data_raw))`.
-- **Fix:** decide per variable — leave as `NA`, use complete-case analysis, or impute. In this course we simply keep them as `NA` and let R ignore them with `na.rm = TRUE`.
+- **Fix:** decide per variable: leave as `NA`, use complete-case analysis, or impute. In this course we simply keep them as `NA` and let R ignore them with `na.rm = TRUE`.
 
 ### 3. Inconsistent categorical coding
 - `sex` appears as **Female, female, F, f, Male, male, M, m**.

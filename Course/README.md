@@ -1,4 +1,4 @@
-# Clinical Data Analysis in R — Phase I
+# Clinical Data Analysis in R - Phase I
 ### Introduction to R for Clinical Research · A five-session evening short course
 
 **Trainers:** Vương Mỹ Lượng (Senior Biostatistician, lead trainer) · Bernard Osang'ir (Senior Biostatistician)
@@ -10,7 +10,7 @@ uses **one** simulated clinical study so skills build cumulatively into a full,
 reproducible analysis.
 
 **Case study:** *Determinants of Hypertension Treatment Uptake among Adults
-attending Primary Healthcare Facilities* — a multicentre cross-sectional study
+attending Primary Healthcare Facilities*, a multicentre cross-sectional study
 of 1,500 adults across 6 primary healthcare facilities. Primary outcome:
 treatment uptake among diagnosed hypertensives.
 
@@ -20,11 +20,11 @@ treatment uptake among diagnosed hypertensives.
 
 | Folder | Contents |
 |--------|----------|
-| **Slides/** | `Clinical_Data_Analysis_in_R_Phase1.pptx` — 123 slides on the Neudata template, with speaker notes on every slide |
+| **Slides/** | `Clinical_Data_Analysis_in_R_Phase1.pptx`, 123 slides on the Neudata template, with speaker notes on every slide |
 | **Data/** | Raw dataset (`hypertension_phc_raw.csv` / `.xlsx`), tidy reference (`hypertension_phc_clean.csv`), data dictionary (`.md` / `.csv` / `.pdf`), and the generator script |
-| **Scripts/** | `day1_demo.R` … `day5_demo.R` — the instructor live-coding demonstrations |
-| **Practicals/** | `day1_exercise.R` … `day5_exercise.R` — the guided in-class exercises |
-| **Solutions/** | `day1_solution.R` … `day5_solution.R` — worked solutions |
+| **Scripts/** | `day1_demo.R` … `day5_demo.R`, the instructor live-coding demonstrations |
+| **Practicals/** | `day1_exercise.R` … `day5_exercise.R`, the guided in-class exercises |
+| **Solutions/** | `day1_solution.R` … `day5_solution.R`, worked solutions |
 | **Assignment/** | Final take-home assignment + marking guide (`.md` and `.pdf`) |
 | **Instructor_Notes/** | Instructor manual / facilitation guide (`.md` and `.pdf`) |
 | **References/** | Participant Handbook (PDF), R command reference sheet, package installation guide, key findings |
@@ -43,7 +43,7 @@ treatment uptake among diagnosed hypertensives.
 
 ## Getting started (participants)
 
-1. Install **R** and **RStudio**, then the course packages — see
+1. Install **R** and **RStudio**, then the course packages, see
    `References/package_installation_guide.md`.
 2. Open this `Course` folder as an **RStudio Project**
    (File → New Project → Existing Directory).
@@ -67,6 +67,6 @@ Rscript Scripts/day5_demo.R
 ```
 
 ---
-*Prepared for postgraduate clinical audiences — universities, clinical research
+*Prepared for postgraduate clinical audiences, universities, clinical research
 centres, hospitals, NGOs and clinical trial units.*
 Neudata · *#ClearDataClearImpact*

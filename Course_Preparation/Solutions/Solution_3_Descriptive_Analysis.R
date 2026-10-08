@@ -1,5 +1,5 @@
 # =====================================================================
-#  SOLUTION 3 — Descriptive Analysis
+#  SOLUTION 3, Descriptive Analysis
 # =====================================================================
 library(tidyverse)
 clinical_data <- read_csv("Data/clinical_data_clean.csv")
@@ -19,5 +19,5 @@ clinical_data %>%
 # Q2. Median BMI = 26.6 kg/m2.
 # Q3. 54.7 % of patients are female.
 # Q4. Hypertension prevalence = 36.0 %.
-# Q5. No — mean systolic BP is almost identical in men (~124.5) and women
+# Q5. No, mean systolic BP is almost identical in men (~124.5) and women
 #     (~124.3). (Lesson 4 confirms this with a t-test: p ~ 0.85.)

@@ -1,4 +1,4 @@
-# Từ Điển Dữ Liệu — Bộ Dữ Liệu Lâm sàng Tiền khóa học
+# Từ Điển Dữ Liệu: Bộ Dữ Liệu Lâm sàng Tiền khóa học
 
 **Tệp:** `clinical_data_raw.csv` (lộn xộn), `clinical_data_clean.csv` (sẵn sàng để phân tích), `clinical_data_raw.xlsx` (bản sao Excel của tệp thô)
 

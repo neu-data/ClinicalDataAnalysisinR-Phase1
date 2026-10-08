@@ -2,9 +2,9 @@
 title: "R command reference"
 ---
 
-📥 [PDF](files/docs/R_Command_Reference_Sheet.pdf)
+[PDF](files/docs/R_Command_Reference_Sheet.pdf)
 
-### Clinical Data Analysis in R — Phase I | Neudata · #ClearDataClearImpact
+### Clinical Data Analysis in R - Phase I | Neudata · #ClearDataClearImpact
 
 A one-stop "cheat sheet" of the commands used across the five days. Keep it beside you during practicals.
 

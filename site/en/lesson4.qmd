@@ -1,6 +1,6 @@
 ---
-title: "Lesson 4 — Common Statistical Tests"
-subtitle: "Clinical Data Analysis in R (Phase I) — Pre-course"
+title: "Lesson 4: Common Statistical Tests"
+subtitle: "Clinical Data Analysis in R (Phase I), Pre-course"
 author: "Neudata"
 execute:
   echo: true
@@ -18,8 +18,8 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ## What this lesson is for
 
 A statistical test answers: *"could this difference be due to chance alone?"*
-You will run the four tests used most in clinical research — **t-test**,
-**Wilcoxon**, **chi-square / Fisher**, and **correlation** — and, crucially,
+You will run the four tests used most in clinical research, **t-test**,
+**Wilcoxon**, **chi-square / Fisher**, and **correlation**, and, crucially,
 learn to **choose** and **interpret** them.
 
 > **Choosing a test starts with the question, not the command.** Ask: what is my
@@ -33,7 +33,7 @@ clinical_data <- read_csv("../Data/clinical_data_clean.csv")
 
 ---
 
-## 1. t-test — a continuous outcome in two groups
+## 1. t-test: a continuous outcome in two groups
 
 **Question:** Is fasting **glucose** higher in patients **with** diabetes than
 without?
@@ -58,9 +58,9 @@ t.test(systolic_bp ~ sex, data = clinical_data)
 
 **Interpretation:** the means are almost identical and p is large (~0.85). We
 conclude there is **no evidence** of a sex difference in systolic BP here. A
-non-significant result is a real, reportable finding — not a failure.
+non-significant result is a real, reportable finding, not a failure.
 
-## 2. Wilcoxon test — the non-parametric alternative
+## 2. Wilcoxon test: the non-parametric alternative
 
 The t-test assumes the outcome is roughly normally distributed. If it is
 skewed, use the **Wilcoxon rank-sum test** (also called Mann–Whitney), which
@@ -70,11 +70,11 @@ compares ranks instead of means.
 wilcox.test(glucose ~ diabetes, data = clinical_data)
 ```
 
-**Interpretation:** it agrees with the t-test — glucose is higher with diabetes.
+**Interpretation:** it agrees with the t-test, glucose is higher with diabetes.
 Use Wilcoxon when the data are skewed or have strong outliers; use the t-test
 when they are approximately normal.
 
-## 3. Chi-square test — two categorical variables
+## 3. Chi-square test: two categorical variables
 
 **Question:** Is **hypertension** associated with **diabetes**?
 
@@ -87,10 +87,10 @@ chisq.test(table(clinical_data$hypertension, clinical_data$diabetes))
 ```
 
 **Interpretation:** the small p-value (< 0.001) means hypertension and diabetes
-occur together more than expected by chance — they are associated. Chi-square
+occur together more than expected by chance, they are associated. Chi-square
 assumes expected counts are mostly 5 or more.
 
-## 4. Fisher's exact test — when counts are small
+## 4. Fisher's exact test: when counts are small
 
 When any expected count is small, use **Fisher's exact test** instead.
 
@@ -103,7 +103,7 @@ fisher.test(table(smokers$hypertension, smokers$diabetes))
 **Interpretation:** Fisher gives a valid p-value even in small samples. For
 2×2 tables it also returns an odds ratio.
 
-## 5. Correlation — two continuous variables
+## 5. Correlation: two continuous variables
 
 **Question:** Do **age** and **systolic BP** move together?
 
@@ -112,7 +112,7 @@ cor.test(clinical_data$age, clinical_data$systolic_bp)
 ```
 
 **Interpretation:** the correlation coefficient (r ≈ 0.55) is positive and
-moderate — older patients tend to have higher systolic BP — and the p-value is
+moderate: older patients tend to have higher systolic BP, and the p-value is
 tiny. Use **Pearson** correlation for straight-line relationships and
 **Spearman** (`method = "spearman"`) if the relationship is non-linear or the
 data are skewed.
@@ -123,10 +123,10 @@ data are skewed.
 
 Every test above prints:
 
-- an **estimate** (a difference in means, an odds ratio, a correlation) — *the
+- an **estimate** (a difference in means, an odds ratio, a correlation), *the
   clinically important number*;
-- a **confidence interval** — the range of plausible values;
-- a **p-value** — how compatible the data are with "no effect".
+- a **confidence interval**: the range of plausible values;
+- a **p-value**: how compatible the data are with "no effect".
 
 Report the **estimate and its confidence interval first**; the p-value supports
 them. A p-value alone never tells you how *big* or *important* an effect is.
@@ -135,9 +135,9 @@ them. A p-value alone never tells you how *big* or *important* an effect is.
 
 - Match the test to the question: outcome type + number of groups (see the
   decision guide).
-- **t-test / Wilcoxon** — continuous outcome, two groups.
-- **chi-square / Fisher** — two categorical variables (Fisher for small counts).
-- **correlation** — two continuous variables.
+- **t-test / Wilcoxon**: continuous outcome, two groups.
+- **chi-square / Fisher**: two categorical variables (Fisher for small counts).
+- **correlation**: two continuous variables.
 - Non-significant is still a finding.
 - Always report the effect estimate and confidence interval, not just *p*.
 

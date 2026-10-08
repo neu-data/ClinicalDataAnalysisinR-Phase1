@@ -2,7 +2,7 @@
 title: "Dữ liệu chuẩn bị"
 ---
 
-📥 [clinical_data_clean.csv](files/precourse/data/clinical_data_clean.csv) · [clinical_data_raw.csv](files/precourse/data/clinical_data_raw.csv) · [clinical_data_raw.xlsx](files/precourse/data/clinical_data_raw.xlsx) · [data_dictionary.csv](files/precourse/data/data_dictionary.csv)
+[clinical_data_clean.csv](files/precourse/data/clinical_data_clean.csv) · [clinical_data_raw.csv](files/precourse/data/clinical_data_raw.csv) · [clinical_data_raw.xlsx](files/precourse/data/clinical_data_raw.xlsx) · [data_dictionary.csv](files/precourse/data/data_dictionary.csv)
 
 **Tệp:** `clinical_data_raw.csv` (lộn xộn), `clinical_data_clean.csv` (sẵn sàng để phân tích), `clinical_data_raw.xlsx` (bản sao Excel của tệp thô)
 
@@ -51,7 +51,7 @@ Những mối liên hệ này là điều mà các phân tích của bạn trong
 Dữ liệu lâm sàng thực tế **không bao giờ** sạch. Để làm cho các bài học làm sạch dữ liệu trở nên thực tế, chúng tôi
 đã cố ý đưa vào các vấn đề dưới đây trong `clinical_data_raw.csv`. Mỗi
 vấn đề đều là một *ví dụ dạy học*: bạn sẽ học cách **tìm** nó và **sửa** nó
-trong bài học **04 — Data Management**.
+trong bài học **04: Data Management**.
 
 `clinical_data_clean.csv` là tệp tham chiếu gọn gàng với tất cả các vấn đề này đã được giải quyết.
 
@@ -68,7 +68,7 @@ trong bài học **04 — Data Management**.
   `glucose` (22), `cholesterol` (18), `alcohol_use` (12), `BMI` (9),
   `followup_date` (7), `diastolic_bp` (5).
 - **Phát hiện:** `colSums(is.na(clinical_data_raw))`.
-- **Sửa:** quyết định theo từng biến — để nguyên là `NA`, dùng phân tích ca đầy đủ, hoặc gán giá trị. Trong khóa học này, chúng ta chỉ đơn giản giữ chúng là `NA` và để R bỏ qua chúng bằng `na.rm = TRUE`.
+- **Sửa:** quyết định theo từng biến, để nguyên là `NA`, dùng phân tích ca đầy đủ, hoặc gán giá trị. Trong khóa học này, chúng ta chỉ đơn giản giữ chúng là `NA` và để R bỏ qua chúng bằng `na.rm = TRUE`.
 
 ### 3. Mã hóa phân loại không nhất quán
 - `sex` xuất hiện dưới dạng **Female, female, F, f, Male, male, M, m**.

@@ -1,4 +1,4 @@
-# Kết quả Mong đợi — Đáp án Tham chiếu (Giảng viên / Tự kiểm tra)
+# Kết quả Mong đợi: Đáp án Tham chiếu (Giảng viên / Tự kiểm tra)
 
 Tất cả các con số dưới đây đến từ việc chạy mã lệnh được cung cấp trên `clinical_data_clean.csv`
 (và `clinical_data_raw.csv` cho các phép kiểm tra dữ liệu thô). Chúng có thể tái lập được từ
@@ -28,14 +28,14 @@ bản cài đặt và mã lệnh của một học viên đang tạo ra các đ�
 | Chi bình phương, `hypertension` × `diabetes` | χ² = 25.98, df = 1, **p < 0.001** (có ý nghĩa) |
 | Tương quan, `age` so với `systolic_bp` | r = **0.55**, p < 0.001 |
 
-## Hồi quy logistic — `hypertension ~ age + sex + BMI` (ví dụ Phần K)
+## Hồi quy logistic: `hypertension ~ age + sex + BMI` (ví dụ Phần K)
 | Số hạng | OR | KTC 95% | p |
 |------|----|--------|---|
 | age | 1.09 | 1.07–1.12 | < 0.001 |
 | sex (Male) | 1.20 | 0.76–1.90 | 0.43 |
 | BMI | 1.16 | 1.10–1.22 | < 0.001 |
 
-## Hồi quy logistic — `hypertension ~ age + sex + BMI + diabetes`
+## Hồi quy logistic: `hypertension ~ age + sex + BMI + diabetes`
 | Số hạng | OR | KTC 95% | p |
 |------|----|--------|---|
 | age | 1.09 | 1.07–1.11 | < 0.001 |
@@ -43,7 +43,7 @@ bản cài đặt và mã lệnh của một học viên đang tạo ra các đ�
 | BMI | 1.15 | 1.09–1.21 | < 0.001 |
 | diabetes (Yes) | 1.96 | 1.06–3.65 | 0.03 |
 
-## Mô hình Cox — `Surv(time_to_event, outcome) ~ age + diabetes + hypertension + treatment`
+## Mô hình Cox: `Surv(time_to_event, outcome) ~ age + diabetes + hypertension + treatment`
 (cấp độ tham chiếu cho treatment = Untreated)
 | Số hạng | HR | KTC 95% | p |
 |------|----|--------|---|

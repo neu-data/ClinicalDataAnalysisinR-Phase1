@@ -38,7 +38,7 @@ L = {
     "en": dict(
         suffix="", lang="en", other="vi", other_label="Tiếng Việt",
         site_title="Clinical Data Analysis in R - Phase 1",
-        course="Clinical Data Analysis in R — Phase I",
+        course="Clinical Data Analysis in R - Phase I",
         home="Home", schedule="Schedule", precourse="Pre-course", sessions="Sessions",
         materials="Materials", certificate="Certificate", slides="Slides",
         day="Day", plan="Plan", section="Section", intro_deck="Course introduction",
@@ -79,7 +79,7 @@ L = {
     "vi": dict(
         suffix="_VN", lang="vi", other="en", other_label="English",
         site_title="Phân tích Dữ liệu Lâm sàng bằng R - Giai đoạn 1",
-        course="Phân tích Dữ liệu Lâm sàng bằng R — Giai đoạn I",
+        course="Phân tích Dữ liệu Lâm sàng bằng R - Giai đoạn I",
         home="Trang chủ", schedule="Lịch học", precourse="Chuẩn bị",
         sessions="Buổi học", materials="Tài liệu", certificate="Chứng nhận", slides="Bài giảng",
         day="Ngày", plan="Kế hoạch", section="Phần", intro_deck="Giới thiệu khóa học",
@@ -266,7 +266,8 @@ def deck(path, lang, title, subtitle, date, slides):
     head = (f"---\ntitle: {yaml_str(title)}\nsubtitle: {yaml_str(subtitle)}\n"
             f"author: {yaml_str(TRAINERS)}\ninstitute: \"Neudata Consulting Ltd\"\n"
             f"date: {yaml_str(date)}\nlang: {S['lang']}\nsection-label: {yaml_str(S['section'])}\n"
-            "format:\n  neudata-revealjs:\n    scrollable: true\n---\n\n")
+            "format:\n  neudata-revealjs:\n    scrollable: true\n"
+            "    include-in-header: access-gate.html\n---\n\n")
     body = "\n".join(slide_md(s, lang) for s in slides)
     path.write_text(head + body, encoding="utf-8")
 
@@ -317,14 +318,14 @@ ACCESS_S = {
                       "IP address are not stored.**"),
                step1="1. Get your free access code", email="Your email address", send="Send me a code",
                step2="2. Enter your access code", code="Access code (e.g. ABCD-2345)", unlock="Open the materials",
-               forgot="Forgot your code? Request a new one above — it is free.",
+               forgot="Forgot your code? Request a new one above, it is free.",
                sending="Sending…", checking="Checking…",
                CODE_SENT="Your access code has been sent. Check your inbox (and spam folder), then enter it below.",
                TOO_SOON="A code was sent less than a minute ago. Please check your inbox.",
                BAD_EMAIL="Please enter a valid email address.",
                BAD_CODE="That code is not valid. Check it, or request a new one.",
                ERROR="Something went wrong. Please try again in a moment.",
-               done="Access granted — opening the materials…"),
+               done="Access granted, opening the materials…"),
     "vi": dict(title="Truy cập miễn phí tài liệu khóa học",
                intro=("Toàn bộ tài liệu khóa học đều **miễn phí**. Để mở tài liệu, hãy yêu cầu mã truy cập miễn "
                       "phí: nhập email và chúng tôi sẽ gửi mã cho bạn. Chúng tôi chỉ đếm số người sử dụng tài "
@@ -333,14 +334,14 @@ ACCESS_S = {
                       "duyệt. **Địa chỉ email và địa chỉ IP của bạn không được lưu lại.**"),
                step1="1. Nhận mã truy cập miễn phí", email="Địa chỉ email của bạn", send="Gửi mã cho tôi",
                step2="2. Nhập mã truy cập", code="Mã truy cập (ví dụ ABCD-2345)", unlock="Mở tài liệu",
-               forgot="Quên mã? Hãy yêu cầu mã mới ở trên — hoàn toàn miễn phí.",
+               forgot="Quên mã? Hãy yêu cầu mã mới ở trên, hoàn toàn miễn phí.",
                sending="Đang gửi…", checking="Đang kiểm tra…",
                CODE_SENT="Mã truy cập đã được gửi. Vui lòng kiểm tra hộp thư (và thư rác), rồi nhập mã bên dưới.",
                TOO_SOON="Mã vừa được gửi chưa đầy một phút trước. Vui lòng kiểm tra hộp thư.",
                BAD_EMAIL="Vui lòng nhập địa chỉ email hợp lệ.",
                BAD_CODE="Mã không hợp lệ. Vui lòng kiểm tra lại hoặc yêu cầu mã mới.",
                ERROR="Đã xảy ra lỗi. Vui lòng thử lại sau giây lát.",
-               done="Đã cấp quyền truy cập — đang mở tài liệu…"),
+               done="Đã cấp quyền truy cập, đang mở tài liệu…"),
 }
 
 
@@ -379,6 +380,15 @@ def access_page(lang, out):
   var KEY = "neudata-cdar-access";
   var M = {json.dumps(msgs, ensure_ascii=False)};
   var lang = "{lang}";
+  var MAX_AGE = 7 * 24 * 60 * 60 * 1000, IDLE = 2 * 60 * 60 * 1000;   // 7 days, 2 hours idle
+  function fresh() {{
+    try {{
+      var r = JSON.parse(localStorage.getItem(KEY) || "null");
+      if (!r || !r.t) return false;
+      var now = Date.now();
+      return (now - r.t < MAX_AGE) && (now - (r.last || r.t) < IDLE);
+    }} catch (e) {{ return false; }}
+  }}
   function show(kind, key) {{ var m = document.getElementById("acc-msg"); m.className = "acc-msg " + kind; m.textContent = M[key] || M.ERROR; }}
   // Approximate location for the usage counts: browser time zone and language, plus country and
   // city from GeoJS (looked up here in the browser). The IP address is never sent to Neudata.
@@ -399,7 +409,7 @@ def access_page(lang, out):
     if (!/^[\\w.\\-]+\\.html/.test(next)) next = "index.html";
     location.replace(next);
   }}
-  try {{ if (localStorage.getItem(KEY) && new URLSearchParams(location.search).get("next")) go(); }} catch (e) {{}}
+  if (fresh() && new URLSearchParams(location.search).get("next")) go();
   document.getElementById("acc-req").addEventListener("submit", function (ev) {{
     ev.preventDefault();
     var b = document.getElementById("acc-send"); b.disabled = true; b.textContent = M.sending;
@@ -415,7 +425,7 @@ def access_page(lang, out):
     call({{ action: "verify", code: code }})
       .then(function (r) {{
         if (!r.ok) {{ show("err", r.code); return; }}
-        try {{ localStorage.setItem(KEY, JSON.stringify({{ code: code, t: Date.now() }})); }} catch (e) {{}}
+        try {{ var _n = Date.now(); localStorage.setItem(KEY, JSON.stringify({{ code: code, t: _n, last: _n }})); }} catch (e) {{}}
         show("ok", "done"); setTimeout(go, 700);
       }})
       .catch(function () {{ show("err", "ERROR"); }})
@@ -459,7 +469,7 @@ BOOK_S = {
                note="Clinical interpretation", tip="Good practice", warning="Common mistake",
                important="Key points", prev="Previous", next="Next", contents="Contents",
                authors="Bernard Isekah Osang'ir and Vương Mỹ Lượng",
-               intro=("The participant handbook is our book **{t}** — *{s}*. Each chapter explains the "
+               intro=("The participant handbook is our book **{t}**, *{s}*. Each chapter explains the "
                       "theory behind a method, shows the R code and its real output on the case-study "
                       "data, with figures and tables, and ends with exercises. Worked solutions are at the "
                       "end of the book."),
@@ -469,7 +479,7 @@ BOOK_S = {
                note="Diễn giải lâm sàng", tip="Thực hành tốt", warning="Lỗi thường gặp",
                important="Điểm chính", prev="Trước", next="Tiếp", contents="Mục lục",
                authors="Bernard Isekah Osang'ir và Vương Mỹ Lượng",
-               intro=("Sổ tay học viên là cuốn sách **{t}** — *{s}*. Mỗi chương giải thích lý thuyết của "
+               intro=("Sổ tay học viên là cuốn sách **{t}**, *{s}*. Mỗi chương giải thích lý thuyết của "
                       "phương pháp, trình bày mã R và kết quả thực tế trên dữ liệu nghiên cứu tình huống, "
                       "kèm hình và bảng, và kết thúc bằng bài tập. Lời giải chi tiết nằm ở cuối sách."),
                pdf="Tải sách (PDF, tiếng Việt)", pdf_other="English (PDF)",
@@ -558,9 +568,9 @@ def build_book_pages(lang, out, S):
         (out / fname).write_text(head + book_md_to_qmd(md, B) + "\n\n---\n\n" + " · ".join(nav) + "\n",
                                  encoding="utf-8")
 
-    links = [f"| 📥 **PDF** | [{B['pdf']}](files/docs/Introduction_to_Clinical_Data_Analysis_in_R_{code}.pdf)"
+    links = [f"| **PDF** | [{B['pdf']}](files/docs/Introduction_to_Clinical_Data_Analysis_in_R_{code}.pdf)"
              f" · [{B['pdf_other']}](files/docs/Introduction_to_Clinical_Data_Analysis_in_R_{other}.pdf) |",
-             f"| 🧾 **Overleaf** | [{B['overleaf']}](files/docs/{zipf.name}) |"]
+             f"| **Overleaf** | [{B['overleaf']}](files/docs/{zipf.name}) |"]
     toc = "\n".join(f"{i + 1}. [{p[1]}]({p[0]})" for i, p in enumerate(pages))
     landing = (f"---\ntitle: {yaml_str(t)}\nsubtitle: {yaml_str(s)}\n---\n\n"
                f"*{B['authors']}* · Neudata\n\n" + B["intro"].format(t=t, s=s) + "\n\n"
@@ -639,8 +649,7 @@ def build(lang):
         "::: {.badges}\n"
         f"[{S['free']}]{{}} [{S['beginner']}]{{}} [{S['online']}]{{}} [{S['nocode']}]{{}}\n"
         ":::\n\n"
-        f"[{S['schedule']}](schedule.qmd){{.btn .btn-light role=\"button\"}}"
-        f" [{ACCESS_S[lang]['step1'][3:]}](access.qmd){{.btn .btn-light role=\"button\"}}\n"
+        f"[{S['schedule']}](schedule.qmd){{.btn .btn-light role=\"button\"}}\n"
         ":::\n\n"
     )
     readme = ROOT / ("README_VN.md" if lang == "vi" else "README.md")
@@ -672,25 +681,25 @@ def build(lang):
               f"**{S['date_label']}:** {SESSION_DATES[d - 1]} · {S['time']}\n\n"
               f"## {S['agenda']}\n\n{agenda}\n\n## {S['materials_label']}\n\n"
               f"| | |\n|:--|:--|\n"
-              f"| 🎞️ **{S['slides']}** | [{S['open_slides']}](slides-day{d}.qmd) — {S['f_press']} |\n"
-              f"| 📥 **PowerPoint** | [{S['pptx']}](files/slides/{pptx}) |\n"
-              f"| 💻 **{S['demo']}** | [day{d}_demo.R](files/scripts/day{d}_demo.R) |\n"
-              f"| 🧪 **{S['exercise']}** | [day{d}_exercise.R](files/practicals/day{d}_exercise.R) |\n"
-              f"| ✅ **{S['solution']}** | [day{d}_solution.R](files/solutions/day{d}_solution.R) |\n"
-              f"| 📁 **{S['data']}** | [{S['data']}](data.qmd) |\n")
+              f"| **{S['slides']}** | [{S['open_slides']}](slides-day{d}.qmd), {S['f_press']} |\n"
+              f"| **PowerPoint** | [{S['pptx']}](files/slides/{pptx}) |\n"
+              f"| **{S['demo']}** | [day{d}_demo.R](files/scripts/day{d}_demo.R) |\n"
+              f"| **{S['exercise']}** | [day{d}_exercise.R](files/practicals/day{d}_exercise.R) |\n"
+              f"| **{S['solution']}** | [day{d}_solution.R](files/solutions/day{d}_solution.R) |\n"
+              f"| **{S['data']}** | [{S['data']}](data.qmd) |\n")
         (out / f"day{d}.qmd").write_text(md, encoding="utf-8")
 
     # ---- course documents
     book_pages = build_book_pages(lang, out, S)
     if not book_pages:
         md_page(COURSE / "References" / f"participant_handbook{sfx}.md", out / "handbook.qmd", S["handbook"],
-                f"📥 [PDF](files/docs/Participant_Handbook.pdf)\n\n")
+                f"[PDF](files/docs/Participant_Handbook.pdf)\n\n")
     md_page(COURSE / "References" / f"R_command_reference_sheet{sfx}.md", out / "reference.qmd", S["reference"],
-            f"📥 [PDF](files/docs/R_Command_Reference_Sheet.pdf)\n\n")
+            f"[PDF](files/docs/R_Command_Reference_Sheet.pdf)\n\n")
     md_page(COURSE / "References" / f"package_installation_guide{sfx}.md", out / "packages.qmd", S["packages"],
-            f"📥 [PDF](files/docs/Package_Installation_Guide.pdf)\n\n")
+            f"[PDF](files/docs/Package_Installation_Guide.pdf)\n\n")
     md_page(COURSE / "Assignment" / f"final_assignment{sfx}.md", out / "assignment.qmd", S["assignment"],
-            f"📥 [PDF](files/docs/Final_Assignment.pdf) · 🎞️ [{S['slides']}](slides-assignment.qmd)\n\n")
+            f"[PDF](files/docs/Final_Assignment.pdf) · [{S['slides']}](slides-assignment.qmd)\n\n")
     if CERT_PORTAL_URL:                                   # submission form (same Apps Script web app)
         submit_url = f"{CERT_PORTAL_URL}?page=submit&lang={lang}"
         A = SUBMIT_S[lang]
@@ -704,7 +713,7 @@ def build(lang):
                 f"[{A['newtab']}]({submit_url}){{target=\"_blank\"}}\n")
         (out / "assignment.qmd").write_text("---\n" + head + "---\n" + box + body + form, encoding="utf-8")
     md_page(COURSE / "Data" / "data_dictionary.md", out / "data.qmd", S["data"],
-            "📥 " + " · ".join(f"[{f.name}](files/data/{f.name})" for f in sorted((F / "data").iterdir())) + "\n\n")
+            "" + " · ".join(f"[{f.name}](files/data/{f.name})" for f in sorted((F / "data").iterdir())) + "\n\n")
 
     # ---- pre-course module
     precourse_links = {"00_READ_ME_FIRST/README.md": "precourse-guide.qmd",
@@ -712,12 +721,12 @@ def build(lang):
                        "Data/Data_Quality_Problems.md": "precourse-data.qmd"}
     md_page(PREP / f"README{sfx}.md", out / "precourse.qmd", S["precourse"], link_map=precourse_links)
     md_page(PREP / "00_READ_ME_FIRST" / f"README{sfx}.md", out / "precourse-guide.qmd", S["study_guide"],
-            f"📥 [PDF](files/precourse/Study_Guide_{'VN' if lang == 'vi' else 'EN'}.pdf) · "
+            f"[PDF](files/precourse/Study_Guide_{'VN' if lang == 'vi' else 'EN'}.pdf) · "
             f"[Word](files/precourse/Study_Guide_{'VN' if lang == 'vi' else 'EN'}.docx)\n\n")
     md_page(PREP / "00_READ_ME_FIRST" / f"Preparation_Checklist{sfx}.md", out / "precourse-checklist.qmd",
             S["checklist"])
     md_page(PREP / "01_Install_R_and_RStudio" / f"Install_R_and_RStudio{sfx}.md", out / "install.qmd",
-            S["install"], "📥 [installation_test.R](files/precourse/installation_test.R)\n\n")
+            S["install"], "[installation_test.R](files/precourse/installation_test.R)\n\n")
     md_page(PREP / "02_Getting_Started_with_RStudio" / f"RStudio_Beginner_Manual{sfx}.md", out / "rstudio.qmd",
             S["rstudio"])
     md_page(PREP / "Cheat_Sheets" / f"R_Cheat_Sheet{sfx}.md", out / "cheatsheet.qmd", S["cheatsheet"])
@@ -727,7 +736,7 @@ def build(lang):
         md_page(PREP / "Guides" / f"{g}{sfx}.md", out / f"guide{i}.qmd")
     dd = PREP / "Data" / f"data_dictionary{sfx}.md"
     md_page(dd, out / "precourse-data.qmd", S["precourse_data"],
-            "📥 " + " · ".join(f"[{f.name}](files/precourse/data/{f.name})"
+            "" + " · ".join(f"[{f.name}](files/precourse/data/{f.name})"
                               for f in sorted((F / "precourse" / "data").iterdir())) + "\n\n")
     dq = (PREP / "Data" / f"Data_Quality_Problems{sfx}.md").read_text(encoding="utf-8")
     with open(out / "precourse-data.qmd", "a", encoding="utf-8") as fh:

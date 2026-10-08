@@ -1,6 +1,6 @@
 ---
-title: "Bài 5 — Hồi quy"
-subtitle: "Phân tích Dữ liệu Lâm sàng bằng R (Giai đoạn I) — Trước khóa học"
+title: "Bài 5: Hồi quy"
+subtitle: "Phân tích Dữ liệu Lâm sàng bằng R (Giai đoạn I), Trước khóa học"
 author: "Neudata"
 output:
   html_document:
@@ -40,7 +40,7 @@ clinical_data <- read_csv("../Data/clinical_data_clean.csv")
 
 ---
 
-## 1. Hồi quy tuyến tính — một biến kết cục liên tục
+## 1. Hồi quy tuyến tính: một biến kết cục liên tục
 
 **Câu hỏi:** Liệu **huyết áp tâm thu** có liên quan đến **tuổi** và **BMI** không?
 
@@ -68,7 +68,7 @@ tidy(lin_model, conf.int = TRUE)
 0.35 mmHg (KTC 95% ...), và mỗi đơn vị BMI liên quan đến mức tăng 0.62 mmHg, sau khi
 hiệu chỉnh lẫn nhau."*
 
-## 2. Hồi quy logistic — một biến kết cục có/không
+## 2. Hồi quy logistic: một biến kết cục có/không
 
 Khi biến kết cục là nhị phân (Yes/No), chúng ta dùng **hồi quy logistic**, cho ra
 **tỷ số chênh (OR)**.
@@ -90,7 +90,7 @@ log_model <- glm(hypertension ~ age + sex + BMI,
 summary(log_model)
 ```
 
-Kết quả của `summary()` nằm trên thang **log-odds (log của số chênh)** — khó đọc.
+Kết quả của `summary()` nằm trên thang **log-odds (log của số chênh)**, khó đọc.
 Chúng ta chuyển sang **tỷ số chênh** bằng cách lấy lũy thừa (exponentiate).
 
 ```{r}
@@ -100,10 +100,10 @@ tidy(log_model, exponentiate = TRUE, conf.int = TRUE)
 
 **Kết quả → Diễn giải (tỷ số chênh):**
 
-- `age`: OR ≈ **1.09** — mỗi năm tuổi tăng thêm làm tăng số chênh mắc tăng huyết áp
+- `age`: OR ≈ **1.09**: mỗi năm tuổi tăng thêm làm tăng số chênh mắc tăng huyết áp
   khoảng 9%.
-- `BMI`: OR ≈ **1.16** — mỗi đơn vị BMI tăng thêm làm tăng số chênh khoảng 16%.
-- `sex (Male)`: OR ≈ **1.20**, nhưng khoảng tin cậy vượt qua 1 và p ≈ 0.43 — **không
+- `BMI`: OR ≈ **1.16**: mỗi đơn vị BMI tăng thêm làm tăng số chênh khoảng 16%.
+- `sex (Male)`: OR ≈ **1.20**, nhưng khoảng tin cậy vượt qua 1 và p ≈ 0.43, **không
   có bằng chứng** về sự khác biệt giới tính.
 
 Một OR **trên 1** nghĩa là số chênh cao hơn; **dưới 1** nghĩa là số chênh thấp hơn;
@@ -130,14 +130,14 @@ sử dụng các mô hình đa biến.
 
 ## Những điểm chính cần ghi nhớ
 
-- **Hồi quy tuyến tính** (`lm`) — biến kết cục liên tục; các hệ số là mức thay đổi
+- **Hồi quy tuyến tính** (`lm`), biến kết cục liên tục; các hệ số là mức thay đổi
   của biến kết cục ứng với một đơn vị của biến dự báo.
-- **Hồi quy logistic** (`glm(..., family = binomial)`) — biến kết cục nhị phân; các
+- **Hồi quy logistic** (`glm(..., family = binomial)`), biến kết cục nhị phân; các
   hệ số đã lấy lũy thừa là **tỷ số chênh**.
 - `tidy(model, exponentiate = TRUE, conf.int = TRUE)` cho OR + KTC 95%.
 - OR > 1 làm tăng số chênh, < 1 làm giảm nó; một KTC vượt qua 1 là không có ý nghĩa
   thống kê.
-- Các mô hình đa biến **hiệu chỉnh** cho các yếu tố nhiễu — lý do chính khiến chúng
+- Các mô hình đa biến **hiệu chỉnh** cho các yếu tố nhiễu, lý do chính khiến chúng
   ta dùng chúng.
 - Báo cáo ước lượng và khoảng tin cậy của nó bằng lời, không bao giờ dùng kết quả
   đầu ra thô.

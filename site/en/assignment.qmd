@@ -8,13 +8,13 @@ When your analysis is ready, upload it with the form at the bottom of this page.
 :::
 
 
-📥 [PDF](files/docs/Final_Assignment.pdf) · 🎞️ [Slides](slides-assignment.qmd)
+[PDF](files/docs/Final_Assignment.pdf) · [Slides](slides-assignment.qmd)
 
-## Clinical Data Analysis in R — Phase I
+## Clinical Data Analysis in R - Phase I
 
-**Course:** Clinical Data Analysis in R — Phase I
+**Course:** Clinical Data Analysis in R - Phase I
 **Trainers:** Vương Mỹ Lượng (Senior Biostatistician, lead trainer) and Bernard Isekah Osang'ir (Senior Biostatistician)
-**Organisation:** Neudata — *#ClearDataClearImpact*
+**Organisation:** Neudata: *#ClearDataClearImpact*
 **Assessment type:** Individual take-home assignment (open-book, open-notes)
 **Weighting:** 100 marks
 
@@ -22,7 +22,7 @@ When your analysis is ready, upload it with the form at the bottom of this page.
 
 ## 1. Overview
 
-Over the past five days you learned to import, clean, describe, visualise, and model clinical data in R. This assignment asks you to bring those skills together in a single, end-to-end analysis that mirrors a real manuscript workflow — from a messy raw export to a publication-ready Results section.
+Over the past five days you learned to import, clean, describe, visualise, and model clinical data in R. This assignment asks you to bring those skills together in a single, end-to-end analysis that mirrors a real manuscript workflow, from a messy raw export to a publication-ready Results section.
 
 You will work with a simulated multicentre cross-sectional study:
 
@@ -34,14 +34,14 @@ The **primary outcome** is `treatment_uptake` (currently on antihypertensive the
 
 ## 2. Rationale
 
-Hypertension is a leading driver of cardiovascular morbidity, yet a large share of diagnosed patients never start or sustain treatment. Understanding *who* takes up treatment — and *which patient, clinical, and access factors* are independently associated with uptake — helps services target outreach and remove barriers. This is exactly the kind of question a clinical analyst is asked to answer from routine PHC data. The dataset deliberately contains the messiness of a real export so that you must make and justify sound data-handling decisions before any modelling.
+Hypertension is a leading driver of cardiovascular morbidity, yet a large share of diagnosed patients never start or sustain treatment. Understanding *who* takes up treatment, and *which patient, clinical, and access factors* are independently associated with uptake, helps services target outreach and remove barriers. This is exactly the kind of question a clinical analyst is asked to answer from routine PHC data. The dataset deliberately contains the messiness of a real export so that you must make and justify sound data-handling decisions before any modelling.
 
 ## 3. Logistics
 
 - **Independent work.** This is completed **on your own**, one week after the course.
 - **Effort.** Budget roughly **6–10 hours**.
 - **Deliverable.** A **single, fully reproducible** R script **or** Quarto / R Markdown document that runs top-to-bottom without manual intervention, **plus** the exported outputs (Table 1 and figures) and a short written **Results section**.
-- **Data.** Start from the **RAW** file (`hypertension_phc_raw.csv` or `.xlsx`). Do **not** start from any cleaned/tidy reference file — cleaning is part of the assessment.
+- **Data.** Start from the **RAW** file (`hypertension_phc_raw.csv` or `.xlsx`). Do **not** start from any cleaned/tidy reference file, cleaning is part of the assessment.
 - **Tools.** Base R plus the tidyverse family is expected; you may use `gtsummary`/`gt` or `flextable` for Table 1, `ggplot2` for figures, `broom` for tidy model output, and `pROC` (or equivalent) for discrimination. Use whichever packages you are comfortable with, but **load them explicitly** at the top of your script.
 
 ## 4. The Question to Answer
@@ -54,11 +54,11 @@ Your analysis should produce **adjusted odds ratios with 95% confidence interval
 
 Complete **all** of the following. Number your code sections to match.
 
-1. **Import the raw data.** Read `hypertension_phc_raw.csv` (or the `.xlsx`) into R. Inspect structure, dimensions, and types. Do **not** silently coerce — note what R got wrong on import (e.g. numeric columns read as character because of sentinels).
+1. **Import the raw data.** Read `hypertension_phc_raw.csv` (or the `.xlsx`) into R. Inspect structure, dimensions, and types. Do **not** silently coerce, note what R got wrong on import (e.g. numeric columns read as character because of sentinels).
 
 2. **Remove duplicates.** Identify and drop the duplicate records so that you have **1,500 unique patients** (one row per `patient_id`). Report how many rows you removed.
 
-3. **Handle missing-value sentinels.** Convert disguised missingness — blanks, `NA` strings, `999`, `-99` — to proper `NA` in the affected numeric columns (e.g. cholesterol, LDL, fasting glucose, distance). Do **not** leave sentinel codes as real numbers.
+3. **Handle missing-value sentinels.** Convert disguised missingness, blanks, `NA` strings, `999`, `-99`, to proper `NA` in the affected numeric columns (e.g. cholesterol, LDL, fasting glucose, distance). Do **not** leave sentinel codes as real numbers.
 
 4. **Standardise inconsistent categories.** Harmonise messy text: `sex` (Female/F/female/f, Male/M/male/m → Female/Male); binary fields coded as Yes/No, Y/N and 1/0 (`diabetes`, `family_history_htn`, `health_insurance`, `htn_diagnosed`, `treatment_uptake`); and trim leading/trailing whitespace in `facility`, `residence`, `education`, `occupation`.
 
@@ -78,7 +78,7 @@ Complete **all** of the following. Number your code sections to match.
 
 12. **Simple (univariable) logistic regression.** Fit a logistic regression of `treatment_uptake` on each candidate predictor separately and report **crude odds ratios** with 95% CIs.
 
-13. **Multiple (adjusted) logistic regression.** Fit a multivariable logistic model including the pre-specified determinants (age, sex, education, residence, diabetes, family history, health insurance, knowledge score, distance to facility). Report **adjusted odds ratios (aORs) with 95% CIs** and p-values on the **odds-ratio scale** (exponentiated — not log-odds). Report the number of complete cases used.
+13. **Multiple (adjusted) logistic regression.** Fit a multivariable logistic model including the pre-specified determinants (age, sex, education, residence, diabetes, family history, health insurance, knowledge score, distance to facility). Report **adjusted odds ratios (aORs) with 95% CIs** and p-values on the **odds-ratio scale** (exponentiated, not log-odds). Report the number of complete cases used.
 
 14. **Model assessment.** Report model discrimination (e.g. AUC / C-statistic) and comment briefly on fit and on any precision issues (wide CIs).
 
@@ -95,7 +95,7 @@ Complete **all** of the following. Number your code sections to match.
 - Bundle your file together with exported outputs (Table 1 and the figures) and the Results section into a single `.zip` named `Surname_Phase1_Assignment.zip`.
 - Submit your `.zip` file with the **Submit** form on the *Final assignment* page of the course website by the stated deadline (one week after the course). It is delivered directly to the trainers, and you receive a confirmation email with a submission number. If the form does not work for you, email the file to **b.osangir@gmail.com**.
 
-## 7. What to Submit — Checklist
+## 7. What to Submit: Checklist
 
 - [ ] Reproducible analysis file (`Surname_Phase1_Assignment.R` / `.qmd` / `.Rmd`) that runs from the **raw** data.
 - [ ] Exported **Table 1**, stratified by `treatment_uptake` (e.g. `.docx`, `.html`, or `.png`).
@@ -110,18 +110,18 @@ This is an **individual** assessment. You may consult the course materials, the 
 
 ---
 
-> ### Hints — where to look (no answers given)
+> ### Hints: where to look (no answers given)
 >
 > - **Importing & first inspection:** revisit the **Day 1** demo for `read_csv()` / `readxl`, `glimpse()`, `str()`, and spotting columns read as the wrong type.
-> - **Cleaning, sentinels, duplicates, dates:** the **Day 2** demo covers `distinct()`, `na_if()`, recoding with `case_when()` / `fct_recode()`, `str_trim()`, and date parsing (`lubridate`). The data dictionary's *"Known data-quality issues"* box tells you exactly which problems exist — but you must write the code.
+> - **Cleaning, sentinels, duplicates, dates:** the **Day 2** demo covers `distinct()`, `na_if()`, recoding with `case_when()` / `fct_recode()`, `str_trim()`, and date parsing (`lubridate`). The data dictionary's *"Known data-quality issues"* box tells you exactly which problems exist, but you must write the code.
 > - **Factors & derived variables:** see the **Day 2–3** material on `factor()` levels, `relevel()`, ordered factors, and computing BMI.
 > - **Table 1 & descriptives:** the **Day 3** demo shows `gtsummary::tbl_summary()` / `add_p()` (or `flextable`) and choosing the right summary per variable type.
 > - **Figures:** the **Day 3–4** `ggplot2` demos cover themes, labelling, and `ggsave(..., dpi = 300)`.
 > - **Tests & regression:** the **Day 4–5** demos cover `chisq.test`/`fisher.test`, `t.test`/`wilcox.test`, `glm(..., family = binomial)`, exponentiating coefficients with `broom::tidy(..., exponentiate = TRUE, conf.int = TRUE)`, and AUC with `pROC`.
 > - **Reference sheet:** keep the course **R reference sheet / cheat-sheet** open for syntax reminders.
-> - **Data dictionary:** `Course/Data/data_dictionary.md` defines every variable, its coding, and its role — read it before you start.
+> - **Data dictionary:** `Course/Data/data_dictionary.md` defines every variable, its coding, and its role, read it before you start.
 >
-> *Tip:* think about your analysis as a pipeline — import → clean → derive → restrict → describe → test → model → interpret. Get each stage right before moving on, and re-run from the top often.
+> *Tip:* think about your analysis as a pipeline, import → clean → derive → restrict → describe → test → model → interpret. Get each stage right before moving on, and re-run from the top often.
 
 
 ## Submit your assignment {#submit}

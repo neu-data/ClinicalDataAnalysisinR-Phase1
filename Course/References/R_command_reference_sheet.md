@@ -1,5 +1,5 @@
 # R Command Reference Sheet
-### Clinical Data Analysis in R — Phase I | Neudata · #ClearDataClearImpact
+### Clinical Data Analysis in R - Phase I | Neudata · #ClearDataClearImpact
 
 A one-stop "cheat sheet" of the commands used across the five days. Keep it beside you during practicals.
 

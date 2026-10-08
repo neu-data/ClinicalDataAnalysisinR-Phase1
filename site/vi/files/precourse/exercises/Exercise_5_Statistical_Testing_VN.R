@@ -1,6 +1,6 @@
 # =====================================================================
-#  BÀI TẬP 5 — Kiểm định thống kê (tư duy + thực hành)
-#  Phân tích dữ liệu lâm sàng trong R (Giai đoạn I) — Trước khóa học
+#  BÀI TẬP 5, Kiểm định thống kê (tư duy + thực hành)
+#  Phân tích dữ liệu lâm sàng trong R (Giai đoạn I), Trước khóa học
 #  ------------------------------------------------------------------
 #  Mục tiêu: luyện tập việc CHỌN kiểm định phù hợp trước khi chạy nó.
 #  Với mỗi câu hỏi nghiên cứu, trước tiên hãy quyết định (trong comment):

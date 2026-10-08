@@ -1,6 +1,6 @@
 ---
 title: "Final Assignment"
-subtitle: "Clinical Data Analysis in R — Phase I"
+subtitle: "Clinical Data Analysis in R - Phase I"
 author: "Vương Mỹ Lượng & Bernard Osang'ir"
 institute: "Neudata Consulting Ltd"
 date: "06-10-2026"
@@ -9,6 +9,7 @@ section-label: "Section"
 format:
   neudata-revealjs:
     scrollable: true
+    include-in-header: access-gate.html
 ---
 
 # Final Assignment

@@ -1,6 +1,6 @@
 # Instructor Manual & Facilitation Guide
 
-## Clinical Data Analysis in R — Phase I: Introduction to R for Clinical Research
+## Clinical Data Analysis in R - Phase I: Introduction to R for Clinical Research
 
 **Trainers:** Vương Mỹ Lượng (Senior Biostatistician, lead trainer) · Bernard Osang'ir (Senior Biostatistician)
 **Provider:** Neudata · **#ClearDataClearImpact**
@@ -15,8 +15,8 @@ This is a **facilitation guide**, not a textbook. It is written for an instructo
 
 Suggested reading order before you teach:
 1. This manual, front to back.
-2. `Data/data_dictionary.md` — the 36 variables and every deliberate data-quality flaw.
-3. `References/key_findings.md` — the canonical results you will quote and mark against.
+2. `Data/data_dictionary.md`, the 36 variables and every deliberate data-quality flaw.
+3. `References/key_findings.md`, the canonical results you will quote and mark against.
 4. The five demo scripts and five solution scripts, run end to end on your own machine the night before.
 
 **Convention in this manual:** `monospace` = something you type or a file; *italic* = something you say or emphasise verbally; "Surface this" = a moment to slow down and make explicit.
@@ -26,7 +26,7 @@ Suggested reading order before you teach:
 ## 1. Course overview
 
 ### Aims
-Equip clinicians and health researchers with **no prior programming experience** to independently run a complete, reproducible clinical data analysis in R — from importing a messy dataset to reporting adjusted odds ratios in a manuscript-ready Results section. The course is deliberately built around **one realistic study end to end**, so every skill is learned in clinical context, never in the abstract.
+Equip clinicians and health researchers with **no prior programming experience** to independently run a complete, reproducible clinical data analysis in R, from importing a messy dataset to reporting adjusted odds ratios in a manuscript-ready Results section. The course is deliberately built around **one realistic study end to end**, so every skill is learned in clinical context, never in the abstract.
 
 ### Audience
 Doctors, nurses, clinical researchers, public-health professionals, residents, master's students, and trial coordinators. **Assume zero coding background.** Many will be anxious about "programming." Your first job on Day 1 is to lower that anxiety.
@@ -60,7 +60,7 @@ By the end of the course, participants will be able to:
 
 > **Deck-alignment note.** The current slide deck introduces **regression (linear then
 > logistic) in Session 5**; Session 4 is now tests only. The detailed *Day 4* section
-> further below still contains a logistic-regression primer — when teaching from the
+> further below still contains a logistic-regression primer, when teaching from the
 > current slides, defer that primer to Session 5 (where the deck now places it).
 
 Each session ends with **Q&A** woven through, not bolted on. Days are cumulative: Day 2 produces the clean file that Days 3–5 all read. **If a participant misses Day 2, give them the prepared `analysis_data.rds` so they can keep up.**
@@ -69,7 +69,7 @@ Each session ends with **Q&A** woven through, not bolted on. Days are cumulative
 
 ## 2. Pre-course setup checklist
 
-### Software (participants — ideally before Day 1)
+### Software (participants: ideally before Day 1)
 Direct participants to `References/package_installation_guide.md`. The essentials:
 
 - [ ] Install **R 4.x** (course built with R 4.6.0) from CRAN.
@@ -89,10 +89,10 @@ library(tidyverse)
 library(readxl)
 htn <- read_csv("Data/hypertension_phc_raw.csv")
 dim(htn)              # expect 1503 36
-cat("Setup OK — R, tidyverse and the data path all work.\n")
+cat("Setup OK, R, tidyverse and the data path all work.\n")
 ```
 
-If `dim(htn)` returns `1503 36`, that participant is ready. (Note: **1503**, not 1500 — the three duplicates are a teaser for Day 2.)
+If `dim(htn)` returns `1503 36`, that participant is ready. (Note: **1503**, not 1500, the three duplicates are a teaser for Day 2.)
 
 ### Room / AV requirements
 - [ ] Projector or large screen; instructor able to mirror their RStudio.
@@ -101,7 +101,7 @@ If `dim(htn)` returns `1503 36`, that participant is ready. (Note: **1503**, not
 - [ ] Ideally a **co-facilitator** to circulate and unblock individuals during exercises.
 
 ### Distributing the Course folder
-Zip and share the entire `Course/` folder (Data, Scripts, Practicals, Solutions, References, Resources, Slides). Participants unzip it and open it **as an RStudio Project**, which makes every relative path (`Data/...`, `Resources/...`) work identically on every machine. **Do not** distribute solutions before each day's exercise — share `Solutions/dayN_solution.R` only after the exercise.
+Zip and share the entire `Course/` folder (Data, Scripts, Practicals, Solutions, References, Resources, Slides). Participants unzip it and open it **as an RStudio Project**, which makes every relative path (`Data/...`, `Resources/...`) work identically on every machine. **Do not** distribute solutions before each day's exercise, share `Solutions/dayN_solution.R` only after the exercise.
 
 ---
 
@@ -110,19 +110,19 @@ Zip and share the entire `Course/` folder (Data, Scripts, Practicals, Solutions,
 **Pacing.** This is a live-coding course; expect to feel slow. The rate-limiting step is the *slowest typist in the room*, not the fastest learner. Budget time generously and resist the urge to "just paste it." When people type the code themselves they remember it.
 
 **The watch-then-do demo pattern.** For every concept:
-1. *Watch* — you run the demo line, narrate what each part does, read the console output aloud.
-2. *Do* — participants type the same line and confirm they get the same output.
-3. *Twist* — pose a tiny variation ("now do it for `dbp_mmhg`") so they apply, not copy.
+1. *Watch*: you run the demo line, narrate what each part does, read the console output aloud.
+2. *Do*: participants type the same line and confirm they get the same output.
+3. *Twist*: pose a tiny variation ("now do it for `dbp_mmhg`") so they apply, not copy.
 
 Run demo scripts **line by line** with `Ctrl+Enter` (Windows) / `Cmd+Enter` (Mac). Never run a whole script silently.
 
 **Managing a mixed-ability room.** Some participants will fly; others will be lost by line three. Tactics: pair fast finishers with strugglers; give fast finishers the "stretch" tasks (each exercise has one); keep a co-facilitator circulating; use a coloured-sticky-note signal ("red = stuck"). Reassure repeatedly that **getting errors is normal and not a sign of failure**.
 
-**Encouraging questions.** Open every day with: *"There are no silly questions — if you're confused, three other people are too."* Pause after each demo section and ask a *named, concrete* question ("What does the `$` do here?") rather than the silence-inducing "Any questions?"
+**Encouraging questions.** Open every day with: *"There are no silly questions, if you're confused, three other people are too."* Pause after each demo section and ask a *named, concrete* question ("What does the `$` do here?") rather than the silence-inducing "Any questions?"
 
 **Large-font screen sharing.** Before Day 1: in RStudio, **Tools → Global Options → Appearance**, set a large editor font (16–18 pt) and a high-contrast theme. Zoom the console too. People at the back must read the code, not squint.
 
-**Handling errors live as teaching moments.** You *will* hit errors live — embrace them. When one appears, slow down and say *"Good — let's read the error together."* Teach the habit of **reading the message, not panicking**. The demos contain deliberate traps (max age 200, `mean()` returning `NA`, complete-case dropping) precisely so the class meets these errors in a controlled way. See the Troubleshooting appendix for the canonical fixes.
+**Handling errors live as teaching moments.** You *will* hit errors live, embrace them. When one appears, slow down and say *"Good, let's read the error together."* Teach the habit of **reading the message, not panicking**. The demos contain deliberate traps (max age 200, `mean()` returning `NA`, complete-case dropping) precisely so the class meets these errors in a controlled way. See the Troubleshooting appendix for the canonical fixes.
 
 ---
 
@@ -130,14 +130,14 @@ Run demo scripts **line by line** with `Ctrl+Enter` (Windows) / `Cmd+Enter` (Mac
 
 ---
 
-### DAY 1 — Introduction to R & RStudio
+### DAY 1: Introduction to R & RStudio
 
 **Timing (90 min):** Recap 10 min · Lecture & live demo 50 min · Guided exercise 25 min · Wrap-up & Q&A 5 min.
 **Demo script:** `Scripts/day1_demo.R` · **Exercise:** `Practicals/day1_exercise.R` · **Solution:** `Solutions/day1_solution.R`
 
-**Learning objectives (day):** 1, 2, 3, 4 — navigate RStudio; use objects/vectors/functions/packages; import CSV and Excel; take a first critical look at the data.
+**Learning objectives (day):** 1, 2, 3, 4, navigate RStudio; use objects/vectors/functions/packages; import CSV and Excel; take a first critical look at the data.
 
-**Through-line.** *"R is just a very obedient, very literal calculator that never forgets what you told it."* Today is about removing fear and getting the clinical data **in**. We do no statistics — we import, look, and discover the data is messy, which sets up Day 2.
+**Through-line.** *"R is just a very obedient, very literal calculator that never forgets what you told it."* Today is about removing fear and getting the clinical data **in**. We do no statistics, we import, look, and discover the data is messy, which sets up Day 2.
 
 **Key teaching points.**
 - The **Script** is what you save and re-run (reproducibility); the **Console** is where results appear. Code lives in the script, not typed once into the console and lost.
@@ -153,14 +153,14 @@ Run demo scripts **line by line** with `Ctrl+Enter` (Windows) / `Cmd+Enter` (Mac
    2 + 2
    mean(c(120, 130, 145, 150))   # mean of four systolic readings
    ```
-   Expected: `[1] 4`, then `[1] 136.25`. *Point out the `[1]` prefix — it's just an index, not part of the answer.*
+   Expected: `[1] 4`, then `[1] 136.25`. *Point out the `[1]` prefix, it's just an index, not part of the answer.*
 
 2. Objects and case sensitivity (lines ~31–37):
    ```r
    sbp <- 152
    sbp + 10
    ```
-   Expected `[1] 162`. **Teaching error #1 — surface this:** type `SBP` and let it error `Error: object 'SBP' not found`. *"R is literal: capital S-B-P was never created."*
+   Expected `[1] 162`. **Teaching error #1, surface this:** type `SBP` and let it error `Error: object 'SBP' not found`. *"R is literal: capital S-B-P was never created."*
 
 3. Vectors and logicals (lines ~43–55):
    ```r
@@ -168,15 +168,15 @@ Run demo scripts **line by line** with `Ctrl+Enter` (Windows) / `Cmd+Enter` (Mac
    high_bp <- sbp_readings >= 140
    sum(high_bp)
    ```
-   Expected `sum(high_bp)` → `[1] 4`. *Explain that `TRUE` counts as 1 — so `sum()` of a logical counts how many are TRUE.*
+   Expected `sum(high_bp)` → `[1] 4`. *Explain that `TRUE` counts as 1, so `sum()` of a logical counts how many are TRUE.*
 
-4. Packages (lines ~64–65): `library(tidyverse)` then `library(readxl)`. **Teaching error #2:** if someone typed `library(tidyverse)` before installing, they get `there is no package called 'tidyverse'` — the cue to revisit the setup guide.
+4. Packages (lines ~64–65): `library(tidyverse)` then `library(readxl)`. **Teaching error #2:** if someone typed `library(tidyverse)` before installing, they get `there is no package called 'tidyverse'`, the cue to revisit the setup guide.
 
 5. Import (lines ~87–90):
    ```r
    htn <- read_csv("Data/hypertension_phc_raw.csv")
    ```
-   Expected console output: a column specification block and **`Rows: 1503 Columns: 36`**. *Pause here.* The study enrolled 1,500 — *"Why 1503?"* Three duplicate rows. Plant this for Day 2.
+   Expected console output: a column specification block and **`Rows: 1503 Columns: 36`**. *Pause here.* The study enrolled 1,500, *"Why 1503?"* Three duplicate rows. Plant this for Day 2.
 
 6. First look (lines ~99–114):
    ```r
@@ -187,29 +187,29 @@ Run demo scripts **line by line** with `Ctrl+Enter` (Windows) / `Cmd+Enter` (Mac
    **Teaching error #3 / debugging moment:** `summary(htn$age)` shows a **Max of 200**, and `table(htn$sex)` shows multiple spellings. Let the room react. *"Before any statistics, R is already telling us the data needs cleaning."*
 
 **Common misconceptions & corrections.**
-- *"I have to memorise all the commands."* No — you look them up; see `References/R_command_reference_sheet.md`. Fluency comes from repetition, not memorisation.
+- *"I have to memorise all the commands."* No, you look them up; see `References/R_command_reference_sheet.md`. Fluency comes from repetition, not memorisation.
 - *"`=` and `<-` are the same."* They usually behave the same for assignment, but the course convention is `<-`; `=` is reserved for naming function arguments. Keep it simple and consistent.
 - *"The red text means I broke R."* Red is often just a **message** (e.g. the column spec from `read_csv`), not an error. Teach them to read whether it says `Error`.
 
 **Clinical interpretation notes.** Even raw inspection is clinically meaningful: a max age of 200 and an `sbp` of 700 are physiologically impossible and flag data-entry problems. A clinician's domain knowledge is the best data-validation tool.
 
 **Suggested audience questions (with answers).**
-- *Q: Why use R instead of Excel/SPSS?* A: Reproducibility. R records every step as code, so the analysis can be re-run, audited, and shared — essential for clinical research and publication.
+- *Q: Why use R instead of Excel/SPSS?* A: Reproducibility. R records every step as code, so the analysis can be re-run, audited, and shared, essential for clinical research and publication.
 - *Q: What's a "tibble"?* A: A modern data frame; it prints neatly (first 10 rows, column types) and behaves predictably.
 - *Q: Do I need internet to use R?* A: Only the first time, to install packages. After that it runs offline.
 
-**Exercise — what success looks like.** Participants independently: load `tidyverse` and `readxl`; import the CSV into `htn` (1503 × 36) and the Excel sheet `"data"` into `htn_xl` (same dimensions); run `glimpse()` and name 3 numeric and 3 categorical variables; spot **max age = 200** (implausible) and the **multiple spellings of `sex`**; note stray spaces in `facility`. **Key answer point:** the two data problems they should name are *implausible/impossible values* and *inconsistent category spellings* — exactly the Day 2 agenda.
+**Exercise: what success looks like.** Participants independently: load `tidyverse` and `readxl`; import the CSV into `htn` (1503 × 36) and the Excel sheet `"data"` into `htn_xl` (same dimensions); run `glimpse()` and name 3 numeric and 3 categorical variables; spot **max age = 200** (implausible) and the **multiple spellings of `sex`**; note stray spaces in `facility`. **Key answer point:** the two data problems they should name are *implausible/impossible values* and *inconsistent category spellings*, exactly the Day 2 agenda.
 
 ---
 
-### DAY 2 — Understanding & cleaning clinical data
+### DAY 2: Understanding & cleaning clinical data
 
 **Timing (90 min):** Recap 10 min · Lecture & live demo 50 min · Guided exercise 25 min · Wrap-up & Q&A 5 min.
 **Demo script:** `Scripts/day2_demo.R` · **Exercise:** `Practicals/day2_exercise.R` · **Solution:** `Solutions/day2_solution.R`
 
-**Learning objectives (day):** 5, 6, 7 — clean text and binaries, handle missing sentinels, validate clinical ranges, recode/derive, set factors with correct reference levels.
+**Learning objectives (day):** 5, 6, 7, clean text and binaries, handle missing sentinels, validate clinical ranges, recode/derive, set factors with correct reference levels.
 
-**Through-line.** *"Garbage in, garbage out — 80% of real analysis is cleaning."* Today we turn the messy raw file into one tidy, analysis-ready dataset and **save it**. This script is the **cleaning contract**: Days 3, 4 and 5 all start from `Data/analysis_data.rds`. Emphasise that we **never re-clean by hand later**.
+**Through-line.** *"Garbage in, garbage out, 80% of real analysis is cleaning."* Today we turn the messy raw file into one tidy, analysis-ready dataset and **save it**. This script is the **cleaning contract**: Days 3, 4 and 5 all start from `Data/analysis_data.rds`. Emphasise that we **never re-clean by hand later**.
 
 **Key teaching points.**
 - Tell `read_csv` what counts as missing: `na = c("", "NA", "999", "-99")`.
@@ -217,7 +217,7 @@ Run demo scripts **line by line** with `Ctrl+Enter` (Windows) / `Cmd+Enter` (Mac
 - Standardise messy categories with `str_to_lower()` + `case_when()`; write a **reusable helper** (`to_yesno()`) so the same logic applies to every binary.
 - Validate against physiological ranges → out-of-range becomes `NA`.
 - **Recompute** BMI from source height/weight rather than trusting the supplied (faulty) column.
-- Set **factors with deliberate reference levels** — for binaries, list `"No"` first so models estimate the odds of the event.
+- Set **factors with deliberate reference levels**, for binaries, list `"No"` first so models estimate the odds of the event.
 
 **Live-demo walkthrough (`day2_demo.R`).**
 
@@ -233,10 +233,10 @@ Run demo scripts **line by line** with `Ctrl+Enter` (Windows) / `Cmd+Enter` (Mac
    table(raw$sex, useNA = "ifany")              # now only Female / Male
    table(raw$treatment_uptake, useNA = "ifany") # now only Yes / No
    ```
-4. Validation (lines ~70–78): impossible `age`, `sbp_mmhg`, etc. set to `NA`; `summary()` now shows sane Max values. **Debugging moment:** ask *"Where did age 200 go?"* — it is now counted under `NA's`.
+4. Validation (lines ~70–78): impossible `age`, `sbp_mmhg`, etc. set to `NA`; `summary()` now shows sane Max values. **Debugging moment:** ask *"Where did age 200 go?"*, it is now counted under `NA's`.
 5. Derive BMI and categories (lines ~84–96). **Teaching error #1:** the supplied `bmi` column is wrong because of the `height_cm = 17` and `weight_kg = 7` errors; recomputing after validation fixes it.
 6. Dates (lines ~104–108): `parse_date_time(..., orders = c("ymd","dmy","d-b-Y"))`; `sum(is.na(enroll_date))` shows any that failed to parse.
-7. Factors (lines ~114–138). **Teaching error #2 — surface this hard:** if you set `treatment_uptake = factor(..., levels = c("Yes","No"))` (wrong order), every odds ratio on Days 4–5 inverts. The reference level **must** be `"No"`.
+7. Factors (lines ~114–138). **Teaching error #2, surface this hard:** if you set `treatment_uptake = factor(..., levels = c("Yes","No"))` (wrong order), every odds ratio on Days 4–5 inverts. The reference level **must** be `"No"`.
 8. Save the contract (lines ~153–154):
    ```r
    saveRDS(analysis_data, "Data/analysis_data.rds")
@@ -245,29 +245,29 @@ Run demo scripts **line by line** with `Ctrl+Enter` (Windows) / `Cmd+Enter` (Mac
 
 **Common misconceptions & corrections.**
 - *"I'll just fix it in Excel."* That breaks reproducibility and is unauditable. Cleaning belongs in code.
-- *"A missing value is zero."* No — `NA` means *unknown*, not 0. Recoding `999`/`-99`/blank to `NA` is the whole point.
-- *"Factor order doesn't matter."* It silently determines the regression reference category — it matters enormously.
+- *"A missing value is zero."* No, `NA` means *unknown*, not 0. Recoding `999`/`-99`/blank to `NA` is the whole point.
+- *"Factor order doesn't matter."* It silently determines the regression reference category, it matters enormously.
 - *"`|>` is different from `%>%`."* For this course they behave the same (pipe the left side into the next function); use whichever the script uses.
 
-**Clinical interpretation notes.** Validation ranges are clinical judgements: age 18–110, SBP 70–260 mmHg, DBP 40–150, height 120–210 cm, weight 30–200 kg. Discuss *why* — these are the bounds of human physiology. The recomputed BMI feeds the standard WHO categories (Underweight/Normal/Overweight/Obese).
+**Clinical interpretation notes.** Validation ranges are clinical judgements: age 18–110, SBP 70–260 mmHg, DBP 40–150, height 120–210 cm, weight 30–200 kg. Discuss *why*, these are the bounds of human physiology. The recomputed BMI feeds the standard WHO categories (Underweight/Normal/Overweight/Obese).
 
 **Suggested audience questions (with answers).**
-- *Q: Why save as `.rds` instead of `.csv`?* A: `.rds` preserves R types — crucially the **factor levels and order**. A re-read CSV would lose the reference-level setup.
+- *Q: Why save as `.rds` instead of `.csv`?* A: `.rds` preserves R types, crucially the **factor levels and order**. A re-read CSV would lose the reference-level setup.
 - *Q: Should I delete rows with any missing data?* A: Not at the cleaning stage. Keep them; the model uses complete cases for its variables only (Day 4). Dropping early throws away usable data.
-- *Q: Is `to_yesno()` necessary?* A: It avoids copy-paste errors — one tested function applied to five columns is safer than five hand-edited blocks.
+- *Q: Is `to_yesno()` necessary?* A: It avoids copy-paste errors, one tested function applied to five columns is safer than five hand-edited blocks.
 
-**Exercise — what success looks like.** A reproducible cleaning pipeline ending in `analysis_data.rds`: import with sentinels; `distinct()` → **1500 rows**; `sex` reduced to Female/Male; `diabetes` and `treatment_uptake` standardised to Yes/No; out-of-range `age`/`sbp` → `NA`; BMI recomputed with `bmi_cat`; key variables converted to factors with **`treatment_uptake` reference = "No"**; data saved. **Key answer point:** the count of missing `total_chol_mmol_l` after import (via `sum(is.na(...))`) — confirm they used the `na =` argument so the `-99`/blank sentinels were caught.
+**Exercise: what success looks like.** A reproducible cleaning pipeline ending in `analysis_data.rds`: import with sentinels; `distinct()` → **1500 rows**; `sex` reduced to Female/Male; `diabetes` and `treatment_uptake` standardised to Yes/No; out-of-range `age`/`sbp` → `NA`; BMI recomputed with `bmi_cat`; key variables converted to factors with **`treatment_uptake` reference = "No"**; data saved. **Key answer point:** the count of missing `total_chol_mmol_l` after import (via `sum(is.na(...))`), confirm they used the `na =` argument so the `-99`/blank sentinels were caught.
 
 ---
 
-### DAY 3 — Descriptive statistics, tables & figures
+### DAY 3: Descriptive statistics, tables & figures
 
 **Timing (90 min):** Recap 10 min · Lecture & live demo 50 min · Guided exercise 25 min · Wrap-up & Q&A 5 min.
 **Demo script:** `Scripts/day3_demo.R` · **Exercise:** `Practicals/day3_exercise.R` · **Solution:** `Solutions/day3_solution.R`
 
-**Learning objectives (day):** 8, 9 — central tendency/spread, frequencies, cross-tabs; publication-quality Table 1 and figures.
+**Learning objectives (day):** 8, 9, central tendency/spread, frequencies, cross-tabs; publication-quality Table 1 and figures.
 
-**Through-line.** *"Describe before you test."* Today we summarise the sample numerically and visually and build the **Table 1** every clinical manuscript opens with. Always reload from `analysis_data.rds` — never re-clean.
+**Through-line.** *"Describe before you test."* Today we summarise the sample numerically and visually and build the **Table 1** every clinical manuscript opens with. Always reload from `analysis_data.rds`, never re-clean.
 
 **Key teaching points.**
 - The **#1 beginner trap:** `mean()`/`sd()` return `NA` if *any* value is missing → always `na.rm = TRUE`.
@@ -286,35 +286,35 @@ Run demo scripts **line by line** with `Ctrl+Enter` (Windows) / `Cmd+Enter` (Mac
    ```
    **Debugging moment #1:** *"Why did the first one give NA when we have 1500 patients? Because at least one SBP is missing."*
 2. Spread and quantiles (lines ~60–66): `median`, `sd`, `IQR`, `quantile()`.
-3. Grouped summary by outcome (lines ~101–116): `group_by(treatment_uptake)` + `across()` — note treated patients tend to be older / higher SBP (early signal).
-4. Frequencies (lines ~129–148). **Debugging moment #2:** compare `table(analysis_data$education)` with `table(..., useNA = "ifany")` — the second reveals the blanks.
+3. Grouped summary by outcome (lines ~101–116): `group_by(treatment_uptake)` + `across()`, note treated patients tend to be older / higher SBP (early signal).
+4. Frequencies (lines ~129–148). **Debugging moment #2:** compare `table(analysis_data$education)` with `table(..., useNA = "ifany")`, the second reveals the blanks.
 5. Cross-tabs (lines ~155–163): row vs column percentages; **make the class state the question first** so they pick the right margin.
 6. Table 1 (lines ~181–207): `tbl_summary(by = treatment_uptake) |> add_p() |> add_overall() |> bold_labels()`. **Teaching error / fallback:** if `gtsummary` isn't installed, show the base-R `table()`/`aggregate()` fallback noted in the script.
 7. Figures (lines ~229–309): histogram of age, SBP histogram+density, education bar, boxplots by group, SBP-vs-BMI scatter with `geom_smooth(method = "lm")`. Each saved with `ggsave(..., dpi = 300)`.
 
 **Common misconceptions & corrections.**
-- *"A p-value in Table 1 proves causation."* No — Table 1 p-values are descriptive group comparisons, not adjusted effects (that's Days 4–5).
-- *"Always report the mean."* Not for skewed data — report median (IQR).
-- *"`geom_bar()` needs me to count first."* No — it counts categories for you; pre-summarising double-counts.
+- *"A p-value in Table 1 proves causation."* No, Table 1 p-values are descriptive group comparisons, not adjusted effects (that's Days 4–5).
+- *"Always report the mean."* Not for skewed data, report median (IQR).
+- *"`geom_bar()` needs me to count first."* No, it counts categories for you; pre-summarising double-counts.
 - *"The plot vanished."* `ggsave()` saved the last printed plot; check the `Resources/` folder.
 
-**Clinical interpretation notes.** The scatter's upward slope (BMI vs SBP) is consistent with obesity as a hypertension risk factor — but **association, not causation**. Skew in SBP/BMI is expected physiologically (a few very high values). Choosing the correct `prop.table` margin is a genuine manuscript pitfall: *"% of diabetics on treatment" = column %*; *"% of treated who are diabetic" = row %*.
+**Clinical interpretation notes.** The scatter's upward slope (BMI vs SBP) is consistent with obesity as a hypertension risk factor, but **association, not causation**. Skew in SBP/BMI is expected physiologically (a few very high values). Choosing the correct `prop.table` margin is a genuine manuscript pitfall: *"% of diabetics on treatment" = column %*; *"% of treated who are diabetic" = row %*.
 
 **Suggested audience questions (with answers).**
 - *Q: When mean ≠ median, which do I report?* A: For a clearly skewed clinical variable, median (IQR). When they're close, mean (SD) is fine.
 - *Q: How do I get Table 1 into Word?* A: `as_flex_table()` → `flextable::save_as_docx()`, or export HTML/CSV (the script shows both).
 - *Q: Why 300 dpi?* A: Journals require it for print-quality figures.
 
-**Exercise — what success looks like.** Reload the clean data; report mean (SD) age and median (IQR) distance (with `na.rm = TRUE`); frequency tables (n and %) of education and bp_category; cross-tab of treatment_uptake × diabetes with row %; a **Table 1 stratified by `treatment_uptake` with `add_p()`** covering the listed variables; two saved figures (boxplot of SBP by uptake, education bar) at 300 dpi; Table 1 exported. **Key answer point:** name two characteristics that differ between treated/untreated (e.g. age, insurance, diabetes, education) and judge them clinically plausible.
+**Exercise: what success looks like.** Reload the clean data; report mean (SD) age and median (IQR) distance (with `na.rm = TRUE`); frequency tables (n and %) of education and bp_category; cross-tab of treatment_uptake × diabetes with row %; a **Table 1 stratified by `treatment_uptake` with `add_p()`** covering the listed variables; two saved figures (boxplot of SBP by uptake, education bar) at 300 dpi; Table 1 exported. **Key answer point:** name two characteristics that differ between treated/untreated (e.g. age, insurance, diabetes, education) and judge them clinically plausible.
 
 ---
 
-### DAY 4 — Statistical analysis (hypothesis tests + intro to logistic regression)
+### DAY 4: Statistical analysis (hypothesis tests + intro to logistic regression)
 
 **Timing (90 min):** Recap 10 min · Lecture & live demo 50 min · Guided exercise 25 min · Wrap-up & Q&A 5 min.
 **Demo script:** `Scripts/day4_demo.R` · **Exercise:** `Practicals/day4_exercise.R` · **Solution:** `Solutions/day4_solution.R`
 
-**Learning objectives (day):** 10, 11 (intro) — match question to test; run/interpret t-test, Wilcoxon, ANOVA, chi-square/Fisher, correlation; fit and interpret simple logistic regression as odds ratios.
+**Learning objectives (day):** 10, 11 (intro), match question to test; run/interpret t-test, Wilcoxon, ANOVA, chi-square/Fisher, correlation; fit and interpret simple logistic regression as odds ratios.
 
 **Through-line.** *"Move from describing the data to asking questions of it."* The pivotal idea today is the **analytic population**: treatment uptake only makes sense for people **already diagnosed**, so we filter `htn_diagnosed == "Yes"` (~1,089). *"You cannot take up treatment for a disease you haven't been diagnosed with."*
 
@@ -331,12 +331,12 @@ Run demo scripts **line by line** with `Ctrl+Enter` (Windows) / `Cmd+Enter` (Mac
 
 **Live-demo walkthrough (`day4_demo.R`).**
 
-1. Build the subset (lines ~41–49): `nrow(dx)` ≈ **1089**; `table(dx$treatment_uptake)`. **Debugging moment #1 — surface this:** running on all 1500 mixes in undiagnosed people for whom the outcome is undefined, biasing everything.
-2. Normality (lines ~63–83): `hist`, `qqnorm`/`qqline`, then `shapiro.test()`. *"With ~1089 rows Shapiro flags trivial departures — trust the Q-Q plot."*
-3. t-test / Wilcoxon (lines ~104–114): `t.test(age ~ treatment_uptake, data = dx)` — read the two means, the CI for the difference, the p-value. Expect older age among treated.
+1. Build the subset (lines ~41–49): `nrow(dx)` ≈ **1089**; `table(dx$treatment_uptake)`. **Debugging moment #1, surface this:** running on all 1500 mixes in undiagnosed people for whom the outcome is undefined, biasing everything.
+2. Normality (lines ~63–83): `hist`, `qqnorm`/`qqline`, then `shapiro.test()`. *"With ~1089 rows Shapiro flags trivial departures, trust the Q-Q plot."*
+3. t-test / Wilcoxon (lines ~104–114): `t.test(age ~ treatment_uptake, data = dx)`, read the two means, the CI for the difference, the p-value. Expect older age among treated.
 4. ANOVA + Tukey (lines ~129–139): `aov(age ~ education)` then `TukeyHSD()`. *"ANOVA says some groups differ; Tukey says which."*
 5. Chi-square / Fisher (lines ~151–165): build `table(dx$treatment_uptake, dx$diabetes)`, run `chisq.test()`, **check `$expected`**, fall back to `fisher.test()` if any expected < 5.
-6. Correlation (lines ~178–181): Pearson vs Spearman for SBP vs BMI. *"In big samples a tiny r can be 'significant' yet clinically trivial — report r, not just p."*
+6. Correlation (lines ~178–181): Pearson vs Spearman for SBP vs BMI. *"In big samples a tiny r can be 'significant' yet clinically trivial, report r, not just p."*
 7. Simple logistic regression (lines ~202–229):
    ```r
    m_diab <- glm(treatment_uptake ~ diabetes, data = dx, family = binomial)
@@ -345,36 +345,36 @@ Run demo scripts **line by line** with `Ctrl+Enter` (Windows) / `Cmd+Enter` (Mac
    exp(coef(m_age)["age"] * 10)   # OR per decade
    ```
    *"OR > 1 = higher odds of uptake; a CI excluding 1 = significant."*
-8. Brief multivariable + `broom` (lines ~241–264). **Debugging moment #2:** `nobs(m_multi)` < 1089 because `glm()` uses **complete cases** — any missing value in any model variable drops that row silently. `tidy(m_multi, exponentiate = TRUE, conf.int = TRUE)` gives the report-ready table.
+8. Brief multivariable + `broom` (lines ~241–264). **Debugging moment #2:** `nobs(m_multi)` < 1089 because `glm()` uses **complete cases**, any missing value in any model variable drops that row silently. `tidy(m_multi, exponentiate = TRUE, conf.int = TRUE)` gives the report-ready table.
 
 **Common misconceptions & corrections.**
-- *"Significant = important."* No — significance is about evidence against the null; clinical importance is the effect size (OR, mean difference, r).
+- *"Significant = important."* No, significance is about evidence against the null; clinical importance is the effect size (OR, mean difference, r).
 - *"A small Shapiro p means I can't use a t-test."* Not at this sample size; judge the Q-Q plot.
 - *"The OR per year of age is tiny so age doesn't matter."* It's per **one year**; rescale to a decade to see the real effect.
-- *"glm used all my patients."* Check `nobs()` — complete-case analysis quietly reduces n.
+- *"glm used all my patients."* Check `nobs()`, complete-case analysis quietly reduces n.
 
-**Clinical interpretation notes.** Diabetics attending PHC are sicker and more engaged with care, so a higher uptake (OR > 1) is plausible. Phrase ORs clinically: *"Patients with diabetes had about X times the odds of treatment uptake versus those without (OR X.X, 95% CI a–b)."* Remind them: chi-square gives a p-value, not an effect size — the OR does.
+**Clinical interpretation notes.** Diabetics attending PHC are sicker and more engaged with care, so a higher uptake (OR > 1) is plausible. Phrase ORs clinically: *"Patients with diabetes had about X times the odds of treatment uptake versus those without (OR X.X, 95% CI a–b)."* Remind them: chi-square gives a p-value, not an effect size, the OR does.
 
 **Suggested audience questions (with answers).**
 - *Q: t-test or Wilcoxon?* A: If the variable is roughly symmetric in a large sample, t-test; if clearly skewed or small n, Wilcoxon. When they agree, report the t-test.
 - *Q: Why logistic and not linear regression?* A: The outcome is binary (Yes/No); logistic models the log-odds, giving interpretable odds ratios.
 - *Q: Why is the reference "No"?* A: We set it on Day 2 so the model estimates the odds of **uptake** (the event of interest).
 
-**Exercise — what success looks like.** Restrict to `dx` (≈1089); decide t-test vs Wilcoxon for age by uptake and interpret; chi-square of uptake × diabetes; simple logistic OR for diabetes with CI and a one-sentence clinical reading; OR for age per year and per decade (`OR^10`); a multivariable model (`age + sex + diabetes + residence + health_insurance`) tidied with `broom`. **Key answer point:** they should list the significant determinants with directions, broadly matching `key_findings.md` (diabetes ↑, insurance ↑, urban ↑, older age ↑). Mark on **correct method and interpretation**, not second-decimal matches.
+**Exercise: what success looks like.** Restrict to `dx` (≈1089); decide t-test vs Wilcoxon for age by uptake and interpret; chi-square of uptake × diabetes; simple logistic OR for diabetes with CI and a one-sentence clinical reading; OR for age per year and per decade (`OR^10`); a multivariable model (`age + sex + diabetes + residence + health_insurance`) tidied with `broom`. **Key answer point:** they should list the significant determinants with directions, broadly matching `key_findings.md` (diabetes ↑, insurance ↑, urban ↑, older age ↑). Mark on **correct method and interpretation**, not second-decimal matches.
 
 ---
 
-### DAY 5 — Regression modelling & reproducibility (capstone)
+### DAY 5: Regression modelling & reproducibility (capstone)
 
 **Timing (90 min):** Recap 10 min · Lecture & live demo 50 min · Guided exercise 25 min · Wrap-up & Q&A 5 min.
 **Demo script:** `Scripts/day5_demo.R` · **Exercise:** `Practicals/day5_exercise.R` · **Solution:** `Solutions/day5_solution.R`
 
-**Learning objectives (day):** 11 (full), 12, 13 — fit/report a multivariable model; confounding and interaction; diagnostics (VIF, linearity, influence, AUC); reproducibility.
+**Learning objectives (day):** 11 (full), 12, 13, fit/report a multivariable model; confounding and interaction; diagnostics (VIF, linearity, influence, AUC); reproducibility.
 
 **Through-line.** *"Build the model from clinical knowledge, not from p-values; then report it reproducibly."* This is the capstone: one pre-specified multivariable model, properly diagnosed, presented as adjusted ORs with a forest plot, all reproducible.
 
 **Key teaching points.**
-- **Pre-specify** predictors from clinical knowledge and the literature — avoid data dredging and uncritical stepwise selection.
+- **Pre-specify** predictors from clinical knowledge and the literature, avoid data dredging and uncritical stepwise selection.
 - **Confounding:** compare crude vs adjusted OR for residence; a >10% shift signals confounding.
 - **Interaction (effect modification):** add `diabetes:age`, compare nested models with an LRT (`anova(..., test = "LRT")`); expect non-significant → keep the simpler model.
 - **Diagnostics:** `car::vif()` (>5 worth a look, >10 serious); linearity on the **logit** (loess check); Cook's distance via `broom::augment()`; **AUC** via `pROC` (0.7–0.8 acceptable).
@@ -384,33 +384,33 @@ Run demo scripts **line by line** with `Ctrl+Enter` (Windows) / `Cmd+Enter` (Mac
 
 1. Load + subset (lines ~36–49): `dx`, confirm `levels(dx$treatment_uptake)` is `c("No","Yes")` (reference = No).
 2. Full pre-specified model (lines ~65–77): `treatment_uptake ~ age + sex + education + residence + diabetes + family_history_htn + health_insurance + knowledge_score + distance_to_facility_km`.
-3. Confounding (lines ~86–90): crude vs adjusted OR for `residenceUrban` — note the shift.
-4. Interaction (lines ~105–114): `anova(model_full, model_interax, test = "LRT")` — **expect p > 0.05**, keep `model_full`. **Teaching point:** with the interaction in, the `diabetes` main effect is the effect *at age 0* — meaningless; don't interpret main effects under a retained interaction.
+3. Confounding (lines ~86–90): crude vs adjusted OR for `residenceUrban`, note the shift.
+4. Interaction (lines ~105–114): `anova(model_full, model_interax, test = "LRT")`, **expect p > 0.05**, keep `model_full`. **Teaching point:** with the interaction in, the `diabetes` main effect is the effect *at age 0*, meaningless; don't interpret main effects under a retained interaction.
 5. Stepwise caution (lines ~130–144): `step()` shown then **rejected** in favour of the clinical model. Say the cautions out loud.
 6. Diagnostics (lines ~153–200): `vif()`; loess linearity check for `knowledge_score`; Cook's distance with cutoff `4/n`; **AUC ≈ 0.71**.
 7. Report (lines ~207–259): `tidy(model_final, exponentiate = TRUE, conf.int = TRUE)`; `tbl_regression()`; forest plot on a **log scale** with reference line at OR = 1, saved to `Resources/`.
 8. Reproducibility (lines ~271): `sessionInfo()`; mention writing it to `References/session_info.txt`.
 
-**Expected canonical results (from `key_findings.md` — for marking).** Analytic sample 1,089 diagnosed; **992 complete cases**; uptake ≈ 47%. Adjusted ORs: diabetes **3.56**, insurance **2.05**, family history **1.91**, urban **1.87**, education trend **1.96**, age **1.03/yr**, knowledge **1.10/pt**, male sex **0.74**, distance **0.98 (NS)**; **AUC ≈ 0.71**. Decimals shift trivially across versions — mark on method and interpretation.
+**Expected canonical results (from `key_findings.md`, for marking).** Analytic sample 1,089 diagnosed; **992 complete cases**; uptake ≈ 47%. Adjusted ORs: diabetes **3.56**, insurance **2.05**, family history **1.91**, urban **1.87**, education trend **1.96**, age **1.03/yr**, knowledge **1.10/pt**, male sex **0.74**, distance **0.98 (NS)**; **AUC ≈ 0.71**. Decimals shift trivially across versions, mark on method and interpretation.
 
 **Common misconceptions & corrections.**
-- *"Drop every non-significant variable."* No — for an **explanatory** study, keep clinically chosen confounders even if p > 0.05; dropping them reintroduces bias.
+- *"Drop every non-significant variable."* No, for an **explanatory** study, keep clinically chosen confounders even if p > 0.05; dropping them reintroduces bias.
 - *"Stepwise/AIC finds the 'true' model."* It optimises fit-vs-complexity, produces optimistic CIs, and isn't reproducible across datasets. Reserve it mostly for prediction.
 - *"A flagged influential point should be deleted."* Inspect it first; report a sensitivity analysis if results change.
 - *"Higher AUC is always the goal."* For an explanatory determinants study, AUC summarises discrimination, not the validity of the ORs; 0.71 is acceptable here.
 
-**Clinical interpretation notes.** Diabetes shows the **largest effect** (OR ~3.56) but the **widest CI** — a smaller subgroup means lower precision; a perfect teaching point on effect size vs precision. The residence crude-vs-adjusted comparison demonstrates mild confounding. Distance trends protective but is **non-significant** after adjustment — a reminder that an expected direction is not the same as statistical significance.
+**Clinical interpretation notes.** Diabetes shows the **largest effect** (OR ~3.56) but the **widest CI**, a smaller subgroup means lower precision; a perfect teaching point on effect size vs precision. The residence crude-vs-adjusted comparison demonstrates mild confounding. Distance trends protective but is **non-significant** after adjustment, a reminder that an expected direction is not the same as statistical significance.
 
 **Suggested audience questions (with answers).**
 - *Q: Why keep distance if it's not significant?* A: It's a pre-specified access variable; reporting its (non-significant) adjusted OR is honest and informative.
-- *Q: What does AUC = 0.71 mean?* A: Given a random treated and untreated patient, the model ranks the treated one higher 71% of the time — acceptable discrimination.
+- *Q: What does AUC = 0.71 mean?* A: Given a random treated and untreated patient, the model ranks the treated one higher 71% of the time, acceptable discrimination.
 - *Q: How do I make this fully reproducible?* A: RStudio Project + relative paths + `set.seed()` + saved outputs + `sessionInfo()`, ideally knitted from an R Markdown/Quarto document.
 
-**Exercise — what success looks like.** Fit the full pre-specified model on `dx`; `vif()` (no value > 5); a publication-ready OR table (`tbl_regression` or `broom::tidy`) saved to `Resources/`; a saved forest plot; AUC via `pROC` (≈0.71); a 150–250-word plain-English Results section naming the significant determinants with adjusted ORs and 95% CIs plus one sentence on discrimination. **Key answer point:** largest effect = diabetes; widest CI = diabetes — width reflects lower precision from the smaller subgroup. Compare against `References/results_section_draft.txt`.
+**Exercise: what success looks like.** Fit the full pre-specified model on `dx`; `vif()` (no value > 5); a publication-ready OR table (`tbl_regression` or `broom::tidy`) saved to `Resources/`; a saved forest plot; AUC via `pROC` (≈0.71); a 150–250-word plain-English Results section naming the significant determinants with adjusted ORs and 95% CIs plus one sentence on discrimination. **Key answer point:** largest effect = diabetes; widest CI = diabetes, width reflects lower precision from the smaller subgroup. Compare against `References/results_section_draft.txt`.
 
 ---
 
-## 5. Troubleshooting appendix — common R errors clinicians hit
+## 5. Troubleshooting appendix, common R errors clinicians hit
 
 | Symptom / message | Likely cause | Fix |
 |---|---|---|
@@ -435,7 +435,7 @@ Run demo scripts **line by line** with `Ctrl+Enter` (Windows) / `Cmd+Enter` (Mac
 
 **Final take-home assignment.** Participants independently reproduce the full determinants analysis on `analysis_data.rds`, restricted to diagnosed hypertensives: fit the pre-specified multivariable logistic model, check multicollinearity (VIF), present adjusted ORs with 95% CIs (publication-ready table), produce a forest plot, report model discrimination (AUC), and write a 150–250-word Results section in plain clinical English. This mirrors the **Day 5 in-class exercise** (`Practicals/day5_exercise.R`), which is explicitly the practice run for the assignment; canonical answers are in `Solutions/day5_solution.R` and `References/key_findings.md`.
 
-**Marking.** A detailed marking guide is provided **separately** to instructors. Mark on **correct method and sound interpretation**, not exact second-decimal matches — CIs and directions are stable across R/package versions; precise decimals are not. Reward: correct analytic population (diagnosed only), correct reference levels, adjusted (not crude) ORs, honest reporting of non-significant pre-specified variables, and a clinically literate Results paragraph.
+**Marking.** A detailed marking guide is provided **separately** to instructors. Mark on **correct method and sound interpretation**, not exact second-decimal matches, CIs and directions are stable across R/package versions; precise decimals are not. Reward: correct analytic population (diagnosed only), correct reference levels, adjusted (not crude) ORs, honest reporting of non-significant pre-specified variables, and a clinically literate Results paragraph.
 
 ---
 
@@ -443,10 +443,10 @@ Run demo scripts **line by line** with `Ctrl+Enter` (Windows) / `Cmd+Enter` (Mac
 
 **Shorter (½-day or 1-day taster).** Compress to Days 1–3: get data in, clean it, produce Table 1 and figures. Supply the prepared `analysis_data.rds` so cleaning can be demonstrated rather than fully performed. Drop hypothesis tests and regression, or give only a 20-minute "here's where this leads" preview of odds ratios.
 
-**Standard (this 5-day course).** As written — one concept per day, cumulative, ~2 hours/day.
+**Standard (this 5-day course).** As written, one concept per day, cumulative, ~2 hours/day.
 
 **Longer (7–10 days or a semester module).** Expand with: a dedicated data-cleaning lab on a second messy dataset; tidyverse `dplyr` verbs in depth; data visualisation as its own day; missing-data handling and multiple imputation; survival analysis or mixed/multilevel models for the multicentre clustering; and a full R Markdown/Quarto reporting day culminating in a knitted manuscript. Add formative quizzes between days and a peer code-review session before the final assignment.
 
 ---
 
-*Prepared for instructors of* **Clinical Data Analysis in R — Phase I** *· Trainers: Vương Mỹ Lượng (Senior Biostatistician, lead trainer) & Bernard Osang'ir (Senior Biostatistician) · Neudata · #ClearDataClearImpact*
+*Prepared for instructors of* **Clinical Data Analysis in R - Phase I** *· Trainers: Vương Mỹ Lượng (Senior Biostatistician, lead trainer) & Bernard Osang'ir (Senior Biostatistician) · Neudata · #ClearDataClearImpact*

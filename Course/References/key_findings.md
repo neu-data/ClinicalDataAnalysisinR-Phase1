@@ -1,5 +1,5 @@
 # Key Findings (Instructor Reference)
-### Canonical results from the simulated dataset — for marking & teaching
+### Canonical results from the simulated dataset, for marking & teaching
 
 These are the actual numbers produced by the final multivariable logistic
 regression model in `Scripts/day5_demo.R` / `Solutions/day5_solution.R`,
@@ -29,7 +29,7 @@ adjusted model. Overall treatment uptake among diagnosed ≈ **47%**.
   sex, higher education, urban residence, diabetes, family history, health
   insurance, and greater hypertension knowledge.
 - **Diabetes** shows the largest effect (over 3× the odds) but the widest CI
-  (smaller subgroup) — a good teaching point on precision.
+  (smaller subgroup): a good teaching point on precision.
 - **Distance to facility** is in the expected (protective-against-uptake)
   direction but not statistically significant after adjustment.
 - Crude vs adjusted comparison for **residence** demonstrates mild confounding.

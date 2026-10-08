@@ -9,6 +9,7 @@ section-label: "Section"
 format:
   neudata-revealjs:
     scrollable: true
+    include-in-header: access-gate.html
 ---
 
 

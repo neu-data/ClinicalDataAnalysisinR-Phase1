@@ -1,6 +1,6 @@
 ---
-title: "Bài 3 — Phân tích Dữ liệu Khám phá"
-subtitle: "Phân tích Dữ liệu Lâm sàng bằng R (Giai đoạn I) — Trước khóa học"
+title: "Bài 3: Phân tích Dữ liệu Khám phá"
+subtitle: "Phân tích Dữ liệu Lâm sàng bằng R (Giai đoạn I), Trước khóa học"
 author: "Neudata"
 execute:
   echo: true
@@ -21,7 +21,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,
 Trước khi kiểm định bất cứ điều gì, chúng ta **mô tả** và **quan sát** dữ liệu. Bạn
 sẽ tính các thống kê mô tả, xây dựng một bảng tóm tắt theo phong cách xuất bản, và
 tạo bốn biểu đồ bạn sẽ dùng thường xuyên nhất: biểu đồ tần suất (histogram), biểu
-đồ hộp (boxplot), biểu đồ cột và biểu đồ phân tán — và, quan trọng không kém, **diễn
+đồ hộp (boxplot), biểu đồ cột và biểu đồ phân tán, và, quan trọng không kém, **diễn
 giải** từng biểu đồ.
 
 ```{r}
@@ -92,7 +92,7 @@ clinical_data %>%
 ## 4. Một "Bảng 1" sẵn sàng để xuất bản
 
 `gtsummary` xây dựng bảng đặc điểm nền (baseline characteristics) mà các tạp chí
-mong đợi — chỉ trong một lệnh.
+mong đợi: chỉ trong một lệnh.
 
 ```{r}
 clinical_data %>%
@@ -108,7 +108,7 @@ Hãy đọc nó như sau: với mỗi đặc điểm, nhóm tăng huyết áp v�
 
 ## 5. Bốn biểu đồ thiết yếu
 
-### Biểu đồ tần suất (histogram) — hình dạng của một biến liên tục
+### Biểu đồ tần suất (histogram), hình dạng của một biến liên tục
 
 ```{r}
 ggplot(clinical_data, aes(x = age)) +
@@ -117,10 +117,10 @@ ggplot(clinical_data, aes(x = age)) +
 ```
 
 **Diễn giải:** tuổi có hình dạng gần giống hình chuông và tập trung ở khoảng giữa
-tuổi 50 — một quần thể phòng khám trung niên điển hình, không có đỉnh nhọn bất
+tuổi 50: một quần thể phòng khám trung niên điển hình, không có đỉnh nhọn bất
 thường nào.
 
-### Biểu đồ hộp (boxplot) — một biến liên tục giữa các nhóm
+### Biểu đồ hộp (boxplot): một biến liên tục giữa các nhóm
 
 ```{r}
 ggplot(clinical_data, aes(x = hypertension, y = systolic_bp, fill = hypertension)) +
@@ -131,10 +131,10 @@ ggplot(clinical_data, aes(x = hypertension, y = systolic_bp, fill = hypertension
 ```
 
 **Diễn giải:** cái hộp (50% bệnh nhân ở giữa) nằm cao hơn rõ rệt đối với bệnh nhân
-tăng huyết áp — đúng như dự đoán. Các chấm phía trên râu (whisker) là các giá trị
+tăng huyết áp: đúng như dự đoán. Các chấm phía trên râu (whisker) là các giá trị
 ngoại lai.
 
-### Biểu đồ cột — số đếm của một danh mục
+### Biểu đồ cột: số đếm của một danh mục
 
 ```{r}
 ggplot(clinical_data, aes(x = smoking, fill = smoking)) +
@@ -145,9 +145,9 @@ ggplot(clinical_data, aes(x = smoking, fill = smoking)) +
 ```
 
 **Diễn giải:** hầu hết bệnh nhân chưa bao giờ hút thuốc, với ít người từng hút và
-đang hút hơn — điều hữu ích cần biết trước khi dùng hút thuốc làm một biến dự báo.
+đang hút hơn: điều hữu ích cần biết trước khi dùng hút thuốc làm một biến dự báo.
 
-### Biểu đồ phân tán — hai biến liên tục cùng nhau
+### Biểu đồ phân tán: hai biến liên tục cùng nhau
 
 ```{r}
 ggplot(clinical_data, aes(x = BMI, y = systolic_bp)) +
@@ -172,7 +172,7 @@ quan hay hồi quy tuyến tính.
 - Bốn biểu đồ cốt lõi: **histogram** (hình dạng của một biến), **boxplot** (biến
   theo nhóm), **biểu đồ cột** (số đếm danh mục), **biểu đồ phân tán** (hai biến liên
   tục).
-- Luôn *diễn giải* một biểu đồ theo ngôn ngữ lâm sàng — một bức tranh chỉ hữu ích
+- Luôn *diễn giải* một biểu đồ theo ngôn ngữ lâm sàng, một bức tranh chỉ hữu ích
   nếu bạn có thể nói được ý nghĩa của nó.
 
 ## Tự thực hành

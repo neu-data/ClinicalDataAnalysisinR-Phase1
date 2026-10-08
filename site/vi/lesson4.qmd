@@ -1,6 +1,6 @@
 ---
-title: "Bài 4 — Các Kiểm định Thống kê Thường gặp"
-subtitle: "Phân tích Dữ liệu Lâm sàng bằng R (Giai đoạn I) — Trước khóa học"
+title: "Bài 4: Các Kiểm định Thống kê Thường gặp"
+subtitle: "Phân tích Dữ liệu Lâm sàng bằng R (Giai đoạn I), Trước khóa học"
 author: "Neudata"
 execute:
   echo: true
@@ -19,8 +19,8 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
 Một kiểm định thống kê trả lời câu hỏi: *"liệu sự khác biệt này có thể chỉ do ngẫu
 nhiên không?"* Bạn sẽ chạy bốn kiểm định được dùng nhiều nhất trong nghiên cứu lâm
-sàng — **kiểm định t**, **kiểm định Wilcoxon**, **kiểm định chi bình phương /
-Fisher**, và **tương quan** — và, điều then chốt, học cách **chọn** và **diễn giải**
+sàng: **kiểm định t**, **kiểm định Wilcoxon**, **kiểm định chi bình phương /
+Fisher**, và **tương quan**, và, điều then chốt, học cách **chọn** và **diễn giải**
 chúng.
 
 > **Việc chọn một kiểm định bắt đầu từ câu hỏi, không phải từ câu lệnh.** Hãy hỏi:
@@ -35,7 +35,7 @@ clinical_data <- read_csv("../Data/clinical_data_clean.csv")
 
 ---
 
-## 1. Kiểm định t — một biến kết cục liên tục ở hai nhóm
+## 1. Kiểm định t: một biến kết cục liên tục ở hai nhóm
 
 **Câu hỏi:** Liệu **glucose** lúc đói có cao hơn ở bệnh nhân **có** đái tháo đường
 so với không có?
@@ -61,9 +61,9 @@ t.test(systolic_bp ~ sex, data = clinical_data)
 **Diễn giải:** các giá trị trung bình gần như giống hệt nhau và p lớn (~0.85). Chúng
 ta kết luận rằng **không có bằng chứng** về sự khác biệt giới tính đối với huyết áp
 tâm thu ở đây. Một kết quả không có ý nghĩa thống kê là một phát hiện thực sự, có
-thể báo cáo được — không phải là một thất bại.
+thể báo cáo được: không phải là một thất bại.
 
-## 2. Kiểm định Wilcoxon — lựa chọn thay thế phi tham số
+## 2. Kiểm định Wilcoxon: lựa chọn thay thế phi tham số
 
 Kiểm định t giả định rằng biến kết cục xấp xỉ phân phối chuẩn. Nếu nó bị lệch, hãy
 dùng **kiểm định Wilcoxon xếp hạng tổng (rank-sum)** (còn gọi là Mann–Whitney), kiểm
@@ -73,11 +73,11 @@ dùng **kiểm định Wilcoxon xếp hạng tổng (rank-sum)** (còn gọi là
 wilcox.test(glucose ~ diabetes, data = clinical_data)
 ```
 
-**Diễn giải:** nó nhất quán với kiểm định t — glucose cao hơn ở nhóm có đái tháo
+**Diễn giải:** nó nhất quán với kiểm định t, glucose cao hơn ở nhóm có đái tháo
 đường. Dùng Wilcoxon khi dữ liệu bị lệch hoặc có các giá trị ngoại lai mạnh; dùng
 kiểm định t khi dữ liệu xấp xỉ chuẩn.
 
-## 3. Kiểm định chi bình phương — hai biến phân loại
+## 3. Kiểm định chi bình phương, hai biến phân loại
 
 **Câu hỏi:** Liệu **tăng huyết áp** có liên quan đến **đái tháo đường** không?
 
@@ -90,10 +90,10 @@ chisq.test(table(clinical_data$hypertension, clinical_data$diabetes))
 ```
 
 **Diễn giải:** giá trị p nhỏ (< 0.001) nghĩa là tăng huyết áp và đái tháo đường xuất
-hiện cùng nhau nhiều hơn mức mong đợi do ngẫu nhiên — chúng có liên quan với nhau.
+hiện cùng nhau nhiều hơn mức mong đợi do ngẫu nhiên, chúng có liên quan với nhau.
 Kiểm định chi bình phương giả định rằng các tần số kỳ vọng phần lớn từ 5 trở lên.
 
-## 4. Kiểm định chính xác Fisher — khi số đếm nhỏ
+## 4. Kiểm định chính xác Fisher, khi số đếm nhỏ
 
 Khi bất kỳ tần số kỳ vọng nào nhỏ, hãy dùng **kiểm định chính xác Fisher** thay thế.
 
@@ -106,7 +106,7 @@ fisher.test(table(smokers$hypertension, smokers$diabetes))
 **Diễn giải:** Fisher cho một giá trị p hợp lệ ngay cả với cỡ mẫu nhỏ. Đối với các
 bảng 2×2, nó cũng trả về một tỷ số chênh (odds ratio).
 
-## 5. Tương quan — hai biến liên tục
+## 5. Tương quan: hai biến liên tục
 
 **Câu hỏi:** Liệu **tuổi** và **huyết áp tâm thu** có biến thiên cùng nhau không?
 
@@ -114,8 +114,8 @@ bảng 2×2, nó cũng trả về một tỷ số chênh (odds ratio).
 cor.test(clinical_data$age, clinical_data$systolic_bp)
 ```
 
-**Diễn giải:** hệ số tương quan (r ≈ 0.55) dương và ở mức trung bình — bệnh nhân lớn
-tuổi hơn có xu hướng có huyết áp tâm thu cao hơn — và giá trị p rất nhỏ. Dùng tương
+**Diễn giải:** hệ số tương quan (r ≈ 0.55) dương và ở mức trung bình, bệnh nhân lớn
+tuổi hơn có xu hướng có huyết áp tâm thu cao hơn, và giá trị p rất nhỏ. Dùng tương
 quan **Pearson** cho các mối quan hệ đường thẳng và **Spearman**
 (`method = "spearman"`) nếu mối quan hệ phi tuyến hoặc dữ liệu bị lệch.
 
@@ -126,9 +126,9 @@ quan **Pearson** cho các mối quan hệ đường thẳng và **Spearman**
 Mọi kiểm định ở trên đều in ra:
 
 - một **ước lượng (estimate)** (một khác biệt giữa các giá trị trung bình, một tỷ số
-  chênh, một hệ số tương quan) — *con số quan trọng về mặt lâm sàng*;
-- một **khoảng tin cậy** — phạm vi các giá trị hợp lý;
-- một **giá trị p** — mức độ dữ liệu tương thích với giả thuyết "không có tác động".
+  chênh, một hệ số tương quan), *con số quan trọng về mặt lâm sàng*;
+- một **khoảng tin cậy**: phạm vi các giá trị hợp lý;
+- một **giá trị p**: mức độ dữ liệu tương thích với giả thuyết "không có tác động".
 
 Hãy báo cáo **ước lượng và khoảng tin cậy của nó trước tiên**; giá trị p bổ trợ cho
 chúng. Một giá trị p đơn lẻ không bao giờ cho bạn biết một tác động *lớn* hay *quan
@@ -137,9 +137,9 @@ trọng* đến mức nào.
 ## Những điểm chính cần ghi nhớ
 
 - Khớp kiểm định với câu hỏi: loại biến kết cục + số nhóm (xem hướng dẫn quyết định).
-- **kiểm định t / Wilcoxon** — biến kết cục liên tục, hai nhóm.
-- **chi bình phương / Fisher** — hai biến phân loại (Fisher cho số đếm nhỏ).
-- **tương quan** — hai biến liên tục.
+- **kiểm định t / Wilcoxon**: biến kết cục liên tục, hai nhóm.
+- **chi bình phương / Fisher**: hai biến phân loại (Fisher cho số đếm nhỏ).
+- **tương quan**: hai biến liên tục.
 - Không có ý nghĩa thống kê vẫn là một phát hiện.
 - Luôn báo cáo ước lượng tác động và khoảng tin cậy, không chỉ *p*.
 

@@ -1,5 +1,5 @@
 # =====================================================================
-#  SOLUTION 5 — Statistical Testing
+#  SOLUTION 5, Statistical Testing
 # =====================================================================
 library(tidyverse)
 clinical_data <- read_csv("Data/clinical_data_clean.csv")

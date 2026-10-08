@@ -1,10 +1,10 @@
 # Bài tập lớn cuối khóa (làm tại nhà)
 
-## Phân tích Dữ liệu Lâm sàng trong R — Giai đoạn I
+## Phân tích Dữ liệu Lâm sàng trong R - Giai đoạn I
 
-**Khóa học:** Phân tích Dữ liệu Lâm sàng trong R — Giai đoạn I
+**Khóa học:** Phân tích Dữ liệu Lâm sàng trong R - Giai đoạn I
 **Giảng viên:** Vương Mỹ Lượng (Chuyên gia Thống kê Sinh học Cao cấp, giảng viên chính) và Bernard Isekah Osang'ir (Chuyên gia Thống kê Sinh học Cao cấp)
-**Tổ chức:** Neudata — *#ClearDataClearImpact*
+**Tổ chức:** Neudata: *#ClearDataClearImpact*
 **Hình thức đánh giá:** Bài tập lớn làm tại nhà theo cá nhân (được mở tài liệu, mở ghi chú)
 **Trọng số:** 100 điểm
 
@@ -12,7 +12,7 @@
 
 ## 1. Tổng quan
 
-Trong năm ngày vừa qua, bạn đã học cách nhập, làm sạch, mô tả, trực quan hóa và mô hình hóa dữ liệu lâm sàng trong R. Bài tập lớn này yêu cầu bạn kết hợp các kỹ năng đó trong một phân tích trọn vẹn từ đầu đến cuối, phản ánh quy trình làm việc thực tế của một bản thảo bài báo — từ một bản xuất dữ liệu thô lộn xộn cho đến một phần Kết quả sẵn sàng cho công bố.
+Trong năm ngày vừa qua, bạn đã học cách nhập, làm sạch, mô tả, trực quan hóa và mô hình hóa dữ liệu lâm sàng trong R. Bài tập lớn này yêu cầu bạn kết hợp các kỹ năng đó trong một phân tích trọn vẹn từ đầu đến cuối, phản ánh quy trình làm việc thực tế của một bản thảo bài báo, từ một bản xuất dữ liệu thô lộn xộn cho đến một phần Kết quả sẵn sàng cho công bố.
 
 Bạn sẽ làm việc với một nghiên cứu cắt ngang đa trung tâm được mô phỏng:
 
@@ -24,14 +24,14 @@ Nghiên cứu đã thu nhận **1.500 người trưởng thành đến khám** t
 
 ## 2. Cơ sở lý luận
 
-Tăng huyết áp là một trong những nguyên nhân hàng đầu gây bệnh tật tim mạch, tuy nhiên một tỷ lệ lớn bệnh nhân được chẩn đoán lại không bao giờ bắt đầu hoặc duy trì điều trị. Việc hiểu *ai* tiếp nhận điều trị — và *những yếu tố bệnh nhân, lâm sàng và tiếp cận nào* liên quan độc lập đến việc tiếp nhận — giúp các dịch vụ y tế nhắm mục tiêu tiếp cận cộng đồng và gỡ bỏ các rào cản. Đây chính là loại câu hỏi mà một nhà phân tích lâm sàng được yêu cầu trả lời từ dữ liệu PHC thường quy. Bộ dữ liệu cố ý chứa đựng sự lộn xộn của một bản xuất dữ liệu thực tế, để bạn buộc phải đưa ra và biện giải cho các quyết định xử lý dữ liệu hợp lý trước khi thực hiện bất kỳ mô hình hóa nào.
+Tăng huyết áp là một trong những nguyên nhân hàng đầu gây bệnh tật tim mạch, tuy nhiên một tỷ lệ lớn bệnh nhân được chẩn đoán lại không bao giờ bắt đầu hoặc duy trì điều trị. Việc hiểu *ai* tiếp nhận điều trị, và *những yếu tố bệnh nhân, lâm sàng và tiếp cận nào* liên quan độc lập đến việc tiếp nhận, giúp các dịch vụ y tế nhắm mục tiêu tiếp cận cộng đồng và gỡ bỏ các rào cản. Đây chính là loại câu hỏi mà một nhà phân tích lâm sàng được yêu cầu trả lời từ dữ liệu PHC thường quy. Bộ dữ liệu cố ý chứa đựng sự lộn xộn của một bản xuất dữ liệu thực tế, để bạn buộc phải đưa ra và biện giải cho các quyết định xử lý dữ liệu hợp lý trước khi thực hiện bất kỳ mô hình hóa nào.
 
 ## 3. Tổ chức thực hiện
 
 - **Làm việc độc lập.** Bài này được hoàn thành **một mình bạn**, một tuần sau khóa học.
 - **Công sức.** Dự trù khoảng **6–10 giờ**.
 - **Sản phẩm nộp.** Một tập lệnh (script) R **hoặc** một tài liệu Quarto / R Markdown **hoàn toàn có thể tái lập**, chạy từ đầu đến cuối mà không cần can thiệp thủ công, **cùng với** các kết quả xuất ra (Bảng 1 và các hình) và một phần **Kết quả** viết ngắn gọn.
-- **Dữ liệu.** Bắt đầu từ tệp **THÔ** (`hypertension_phc_raw.csv` hoặc `.xlsx`). **Không** bắt đầu từ bất kỳ tệp tham chiếu đã được làm sạch/gọn gàng nào — việc làm sạch là một phần của đánh giá.
+- **Dữ liệu.** Bắt đầu từ tệp **THÔ** (`hypertension_phc_raw.csv` hoặc `.xlsx`). **Không** bắt đầu từ bất kỳ tệp tham chiếu đã được làm sạch/gọn gàng nào, việc làm sạch là một phần của đánh giá.
 - **Công cụ.** Yêu cầu sử dụng R cơ bản cùng họ tidyverse; bạn có thể dùng `gtsummary`/`gt` hoặc `flextable` cho Bảng 1, `ggplot2` cho các hình, `broom` cho kết quả mô hình gọn gàng, và `pROC` (hoặc tương đương) cho khả năng phân biệt. Hãy dùng những gói mà bạn thấy thoải mái, nhưng **nạp chúng một cách rõ ràng** ở đầu tập lệnh của bạn.
 
 ## 4. Câu hỏi cần trả lời
@@ -44,11 +44,11 @@ Phân tích của bạn cần đưa ra **các tỷ số chênh hiệu chỉnh c�
 
 Hoàn thành **tất cả** các nhiệm vụ sau. Đánh số các phần mã của bạn cho khớp.
 
-1. **Nhập dữ liệu thô.** Đọc `hypertension_phc_raw.csv` (hoặc tệp `.xlsx`) vào R. Kiểm tra cấu trúc, kích thước và kiểu dữ liệu. **Không** ép kiểu một cách âm thầm — hãy ghi chú những gì R đã hiểu sai khi nhập (ví dụ các cột số bị đọc thành ký tự do các mã đại diện).
+1. **Nhập dữ liệu thô.** Đọc `hypertension_phc_raw.csv` (hoặc tệp `.xlsx`) vào R. Kiểm tra cấu trúc, kích thước và kiểu dữ liệu. **Không** ép kiểu một cách âm thầm, hãy ghi chú những gì R đã hiểu sai khi nhập (ví dụ các cột số bị đọc thành ký tự do các mã đại diện).
 
 2. **Loại bỏ bản ghi trùng lặp.** Xác định và loại bỏ các bản ghi trùng lặp để bạn có **1.500 bệnh nhân duy nhất** (một hàng cho mỗi `patient_id`). Báo cáo số hàng bạn đã loại bỏ.
 
-3. **Xử lý các mã đại diện cho giá trị khuyết thiếu.** Chuyển đổi tình trạng khuyết thiếu bị ngụy trang — ô trống, chuỗi `NA`, `999`, `-99` — thành `NA` đúng nghĩa trong các cột số bị ảnh hưởng (ví dụ cholesterol, LDL, đường huyết lúc đói, khoảng cách). **Không** để các mã đại diện tồn tại như những con số thực.
+3. **Xử lý các mã đại diện cho giá trị khuyết thiếu.** Chuyển đổi tình trạng khuyết thiếu bị ngụy trang, ô trống, chuỗi `NA`, `999`, `-99`, thành `NA` đúng nghĩa trong các cột số bị ảnh hưởng (ví dụ cholesterol, LDL, đường huyết lúc đói, khoảng cách). **Không** để các mã đại diện tồn tại như những con số thực.
 
 4. **Chuẩn hóa các hạng mục không nhất quán.** Đồng bộ hóa văn bản lộn xộn: `sex` (Female/F/female/f, Male/M/male/m → Female/Male); các trường nhị phân được mã hóa dưới dạng Yes/No, Y/N và 1/0 (`diabetes`, `family_history_htn`, `health_insurance`, `htn_diagnosed`, `treatment_uptake`); và cắt bỏ khoảng trắng đầu/cuối trong `facility`, `residence`, `education`, `occupation`.
 
@@ -68,7 +68,7 @@ Hoàn thành **tất cả** các nhiệm vụ sau. Đánh số các phần mã c
 
 12. **Hồi quy logistic đơn biến (univariable).** Khớp một mô hình hồi quy logistic của `treatment_uptake` trên từng biến dự báo tiềm năng riêng lẻ và báo cáo **tỷ số chênh thô (crude odds ratios)** cùng KTC 95%.
 
-13. **Hồi quy logistic đa biến (đã hiệu chỉnh).** Khớp một mô hình logistic đa biến bao gồm các yếu tố quyết định đã được định trước (age, sex, education, residence, diabetes, tiền sử gia đình, health insurance, điểm kiến thức, khoảng cách đến cơ sở). Báo cáo **các tỷ số chênh hiệu chỉnh (aOR) cùng KTC 95%** và giá trị p trên **thang tỷ số chênh** (đã lấy lũy thừa — không phải log-odds). Báo cáo số ca đầy đủ dữ liệu (complete cases) được sử dụng.
+13. **Hồi quy logistic đa biến (đã hiệu chỉnh).** Khớp một mô hình logistic đa biến bao gồm các yếu tố quyết định đã được định trước (age, sex, education, residence, diabetes, tiền sử gia đình, health insurance, điểm kiến thức, khoảng cách đến cơ sở). Báo cáo **các tỷ số chênh hiệu chỉnh (aOR) cùng KTC 95%** và giá trị p trên **thang tỷ số chênh** (đã lấy lũy thừa, không phải log-odds). Báo cáo số ca đầy đủ dữ liệu (complete cases) được sử dụng.
 
 14. **Đánh giá mô hình.** Báo cáo khả năng phân biệt của mô hình (ví dụ AUC / thống kê C) và bình luận ngắn gọn về độ khớp và về bất kỳ vấn đề độ chính xác nào (KTC rộng).
 
@@ -85,7 +85,7 @@ Hoàn thành **tất cả** các nhiệm vụ sau. Đánh số các phần mã c
 - Đóng gói tệp của bạn cùng với các kết quả xuất ra (Bảng 1 và các hình) và phần Kết quả vào một tệp `.zip` duy nhất được đặt tên `Surname_Phase1_Assignment.zip`.
 - Nộp tệp `.zip` bằng biểu mẫu **Nộp bài** trên trang *Bài tập cuối khóa* của website khóa học trước hạn chót đã nêu (một tuần sau khóa học). Bài được gửi trực tiếp đến các giảng viên, và bạn sẽ nhận email xác nhận kèm mã bài nộp. Nếu biểu mẫu không hoạt động, hãy gửi tệp qua email đến **b.osangir@gmail.com**.
 
-## 7. Những gì cần nộp — Danh sách kiểm tra
+## 7. Những gì cần nộp: Danh sách kiểm tra
 
 - [ ] Tệp phân tích có thể tái lập (`Surname_Phase1_Assignment.R` / `.qmd` / `.Rmd`) chạy được từ dữ liệu **thô**.
 - [ ] **Bảng 1** đã xuất ra, phân tầng theo `treatment_uptake` (ví dụ `.docx`, `.html`, hoặc `.png`).
@@ -100,15 +100,15 @@ Hoàn thành **tất cả** các nhiệm vụ sau. Đánh số các phần mã c
 
 ---
 
-> ### Gợi ý — nên tìm ở đâu (không cung cấp đáp án)
+> ### Gợi ý: nên tìm ở đâu (không cung cấp đáp án)
 >
 > - **Nhập & kiểm tra ban đầu:** xem lại phần minh họa **Ngày 1** về `read_csv()` / `readxl`, `glimpse()`, `str()`, và cách phát hiện các cột bị đọc sai kiểu.
-> - **Làm sạch, mã đại diện, trùng lặp, ngày tháng:** phần minh họa **Ngày 2** đề cập tới `distinct()`, `na_if()`, mã hóa lại bằng `case_when()` / `fct_recode()`, `str_trim()`, và phân tích ngày tháng (`lubridate`). Ô *"Known data-quality issues"* (Các vấn đề chất lượng dữ liệu đã biết) trong từ điển dữ liệu cho bạn biết chính xác những vấn đề nào tồn tại — nhưng bạn phải tự viết mã.
+> - **Làm sạch, mã đại diện, trùng lặp, ngày tháng:** phần minh họa **Ngày 2** đề cập tới `distinct()`, `na_if()`, mã hóa lại bằng `case_when()` / `fct_recode()`, `str_trim()`, và phân tích ngày tháng (`lubridate`). Ô *"Known data-quality issues"* (Các vấn đề chất lượng dữ liệu đã biết) trong từ điển dữ liệu cho bạn biết chính xác những vấn đề nào tồn tại, nhưng bạn phải tự viết mã.
 > - **Biến hạng mục & biến dẫn xuất:** xem tài liệu **Ngày 2–3** về các mức của `factor()`, `relevel()`, biến hạng mục có thứ tự, và cách tính BMI.
 > - **Bảng 1 & thống kê mô tả:** phần minh họa **Ngày 3** trình bày `gtsummary::tbl_summary()` / `add_p()` (hoặc `flextable`) và cách chọn tóm tắt phù hợp cho từng kiểu biến.
 > - **Các hình:** các phần minh họa `ggplot2` của **Ngày 3–4** đề cập tới giao diện (themes), gắn nhãn, và `ggsave(..., dpi = 300)`.
 > - **Kiểm định & hồi quy:** các phần minh họa **Ngày 4–5** đề cập tới `chisq.test`/`fisher.test`, `t.test`/`wilcox.test`, `glm(..., family = binomial)`, lấy lũy thừa các hệ số bằng `broom::tidy(..., exponentiate = TRUE, conf.int = TRUE)`, và AUC với `pROC`.
 > - **Bảng tra cứu:** hãy để mở **bảng tra cứu / bảng ghi nhớ R** của khóa học để nhắc lại cú pháp.
-> - **Từ điển dữ liệu:** `Course/Data/data_dictionary.md` định nghĩa từng biến, cách mã hóa, và vai trò của nó — hãy đọc nó trước khi bạn bắt đầu.
+> - **Từ điển dữ liệu:** `Course/Data/data_dictionary.md` định nghĩa từng biến, cách mã hóa, và vai trò của nó, hãy đọc nó trước khi bạn bắt đầu.
 >
-> *Mẹo:* hãy hình dung phân tích của bạn như một chuỗi xử lý (pipeline) — nhập → làm sạch → tạo biến dẫn xuất → giới hạn → mô tả → kiểm định → mô hình hóa → diễn giải. Hãy làm đúng từng giai đoạn trước khi chuyển tiếp, và thường xuyên chạy lại từ đầu.
+> *Mẹo:* hãy hình dung phân tích của bạn như một chuỗi xử lý (pipeline), nhập → làm sạch → tạo biến dẫn xuất → giới hạn → mô tả → kiểm định → mô hình hóa → diễn giải. Hãy làm đúng từng giai đoạn trước khi chuyển tiếp, và thường xuyên chạy lại từ đầu.

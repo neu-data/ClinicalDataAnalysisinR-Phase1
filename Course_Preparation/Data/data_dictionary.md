@@ -1,4 +1,4 @@
-# Data Dictionary — Pre-course Clinical Dataset
+# Data Dictionary: Pre-course Clinical Dataset
 
 **Files:** `clinical_data_raw.csv` (messy), `clinical_data_clean.csv` (analysis-ready), `clinical_data_raw.xlsx` (Excel copy of the raw file)
 

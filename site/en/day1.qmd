@@ -17,9 +17,9 @@ title: "Day 1: Introduction to R & RStudio"
 
 | | |
 |:--|:--|
-| 🎞️ **Slides** | [Open the slides](slides-day1.qmd) — Press **F** for full screen, **S** for speaker notes, **E** to print. |
-| 📥 **PowerPoint** | [Download the slides (PowerPoint)](files/slides/Clinical_Data_Analysis_in_R_Phase1.pptx) |
-| 💻 **Live-coding demo script** | [day1_demo.R](files/scripts/day1_demo.R) |
-| 🧪 **Practical exercise** | [day1_exercise.R](files/practicals/day1_exercise.R) |
-| ✅ **Worked solution** | [day1_solution.R](files/solutions/day1_solution.R) |
-| 📁 **Course data** | [Course data](data.qmd) |
+| **Slides** | [Open the slides](slides-day1.qmd), Press **F** for full screen, **S** for speaker notes, **E** to print. |
+| **PowerPoint** | [Download the slides (PowerPoint)](files/slides/Clinical_Data_Analysis_in_R_Phase1.pptx) |
+| **Live-coding demo script** | [day1_demo.R](files/scripts/day1_demo.R) |
+| **Practical exercise** | [day1_exercise.R](files/practicals/day1_exercise.R) |
+| **Worked solution** | [day1_solution.R](files/solutions/day1_solution.R) |
+| **Course data** | [Course data](data.qmd) |

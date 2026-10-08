@@ -1,6 +1,6 @@
 # =====================================================================
-#  EXERCISE 5 — Statistical Testing (thinking + doing)
-#  Clinical Data Analysis in R (Phase I) — Pre-course
+#  EXERCISE 5, Statistical Testing (thinking + doing)
+#  Clinical Data Analysis in R (Phase I), Pre-course
 #  ------------------------------------------------------------------
 #  Goal: practise CHOOSING the right test before running it.
 #  For each research question, first decide (in the comments):

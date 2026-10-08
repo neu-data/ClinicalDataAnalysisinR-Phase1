@@ -16,9 +16,9 @@ title: "Day 4: Common Medical Statistical Tests"
 
 | | |
 |:--|:--|
-| 🎞️ **Slides** | [Open the slides](slides-day4.qmd) — Press **F** for full screen, **S** for speaker notes, **E** to print. |
-| 📥 **PowerPoint** | [Download the slides (PowerPoint)](files/slides/Clinical_Data_Analysis_in_R_Phase1.pptx) |
-| 💻 **Live-coding demo script** | [day4_demo.R](files/scripts/day4_demo.R) |
-| 🧪 **Practical exercise** | [day4_exercise.R](files/practicals/day4_exercise.R) |
-| ✅ **Worked solution** | [day4_solution.R](files/solutions/day4_solution.R) |
-| 📁 **Course data** | [Course data](data.qmd) |
+| **Slides** | [Open the slides](slides-day4.qmd), Press **F** for full screen, **S** for speaker notes, **E** to print. |
+| **PowerPoint** | [Download the slides (PowerPoint)](files/slides/Clinical_Data_Analysis_in_R_Phase1.pptx) |
+| **Live-coding demo script** | [day4_demo.R](files/scripts/day4_demo.R) |
+| **Practical exercise** | [day4_exercise.R](files/practicals/day4_exercise.R) |
+| **Worked solution** | [day4_solution.R](files/solutions/day4_solution.R) |
+| **Course data** | [Course data](data.qmd) |

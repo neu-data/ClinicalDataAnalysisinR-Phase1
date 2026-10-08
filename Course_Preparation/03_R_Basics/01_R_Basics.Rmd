@@ -1,6 +1,6 @@
 ---
-title: "Lesson 1 — R Basics"
-subtitle: "Clinical Data Analysis in R (Phase I) — Pre-course"
+title: "Lesson 1: R Basics"
+subtitle: "Clinical Data Analysis in R (Phase I), Pre-course"
 author: "Neudata"
 output:
   html_document:
@@ -22,7 +22,7 @@ read the course dataset into R. No previous programming experience is assumed.
 > **How to work through this file:** open it in RStudio, then run each grey code
 > block by clicking on it and pressing **Ctrl+Enter** (Windows) or **Cmd+Enter**
 > (Mac). Watch what appears in the Console. Change a number, run it again, see
-> what happens — you cannot break anything.
+> what happens: you cannot break anything.
 
 ---
 
@@ -56,7 +56,7 @@ sbp - 12          # what it would be after treatment
 Read `sbp <- 152` as *"sbp gets 152"*. The object now appears in the
 **Environment** pane (top-right of RStudio).
 
-## 3. Vectors — many values at once
+## 3. Vectors: many values at once
 
 Clinical data is not one number, it is many. A **vector** is a row of values,
 made with `c()` ("combine").
@@ -87,7 +87,7 @@ sex
 table(sex)        # count how many of each
 ```
 
-`table()` is one of the most useful commands in clinical work — it counts
+`table()` is one of the most useful commands in clinical work, it counts
 categories for you.
 
 ## 5. Missing values: `NA`
@@ -101,7 +101,7 @@ mean(glucose)                 # NA - because one value is missing
 mean(glucose, na.rm = TRUE)   # ignores the missing value
 ```
 
-## 6. Data frames — a whole dataset
+## 6. Data frames: a whole dataset
 
 A **data frame** is a table: rows are patients, columns are variables. This is
 exactly how clinical data is stored. Let's read the course dataset.
@@ -158,7 +158,7 @@ mean(clinical_data$systolic_bp)
 - `dim()`, `names()`, `head()`, `str()`, `summary()` inspect any dataset.
 - `data$variable` selects one column.
 - Missing data is `NA`; add `na.rm = TRUE` to ignore it.
-- Comments start with `#` — R ignores them, humans read them.
+- Comments start with `#`: R ignores them, humans read them.
 
 ## Try it yourself
 
@@ -166,8 +166,8 @@ mean(clinical_data$systolic_bp)
    and calculate its mean and standard deviation.
 2. Read the dataset again into `clinical_data` and use `dim()` to say how many
    patients and variables it has.
-3. Use `table()` on `clinical_data$smoking` — how many current smokers are there?
-4. Use `mean()` with `clinical_data$BMI` — what is the average BMI?
+3. Use `table()` on `clinical_data$smoking`, how many current smokers are there?
+4. Use `mean()` with `clinical_data$BMI`, what is the average BMI?
 
 *Worked answers are in `Exercises/` and `Solutions/`. Don't worry if something
-doesn't work first time — that is completely normal.*
+doesn't work first time: that is completely normal.*

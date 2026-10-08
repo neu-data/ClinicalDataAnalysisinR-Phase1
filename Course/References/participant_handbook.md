@@ -705,7 +705,7 @@ Open `Practicals/day3_exercise.R`. Produce a grouped numeric summary by `treatme
 
 > **Note on sequencing.** The current slide deck keeps **Session 4 to statistical tests
 > only** (t-test, Wilcoxon, ANOVA, chi-square, Fisher, correlation) and introduces
-> **regression — linear then logistic — in Session 5**. This chapter still includes a
+> **regression: linear then logistic, in Session 5**. This chapter still includes a
 > logistic-regression primer at the end; treat that primer as your bridge into Session 5.
 
 Session 4 moves from describing the data to asking questions of it with statistical tests. We work in the analytic population - patients already diagnosed with hypertension.

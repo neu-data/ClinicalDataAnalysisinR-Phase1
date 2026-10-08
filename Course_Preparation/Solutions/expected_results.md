@@ -1,4 +1,4 @@
-# Expected Results — Reference Answers (Instructor / Self-check)
+# Expected Results: Reference Answers (Instructor / Self-check)
 
 All numbers below come from running the supplied code on `clinical_data_clean.csv`
 (and `clinical_data_raw.csv` for the raw checks). They are reproducible from the
@@ -28,14 +28,14 @@ participant's installation and code are producing the right answers.
 | Chi-square, `hypertension` × `diabetes` | χ² = 25.98, df = 1, **p < 0.001** (significant) |
 | Correlation, `age` vs `systolic_bp` | r = **0.55**, p < 0.001 |
 
-## Logistic regression — `hypertension ~ age + sex + BMI` (Part K example)
+## Logistic regression: `hypertension ~ age + sex + BMI` (Part K example)
 | Term | OR | 95% CI | p |
 |------|----|--------|---|
 | age | 1.09 | 1.07–1.12 | < 0.001 |
 | sex (Male) | 1.20 | 0.76–1.90 | 0.43 |
 | BMI | 1.16 | 1.10–1.22 | < 0.001 |
 
-## Logistic regression — `hypertension ~ age + sex + BMI + diabetes`
+## Logistic regression: `hypertension ~ age + sex + BMI + diabetes`
 | Term | OR | 95% CI | p |
 |------|----|--------|---|
 | age | 1.09 | 1.07–1.11 | < 0.001 |
@@ -43,7 +43,7 @@ participant's installation and code are producing the right answers.
 | BMI | 1.15 | 1.09–1.21 | < 0.001 |
 | diabetes (Yes) | 1.96 | 1.06–3.65 | 0.03 |
 
-## Cox model — `Surv(time_to_event, outcome) ~ age + diabetes + hypertension + treatment`
+## Cox model: `Surv(time_to_event, outcome) ~ age + diabetes + hypertension + treatment`
 (reference level for treatment = Untreated)
 | Term | HR | 95% CI | p |
 |------|----|--------|---|

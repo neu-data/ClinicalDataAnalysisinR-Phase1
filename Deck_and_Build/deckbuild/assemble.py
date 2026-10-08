@@ -40,7 +40,7 @@ def slide_xml(shapes, bg_white=False):
 def build_title(spec, logo_rid):
     # big centred logo (slide1 geometry)
     logo = E.pic(2, "Logo", logo_rid, 768613, 4410394, 2566257, 2447606)
-    # course title (teal, Century Gothic ~40pt, centred)
+    # course title (teal, Arial ~40pt, centred)
     title_lines = spec["title"] if isinstance(spec["title"], list) else [spec["title"]]
     tparas = "".join(
         E.para(E.run(t, sz=spec.get("title_sz",4000), color=E.TEAL_TITLE, bold=True,
@@ -70,7 +70,7 @@ def build_title(spec, logo_rid):
 
 
 def build_divider(spec, logo_rid):
-    # teal title (Century Gothic 32pt bold) like template slide2
+    # teal title (Arial 32pt bold) like template slide2
     tt = E.textbox(6, "DayTitle", E.ML, 548640, 11430000, 700000,
                    E.para(E.run(spec["title"], sz=3200, color=E.TEAL, bold=True,
                                 font=E.CG), space_before=0), anchor="t")

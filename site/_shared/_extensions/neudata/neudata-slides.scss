@@ -10,8 +10,8 @@ $neudata-mist: #EAF2F5;
 $neudata-grey: #8A99A3;
 $neudata-ink: #1A1A1A;
 
-// Century Gothic as in the PowerPoint template, with close fallbacks
-$font-family-sans-serif: "Century Gothic", "URW Gothic", "TeX Gyre Adventor", "Avenir Next", "Segoe UI", Arial, sans-serif;
+// Neutral sans-serif (Arial), matching the deck
+$font-family-sans-serif: Arial, "Helvetica Neue", "Segoe UI", sans-serif;
 $presentation-heading-font: $font-family-sans-serif;
 $font-family-monospace: Consolas, "SFMono-Regular", Menlo, "DejaVu Sans Mono", monospace;
 

@@ -1,4 +1,4 @@
-# Chuẩn bị cho khóa học — Phân tích dữ liệu lâm sàng bằng R (Giai đoạn I)
+# Chuẩn bị cho khóa học: Phân tích dữ liệu lâm sàng bằng R (Giai đoạn I)
 
 **Bộ tài liệu tự học chuẩn bị trong một tuần, dành cho người mới hoàn toàn với R.**
 
@@ -7,45 +7,45 @@ làm việc qua bộ tài liệu này (khoảng 2–3 giờ, chia ra vài buổi
 dùng R có thể cài đặt phần mềm, làm quen với giao diện RStudio, thực hành trên một bộ dữ liệu
 lâm sàng thực tế, và đến buổi học đầu tiên trong tư thế sẵn sàng cho Buổi 1.
 
-> **Mới tham gia? Hãy bắt đầu với Hướng dẫn Học tập** — `00_READ_ME_FIRST/Study_Guide_VN.pdf`.
-> Tài liệu này hướng dẫn bạn từng bước cài đặt R, thiết lập và cách học — sau đó hãy mở
+> **Mới tham gia? Hãy bắt đầu với Hướng dẫn Học tập**, `00_READ_ME_FIRST/Study_Guide_VN.pdf`.
+> Tài liệu này hướng dẫn bạn từng bước cài đặt R, thiết lập và cách học, sau đó hãy mở
 > [`00_READ_ME_FIRST/README.md`](00_READ_ME_FIRST/README.md).
 
 ---
 
 ## Tổng quan nhanh về khóa học
 
-- **Khóa học:** Clinical Data Analysis in R — Giai đoạn I — Introduction to R for Clinical Research (Neudata)
+- **Khóa học:** Clinical Data Analysis in R - Giai đoạn I, Introduction to R for Clinical Research (Neudata)
 - **Hình thức:** 5 buổi học buổi tối · mỗi Thứ Ba · 20:00 (giờ Việt Nam) · 90 phút · 8 tháng 9 – 6 tháng 10 năm 2026
 - **Giảng viên:** Vương Mỹ Lượng (Chuyên gia Thống kê Sinh học Cao cấp, giảng viên chính) và Bernard Isekah Osang'ir (Chuyên gia Thống kê Sinh học Cao cấp)
-- **Hỏi đáp / đăng ký:** Vương Mỹ Lượng — myluong.1710@gmail.com — www.neu-data.com
-- **Đối tượng:** bác sĩ, điều dưỡng, dược sĩ, cán bộ y tế công cộng, và học viên cao học/nghiên cứu sinh — **không cần kinh nghiệm lập trình**
+- **Hỏi đáp / đăng ký:** Vương Mỹ Lượng, myluong.1710@gmail.com, www.neu-data.com
+- **Đối tượng:** bác sĩ, điều dưỡng, dược sĩ, cán bộ y tế công cộng, và học viên cao học/nghiên cứu sinh, **không cần kinh nghiệm lập trình**
 
 ## Bắt đầu nhanh (3 bước)
 
-1. **Cài đặt** — mở `01_Install_R_and_RStudio/`, làm theo tài liệu hướng dẫn, sau đó mở và
+1. **Cài đặt**: mở `01_Install_R_and_RStudio/`, làm theo tài liệu hướng dẫn, sau đó mở và
    Source `installation_test.R`. Bạn sẽ thấy dòng *"My R and RStudio installation is working."*
-2. **Mở dự án** — nhấp đúp vào **`Clinical_Data_Analysis_PreCourse.Rproj`**.
+2. **Mở dự án**: nhấp đúp vào **`Clinical_Data_Analysis_PreCourse.Rproj`**.
    Thao tác này mở RStudio đúng thư mục để mọi đường dẫn tệp hoạt động chính xác.
-3. **Học & thực hành** — đọc `02_Getting_Started_with_RStudio/`, làm qua các bài học
+3. **Học & thực hành**: đọc `02_Getting_Started_with_RStudio/`, làm qua các bài học
    `03_…` → `07_…` theo thứ tự, rồi thử phần `Exercises/`.
 
 ## Nội dung trong thư mục này
 
 | Thư mục / tệp | Đó là gì |
 |---|---|
-| `00_READ_ME_FIRST/` | Bắt đầu ở đây — lời chào, cách dùng bộ tài liệu, danh sách kiểm tra |
+| `00_READ_ME_FIRST/` | Bắt đầu ở đây, lời chào, cách dùng bộ tài liệu, danh sách kiểm tra |
 | `01_Install_R_and_RStudio/` | Tài liệu cài đặt (Windows + macOS) + `installation_test.R` |
 | `02_Getting_Started_with_RStudio/` | Tham quan giao diện RStudio dành cho người mới |
-| `03_R_Basics/` | Bài học 1 — objects, vectors, data frames (`01_R_Basics.Rmd`) |
-| `04_Data_Management/` | Bài học 2 — làm sạch dữ liệu lâm sàng (`02_Data_Management.Rmd`) |
-| `05_Exploratory_Data_Analysis/` | Bài học 3 — thống kê mô tả, bảng, biểu đồ (`03_Exploratory_Analysis.Rmd`) |
-| `06_Statistical_Tests/` | Bài học 4 — t-test, chi-square, correlation (`04_Statistical_Tests.Rmd`) |
-| `07_Regression/` | Bài học 5 — linear & logistic regression (`05_Regression.Rmd`) || `Data/` | Bộ dữ liệu (`clinical_data_clean.csv`, `clinical_data_raw.csv`, `.xlsx`), từ điển dữ liệu, ghi chú chất lượng dữ liệu, tập lệnh tạo dữ liệu |
-| `Exercises/` | Sáu bài tập ngắn trước khóa học (`.R`) — để thực hành, không phải để đánh giá |
+| `03_R_Basics/` | Bài học 1: objects, vectors, data frames (`01_R_Basics.Rmd`) |
+| `04_Data_Management/` | Bài học 2, làm sạch dữ liệu lâm sàng (`02_Data_Management.Rmd`) |
+| `05_Exploratory_Data_Analysis/` | Bài học 3, thống kê mô tả, bảng, biểu đồ (`03_Exploratory_Analysis.Rmd`) |
+| `06_Statistical_Tests/` | Bài học 4, t-test, chi-square, correlation (`04_Statistical_Tests.Rmd`) |
+| `07_Regression/` | Bài học 5, linear & logistic regression (`05_Regression.Rmd`) || `Data/` | Bộ dữ liệu (`clinical_data_clean.csv`, `clinical_data_raw.csv`, `.xlsx`), từ điển dữ liệu, ghi chú chất lượng dữ liệu, tập lệnh tạo dữ liệu |
+| `Exercises/` | Sáu bài tập ngắn trước khóa học (`.R`), để thực hành, không phải để đánh giá |
 | `Solutions/` | Lời giải chi tiết + `expected_results.md` đáp án tham chiếu |
 | `Cheat_Sheets/` | Cheat sheet R của khóa học + hướng dẫn chọn kiểm định thống kê |
-| `Guides/` | Khung tư duy phân tích, ví dụ theo ngành nghề, chuyển kết quả R thành bài báo || `Clinical_Data_Analysis_PreCourse.Rproj` | Tệp dự án RStudio — nhấp đúp để mở |
+| `Guides/` | Khung tư duy phân tích, ví dụ theo ngành nghề, chuyển kết quả R thành bài báo || `Clinical_Data_Analysis_PreCourse.Rproj` | Tệp dự án RStudio, nhấp đúp để mở |
 
 ## Bộ dữ liệu
 
@@ -57,20 +57,20 @@ Một bộ dữ liệu **mô phỏng** hoàn toàn gồm **430 bệnh nhân** (k
 
 ## Phần mềm cần thiết
 
-- **R** (4.x) và **RStudio Desktop** — cả hai đều miễn phí
+- **R** (4.x) và **RStudio Desktop**, cả hai đều miễn phí
 - Các gói R: `tidyverse`, `readxl`, `gtsummary`, `broom`, `survival`, `survminer`
   (được cài đặt trong một bước duy nhất khi thiết lập)
 
 ## Bộ tài liệu này để làm gì
 
 **Đây là tất cả những gì bạn cần trước khóa học.** Hãy hoàn thành trong tuần này để
-đến buổi học đã cài đặt xong và làm quen với R — nó đưa mọi người về cùng một vạch
+đến buổi học đã cài đặt xong và làm quen với R, nó đưa mọi người về cùng một vạch
 xuất phát. Bây giờ bạn chỉ cần làm bấy nhiêu.
 
 Các tài liệu giảng dạy trực tiếp (slide và ví dụ minh hoạ) được dùng *trong* các buổi
-học và sẽ được chia sẻ khi khóa học diễn ra — bây giờ bạn **chưa** cần đến chúng.
+học và sẽ được chia sẻ khi khóa học diễn ra, bây giờ bạn **chưa** cần đến chúng.
 
 ---
 
-*Đến buổi học với mọi thứ mới hoàn thành một nửa cũng không sao — sẽ có người hỗ trợ trong buổi
+*Đến buổi học với mọi thứ mới hoàn thành một nửa cũng không sao, sẽ có người hỗ trợ trong buổi
 tối đầu tiên. Nhưng việc thử trước sẽ giúp Buổi 1 diễn ra suôn sẻ hơn nhiều. Hẹn gặp bạn vào ngày 8 tháng 9.*

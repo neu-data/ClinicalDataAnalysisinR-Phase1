@@ -1,9 +1,9 @@
 <div align="center">
 
-# 📊 Clinical Data Analysis in R
-### Phase I — Introduction to R for Clinical Research
+# Clinical Data Analysis in R
+### Phase I: Introduction to R for Clinical Research
 
-**A free, hands-on short course for health professionals and researchers in Vietnam** 🇻🇳
+**A free, hands-on short course for health professionals and researchers in Vietnam** 
 
 `FREE` · `Beginner-friendly` · `Online` · `No coding experience required`
 
@@ -15,7 +15,7 @@
 
 > **The course has ended.** Phase I ran online from 8 September to 6 October 2026. Thank you to
 > everyone who took part! All course materials remain freely available on this website for
-> self-study: [request a free access code](https://neu-data.github.io/ClinicalDataAnalysisinR-Phase1/en/access.html) — it is sent to your email (we only
+> self-study: [request a free access code](https://neu-data.github.io/ClinicalDataAnalysisinR-Phase1/en/access.html), it is sent to your email (we only
 > count how many people use the materials and roughly where from; your email is not stored). For further questions, or anything else about the course, please contact
 > **Vương Mỹ Lượng** at [myluong.1710@gmail.com](mailto:myluong.1710@gmail.com).
 
@@ -23,11 +23,11 @@
 
 ## About this course
 
-Many clinicians and researchers collect valuable data every day — but never get the
+Many clinicians and researchers collect valuable data every day, but never get the
 chance to analyse it themselves. **Phase I** changes that. Over five evening sessions,
 participants went from *never having opened R* to running a real clinical analysis:
 importing data, cleaning it, describing it, testing hypotheses, and interpreting a
-regression model — the way it is actually done for a thesis, report, or manuscript.
+regression model: the way it is actually done for a thesis, report, or manuscript.
 
 > **You do not need any programming or statistics background.** If you can use a
 > computer and you care about your data, these materials are for you.
@@ -42,7 +42,7 @@ the practice dataset, and the software are free to use and keep.
 
 ---
 
-## 🗓️ When it ran
+## When it ran
 
 | | |
 |---|---|
@@ -54,33 +54,33 @@ the practice dataset, and the software are free to use and keep.
 
 ---
 
-## 🧑‍🏫 Who is leading the course
+## Who is leading the course
 
 The course was led by two trainers, who guided every session and the hands-on exercises:
 
 | Trainer | Role |
 |---------|------|
-| **Vương Mỹ Lượng** | Senior Biostatistician — *lead trainer* |
+| **Vương Mỹ Lượng** | Senior Biostatistician, *lead trainer* |
 | **Bernard Osang'ir** | Senior Biostatistician |
 
 ---
 
-## 🧑‍⚕️ Who the materials are for
+## Who the materials are for
 
 Health and research professionals with little or no R experience:
 
-- 👨‍⚕️ Medical doctors and residents
-- 👩‍⚕️ Nurses and hospital research staff
-- 💊 Clinical and hospital pharmacists
-- 🔬 Clinical researchers and trial coordinators
-- 🌍 Public-health professionals
-- 🎓 Master's students and PhD candidates
+- Medical doctors and residents
+- Nurses and hospital research staff
+- Clinical and hospital pharmacists
+- Clinical researchers and trial coordinators
+- Public-health professionals
+- Master's students and PhD candidates
 
 ---
 
-## 📚 What you will learn
+## What you will learn
 
-Five sessions that build on each other — one real clinical dataset all the way through. All
+Five sessions that build on each other, one real clinical dataset all the way through. All
 slides, scripts, exercises and the handbook are available on this website:
 
 | Session | Theme | You will be able to… |
@@ -105,32 +105,32 @@ website helps you set it up.
 |------|---------------|:----:|
 | **R** (version 4.x) | The analysis engine | Free |
 | **RStudio Desktop** | The friendly workspace for R | Free |
-| **A laptop** | Windows or macOS, ~1 GB free space | — |
-| **Internet** | To install the software and download the materials | — |
+| **A laptop** | Windows or macOS, ~1 GB free space |, |
+| **Internet** | To install the software and download the materials |, |
 
 **R packages used** (installed in one step during setup):
 `tidyverse` · `readxl` · `gtsummary` · `broom` · `survival` · `survminer`
 
-> 📦 **Start here:** the **Course Preparation pack** on this website walks you through
+> **Start here:** the **Course Preparation pack** on this website walks you through
 > installing R and RStudio, learning the interface, and practising with the course data.
 
 ---
 
-## ✉️ Questions and contact
+## Questions and contact
 
 The course has ended, but you are welcome to get in touch for further questions
 or anything else about the course:
 
-- ✉️ **Email:** [myluong.1710@gmail.com](mailto:myluong.1710@gmail.com) — *Vương Mỹ Lượng*
-- 🌐 **Website:** [www.neu-data.com](https://www.neu-data.com/)
+- **Email:** [myluong.1710@gmail.com](mailto:myluong.1710@gmail.com), *Vương Mỹ Lượng*
+- **Website:** [www.neu-data.com](https://www.neu-data.com/)
 
 ---
 
 <div align="center">
 
-**No prior programming experience required — just curiosity.**
+**No prior programming experience required, just curiosity.**
 
-*Thank you to everyone who took part!* 🎉
+*Thank you to everyone who took part!* 
 
 Neudata · **#ClearDataClearImpact**
 

@@ -1,6 +1,6 @@
 # =====================================================================
-#  EXERCISE 6 — Regression
-#  Clinical Data Analysis in R (Phase I) — Pre-course
+#  EXERCISE 6, Regression
+#  Clinical Data Analysis in R (Phase I), Pre-course
 #  ------------------------------------------------------------------
 #  Goal: fit a simple logistic regression and read the odds ratios.
 #  Answers: Solutions/Solution_6_Regression.R

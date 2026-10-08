@@ -17,9 +17,9 @@ title: "Ngày 1: Giới thiệu về R & RStudio"
 
 | | |
 |:--|:--|
-| 🎞️ **Bài giảng** | [Mở bài giảng](slides-day1.qmd) — Nhấn **F** để toàn màn hình, **S** để xem ghi chú, **E** để in. |
-| 📥 **PowerPoint** | [Tải bài giảng (PowerPoint)](files/slides/Clinical_Data_Analysis_in_R_Phase1_VN.pptx) |
-| 💻 **Mã minh họa trực tiếp** | [day1_demo.R](files/scripts/day1_demo.R) |
-| 🧪 **Bài thực hành** | [day1_exercise.R](files/practicals/day1_exercise.R) |
-| ✅ **Lời giải mẫu** | [day1_solution.R](files/solutions/day1_solution.R) |
-| 📁 **Dữ liệu khóa học** | [Dữ liệu khóa học](data.qmd) |
+| **Bài giảng** | [Mở bài giảng](slides-day1.qmd), Nhấn **F** để toàn màn hình, **S** để xem ghi chú, **E** để in. |
+| **PowerPoint** | [Tải bài giảng (PowerPoint)](files/slides/Clinical_Data_Analysis_in_R_Phase1_VN.pptx) |
+| **Mã minh họa trực tiếp** | [day1_demo.R](files/scripts/day1_demo.R) |
+| **Bài thực hành** | [day1_exercise.R](files/practicals/day1_exercise.R) |
+| **Lời giải mẫu** | [day1_solution.R](files/solutions/day1_solution.R) |
+| **Dữ liệu khóa học** | [Dữ liệu khóa học](data.qmd) |

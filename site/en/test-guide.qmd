@@ -2,7 +2,7 @@
 title: "Choosing a statistical test"
 ---
 
-*A practical decision guide for Clinical Data Analysis in R — Phase I (Neudata)*
+*A practical decision guide for Clinical Data Analysis in R - Phase I (Neudata)*
 
 The hardest part of an analysis is usually **choosing the right method**, not writing the R code. Start from the question and the *types* of variables involved, then the method almost chooses itself. Use the table below to find your situation, then read the matching short note underneath.
 
@@ -17,7 +17,7 @@ Throughout, our dataset is read into R as `clinical_data` (430 patients).
 | Continuous outcome, **2 independent groups** | t-test (parametric) or Wilcoxon rank-sum (non-parametric) | `systolic_bp` by `sex` (Female vs Male) | Independent observations; outcome roughly normal *within each group* for the t-test; similar spread. Wilcoxon if skewed or small. |
 | Continuous outcome, **>2 groups** | One-way ANOVA (parametric) or Kruskal–Wallis (non-parametric) | `BMI` by `hospital` (5 sites) | Independence; roughly normal residuals; similar variance across groups. Kruskal–Wallis if not. |
 | **Two categorical variables** | Chi-square test, or Fisher's exact when counts are small | `hypertension` (Yes/No) by `diabetes` (Yes/No) | Independent observations; expected count > 5 in (almost) every cell. Use Fisher when expected counts are small. |
-| **Two continuous variables** | Correlation — Pearson (parametric) or Spearman (non-parametric) | `age` vs `systolic_bp` | Pearson: linear relationship, roughly normal, no strong outliers. Spearman for monotonic/skewed data. |
+| **Two continuous variables** | Correlation, Pearson (parametric) or Spearman (non-parametric) | `age` vs `systolic_bp` | Pearson: linear relationship, roughly normal, no strong outliers. Spearman for monotonic/skewed data. |
 | Continuous outcome **+ predictors** | Linear regression | `systolic_bp ~ age + BMI` | Linearity; independent observations; roughly normal, constant-variance residuals. |
 | Binary outcome **+ predictors** | Logistic regression | `hypertension ~ age + BMI` | Independent observations; outcome is 0/1; enough events per predictor (rule of thumb ~10). |
 | **Time-to-event outcome** | Kaplan–Meier (description) / Cox regression (adjusted) | `Surv(time_to_event, outcome) ~ treatment` | Independent observations; censoring unrelated to outcome; Cox assumes proportional hazards. |
@@ -28,7 +28,7 @@ Throughout, our dataset is read into R as `clinical_data` (430 patients).
 
 ## Short notes on each test
 
-### t-test / Wilcoxon rank-sum — continuous outcome, two groups
+### t-test / Wilcoxon rank-sum: continuous outcome, two groups
 - **When:** comparing the average of a continuous measure between two independent groups.
 - **Assumptions:** independent observations; for the t-test the outcome should be approximately normal within each group with similar spread. If the data are skewed or the sample is small, prefer Wilcoxon (compares ranks, not means).
 - **Parametric vs non-parametric:** t-test (means) vs Wilcoxon (medians / ranks).
@@ -38,10 +38,10 @@ t.test(systolic_bp ~ sex, data = clinical_data)
 wilcox.test(systolic_bp ~ sex, data = clinical_data)   # non-parametric alternative
 ```
 
-### ANOVA / Kruskal–Wallis — continuous outcome, more than two groups
+### ANOVA / Kruskal–Wallis: continuous outcome, more than two groups
 - **When:** comparing a continuous measure across three or more groups.
 - **Assumptions:** independence; approximately normal residuals; similar variance across groups. Kruskal–Wallis relaxes the normality assumption.
-- **Parametric vs non-parametric:** ANOVA (means) vs Kruskal–Wallis (ranks). A significant result tells you *some* group differs — follow up with pairwise comparisons.
+- **Parametric vs non-parametric:** ANOVA (means) vs Kruskal–Wallis (ranks). A significant result tells you *some* group differs, follow up with pairwise comparisons.
 ```r
 # Compare BMI across the five hospitals
 anova_model <- aov(BMI ~ hospital, data = clinical_data)
@@ -49,10 +49,10 @@ summary(anova_model)
 kruskal.test(BMI ~ hospital, data = clinical_data)      # non-parametric alternative
 ```
 
-### Chi-square / Fisher's exact — two categorical variables
+### Chi-square / Fisher's exact, two categorical variables
 - **When:** testing whether two categorical variables are associated (i.e. whether the distribution of one differs across levels of the other).
 - **Assumptions:** independent observations; expected cell counts above ~5 for the chi-square approximation to be reliable. When expected counts are small (sparse tables, rare categories), use Fisher's exact test instead.
-- **Parametric vs non-parametric:** not applicable in the usual sense — chi-square is already a test for counts; Fisher is its small-sample exact version.
+- **Parametric vs non-parametric:** not applicable in the usual sense, chi-square is already a test for counts; Fisher is its small-sample exact version.
 ```r
 # Is hypertension associated with diabetes?
 table(clinical_data$hypertension, clinical_data$diabetes)
@@ -60,7 +60,7 @@ chisq.test(clinical_data$hypertension, clinical_data$diabetes)
 fisher.test(clinical_data$hypertension, clinical_data$diabetes)   # when counts are small
 ```
 
-### Correlation (Pearson / Spearman) — two continuous variables
+### Correlation (Pearson / Spearman), two continuous variables
 - **When:** measuring the strength and direction of association between two continuous measures. Correlation describes association, not cause.
 - **Assumptions:** Pearson assumes a roughly linear relationship, approximate normality and no dominant outliers; Spearman only needs a monotonic relationship and is robust to skew and outliers.
 - **Parametric vs non-parametric:** Pearson (linear, on values) vs Spearman (monotonic, on ranks).
@@ -70,7 +70,7 @@ cor.test(clinical_data$age, clinical_data$systolic_bp, method = "pearson")
 cor.test(clinical_data$age, clinical_data$systolic_bp, method = "spearman")
 ```
 
-### Linear regression — continuous outcome with predictors
+### Linear regression: continuous outcome with predictors
 - **When:** modelling a continuous outcome from one or more predictors, and getting an adjusted effect estimate for each.
 - **Assumptions:** a roughly linear relationship; independent observations; residuals that are approximately normal with constant variance. Check with diagnostic plots (`plot(model)`).
 ```r
@@ -79,7 +79,7 @@ model <- lm(systolic_bp ~ age + BMI, data = clinical_data)
 summary(model)
 ```
 
-### Logistic regression — binary outcome with predictors
+### Logistic regression: binary outcome with predictors
 - **When:** modelling a yes/no (0/1) outcome and estimating how predictors change the odds. Results are reported as **odds ratios**.
 - **Assumptions:** independent observations; the outcome is binary; a roughly linear relationship between predictors and the *log-odds*; enough events per predictor.
 ```r
@@ -90,7 +90,7 @@ model <- glm(hypertension ~ age + BMI, data = clinical_data, family = binomial)
 summary(model)
 ```
 
-### Kaplan–Meier / Cox regression — time-to-event outcome
+### Kaplan–Meier / Cox regression, time-to-event outcome
 - **When:** the outcome is the *time until an event* (here a CV event or death), and some patients are censored (event not yet observed). Kaplan–Meier curves describe survival over time; Cox regression gives adjusted **hazard ratios**.
 - **Assumptions:** independent observations; censoring unrelated to prognosis; Cox additionally assumes proportional hazards (the effect is roughly constant over time).
 ```r
@@ -105,4 +105,4 @@ summary(cox)
 
 ---
 
-> **Closing note.** A p-value is **not** an effect size. It only tells you how compatible the data are with "no effect" — not how large or clinically meaningful an effect is. Always report the **estimate** (difference in means, odds ratio, hazard ratio, correlation) **together with its 95% confidence interval**, and interpret it in clinical terms.
+> **Closing note.** A p-value is **not** an effect size. It only tells you how compatible the data are with "no effect", not how large or clinically meaningful an effect is. Always report the **estimate** (difference in means, odds ratio, hazard ratio, correlation) **together with its 95% confidence interval**, and interpret it in clinical terms.

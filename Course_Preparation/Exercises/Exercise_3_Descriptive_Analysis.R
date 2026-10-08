@@ -1,6 +1,6 @@
 # =====================================================================
-#  EXERCISE 3 — Descriptive Analysis
-#  Clinical Data Analysis in R (Phase I) — Pre-course
+#  EXERCISE 3, Descriptive Analysis
+#  Clinical Data Analysis in R (Phase I), Pre-course
 #  ------------------------------------------------------------------
 #  Goal: summarise the data with simple descriptive statistics.
 #  Answers: Solutions/Solution_3_Descriptive_Analysis.R

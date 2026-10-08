@@ -1,4 +1,4 @@
-# Phân tích Dữ liệu Lâm sàng bằng R — Giai đoạn I
+# Phân tích Dữ liệu Lâm sàng bằng R - Giai đoạn I
 ### Nhập môn R cho Nghiên cứu Lâm sàng · Khóa học ngắn hạn buổi tối gồm năm buổi học
 
 **Giảng viên:** Vương Mỹ Lượng (Chuyên gia Thống kê Sinh học Cao cấp, giảng viên chính) · Bernard Osang'ir (Chuyên gia Thống kê Sinh học Cao cấp)
@@ -10,7 +10,7 @@ Một gói khóa học hoàn chỉnh, sẵn sàng để giảng dạy. Mọi bà
 thành một phân tích đầy đủ và có khả năng tái lập.
 
 **Nghiên cứu tình huống:** *Các yếu tố quyết định việc tiếp nhận điều trị tăng huyết áp ở người trưởng thành
-đến khám tại các cơ sở chăm sóc sức khỏe ban đầu* — một nghiên cứu cắt ngang đa trung tâm
+đến khám tại các cơ sở chăm sóc sức khỏe ban đầu*, một nghiên cứu cắt ngang đa trung tâm
 trên 1.500 người trưởng thành tại 6 cơ sở chăm sóc sức khỏe ban đầu. Biến kết cục chính:
 tiếp nhận điều trị ở những người được chẩn đoán tăng huyết áp.
 
@@ -20,11 +20,11 @@ tiếp nhận điều trị ở những người được chẩn đoán tăng hu
 
 | Thư mục | Nội dung |
 |--------|----------|
-| **Slides/** | `Clinical_Data_Analysis_in_R_Phase1.pptx` — 123 slide trên mẫu trình bày Neudata, kèm ghi chú cho người trình bày trên mỗi slide |
+| **Slides/** | `Clinical_Data_Analysis_in_R_Phase1.pptx`, 123 slide trên mẫu trình bày Neudata, kèm ghi chú cho người trình bày trên mỗi slide |
 | **Data/** | Bộ dữ liệu thô (`hypertension_phc_raw.csv` / `.xlsx`), bảng tham chiếu đã làm sạch (`hypertension_phc_clean.csv`), từ điển dữ liệu (`.md` / `.csv` / `.pdf`), và tập lệnh tạo dữ liệu |
-| **Scripts/** | `day1_demo.R` … `day5_demo.R` — các phần trình diễn lập trình trực tiếp của giảng viên |
-| **Practicals/** | `day1_exercise.R` … `day5_exercise.R` — các bài thực hành có hướng dẫn trên lớp |
-| **Solutions/** | `day1_solution.R` … `day5_solution.R` — lời giải chi tiết |
+| **Scripts/** | `day1_demo.R` … `day5_demo.R`, các phần trình diễn lập trình trực tiếp của giảng viên |
+| **Practicals/** | `day1_exercise.R` … `day5_exercise.R`, các bài thực hành có hướng dẫn trên lớp |
+| **Solutions/** | `day1_solution.R` … `day5_solution.R`, lời giải chi tiết |
 | **Assignment/** | Bài tập lớn về nhà cuối khóa + hướng dẫn chấm điểm (`.md` và `.pdf`) |
 | **Instructor_Notes/** | Sổ tay giảng viên / hướng dẫn điều phối (`.md` và `.pdf`) |
 | **References/** | Sổ tay Học viên (PDF), bảng tra cứu lệnh R, hướng dẫn cài đặt gói, các phát hiện chính |
@@ -43,7 +43,7 @@ tiếp nhận điều trị ở những người được chẩn đoán tăng hu
 
 ## Bắt đầu (dành cho học viên)
 
-1. Cài đặt **R** và **RStudio**, sau đó cài các gói của khóa học — xem
+1. Cài đặt **R** và **RStudio**, sau đó cài các gói của khóa học, xem
    `References/package_installation_guide.md`.
 2. Mở thư mục `Course` này dưới dạng một **RStudio Project**
    (File → New Project → Existing Directory).
@@ -67,6 +67,6 @@ Rscript Scripts/day5_demo.R
 ```
 
 ---
-*Được chuẩn bị cho đối tượng lâm sàng sau đại học — các trường đại học, trung tâm nghiên cứu
+*Được chuẩn bị cho đối tượng lâm sàng sau đại học, các trường đại học, trung tâm nghiên cứu
 lâm sàng, bệnh viện, tổ chức phi chính phủ và các đơn vị thử nghiệm lâm sàng.*
 Neudata · *#ClearDataClearImpact*

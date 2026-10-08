@@ -17,7 +17,7 @@ Toàn bộ tài liệu khóa học đều **miễn phí**. Để mở tài liệ
     <input id="acc-code" type="text" required autocomplete="one-time-code" placeholder="Mã truy cập (ví dụ ABCD-2345)" aria-label="Mã truy cập (ví dụ ABCD-2345)" style="text-transform:uppercase">
     <button id="acc-unlock" class="btn btn-primary" type="submit">Mở tài liệu</button>
   </form>
-  <p class="acc-hint">Quên mã? Hãy yêu cầu mã mới ở trên — hoàn toàn miễn phí.</p>
+  <p class="acc-hint">Quên mã? Hãy yêu cầu mã mới ở trên, hoàn toàn miễn phí.</p>
   <div id="acc-msg" class="acc-msg" role="status"></div>
 </div>
 <style>
@@ -33,8 +33,17 @@ Toàn bộ tài liệu khóa học đều **miễn phí**. Để mở tài liệ
 (function () {
   var API = "https://script.google.com/macros/s/AKfycbyo0gY-ilc-g2PXHmEszcxyaCy6T1r7cqGhvq6hJSajmUnmvfWfexv5OKcGlbpRVSjaBA/exec";
   var KEY = "neudata-cdar-access";
-  var M = {"CODE_SENT": "Mã truy cập đã được gửi. Vui lòng kiểm tra hộp thư (và thư rác), rồi nhập mã bên dưới.", "TOO_SOON": "Mã vừa được gửi chưa đầy một phút trước. Vui lòng kiểm tra hộp thư.", "BAD_EMAIL": "Vui lòng nhập địa chỉ email hợp lệ.", "BAD_CODE": "Mã không hợp lệ. Vui lòng kiểm tra lại hoặc yêu cầu mã mới.", "ERROR": "Đã xảy ra lỗi. Vui lòng thử lại sau giây lát.", "done": "Đã cấp quyền truy cập — đang mở tài liệu…", "sending": "Đang gửi…", "checking": "Đang kiểm tra…", "send": "Gửi mã cho tôi", "unlock": "Mở tài liệu"};
+  var M = {"CODE_SENT": "Mã truy cập đã được gửi. Vui lòng kiểm tra hộp thư (và thư rác), rồi nhập mã bên dưới.", "TOO_SOON": "Mã vừa được gửi chưa đầy một phút trước. Vui lòng kiểm tra hộp thư.", "BAD_EMAIL": "Vui lòng nhập địa chỉ email hợp lệ.", "BAD_CODE": "Mã không hợp lệ. Vui lòng kiểm tra lại hoặc yêu cầu mã mới.", "ERROR": "Đã xảy ra lỗi. Vui lòng thử lại sau giây lát.", "done": "Đã cấp quyền truy cập, đang mở tài liệu…", "sending": "Đang gửi…", "checking": "Đang kiểm tra…", "send": "Gửi mã cho tôi", "unlock": "Mở tài liệu"};
   var lang = "vi";
+  var MAX_AGE = 7 * 24 * 60 * 60 * 1000, IDLE = 2 * 60 * 60 * 1000;   // 7 days, 2 hours idle
+  function fresh() {
+    try {
+      var r = JSON.parse(localStorage.getItem(KEY) || "null");
+      if (!r || !r.t) return false;
+      var now = Date.now();
+      return (now - r.t < MAX_AGE) && (now - (r.last || r.t) < IDLE);
+    } catch (e) { return false; }
+  }
   function show(kind, key) { var m = document.getElementById("acc-msg"); m.className = "acc-msg " + kind; m.textContent = M[key] || M.ERROR; }
   // Approximate location for the usage counts: browser time zone and language, plus country and
   // city from GeoJS (looked up here in the browser). The IP address is never sent to Neudata.
@@ -55,7 +64,7 @@ Toàn bộ tài liệu khóa học đều **miễn phí**. Để mở tài liệ
     if (!/^[\w.\-]+\.html/.test(next)) next = "index.html";
     location.replace(next);
   }
-  try { if (localStorage.getItem(KEY) && new URLSearchParams(location.search).get("next")) go(); } catch (e) {}
+  if (fresh() && new URLSearchParams(location.search).get("next")) go();
   document.getElementById("acc-req").addEventListener("submit", function (ev) {
     ev.preventDefault();
     var b = document.getElementById("acc-send"); b.disabled = true; b.textContent = M.sending;
@@ -71,7 +80,7 @@ Toàn bộ tài liệu khóa học đều **miễn phí**. Để mở tài liệ
     call({ action: "verify", code: code })
       .then(function (r) {
         if (!r.ok) { show("err", r.code); return; }
-        try { localStorage.setItem(KEY, JSON.stringify({ code: code, t: Date.now() })); } catch (e) {}
+        try { var _n = Date.now(); localStorage.setItem(KEY, JSON.stringify({ code: code, t: _n, last: _n })); } catch (e) {}
         show("ok", "done"); setTimeout(go, 700);
       })
       .catch(function () { show("err", "ERROR"); })

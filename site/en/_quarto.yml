@@ -38,15 +38,15 @@ website:
           - href: rstudio.qmd
             text: "Getting started with RStudio"
           - href: lesson1.qmd
-            text: "Lesson 1 — R Basics"
+            text: "Lesson 1: R Basics"
           - href: lesson2.qmd
-            text: "Lesson 2 — Data Management (Cleaning Clinical Data)"
+            text: "Lesson 2: Data Management (Cleaning Clinical Data)"
           - href: lesson3.qmd
-            text: "Lesson 3 — Exploratory Data Analysis"
+            text: "Lesson 3: Exploratory Data Analysis"
           - href: lesson4.qmd
-            text: "Lesson 4 — Common Statistical Tests"
+            text: "Lesson 4: Common Statistical Tests"
           - href: lesson5.qmd
-            text: "Lesson 5 — Regression"
+            text: "Lesson 5: Regression"
           - href: precourse-exercises.qmd
             text: "Exercises and solutions"
           - href: precourse-data.qmd

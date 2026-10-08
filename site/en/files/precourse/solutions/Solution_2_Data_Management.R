@@ -1,5 +1,5 @@
 # =====================================================================
-#  SOLUTION 2 — Data Management
+#  SOLUTION 2, Data Management
 # =====================================================================
 library(tidyverse)
 raw <- read_csv("Data/clinical_data_raw.csv")
@@ -32,7 +32,7 @@ clean %>% filter(age >= 60) %>% nrow()
 # Q2. There were 3 duplicate rows; 430 unique patients remained.
 # Q3. About 92 patients fall in the "Obese" group here. (This is computed on the
 #     partially-cleaned raw data, which still contains a few impossible/missing
-#     BMI values; after full cleaning — Lesson 2 — the count is 93.)
+#     BMI values; after full cleaning, Lesson 2, the count is 93.)
 # Q4. pulse_pressure = systolic - diastolic BP. It reflects arterial stiffness;
 #     a wide pulse pressure is common in older patients.
 # Q5. 148 patients are aged 60 or over.

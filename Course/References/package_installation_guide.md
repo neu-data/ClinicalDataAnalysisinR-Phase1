@@ -1,18 +1,18 @@
 # Recommended Package Installation Guide
-### Clinical Data Analysis in R — Phase I | Neudata · #ClearDataClearImpact
+### Clinical Data Analysis in R - Phase I | Neudata · #ClearDataClearImpact
 
 Run these steps **before Day 1** (or during the Day 1 setup session). You need an internet connection the first time only.
 
 ---
 
-## Step 1 — Install R and RStudio
+## Step 1: Install R and RStudio
 1. **R** (the engine): https://cran.r-project.org → download for Windows / macOS → install with default options.
 2. **RStudio Desktop** (the workbench): https://posit.co/download/rstudio-desktop/ → install.
 3. Open **RStudio** (not plain R). You should see four panes: Source, Console, Environment, Files/Plots.
 
 > This course was prepared with **R 4.6.0**. Any recent 4.x version works.
 
-## Step 2 — Install the course packages
+## Step 2: Install the course packages
 Copy the block below into the RStudio **Console** and press Enter. It installs everything used across the five days in one go.
 
 ```r
@@ -38,7 +38,7 @@ install.packages(c(
 
 Installation can take several minutes. Windows and macOS receive pre-compiled binaries, so no extra build tools are needed.
 
-## Step 3 — Confirm everything loaded
+## Step 3: Confirm everything loaded
 Run this check. Every line should print `TRUE`.
 
 ```r
@@ -47,7 +47,7 @@ pkgs <- c("tidyverse","readxl","lubridate","janitor","gtsummary",
 for (p in pkgs) cat(sprintf("%-15s %s\n", p, requireNamespace(p, quietly = TRUE)))
 ```
 
-## Step 4 — Set up the project
+## Step 4: Set up the project
 1. Download/unzip the **Course** folder supplied by the instructor.
 2. In RStudio: **File → New Project → Existing Directory →** choose the `Course` folder.
 3. Working from this project means all paths like `Data/hypertension_phc_raw.csv` "just work" on any computer.

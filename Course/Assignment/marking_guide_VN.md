@@ -1,11 +1,11 @@
 # Hướng dẫn chấm điểm (Dành cho giảng viên)
 
-## Bài tập lớn cuối khóa (làm tại nhà) — Phân tích Dữ liệu Lâm sàng trong R, Giai đoạn I
+## Bài tập lớn cuối khóa (làm tại nhà), Phân tích Dữ liệu Lâm sàng trong R, Giai đoạn I
 
-**Khóa học:** Phân tích Dữ liệu Lâm sàng trong R — Giai đoạn I — Vương Mỹ Lượng (Chuyên gia Thống kê Sinh học Cao cấp, giảng viên chính) và Bernard Isekah Osang'ir (Chuyên gia Thống kê Sinh học Cao cấp), Neudata (*#ClearDataClearImpact*)
+**Khóa học:** Phân tích Dữ liệu Lâm sàng trong R - Giai đoạn I, Vương Mỹ Lượng (Chuyên gia Thống kê Sinh học Cao cấp, giảng viên chính) và Bernard Isekah Osang'ir (Chuyên gia Thống kê Sinh học Cao cấp), Neudata (*#ClearDataClearImpact*)
 **Tổng:** 100 điểm
 
-Hướng dẫn này cung cấp một khung chấm điểm có trọng số, một bảng đáp án với các kết quả chuẩn, một danh sách trừ điểm cho các lỗi thường gặp, và các dải xếp loại. Hãy chấm dựa trên **phương pháp đúng và diễn giải hợp lý**, chứ không phải trên việc khớp chính xác đến chữ số thập phân thứ hai — phiên bản gói và R khác nhau sẽ làm dịch chuyển các chữ số thập phân một cách không đáng kể. Hãy tưởng thưởng cho các quyết định được biện giải và ghi chép tốt, ngay cả khi chúng khác biệt đôi chút so với đáp án mẫu.
+Hướng dẫn này cung cấp một khung chấm điểm có trọng số, một bảng đáp án với các kết quả chuẩn, một danh sách trừ điểm cho các lỗi thường gặp, và các dải xếp loại. Hãy chấm dựa trên **phương pháp đúng và diễn giải hợp lý**, chứ không phải trên việc khớp chính xác đến chữ số thập phân thứ hai, phiên bản gói và R khác nhau sẽ làm dịch chuyển các chữ số thập phân một cách không đáng kể. Hãy tưởng thưởng cho các quyết định được biện giải và ghi chép tốt, ngay cả khi chúng khác biệt đôi chút so với đáp án mẫu.
 
 ### Tóm tắt trọng số
 
@@ -24,7 +24,7 @@ Hướng dẫn này cung cấp một khung chấm điểm có trọng số, mộ
 
 ## Khung chấm điểm theo thành phần
 
-### 1. Nhập & làm sạch dữ liệu — 20 điểm
+### 1. Nhập & làm sạch dữ liệu: 20 điểm
 
 | Tiêu chí phụ | Điểm | Đủ điểm | Một phần | Không điểm |
 |---|---:|---|---|---|
@@ -41,7 +41,7 @@ Hướng dẫn này cung cấp một khung chấm điểm có trọng số, mộ
 
 ---
 
-### 2. Thống kê mô tả & Bảng 1 — 15 điểm
+### 2. Thống kê mô tả & Bảng 1: 15 điểm
 
 | Tiêu chí phụ | Điểm | Đủ điểm | Một phần | Không điểm |
 |---|---:|---|---|---|
@@ -55,7 +55,7 @@ Hướng dẫn này cung cấp một khung chấm điểm có trọng số, mộ
 
 ---
 
-### 3. Các hình — 10 điểm
+### 3. Các hình: 10 điểm
 
 | Tiêu chí phụ | Điểm | Đủ điểm | Một phần | Không điểm |
 |---|---:|---|---|---|
@@ -68,7 +68,7 @@ Hướng dẫn này cung cấp một khung chấm điểm có trọng số, mộ
 
 ---
 
-### 4. Kiểm định thống kê — 15 điểm
+### 4. Kiểm định thống kê: 15 điểm
 
 | Tiêu chí phụ | Điểm | Đủ điểm | Một phần | Không điểm |
 |---|---:|---|---|---|
@@ -82,14 +82,14 @@ Hướng dẫn này cung cấp một khung chấm điểm có trọng số, mộ
 
 ---
 
-### 5. Mô hình hóa hồi quy — 20 điểm
+### 5. Mô hình hóa hồi quy: 20 điểm
 
 | Tiêu chí phụ | Điểm | Đủ điểm | Một phần | Không điểm |
 |---|---:|---|---|---|
 | Các mô hình logistic đơn biến | 4 | OR thô + KTC 95% cho từng biến dự báo | OR không có KTC | Không làm |
 | Đặc tả mô hình đa biến | 5 | `glm(..., family=binomial)` với các yếu tố quyết định đã định trước, trên cohort đã chẩn đoán | Thiếu một số biến dự báo/đặc tả sai | Sai kết cục/quần thể |
 | Kết quả trên thang OR | 5 | Các hệ số được **lấy lũy thừa** thành aOR kèm KTC 95% | OR không có KTC | **Log-odds được báo cáo như thể là OR** |
-| Báo cáo số ca đầy đủ dữ liệu | 2 | Nêu ~**992** ca đầy đủ dữ liệu được dùng | Không báo cáo | — |
+| Báo cáo số ca đầy đủ dữ liệu | 2 | Nêu ~**992** ca đầy đủ dữ liệu được dùng | Không báo cáo |, |
 | Khả năng phân biệt của mô hình | 4 | AUC/thống kê C được báo cáo (~**0,71**) kèm bình luận ngắn | Báo cáo nhưng không bình luận | Không có |
 
 **Được điểm:** `broom::tidy(model, exponentiate = TRUE, conf.int = TRUE)`; chọn mức tham chiếu sao cho các OR đọc lên trực quan; AUC qua `pROC`.
@@ -97,7 +97,7 @@ Hướng dẫn này cung cấp một khung chấm điểm có trọng số, mộ
 
 ---
 
-### 6. Diễn giải & viết phần Kết quả — 15 điểm
+### 6. Diễn giải & viết phần Kết quả, 15 điểm
 
 | Tiêu chí phụ | Điểm | Đủ điểm | Một phần | Không điểm |
 |---|---:|---|---|---|
@@ -111,7 +111,7 @@ Hướng dẫn này cung cấp một khung chấm điểm có trọng số, mộ
 
 ---
 
-### 7. Tính tái lập & chất lượng mã — 5 điểm
+### 7. Tính tái lập & chất lượng mã, 5 điểm
 
 | Tiêu chí phụ | Điểm | Đủ điểm | Một phần | Không điểm |
 |---|---:|---|---|---|
@@ -153,8 +153,8 @@ Hướng dẫn này cung cấp một khung chấm điểm có trọng số, mộ
 
 **Một diễn giải đúng cần nêu:**
 - Các yếu tố quyết định độc lập của việc tiếp nhận: tuổi cao hơn, giới **nữ**, học vấn cao hơn, sống ở thành thị, đái tháo đường, tiền sử gia đình, bảo hiểm y tế, và kiến thức về tăng huyết áp nhiều hơn.
-- **Đái tháo đường** có tác động lớn nhất (>3× odds) nhưng **KTC rộng nhất** (nhóm nhỏ) — một điểm dạy học về độ chính xác.
-- **Khoảng cách** đi theo chiều hướng kỳ vọng (bảo hộ chống lại việc tiếp nhận) nhưng **không có ý nghĩa thống kê** sau khi hiệu chỉnh — hãy mô tả là không kết luận được, chứ không phải "không có tác động".
+- **Đái tháo đường** có tác động lớn nhất (>3× odds) nhưng **KTC rộng nhất** (nhóm nhỏ), một điểm dạy học về độ chính xác.
+- **Khoảng cách** đi theo chiều hướng kỳ vọng (bảo hộ chống lại việc tiếp nhận) nhưng **không có ý nghĩa thống kê** sau khi hiệu chỉnh, hãy mô tả là không kết luận được, chứ không phải "không có tác động".
 - Residence: so sánh OR thô với OR hiệu chỉnh minh họa **yếu tố gây nhiễu nhẹ**.
 
 *Chấp nhận sự khác biệt hợp lý trong danh sách biến tiềm năng và cách mã hóa tham chiếu, miễn là các yếu tố quyết định cốt lõi đã định trước đều có mặt, các OR được lấy lũy thừa kèm KTC, và cohort đã chẩn đoán được sử dụng.*
@@ -179,7 +179,7 @@ Hướng dẫn này cung cấp một khung chấm điểm có trọng số, mộ
 | Tập lệnh không chạy được từ đầu đến cuối | **−2** (Thành phần 7) |
 | Không xuất Bảng 1 / các hình | **−3** (trải trên Thành phần 2 & 3) |
 
-*Mức trừ điểm được giới hạn ở số điểm khả dụng của thành phần liên quan — một lỗi đơn lẻ không thể kéo một thành phần xuống dưới không.*
+*Mức trừ điểm được giới hạn ở số điểm khả dụng của thành phần liên quan, một lỗi đơn lẻ không thể kéo một thành phần xuống dưới không.*
 
 ---
 
@@ -189,5 +189,5 @@ Hướng dẫn này cung cấp một khung chấm điểm có trọng số, mộ
 |---|---|---|
 | **Xuất sắc (Distinction)** | 80–100 | Chuỗi xử lý có thể tái lập gọn gàng từ dữ liệu thô; đúng cohort và dòng chảy cỡ mẫu; Bảng 1 và các hình 300-dpi trau chuốt; các mô hình logistic được đặc tả đúng với các aOR đã lấy lũy thừa và KTC; có báo cáo AUC; diễn giải lâm sàng chính xác, thận trọng phù hợp và một phần Kết quả có cấu trúc tốt. |
 | **Khá giỏi (Merit)** | 65–79 | Phân tích trọn vẹn từ đầu đến cuối hợp lý với việc làm sạch phần lớn đúng, đúng quần thể, và một mô hình hiệu chỉnh hợp lệ trên thang OR. Có các thiếu sót nhỏ (bỏ sót một mã đại diện, một phần Kết quả sơ sài, một kiểm định chọn sai) nhưng các kết luận là đúng. |
-| **Đạt (Pass)** | 50–64 | Có thực hiện phân tích cốt lõi và về cơ bản đúng, nhưng có những điểm yếu đáng chú ý — làm sạch chưa đầy đủ, Bảng 1/các hình yếu, báo cáo KTC một phần, hoặc diễn giải quá mức. Cho thấy năng lực nhưng chưa trau chuốt. |
+| **Đạt (Pass)** | 50–64 | Có thực hiện phân tích cốt lõi và về cơ bản đúng, nhưng có những điểm yếu đáng chú ý, làm sạch chưa đầy đủ, Bảng 1/các hình yếu, báo cáo KTC một phần, hoặc diễn giải quá mức. Cho thấy năng lực nhưng chưa trau chuốt. |
 | **Trượt (Fail)** | <50 | Các lỗi nền tảng: sai quần thể, để lại mã đại diện/bản trùng lặp, báo cáo log-odds như là OR, mô hình tuyến tính trên kết cục nhị phân, hoặc một bài nộp không thể tái lập/không chạy được. |

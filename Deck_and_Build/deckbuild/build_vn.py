@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Build the VIETNAMESE deck (_VN.pptx) with a Vietnamese-diacritic-safe title
-font. Must set the env var BEFORE importing engine/assemble so the font default
-binds correctly. Does NOT touch the English deck."""
+"""Build the VIETNAMESE deck (_VN.pptx). Arial has full Vietnamese support, so the
+VN deck uses the same font as the English deck; only the engine labels differ.
+Does NOT touch the English deck."""
 import os
 
-# Century Gothic lacks Vietnamese diacritics -> use Segoe UI (full VN support,
-# already the template's subtitle font). Verdana/Segoe/Consolas support VN too.
-os.environ["DECK_TITLE_FONT"] = "Segoe UI"
+os.environ["DECK_TITLE_FONT"] = "Arial"
 os.environ["DECK_LANG"] = "vi"          # localise engine-generated labels
 
 import assemble as A          # imports engine, which now reads the env var

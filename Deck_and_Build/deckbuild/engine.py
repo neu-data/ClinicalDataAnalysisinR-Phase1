@@ -4,7 +4,7 @@ Neudata deck engine.
 
 Builds Clinical_Data_Analysis_in_R_Phase1.pptx from JSON slide specs, reusing
 the EXACT design language of "Neudata Template.pptx":
-  - Fonts: Century Gothic (titles/body), Segoe UI (title-slide subtitle), Verdana (footer)
+  - Fonts: Arial (titles/body), Segoe UI (title-slide subtitle), Verdana (footer)
   - Colours: teal 0D7377 (day titles + rule), 006666 (title-slide title),
              section headers accent5/75%, body 000000, footer accent5/50%, blue 0070C0
   - Every content slide carries the Neudata footer, bottom-left logo and a slide number.
@@ -27,7 +27,7 @@ TEAL_TITLE = "006666"            # title-slide "Workshop" teal
 BLUE = "0070C0"                  # secondary blue
 BLACK = "000000"
 GREY = "595959"
-CG = os.environ.get("DECK_TITLE_FONT", "Century Gothic")   # override for non-Latin builds
+CG = os.environ.get("DECK_TITLE_FONT", "Arial")   # neutral sans-serif
 VERD = os.environ.get("DECK_FOOTER_FONT", "Verdana")
 SEG = os.environ.get("DECK_SUBTITLE_FONT", "Segoe UI")
 MONO = "Consolas"                # code font (monospace)
@@ -66,14 +66,8 @@ def esc(s):
 # ----------------------------------------------------------------------------
 # Low-level run / paragraph builders
 # ----------------------------------------------------------------------------
-def _has_vietnamese(text):
-    """True if text uses letters Century Gothic lacks (e.g. the name Vương Mỹ Lượng)."""
-    return any(ch in "ĂăĐđƠơƯư" or "Ạ" <= ch <= "ỹ" for ch in str(text or ""))
-
-
 def run(text, sz=1600, color=BLACK, bold=False, italic=False, font=CG):
-    if font == "Century Gothic" and _has_vietnamese(text):
-        font = "Segoe UI"            # Vietnamese-safe, as in the VN deck
+    # Arial covers the full Vietnamese character set, so no font fallback is needed.
     b = ' b="1"' if bold else ""
     i = ' i="1"' if italic else ""
     return (

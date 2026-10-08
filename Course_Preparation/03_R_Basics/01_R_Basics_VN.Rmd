@@ -1,6 +1,6 @@
 ---
-title: "Bài 1 — Kiến thức cơ bản về R"
-subtitle: "Phân tích Dữ liệu Lâm sàng bằng R (Giai đoạn I) — Trước khóa học"
+title: "Bài 1: Kiến thức cơ bản về R"
+subtitle: "Phân tích Dữ liệu Lâm sàng bằng R (Giai đoạn I), Trước khóa học"
 author: "Neudata"
 output:
   html_document:
@@ -23,7 +23,7 @@ trước đó.
 > **Cách học qua tệp này:** mở tệp trong RStudio, sau đó chạy từng khối lệnh màu
 > xám bằng cách nhấp vào nó và nhấn **Ctrl+Enter** (Windows) hoặc **Cmd+Enter**
 > (Mac). Hãy quan sát những gì xuất hiện trong Console. Thay đổi một con số, chạy
-> lại, và xem điều gì xảy ra — bạn không thể làm hỏng gì cả.
+> lại, và xem điều gì xảy ra: bạn không thể làm hỏng gì cả.
 
 ---
 
@@ -58,10 +58,10 @@ sbp - 12          # giá trị sau khi điều trị sẽ là bao nhiêu
 Hãy đọc `sbp <- 152` là *"sbp nhận giá trị 152"*. Đối tượng này giờ xuất hiện
 trong khung **Environment** (góc trên bên phải của RStudio).
 
-## 3. Vector — nhiều giá trị cùng lúc
+## 3. Vector: nhiều giá trị cùng lúc
 
 Dữ liệu lâm sàng không phải là một con số, mà là nhiều con số. Một **vector** là
-một dãy các giá trị, được tạo bằng `c()` ("combine" — kết hợp).
+một dãy các giá trị, được tạo bằng `c()` ("combine", kết hợp).
 
 ```{r}
 # Tuổi của năm bệnh nhân
@@ -89,7 +89,7 @@ sex
 table(sex)        # đếm số lượng của mỗi loại
 ```
 
-`table()` là một trong những lệnh hữu ích nhất trong công việc lâm sàng — nó đếm
+`table()` là một trong những lệnh hữu ích nhất trong công việc lâm sàng, nó đếm
 các danh mục giúp bạn.
 
 ## 5. Giá trị khuyết: `NA`
@@ -103,7 +103,7 @@ mean(glucose)                 # NA - vì có một giá trị bị khuyết
 mean(glucose, na.rm = TRUE)   # bỏ qua giá trị khuyết
 ```
 
-## 6. Data frame — cả một bộ dữ liệu
+## 6. Data frame: cả một bộ dữ liệu
 
 Một **data frame (khung dữ liệu)** là một bảng: các hàng là bệnh nhân, các cột là
 biến. Đây chính xác là cách dữ liệu lâm sàng được lưu trữ. Hãy đọc bộ dữ liệu của
@@ -161,7 +161,7 @@ mean(clinical_data$systolic_bp)
 - `dim()`, `names()`, `head()`, `str()`, `summary()` kiểm tra bất kỳ bộ dữ liệu nào.
 - `data$variable` chọn một cột.
 - Dữ liệu khuyết là `NA`; thêm `na.rm = TRUE` để bỏ qua nó.
-- Chú thích bắt đầu bằng `#` — R bỏ qua chúng, con người thì đọc chúng.
+- Chú thích bắt đầu bằng `#`: R bỏ qua chúng, con người thì đọc chúng.
 
 ## Tự thực hành
 
@@ -169,8 +169,8 @@ mean(clinical_data$systolic_bp)
    trung bình cùng độ lệch chuẩn của nó.
 2. Đọc lại bộ dữ liệu vào `clinical_data` và dùng `dim()` để cho biết có bao nhiêu
    bệnh nhân và bao nhiêu biến.
-3. Dùng `table()` trên `clinical_data$smoking` — có bao nhiêu người đang hút thuốc?
-4. Dùng `mean()` với `clinical_data$BMI` — BMI trung bình là bao nhiêu?
+3. Dùng `table()` trên `clinical_data$smoking`, có bao nhiêu người đang hút thuốc?
+4. Dùng `mean()` với `clinical_data$BMI`, BMI trung bình là bao nhiêu?
 
 *Lời giải chi tiết nằm trong `Exercises/` và `Solutions/`. Đừng lo lắng nếu có gì
-đó không chạy được ngay lần đầu — điều đó hoàn toàn bình thường.*
+đó không chạy được ngay lần đầu, điều đó hoàn toàn bình thường.*

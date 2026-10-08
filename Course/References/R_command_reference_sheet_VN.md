@@ -1,5 +1,5 @@
 # Bảng Tra cứu Lệnh R
-### Phân tích Dữ liệu Lâm sàng trong R — Giai đoạn I | Neudata · #ClearDataClearImpact
+### Phân tích Dữ liệu Lâm sàng trong R - Giai đoạn I | Neudata · #ClearDataClearImpact
 
 Một "bảng ghi nhớ" tổng hợp các lệnh được sử dụng xuyên suốt năm ngày học. Hãy để bên cạnh bạn trong các buổi thực hành.
 

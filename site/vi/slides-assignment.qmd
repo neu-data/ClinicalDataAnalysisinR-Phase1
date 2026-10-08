@@ -1,6 +1,6 @@
 ---
 title: "Bài tập lớn Cuối khóa"
-subtitle: "Phân tích Dữ liệu Lâm sàng bằng R — Giai đoạn I"
+subtitle: "Phân tích Dữ liệu Lâm sàng bằng R - Giai đoạn I"
 author: "Vương Mỹ Lượng & Bernard Osang'ir"
 institute: "Neudata Consulting Ltd"
 date: "06-10-2026"
@@ -9,6 +9,7 @@ section-label: "Phần"
 format:
   neudata-revealjs:
     scrollable: true
+    include-in-header: access-gate.html
 ---
 
 # Bài tập lớn Cuối khóa

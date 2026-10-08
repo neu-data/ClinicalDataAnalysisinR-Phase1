@@ -1,16 +1,49 @@
 <script>
 /* Free access codes (we only count how many people use the materials).
-   Pages other than the home, access and certificate pages need an access code once per browser;
-   the code is requested on access.html and checked by the Neudata portal. */
+   A verified code unlocks the course pages in this browser. The grant is valid
+   for 7 days after login and expires after 2 hours of no use; after that the
+   code is requested again on access.html. The home, access, certificate and 404
+   pages are always open, so the course link itself never asks for a code. */
 (function () {
   var KEY = "neudata-cdar-access";
-  var open = ["", "index.html", "access.html", "certificate.html", "404.html"];
+  var MAX_AGE = 7 * 24 * 60 * 60 * 1000;   // 7 days from login
+  var IDLE    = 2 * 60 * 60 * 1000;        // 2 hours of inactivity
+  var OPEN = ["", "index.html", "access.html", "certificate.html", "404.html"];
   var page = location.pathname.split("/").pop();
-  var ok;
-  try { ok = !!localStorage.getItem(KEY); } catch (e) { ok = true; }   // storage blocked: never lock people out
-  if (!ok && open.indexOf(page) < 0) {
-    document.documentElement.style.visibility = "hidden";
-    location.replace("access.html?next=" + encodeURIComponent(page + location.search + location.hash));
+
+  var raw;
+  try { raw = localStorage.getItem(KEY); }
+  catch (e) { return; }                    // storage blocked: never lock anyone out
+
+  var rec = null;
+  try { rec = JSON.parse(raw || "null"); } catch (e) {}
+  var now = Date.now();
+  var valid = false;
+  if (rec && rec.t) {
+    var last = rec.last || rec.t;
+    valid = (now - rec.t < MAX_AGE) && (now - last < IDLE);
+  }
+
+  if (valid) {
+    rec.last = now;                         // sliding 2-hour window: refresh on each visit
+    try { localStorage.setItem(KEY, JSON.stringify(rec)); } catch (e) {}
+    var touch = function () {
+      if (now && Date.now() - (window.__accTouch || 0) < 60000) return;  // at most once a minute
+      window.__accTouch = Date.now();
+      try {
+        var r = JSON.parse(localStorage.getItem(KEY) || "null");
+        if (r) { r.last = Date.now(); localStorage.setItem(KEY, JSON.stringify(r)); }
+      } catch (e) {}
+    };
+    ["click", "keydown", "scroll"].forEach(function (ev) {
+      window.addEventListener(ev, touch, { passive: true });
+    });
+  } else {
+    try { localStorage.removeItem(KEY); } catch (e) {}   // clear an expired grant
+    if (OPEN.indexOf(page) < 0) {
+      document.documentElement.style.visibility = "hidden";
+      location.replace("access.html?next=" + encodeURIComponent(page + location.search + location.hash));
+    }
   }
 })();
 </script>

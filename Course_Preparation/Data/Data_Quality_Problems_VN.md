@@ -3,7 +3,7 @@
 Dữ liệu lâm sàng thực tế **không bao giờ** sạch. Để làm cho các bài học làm sạch dữ liệu trở nên thực tế, chúng tôi
 đã cố ý đưa vào các vấn đề dưới đây trong `clinical_data_raw.csv`. Mỗi
 vấn đề đều là một *ví dụ dạy học*: bạn sẽ học cách **tìm** nó và **sửa** nó
-trong bài học **04 — Data Management**.
+trong bài học **04: Data Management**.
 
 `clinical_data_clean.csv` là tệp tham chiếu gọn gàng với tất cả các vấn đề này đã được giải quyết.
 
@@ -20,7 +20,7 @@ trong bài học **04 — Data Management**.
   `glucose` (22), `cholesterol` (18), `alcohol_use` (12), `BMI` (9),
   `followup_date` (7), `diastolic_bp` (5).
 - **Phát hiện:** `colSums(is.na(clinical_data_raw))`.
-- **Sửa:** quyết định theo từng biến — để nguyên là `NA`, dùng phân tích ca đầy đủ, hoặc gán giá trị. Trong khóa học này, chúng ta chỉ đơn giản giữ chúng là `NA` và để R bỏ qua chúng bằng `na.rm = TRUE`.
+- **Sửa:** quyết định theo từng biến, để nguyên là `NA`, dùng phân tích ca đầy đủ, hoặc gán giá trị. Trong khóa học này, chúng ta chỉ đơn giản giữ chúng là `NA` và để R bỏ qua chúng bằng `na.rm = TRUE`.
 
 ### 3. Mã hóa phân loại không nhất quán
 - `sex` xuất hiện dưới dạng **Female, female, F, f, Male, male, M, m**.

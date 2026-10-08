@@ -1,5 +1,5 @@
 # =====================================================================
-#  ĐÁP ÁN 1 — Làm quen với bộ dữ liệu
+#  ĐÁP ÁN 1, Làm quen với bộ dữ liệu
 # =====================================================================
 library(tidyverse)
 clinical_data <- read_csv("Data/clinical_data_clean.csv")
@@ -17,6 +17,6 @@ colSums(is.na(clinical_data))
 # Q4. Biến liên tục (chọn ba biến bất kỳ trong số):
 #     age, weight_kg, height_cm, BMI, systolic_bp, diastolic_bp,
 #     glucose, cholesterol, time_to_event
-# Q5. Dữ liệu khuyết: KHÔNG có — tệp CLEAN không có giá trị khuyết nào (đó chính là
+# Q5. Dữ liệu khuyết: KHÔNG có, tệp CLEAN không có giá trị khuyết nào (đó chính là
 #     mục đích của việc làm sạch). Dữ liệu khuyết nằm ở clinical_data_raw.csv, tệp mà
 #     bạn làm sạch ở Bài 2 / Bài tập 2.

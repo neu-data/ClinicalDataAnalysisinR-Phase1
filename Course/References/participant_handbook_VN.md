@@ -705,7 +705,7 @@ Mở `Practicals/day3_exercise.R`. Tạo một tóm tắt số theo nhóm theo `
 
 > **Ghi chú về trình tự.** Bộ slide hiện tại giữ **Buổi 4 chỉ dành cho các kiểm định thống kê**
 > (kiểm định t, kiểm định Wilcoxon, ANOVA, kiểm định chi bình phương, kiểm định Fisher, tương quan) và giới thiệu
-> **hồi quy — tuyến tính rồi logistic — ở Buổi 5**. Chương này vẫn bao gồm một
+> **hồi quy: tuyến tính rồi logistic, ở Buổi 5**. Chương này vẫn bao gồm một
 > phần nhập môn hồi quy logistic ở cuối; hãy coi phần nhập môn đó là cầu nối của bạn sang Buổi 5.
 
 Buổi 4 chuyển từ mô tả dữ liệu sang đặt câu hỏi cho nó bằng các kiểm định thống kê. Chúng ta làm việc trong quần thể phân tích - những bệnh nhân đã được chẩn đoán tăng huyết áp.

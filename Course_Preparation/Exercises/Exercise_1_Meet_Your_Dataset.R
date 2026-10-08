@@ -1,6 +1,6 @@
 # =====================================================================
-#  EXERCISE 1 — Meet Your Dataset
-#  Clinical Data Analysis in R (Phase I) — Pre-course
+#  EXERCISE 1, Meet Your Dataset
+#  Clinical Data Analysis in R (Phase I), Pre-course
 #  ------------------------------------------------------------------
 #  Goal: get comfortable opening a dataset and looking around it.
 #  This is practice, NOT a test. Run each line and read the output.

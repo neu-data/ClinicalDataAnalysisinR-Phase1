@@ -11,10 +11,10 @@ templates ([Quarto slides](https://github.com/neu-data/quarto-slides-template),
 
 | Section | Built from |
 |---|---|
-| Slide decks — course introduction, Days 1–5, final assignment (123 slides, speaker notes on every slide) | `Deck_and_Build/deckbuild/content_*.py` |
-| Session pages — agenda, slides, PowerPoint, demo script, exercise, solution | `Course/Scripts`, `Practicals`, `Solutions` |
-| Pre-course module — study guide, checklist, install guide, RStudio manual, 5 runnable lessons, exercises, data, cheat sheets, guides | `Course_Preparation/` |
-| Materials — participant handbook, R command reference, package guide, data dictionary, final assignment, downloads | `Course/References`, `Course/Data`, `Course/Assignment` |
+| Slide decks: course introduction, Days 1–5, final assignment (123 slides, speaker notes on every slide) | `Deck_and_Build/deckbuild/content_*.py` |
+| Session pages: agenda, slides, PowerPoint, demo script, exercise, solution | `Course/Scripts`, `Practicals`, `Solutions` |
+| Pre-course module: study guide, checklist, install guide, RStudio manual, 5 runnable lessons, exercises, data, cheat sheets, guides | `Course_Preparation/` |
+| Materials: participant handbook, R command reference, package guide, data dictionary, final assignment, downloads | `Course/References`, `Course/Data`, `Course/Assignment` |
 
 **Not published** (instructor-only): the instructor manual, the marking guide, trainer notes and the participant email templates.
 

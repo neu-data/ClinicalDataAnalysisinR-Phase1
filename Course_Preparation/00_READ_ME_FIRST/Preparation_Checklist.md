@@ -1,6 +1,6 @@
 # Preparation checklist
 
-Tick each box as you go. You do **not** need every box ticked to attend — this is just a gentle guide to help you arrive ready and relaxed. Take it at your own pace.
+Tick each box as you go. You do **not** need every box ticked to attend, this is just a gentle guide to help you arrive ready and relaxed. Take it at your own pace.
 
 ## Before you start
 

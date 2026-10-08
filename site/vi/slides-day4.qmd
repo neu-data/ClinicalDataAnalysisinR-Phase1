@@ -1,6 +1,6 @@
 ---
 title: "Ngày 4: Các Kiểm Định Thống Kê Y Học Thường Gặp"
-subtitle: "Phân tích Dữ liệu Lâm sàng bằng R — Giai đoạn I"
+subtitle: "Phân tích Dữ liệu Lâm sàng bằng R - Giai đoạn I"
 author: "Vương Mỹ Lượng & Bernard Osang'ir"
 institute: "Neudata Consulting Ltd"
 date: "29-09-2026"
@@ -9,6 +9,7 @@ section-label: "Phần"
 format:
   neudata-revealjs:
     scrollable: true
+    include-in-header: access-gate.html
 ---
 
 # Ngày 4: Các Kiểm Định Thống Kê Y Học Thường Gặp

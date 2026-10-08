@@ -1,11 +1,11 @@
 # Marking Guide (Instructor Use)
 
-## Final Take-Home Assignment — Clinical Data Analysis in R, Phase I
+## Final Take-Home Assignment: Clinical Data Analysis in R, Phase I
 
-**Course:** Clinical Data Analysis in R — Phase I — Vương Mỹ Lượng (Senior Biostatistician, lead trainer) and Bernard Isekah Osang'ir (Senior Biostatistician), Neudata (*#ClearDataClearImpact*)
+**Course:** Clinical Data Analysis in R - Phase I, Vương Mỹ Lượng (Senior Biostatistician, lead trainer) and Bernard Isekah Osang'ir (Senior Biostatistician), Neudata (*#ClearDataClearImpact*)
 **Total:** 100 marks
 
-This guide gives a weighted rubric, an answer key with canonical results, a common-errors penalty list, and grade bands. Mark on **correct method and sound interpretation**, not on exact second-decimal matches — package and R versions shift decimals trivially. Reward justified, well-documented decisions even where they differ slightly from the model answer.
+This guide gives a weighted rubric, an answer key with canonical results, a common-errors penalty list, and grade bands. Mark on **correct method and sound interpretation**, not on exact second-decimal matches, package and R versions shift decimals trivially. Reward justified, well-documented decisions even where they differ slightly from the model answer.
 
 ### Weighting summary
 
@@ -24,7 +24,7 @@ This guide gives a weighted rubric, an answer key with canonical results, a comm
 
 ## Component rubrics
 
-### 1. Data import & cleaning — 20 marks
+### 1. Data import & cleaning: 20 marks
 
 | Sub-criterion | Marks | Full credit | Partial | Zero |
 |---|---:|---|---|---|
@@ -41,7 +41,7 @@ This guide gives a weighted rubric, an answer key with canonical results, a comm
 
 ---
 
-### 2. Descriptive statistics & Table 1 — 15 marks
+### 2. Descriptive statistics & Table 1, 15 marks
 
 | Sub-criterion | Marks | Full credit | Partial | Zero |
 |---|---:|---|---|---|
@@ -55,7 +55,7 @@ This guide gives a weighted rubric, an answer key with canonical results, a comm
 
 ---
 
-### 3. Figures — 10 marks
+### 3. Figures: 10 marks
 
 | Sub-criterion | Marks | Full credit | Partial | Zero |
 |---|---:|---|---|---|
@@ -68,7 +68,7 @@ This guide gives a weighted rubric, an answer key with canonical results, a comm
 
 ---
 
-### 4. Statistical tests — 15 marks
+### 4. Statistical tests: 15 marks
 
 | Sub-criterion | Marks | Full credit | Partial | Zero |
 |---|---:|---|---|---|
@@ -82,14 +82,14 @@ This guide gives a weighted rubric, an answer key with canonical results, a comm
 
 ---
 
-### 5. Regression modelling — 20 marks
+### 5. Regression modelling: 20 marks
 
 | Sub-criterion | Marks | Full credit | Partial | Zero |
 |---|---:|---|---|---|
 | Univariable logistic models | 4 | Crude ORs + 95% CIs per predictor | ORs without CIs | Not done |
 | Multivariable model specification | 5 | `glm(..., family=binomial)` with the pre-specified determinants, on diagnosed cohort | Some predictors missing/mis-specified | Wrong outcome/population |
 | Results on OR scale | 5 | Coefficients **exponentiated** to aORs with 95% CIs | ORs without CIs | **Log-odds reported as if ORs** |
-| Complete-case reporting | 2 | States ~**992** complete cases used | Not reported | — |
+| Complete-case reporting | 2 | States ~**992** complete cases used | Not reported |, |
 | Model discrimination | 4 | AUC/C-statistic reported (~**0.71**) with brief comment | Reported without comment | Absent |
 
 **Earns marks:** `broom::tidy(model, exponentiate = TRUE, conf.int = TRUE)`; reference levels chosen so ORs read intuitively; AUC via `pROC`.
@@ -97,7 +97,7 @@ This guide gives a weighted rubric, an answer key with canonical results, a comm
 
 ---
 
-### 6. Interpretation & Results writing — 15 marks
+### 6. Interpretation & Results writing, 15 marks
 
 | Sub-criterion | Marks | Full credit | Partial | Zero |
 |---|---:|---|---|---|
@@ -111,7 +111,7 @@ This guide gives a weighted rubric, an answer key with canonical results, a comm
 
 ---
 
-### 7. Reproducibility & code quality — 5 marks
+### 7. Reproducibility & code quality, 5 marks
 
 | Sub-criterion | Marks | Full credit | Partial | Zero |
 |---|---:|---|---|---|
@@ -153,8 +153,8 @@ This guide gives a weighted rubric, an answer key with canonical results, a comm
 
 **A correct interpretation should state:**
 - Independent determinants of uptake: older age, **female** sex, higher education, urban residence, diabetes, family history, health insurance, and greater hypertension knowledge.
-- **Diabetes** has the largest effect (>3× odds) but the **widest CI** (small subgroup) — a precision teaching point.
-- **Distance** is in the expected (protective-against-uptake) direction but **not significant** after adjustment — describe as inconclusive, not "no effect".
+- **Diabetes** has the largest effect (>3× odds) but the **widest CI** (small subgroup), a precision teaching point.
+- **Distance** is in the expected (protective-against-uptake) direction but **not significant** after adjustment, describe as inconclusive, not "no effect".
 - Residence: comparing crude vs adjusted OR illustrates **mild confounding**.
 
 *Accept reasonable variation in candidate-variable lists and reference coding, provided the pre-specified core determinants are present, ORs are exponentiated with CIs, and the diagnosed cohort is used.*
@@ -179,7 +179,7 @@ This guide gives a weighted rubric, an answer key with canonical results, a comm
 | Script fails to run top-to-bottom | **−2** (Component 7) |
 | Table 1 / figures not exported | **−3** (across Components 2 & 3) |
 
-*Penalties are capped at the marks available for the relevant component — a single mistake cannot drive a component below zero.*
+*Penalties are capped at the marks available for the relevant component, a single mistake cannot drive a component below zero.*
 
 ---
 
@@ -189,5 +189,5 @@ This guide gives a weighted rubric, an answer key with canonical results, a comm
 |---|---|---|
 | **Distinction** | 80–100 | Clean reproducible pipeline from raw data; correct cohort and sample flow; polished Table 1 and 300-dpi figures; correctly specified logistic models with exponentiated aORs and CIs; AUC reported; accurate, appropriately cautious clinical interpretation and a well-structured Results section. |
 | **Merit** | 65–79 | Sound end-to-end analysis with mostly correct cleaning, the right population, and a valid adjusted model on the OR scale. Minor gaps (a missed sentinel, a thin Results section, one mis-chosen test) but conclusions are correct. |
-| **Pass** | 50–64 | Core analysis attempted and broadly correct, but with notable weaknesses — incomplete cleaning, weak Table 1/figures, partial reporting of CIs, or over-stated interpretation. Demonstrates competence but not polish. |
+| **Pass** | 50–64 | Core analysis attempted and broadly correct, but with notable weaknesses, incomplete cleaning, weak Table 1/figures, partial reporting of CIs, or over-stated interpretation. Demonstrates competence but not polish. |
 | **Fail** | <50 | Fundamental errors: wrong population, sentinels/duplicates left in, log-odds reported as ORs, linear model on a binary outcome, or a non-reproducible/non-running submission. |

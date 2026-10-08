@@ -1,5 +1,5 @@
 # =====================================================================
-#  ĐÁP ÁN 5 — Kiểm định thống kê
+#  ĐÁP ÁN 5, Kiểm định thống kê
 # =====================================================================
 library(tidyverse)
 clinical_data <- read_csv("Data/clinical_data_clean.csv")

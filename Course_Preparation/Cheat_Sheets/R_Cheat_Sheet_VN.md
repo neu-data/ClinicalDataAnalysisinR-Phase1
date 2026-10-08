@@ -1,4 +1,4 @@
-# R Cheat Sheet — Phân tích Dữ liệu Lâm sàng trong R (Phase I)
+# R Cheat Sheet: Phân tích Dữ liệu Lâm sàng trong R (Phase I)
 
 Một tài liệu tham khảo ngắn gọn, riêng cho khóa học. Mọi lệnh đều sử dụng các biến của **chúng ta**
 (`clinical_data` với `age`, `sex`, `BMI`, `systolic_bp`, `hypertension`, …).

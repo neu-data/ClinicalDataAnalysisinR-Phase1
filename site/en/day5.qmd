@@ -16,9 +16,9 @@ title: "Day 5: Introduction to Regression & Interpreting Output"
 
 | | |
 |:--|:--|
-| 🎞️ **Slides** | [Open the slides](slides-day5.qmd) — Press **F** for full screen, **S** for speaker notes, **E** to print. |
-| 📥 **PowerPoint** | [Download the slides (PowerPoint)](files/slides/Clinical_Data_Analysis_in_R_Phase1.pptx) |
-| 💻 **Live-coding demo script** | [day5_demo.R](files/scripts/day5_demo.R) |
-| 🧪 **Practical exercise** | [day5_exercise.R](files/practicals/day5_exercise.R) |
-| ✅ **Worked solution** | [day5_solution.R](files/solutions/day5_solution.R) |
-| 📁 **Course data** | [Course data](data.qmd) |
+| **Slides** | [Open the slides](slides-day5.qmd), Press **F** for full screen, **S** for speaker notes, **E** to print. |
+| **PowerPoint** | [Download the slides (PowerPoint)](files/slides/Clinical_Data_Analysis_in_R_Phase1.pptx) |
+| **Live-coding demo script** | [day5_demo.R](files/scripts/day5_demo.R) |
+| **Practical exercise** | [day5_exercise.R](files/practicals/day5_exercise.R) |
+| **Worked solution** | [day5_solution.R](files/solutions/day5_solution.R) |
+| **Course data** | [Course data](data.qmd) |

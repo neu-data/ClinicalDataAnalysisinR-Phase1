@@ -1,5 +1,5 @@
 # =====================================================================
-#  ĐÁP ÁN 2 — Quản lý dữ liệu
+#  ĐÁP ÁN 2, Quản lý dữ liệu
 # =====================================================================
 library(tidyverse)
 raw <- read_csv("Data/clinical_data_raw.csv")
@@ -32,7 +32,7 @@ clean %>% filter(age >= 60) %>% nrow()
 # Q2. Có 3 hàng trùng; còn lại 430 bệnh nhân duy nhất.
 # Q3. Khoảng 92 bệnh nhân thuộc nhóm "Obese" ở đây. (Con số này được tính trên dữ liệu
 #     thô mới làm sạch một phần, vẫn còn một vài giá trị BMI bất khả thi/khuyết; sau khi
-#     làm sạch hoàn toàn — Bài 2 — con số là 93.)
+#     làm sạch hoàn toàn, Bài 2, con số là 93.)
 # Q4. pulse_pressure = huyết áp tâm thu - tâm trương. Nó phản ánh độ cứng động mạch;
 #     áp lực mạch rộng thường gặp ở bệnh nhân lớn tuổi.
 # Q5. 148 bệnh nhân từ 60 tuổi trở lên.

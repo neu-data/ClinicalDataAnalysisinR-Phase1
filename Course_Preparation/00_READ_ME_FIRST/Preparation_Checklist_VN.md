@@ -1,6 +1,6 @@
 # Danh sách kiểm tra chuẩn bị
 
-Đánh dấu vào từng ô khi bạn hoàn thành. Bạn **không** cần đánh dấu hết mọi ô mới tham dự được — đây chỉ là một hướng dẫn nhẹ nhàng giúp bạn đến buổi học trong tư thế sẵn sàng và thoải mái. Hãy làm theo nhịp độ của riêng bạn.
+Đánh dấu vào từng ô khi bạn hoàn thành. Bạn **không** cần đánh dấu hết mọi ô mới tham dự được, đây chỉ là một hướng dẫn nhẹ nhàng giúp bạn đến buổi học trong tư thế sẵn sàng và thoải mái. Hãy làm theo nhịp độ của riêng bạn.
 
 ## Trước khi bắt đầu
 

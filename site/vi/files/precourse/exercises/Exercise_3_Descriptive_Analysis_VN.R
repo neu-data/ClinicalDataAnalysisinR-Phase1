@@ -1,6 +1,6 @@
 # =====================================================================
-#  BÀI TẬP 3 — Phân tích mô tả
-#  Phân tích dữ liệu lâm sàng trong R (Giai đoạn I) — Trước khóa học
+#  BÀI TẬP 3, Phân tích mô tả
+#  Phân tích dữ liệu lâm sàng trong R (Giai đoạn I), Trước khóa học
 #  ------------------------------------------------------------------
 #  Mục tiêu: tóm tắt dữ liệu bằng các thống kê mô tả đơn giản.
 #  Đáp án: Solutions/Solution_3_Descriptive_Analysis.R

@@ -2,7 +2,7 @@
 title: "Từ Kết Quả R đến Một Bài Báo Khoa Học"
 ---
 
-*Một ví dụ minh họa hoàn chỉnh — Phân tích Dữ liệu Lâm sàng trong R — Phase I (Neudata)*
+*Một ví dụ minh họa hoàn chỉnh, Phân tích Dữ liệu Lâm sàng trong R - Phase I (Neudata)*
 
 R cho bạn các con số. Một bài báo cần **những câu văn rõ ràng với ước lượng, khoảng tin cậy và diễn giải**. Hướng dẫn này đi qua toàn bộ hành trình cho một câu hỏi nghiên cứu, sử dụng bộ dữ liệu `clinical_data` của chúng ta (430 bệnh nhân).
 
@@ -18,7 +18,7 @@ Tăng huyết áp (`hypertension`, Yes/No) là một biến kết cục **nhị 
 
 ## 2. Dữ liệu
 
-Biến kết cục phải là số 0/1 (hoặc một factor) để dùng cho `glm()`. `hypertension` được lưu dưới dạng "Yes"/"No"; cách khắc phục đơn giản nhất là tạo một phiên bản 0/1, rồi mô hình hóa nó. (Nếu bạn để nó là một factor, R sử dụng mức đầu tiên làm nhóm tham chiếu — việc tạo biến 0/1 chỉ làm chiều hướng trở nên rõ ràng.)
+Biến kết cục phải là số 0/1 (hoặc một factor) để dùng cho `glm()`. `hypertension` được lưu dưới dạng "Yes"/"No"; cách khắc phục đơn giản nhất là tạo một phiên bản 0/1, rồi mô hình hóa nó. (Nếu bạn để nó là một factor, R sử dụng mức đầu tiên làm nhóm tham chiếu, việc tạo biến 0/1 chỉ làm chiều hướng trở nên rõ ràng.)
 
 ```r
 # Make an explicit 0/1 outcome: 1 = hypertension present
@@ -27,7 +27,7 @@ clinical_data$htn <- as.integer(clinical_data$hypertension == "Yes")
 
 ---
 
-## 3. Mã lệnh — khớp mô hình
+## 3. Mã lệnh: khớp mô hình
 
 ```r
 # Use the 0/1 outcome created in step 2 (1 = hypertension present)
@@ -37,7 +37,7 @@ model <- glm(htn ~ age + sex + BMI,
 summary(model)
 ```
 
-`summary(model)` in ra các hệ số trên thang **log-odds** — hữu ích cho phần cơ chế, nhưng không phải điều chúng ta báo cáo. Để có được **tỷ số chênh cùng khoảng tin cậy**, hãy lấy hàm mũ với **broom**:
+`summary(model)` in ra các hệ số trên thang **log-odds**, hữu ích cho phần cơ chế, nhưng không phải điều chúng ta báo cáo. Để có được **tỷ số chênh cùng khoảng tin cậy**, hãy lấy hàm mũ với **broom**:
 
 ```r
 library(broom)
@@ -46,7 +46,7 @@ tidy(model, exponentiate = TRUE, conf.int = TRUE)
 
 ---
 
-## 4. Kết quả — các con số để báo cáo
+## 4. Kết quả: các con số để báo cáo
 
 `tidy(..., exponentiate = TRUE, conf.int = TRUE)` cho một bảng gọn gàng. Các kết quả chính là:
 
@@ -58,17 +58,17 @@ tidy(model, exponentiate = TRUE, conf.int = TRUE)
 
 ---
 
-## 5. Diễn giải — các con số có ý nghĩa lâm sàng gì
+## 5. Diễn giải: các con số có ý nghĩa lâm sàng gì
 
 - **Age, OR 1.09 mỗi năm:** mỗi năm tuổi tăng thêm liên quan đến odds tăng khoảng **9%** đối với tăng huyết áp, khi giữ sex và BMI không đổi. Qua một thập kỷ, điều này tích lũy đáng kể (1.09 mũ 10 ≈ odds cao gấp 2.4 lần). Khoảng tin cậy (1.07–1.12) nằm hoàn toàn trên 1, nên liên hệ này là rõ ràng.
 - **BMI, OR 1.16 mỗi đơn vị:** mỗi đơn vị BMI tăng thêm (1 kg/m²) liên quan đến odds tăng khoảng **16%** đối với tăng huyết áp, một lần nữa khi hiệu chỉnh cho các biến khác. KTC 95% 1.10–1.22 nằm rõ trên 1.
-- **Sex, OR 1.20 (Male vs Female):** nam giới có vẻ có odds cao hơn phần nào, nhưng **KTC 95% (0.76–1.90) đi qua 1** và p = 0.43. Do đó chúng ta nói rằng **không có khác biệt có ý nghĩa thống kê** theo giới tính trong mô hình này — dữ liệu tương thích với bất cứ điều gì từ một hiệu ứng bảo vệ khiêm tốn đến mức tăng gần gấp đôi.
+- **Sex, OR 1.20 (Male vs Female):** nam giới có vẻ có odds cao hơn phần nào, nhưng **KTC 95% (0.76–1.90) đi qua 1** và p = 0.43. Do đó chúng ta nói rằng **không có khác biệt có ý nghĩa thống kê** theo giới tính trong mô hình này, dữ liệu tương thích với bất cứ điều gì từ một hiệu ứng bảo vệ khiêm tốn đến mức tăng gần gấp đôi.
 
 **"Tỷ số chênh trên mỗi đơn vị" vs "nguy cơ".** Một OR bằng 1.09 *không* có nghĩa là có thêm 9% bệnh nhân bị tăng huyết áp. Đó là một hệ số nhân lên **odds** cho mỗi mức tăng một đơn vị của yếu tố dự báo. Tỷ số chênh chỉ xấp xỉ nguy cơ tương đối khi biến kết cục hiếm; khi một biến kết cục phổ biến, OR sẽ phóng đại mức thay đổi của nguy cơ tuyệt đối. Vì vậy hãy mô tả một OR như một thay đổi về *odds trên mỗi đơn vị của yếu tố dự báo*, chứ không phải như một con số tuyệt đối các ca thêm vào.
 
 ---
 
-## 6. Trình bày báo cáo — những câu văn sẵn sàng sử dụng
+## 6. Trình bày báo cáo: những câu văn sẵn sàng sử dụng
 
 **Phương pháp (một câu):**
 > Chúng tôi đã sử dụng hồi quy logistic đa biến để đánh giá liên hệ của tuổi, giới tính và chỉ số khối cơ thể với sự hiện diện của tăng huyết áp, báo cáo các tỷ số chênh cùng với khoảng tin cậy 95%.
@@ -76,7 +76,7 @@ tidy(model, exponentiate = TRUE, conf.int = TRUE)
 **Kết quả (một câu):**
 > Trong một hồi quy logistic đa biến, tuổi cao hơn (OR 1.09 mỗi năm, 95% CI 1.07–1.12) và BMI cao hơn (OR 1.16 mỗi kg/m², 95% CI 1.10–1.22) liên quan độc lập với tăng huyết áp; giới tính thì không (OR 1.20, 95% CI 0.76–1.90, p = 0.43).
 
-Hãy để ý những gì các câu này chứa đựng: **phương pháp**, **ước lượng**, **khoảng tin cậy** của nó, và một phát biểu rõ ràng về ý nghĩa thống kê — và không có gì sao chép từ cửa sổ console.
+Hãy để ý những gì các câu này chứa đựng: **phương pháp**, **ước lượng**, **khoảng tin cậy** của nó, và một phát biểu rõ ràng về ý nghĩa thống kê, và không có gì sao chép từ cửa sổ console.
 
 ---
 
@@ -84,9 +84,9 @@ Hãy để ý những gì các câu này chứa đựng: **phương pháp**, **�
 
 Ba phần này là ba công việc khác nhau, và trộn lẫn chúng là lỗi phổ biến nhất của người mới bắt đầu.
 
-- **Kết quả — bạn tìm thấy điều gì.** Chỉ các con số: ước lượng, khoảng tin cậy, giá trị p, tần số. Trung lập và mang tính sự kiện. *"BMI liên quan với tăng huyết áp (OR 1.16 mỗi kg/m², 95% CI 1.10–1.22)."* Không suy đoán.
-- **Diễn giải — các con số có ý nghĩa gì.** Chuyển thống kê thành ý nghĩa lâm sàng, trong bối cảnh. *"BMI cao hơn tương ứng với odds tăng đáng kể đối với tăng huyết áp, phù hợp với việc BMI là một yếu tố nguy cơ có thể thay đổi được trong quần thể này."* Vẫn gắn với dữ liệu *của bạn*.
-- **Bàn luận — nó khớp với bức tranh rộng hơn như thế nào.** So sánh với y văn trước đây, thừa nhận các **hạn chế** (dữ liệu quan sát không thể chứng minh nhân quả; nhiễu tồn dư; BMI đo tại một thời điểm; chỉ năm bệnh viện), và nêu **hàm ý** cho thực hành hoặc nghiên cứu tương lai. *"Những phát hiện này đồng vọng với bằng chứng đoàn hệ đã được thiết lập liên kết tình trạng thừa mỡ với tăng huyết áp; là một phân tích cắt ngang, nó không thể thiết lập nhân quả, và các yếu tố nhiễu chưa được đo lường như chế độ ăn và hoạt động thể chất có thể vẫn còn tồn tại."*
+- **Kết quả: bạn tìm thấy điều gì.** Chỉ các con số: ước lượng, khoảng tin cậy, giá trị p, tần số. Trung lập và mang tính sự kiện. *"BMI liên quan với tăng huyết áp (OR 1.16 mỗi kg/m², 95% CI 1.10–1.22)."* Không suy đoán.
+- **Diễn giải: các con số có ý nghĩa gì.** Chuyển thống kê thành ý nghĩa lâm sàng, trong bối cảnh. *"BMI cao hơn tương ứng với odds tăng đáng kể đối với tăng huyết áp, phù hợp với việc BMI là một yếu tố nguy cơ có thể thay đổi được trong quần thể này."* Vẫn gắn với dữ liệu *của bạn*.
+- **Bàn luận: nó khớp với bức tranh rộng hơn như thế nào.** So sánh với y văn trước đây, thừa nhận các **hạn chế** (dữ liệu quan sát không thể chứng minh nhân quả; nhiễu tồn dư; BMI đo tại một thời điểm; chỉ năm bệnh viện), và nêu **hàm ý** cho thực hành hoặc nghiên cứu tương lai. *"Những phát hiện này đồng vọng với bằng chứng đoàn hệ đã được thiết lập liên kết tình trạng thừa mỡ với tăng huyết áp; là một phân tích cắt ngang, nó không thể thiết lập nhân quả, và các yếu tố nhiễu chưa được đo lường như chế độ ăn và hoạt động thể chất có thể vẫn còn tồn tại."*
 
 ---
 

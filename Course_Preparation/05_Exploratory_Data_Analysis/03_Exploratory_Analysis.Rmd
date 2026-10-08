@@ -1,6 +1,6 @@
 ---
-title: "Lesson 3 — Exploratory Data Analysis"
-subtitle: "Clinical Data Analysis in R (Phase I) — Pre-course"
+title: "Lesson 3: Exploratory Data Analysis"
+subtitle: "Clinical Data Analysis in R (Phase I), Pre-course"
 author: "Neudata"
 output:
   html_document:
@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,
 Before testing anything, we **describe** and **look at** the data. You will
 compute descriptive statistics, build a publication-style summary table, and
 make the four plots you will use most often: a histogram, a boxplot, a bar plot
-and a scatterplot — and, just as importantly, **interpret** each one.
+and a scatterplot: and, just as importantly, **interpret** each one.
 
 ```{r}
 library(tidyverse)
@@ -87,7 +87,7 @@ clinical_data %>%
 
 ## 4. A publication-ready "Table 1"
 
-`gtsummary` builds the baseline characteristics table journals expect — in one
+`gtsummary` builds the baseline characteristics table journals expect, in one
 command.
 
 ```{r}
@@ -104,7 +104,7 @@ groups compare.
 
 ## 5. Four essential plots
 
-### Histogram — the shape of one continuous variable
+### Histogram: the shape of one continuous variable
 
 ```{r}
 ggplot(clinical_data, aes(x = age)) +
@@ -112,10 +112,10 @@ ggplot(clinical_data, aes(x = age)) +
   labs(title = "Distribution of age", x = "Age (years)", y = "Number of patients")
 ```
 
-**Interpretation:** age is roughly bell-shaped and centred in the mid-50s — a
+**Interpretation:** age is roughly bell-shaped and centred in the mid-50s, a
 typical middle-aged clinic population, with no strange spikes.
 
-### Boxplot — a continuous variable across groups
+### Boxplot: a continuous variable across groups
 
 ```{r}
 ggplot(clinical_data, aes(x = hypertension, y = systolic_bp, fill = hypertension)) +
@@ -126,9 +126,9 @@ ggplot(clinical_data, aes(x = hypertension, y = systolic_bp, fill = hypertension
 ```
 
 **Interpretation:** the box (middle 50% of patients) sits clearly higher for
-hypertensive patients — as expected. The dots above the whiskers are outliers.
+hypertensive patients: as expected. The dots above the whiskers are outliers.
 
-### Bar plot — counts of a category
+### Bar plot: counts of a category
 
 ```{r}
 ggplot(clinical_data, aes(x = smoking, fill = smoking)) +
@@ -139,9 +139,9 @@ ggplot(clinical_data, aes(x = smoking, fill = smoking)) +
 ```
 
 **Interpretation:** most patients have never smoked, with fewer former and
-current smokers — useful to know before using smoking as a predictor.
+current smokers: useful to know before using smoking as a predictor.
 
-### Scatterplot — two continuous variables together
+### Scatterplot: two continuous variables together
 
 ```{r}
 ggplot(clinical_data, aes(x = BMI, y = systolic_bp)) +
@@ -166,7 +166,7 @@ correlation or linear regression.
 - The four core plots: **histogram** (one variable's shape), **boxplot**
   (variable by group), **bar plot** (category counts), **scatterplot**
   (two continuous variables).
-- Always *interpret* a plot in clinical terms — a picture is only useful if you
+- Always *interpret* a plot in clinical terms, a picture is only useful if you
   can say what it means.
 
 ## Try it yourself

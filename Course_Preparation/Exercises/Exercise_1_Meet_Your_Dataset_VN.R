@@ -1,6 +1,6 @@
 # =====================================================================
-#  BÀI TẬP 1 — Làm quen với bộ dữ liệu
-#  Phân tích dữ liệu lâm sàng trong R (Giai đoạn I) — Trước khóa học
+#  BÀI TẬP 1, Làm quen với bộ dữ liệu
+#  Phân tích dữ liệu lâm sàng trong R (Giai đoạn I), Trước khóa học
 #  ------------------------------------------------------------------
 #  Mục tiêu: làm quen với việc mở một bộ dữ liệu và xem xét nó.
 #  Đây là luyện tập, KHÔNG phải bài kiểm tra. Chạy từng dòng và đọc kết quả.

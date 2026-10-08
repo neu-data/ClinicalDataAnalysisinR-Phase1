@@ -1,6 +1,6 @@
 # =====================================================================
-#  EXERCISE 2 — Data Management
-#  Clinical Data Analysis in R (Phase I) — Pre-course
+#  EXERCISE 2, Data Management
+#  Clinical Data Analysis in R (Phase I), Pre-course
 #  ------------------------------------------------------------------
 #  Goal: practise the everyday data-cleaning verbs on the messy file.
 #  Answers: Solutions/Solution_2_Data_Management.R

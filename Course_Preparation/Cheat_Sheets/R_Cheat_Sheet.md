@@ -1,4 +1,4 @@
-# R Cheat Sheet — Clinical Data Analysis in R (Phase I)
+# R Cheat Sheet: Clinical Data Analysis in R (Phase I)
 
 A short, course-specific reference. Every command uses **our** variables
 (`clinical_data` with `age`, `sex`, `BMI`, `systolic_bp`, `hypertension`, …).

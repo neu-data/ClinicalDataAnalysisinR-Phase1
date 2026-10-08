@@ -1,6 +1,6 @@
 # =====================================================================
-#  BÀI TẬP 2 — Quản lý dữ liệu
-#  Phân tích dữ liệu lâm sàng trong R (Giai đoạn I) — Trước khóa học
+#  BÀI TẬP 2, Quản lý dữ liệu
+#  Phân tích dữ liệu lâm sàng trong R (Giai đoạn I), Trước khóa học
 #  ------------------------------------------------------------------
 #  Mục tiêu: luyện tập các động từ làm sạch dữ liệu hằng ngày trên tệp lộn xộn.
 #  Đáp án: Solutions/Solution_2_Data_Management.R

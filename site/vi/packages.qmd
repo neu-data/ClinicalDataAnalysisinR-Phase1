@@ -2,22 +2,22 @@
 title: "Hướng dẫn cài đặt gói"
 ---
 
-📥 [PDF](files/docs/Package_Installation_Guide.pdf)
+[PDF](files/docs/Package_Installation_Guide.pdf)
 
-### Phân tích Dữ liệu Lâm sàng bằng R — Giai đoạn I | Neudata · #ClearDataClearImpact
+### Phân tích Dữ liệu Lâm sàng bằng R - Giai đoạn I | Neudata · #ClearDataClearImpact
 
 Hãy thực hiện các bước này **trước Ngày 1** (hoặc trong buổi thiết lập của Ngày 1). Bạn chỉ cần kết nối internet trong lần đầu tiên.
 
 ---
 
-## Bước 1 — Cài đặt R và RStudio
+## Bước 1: Cài đặt R và RStudio
 1. **R** (bộ máy xử lý): https://cran.r-project.org → tải về cho Windows / macOS → cài đặt với các tùy chọn mặc định.
 2. **RStudio Desktop** (bàn làm việc): https://posit.co/download/rstudio-desktop/ → cài đặt.
 3. Mở **RStudio** (không phải R thuần). Bạn sẽ thấy bốn khung: Source, Console, Environment, Files/Plots.
 
 > Khóa học này được chuẩn bị với **R 4.6.0**. Bất kỳ phiên bản 4.x gần đây nào cũng dùng được.
 
-## Bước 2 — Cài đặt các gói của khóa học
+## Bước 2: Cài đặt các gói của khóa học
 Sao chép khối lệnh dưới đây vào **Console** của RStudio và nhấn Enter. Nó sẽ cài đặt mọi thứ được sử dụng xuyên suốt năm ngày trong một lần.
 
 ```r
@@ -43,7 +43,7 @@ install.packages(c(
 
 Quá trình cài đặt có thể mất vài phút. Windows và macOS nhận các gói nhị phân đã được biên dịch sẵn, nên không cần thêm công cụ build nào.
 
-## Bước 3 — Xác nhận mọi thứ đã được nạp
+## Bước 3: Xác nhận mọi thứ đã được nạp
 Chạy đoạn kiểm tra này. Mỗi dòng đều phải in ra `TRUE`.
 
 ```r
@@ -52,7 +52,7 @@ pkgs <- c("tidyverse","readxl","lubridate","janitor","gtsummary",
 for (p in pkgs) cat(sprintf("%-15s %s\n", p, requireNamespace(p, quietly = TRUE)))
 ```
 
-## Bước 4 — Thiết lập dự án
+## Bước 4: Thiết lập dự án
 1. Tải về/giải nén thư mục **Course** do giảng viên cung cấp.
 2. Trong RStudio: **File → New Project → Existing Directory →** chọn thư mục `Course`.
 3. Làm việc từ dự án này nghĩa là mọi đường dẫn như `Data/hypertension_phc_raw.csv` sẽ "chạy đúng ngay lập tức" trên bất kỳ máy tính nào.

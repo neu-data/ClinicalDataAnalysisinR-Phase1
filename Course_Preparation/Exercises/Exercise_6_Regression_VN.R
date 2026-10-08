@@ -1,6 +1,6 @@
 # =====================================================================
-#  BÀI TẬP 6 — Hồi quy
-#  Phân tích dữ liệu lâm sàng trong R (Giai đoạn I) — Trước khóa học
+#  BÀI TẬP 6, Hồi quy
+#  Phân tích dữ liệu lâm sàng trong R (Giai đoạn I), Trước khóa học
 #  ------------------------------------------------------------------
 #  Mục tiêu: khớp một mô hình hồi quy logistic đơn giản và đọc các tỷ số chênh.
 #  Đáp án: Solutions/Solution_6_Regression.R

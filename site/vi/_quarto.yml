@@ -38,15 +38,15 @@ website:
           - href: rstudio.qmd
             text: "Làm quen với RStudio"
           - href: lesson1.qmd
-            text: "Bài 1 — Kiến thức cơ bản về R"
+            text: "Bài 1: Kiến thức cơ bản về R"
           - href: lesson2.qmd
-            text: "Bài 2 — Quản lý Dữ liệu (Làm sạch Dữ liệu Lâm sàng)"
+            text: "Bài 2: Quản lý Dữ liệu (Làm sạch Dữ liệu Lâm sàng)"
           - href: lesson3.qmd
-            text: "Bài 3 — Phân tích Dữ liệu Khám phá"
+            text: "Bài 3: Phân tích Dữ liệu Khám phá"
           - href: lesson4.qmd
-            text: "Bài 4 — Các Kiểm định Thống kê Thường gặp"
+            text: "Bài 4: Các Kiểm định Thống kê Thường gặp"
           - href: lesson5.qmd
-            text: "Bài 5 — Hồi quy"
+            text: "Bài 5: Hồi quy"
           - href: precourse-exercises.qmd
             text: "Bài tập và lời giải"
           - href: precourse-data.qmd
