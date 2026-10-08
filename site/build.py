@@ -312,10 +312,7 @@ def copy(src, dest):
 ACCESS_S = {
     "en": dict(title="Free access to the course materials",
                intro=("All course materials are **free**. To open them, request a free access code: enter your "
-                      "email and we send you a code. We only count how many people use the materials and roughly "
-                      "where from: with each code we record your country and city (looked up in your browser by "
-                      "the free GeoJS service) and your browser's time zone and language. **Your email address and "
-                      "IP address are not stored.**"),
+                      "email and we send you a code. **Your email address and IP address are not stored.**"),
                step1="1. Get your free access code", email="Your email address", send="Send me a code",
                step2="2. Enter your access code", code="Access code (e.g. ABCD-2345)", unlock="Open the materials",
                forgot="Forgot your code? Request a new one above, it is free.",
@@ -328,10 +325,8 @@ ACCESS_S = {
                done="Access granted, opening the materials…"),
     "vi": dict(title="Truy cập miễn phí tài liệu khóa học",
                intro=("Toàn bộ tài liệu khóa học đều **miễn phí**. Để mở tài liệu, hãy yêu cầu mã truy cập miễn "
-                      "phí: nhập email và chúng tôi sẽ gửi mã cho bạn. Chúng tôi chỉ đếm số người sử dụng tài "
-                      "liệu và họ ở khu vực nào: với mỗi mã, chúng tôi ghi lại quốc gia và thành phố (do dịch vụ "
-                      "miễn phí GeoJS xác định ngay trên trình duyệt của bạn) cùng múi giờ và ngôn ngữ của trình "
-                      "duyệt. **Địa chỉ email và địa chỉ IP của bạn không được lưu lại.**"),
+                      "phí: nhập email và chúng tôi sẽ gửi mã cho bạn. **Địa chỉ email và địa chỉ IP của bạn "
+                      "không được lưu lại.**"),
                step1="1. Nhận mã truy cập miễn phí", email="Địa chỉ email của bạn", send="Gửi mã cho tôi",
                step2="2. Nhập mã truy cập", code="Mã truy cập (ví dụ ABCD-2345)", unlock="Mở tài liệu",
                forgot="Quên mã? Hãy yêu cầu mã mới ở trên, hoàn toàn miễn phí.",
@@ -390,19 +385,9 @@ def access_page(lang, out):
     }} catch (e) {{ return false; }}
   }}
   function show(kind, key) {{ var m = document.getElementById("acc-msg"); m.className = "acc-msg " + kind; m.textContent = M[key] || M.ERROR; }}
-  // Approximate location for the usage counts: browser time zone and language, plus country and
-  // city from GeoJS (looked up here in the browser). The IP address is never sent to Neudata.
-  var geo = Promise.race([
-    fetch("https://get.geojs.io/v1/ip/geo.json").then(function (r) {{ return r.json(); }})
-      .then(function (g) {{ return {{ country: g.country || "", city: g.city || "" }}; }}),
-    new Promise(function (res) {{ setTimeout(function () {{ res({{}}); }}, 3000); }})
-  ]).catch(function () {{ return {{}}; }});
   function call(body) {{
-    var tz = ""; try {{ tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; }} catch (e) {{}}
-    return geo.then(function (g) {{
-      body.tz = tz; body.blang = navigator.language || ""; body.country = g.country || ""; body.city = g.city || "";
-      return fetch(API, {{ method: "POST", headers: {{ "Content-Type": "text/plain;charset=utf-8" }}, body: JSON.stringify(body) }});
-    }}).then(function (r) {{ return r.json(); }});
+    return fetch(API, {{ method: "POST", headers: {{ "Content-Type": "text/plain;charset=utf-8" }}, body: JSON.stringify(body) }})
+      .then(function (r) {{ return r.json(); }});
   }}
   function go() {{
     var next = new URLSearchParams(location.search).get("next") || "index.html";
